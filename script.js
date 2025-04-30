@@ -1,7 +1,3 @@
-const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'.split('');
-const SUGGESTION_TYPES = ['before', 'after', 'between'];
-let currentRequests = [];
-
 document.addEventListener('DOMContentLoaded', function() {
     // Cache DOM elements
     const searchForm = document.getElementById('searchForm');
@@ -26,9 +22,6 @@ document.addEventListener('DOMContentLoaded', function() {
     //Search Clear
     const searchInput = document.getElementById('searchInput');
     const clearSearchBtn = document.getElementById('clearSearchBtn');
-
-    const suggestionsDropdown = document.getElementById('suggestionsDropdown');
-const suggestionGroupsContainer = document.querySelector('.suggestion-groups-container');
     
     if (searchInput.value.length > 0) {
         clearSearchBtn.style.display = 'block';
@@ -1234,149 +1227,7 @@ function updateSortOrderOptions() {
     }
 }
 
-function debounce(fn, delay) {
-    let timeout;
-    return (...args) => {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => fn.apply(this, args), delay);
-    };
-}
 
-async function getExpandedSuggestions(seedKeyword) {
-    const requests = [];
-    const suggestionsMap = { before: [], after: [], between: [] };
-
-    // Generate variants and fetch suggestions
-    for (const type of SUGGESTION_TYPES) {
-        const variants = generateVariants(seedKeyword, type);
-        variants.forEach(variant => {
-            requests.push(
-                fetchSuggestions(variant.query)
-                .then(suggestions => {
-                    suggestions.forEach(suggestion => {
-                        suggestionsMap[type].push({
-                            text: suggestion,
-                            type: type,
-                            base: variant.display
-                        });
-                    });
-                })
-            );
-        });
-    }
-
-    await Promise.all(requests);
-    return suggestionsMap;
-}
-
-function generateVariants(keyword, type) {
-    const variants = [];
-    
-    switch(type) {
-        case 'before':
-            ALPHABET.forEach(letter => {
-                variants.push({
-                    query: `${letter} ${keyword}`,
-                    display: `${letter} [KEYWORD]`
-                });
-            });
-            break;
-            
-        case 'after':
-            ALPHABET.forEach(letter => {
-                variants.push({
-                    query: `${keyword} ${letter}`,
-                    display: `[KEYWORD] ${letter}`
-                });
-            });
-            break;
-            
-        case 'between':
-            // Optional: Implement if needed
-            break;
-    }
-    
-    return variants;
-}
-
-function fetchSuggestions(query) {
-    return new Promise((resolve, reject) => {
-        const marketplace = marketplaceSelect.value;
-        const script = document.createElement('script');
-        const callbackName = `jsonp_${Date.now()}`;
-        
-        const url = new URL(`https://completion.amazon.${marketplace}/api/2017/suggestions`);
-        url.searchParams.append('prefix', query);
-        url.searchParams.append('mid', 'ATVPDKIKX0DER'); // Marketplace ID
-        url.searchParams.append('alias', 'aps');
-        url.searchParams.append('lop', 'en_US');
-        url.searchParams.append('callback', callbackName);
-
-        window[callbackName] = (data) => {
-            resolve(data.suggestions.map(s => s.value));
-            delete window[callbackName];
-            document.body.removeChild(script);
-        };
-
-        script.src = url.toString();
-        script.onerror = reject;
-        document.body.appendChild(script);
-        
-        currentRequests.push({
-            cancel: () => {
-                delete window[callbackName];
-                document.body.removeChild(script);
-            }
-        });
-    });
-}
-
-function displaySuggestions(groupedSuggestions) {
-    suggestionGroupsContainer.innerHTML = '';
-    
-    Object.entries(groupedSuggestions).forEach(([type, items]) => {
-        if (items.length === 0) return;
-        
-        const group = document.createElement('div');
-        group.className = 'suggestion-group';
-        group.innerHTML = `
-            <div class="suggestion-group-title">${type.toUpperCase()} VARIATIONS</div>
-            ${items.map(item => `
-                <div class="suggestion-item" data-keyword="${item.text}">
-                    <span class="suggestion-keyword">${item.text}</span>
-                    <span class="suggestion-type">${item.base}</span>
-                </div>
-            `).join('')}
-        `;
-        
-        suggestionGroupsContainer.appendChild(group);
-    });
-    
-    suggestionsDropdown.style.display = 'block';
-}
-
-function hideSuggestions() {
-    suggestionsDropdown.style.display = 'none';
-}
-
-// Add click handler for suggestions
-suggestionsDropdown.addEventListener('click', (e) => {
-    const suggestionItem = e.target.closest('.suggestion-item');
-    if (suggestionItem) {
-        searchInput.value = suggestionItem.dataset.keyword;
-        searchInput.focus();
-        hideSuggestions();
-        updateGeneratedUrl();
-    }
-});
-
-    // Close dropdown when clicking outside
-document.addEventListener('click', (e) => {
-    if (!searchInput.contains(e.target) {
-        hideSuggestions();
-    }
-});
-    
 // Replace departmentToProductType with marketplace-based handling
 function updateProductTypeFromDepartment() {
     const department = departmentSelect.value;
@@ -1410,25 +1261,13 @@ function updateProductTypeFromDepartment() {
     const clearSearchBtn = document.getElementById('clearSearchBtn');
     
     // Show/hide clear button based on input content
-    searchInput.addEventListener('input', debounce(async function(e) {
-                /* Oldif (this.value.length > 0) {
+    searchInput.addEventListener('input', function() {
+                if (this.value.length > 0) {
                     clearSearchBtn.style.display = 'block';
                 } else {
                     clearSearchBtn.style.display = 'none';
-                }*/
-        const keyword = this.value.trim();
-    
-    // Clear previous requests
-    currentRequests.forEach(req => req.cancel());
-    currentRequests = [];
-    
-    if (keyword) {
-        const allSuggestions = await getExpandedSuggestions(keyword);
-        displaySuggestions(allSuggestions);
-    } else {
-        hideSuggestions();
-    }
-            }, 300));
+                }
+            });
             
             // Clear the input when X is clicked
             clearSearchBtn.addEventListener('click', function() {

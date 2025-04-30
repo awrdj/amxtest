@@ -106,6 +106,54 @@
             </form>
         </div>
 
+        <div class="container-fluid px-4">
+            <div class="keyword-research-section mb-4">
+                <h4 class="mb-3">Keyword Research</h4>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <input type="text" id="seedKeyword" class="form-control" placeholder="Enter seed keyword">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" id="generateKeywords">
+                                    <i class="fas fa-search"></i> Generate
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group mt-2">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="keywordsBefore" checked>
+                                <label class="form-check-label" for="keywordsBefore">Before</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="keywordsAfter" checked>
+                                <label class="form-check-label" for="keywordsAfter">After</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="keywordsBetween">
+                                <label class="form-check-label" for="keywordsBetween">Between</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="results-container mt-4">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>Keywords Before</h5>
+                            <div id="beforeKeywords" class="keyword-group"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Keywords After</h5>
+                            <div id="afterKeywords" class="keyword-group"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Keywords Between</h5>
+                            <div id="betweenKeywords" class="keyword-group"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         <!-- All filters in a horizontal layout -->
         <div class="filters-container">
             <div class="filter-box" id="departmentCategoryBox">

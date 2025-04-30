@@ -27,6 +27,138 @@ document.addEventListener('DOMContentLoaded', function() {
         clearSearchBtn.style.display = 'block';
     }
 
+    // SEARCH EXPANDER
+    class KeywordResearch {
+    constructor() {
+        this.marketplaceMID = {
+            'com': 'ATVPDKIKX0DER',
+            'co.uk': 'A1F83G8C2ARO7P',
+            'de': 'A1PA6795UKMFR9',
+            'fr': 'A13V1IB3VIYZZH',
+            'it': 'A11IL2PNWYJU7H',
+            'es': 'A1RKKUPIHCS9HS',
+            'jp': 'A1VC38T7YXB528'
+        };
+        this.requestQueue = [];
+        this.isProcessing = false;
+    }
+
+    init() {
+        document.getElementById('generateKeywords').addEventListener('click', () => this.handleGenerate());
+    }
+
+    handleGenerate() {
+        const seed = document.getElementById('seedKeyword').value.trim();
+        if (!seed) return;
+
+        this.clearResults();
+        
+        const variants = this.generateVariants(
+            seed,
+            document.getElementById('keywordsBefore').checked,
+            document.getElementById('keywordsAfter').checked,
+            document.getElementById('keywordsBetween').checked
+        );
+        
+        this.processQueue(variants);
+    }
+
+    generateVariants(seed, before = true, after = true, between = true) {
+        const variants = [];
+        const letters = 'abcdefghijklmnopqrstuvwxyz';
+
+        if (before) {
+            for (const letter of letters) {
+                variants.push({ type: 'before', keyword: `${letter} ${seed}` });
+            }
+        }
+
+        if (after) {
+            for (const letter of letters) {
+                variants.push({ type: 'after', keyword: `${seed} ${letter}` });
+            }
+        }
+
+        if (between && seed.includes(' ')) {
+            const parts = seed.split(' ');
+            for (let i = 0; i < parts.length - 1; i++) {
+                for (const letter of letters) {
+                    const newKeyword = [...parts.slice(0, i+1), letter, ...parts.slice(i+1)].join(' ');
+                    variants.push({ type: 'between', keyword: newKeyword });
+                }
+            }
+        }
+
+        return variants;
+    }
+
+    async processQueue(variants) {
+        this.requestQueue = [...variants];
+        this.isProcessing = true;
+
+        while (this.requestQueue.length > 0 && this.isProcessing) {
+            const variant = this.requestQueue.shift();
+            await this.fetchSuggestions(variant);
+            await new Promise(resolve => setTimeout(resolve, 300)); // Rate limiting
+        }
+    }
+
+    async fetchSuggestions(variant) {
+        return new Promise((resolve) => {
+            const marketplace = document.getElementById('marketplaceSelect').value;
+            const mid = this.marketplaceMID[marketplace];
+            const callbackName = `jsonp_${Date.now()}_${Math.random().toString(36).substr(2)}`;
+
+            window[callbackName] = (data) => {
+                this.handleResponse(variant, data.suggestions);
+                delete window[callbackName];
+                resolve();
+            };
+
+            const script = document.createElement('script');
+            script.src = `https://completion.amazon.${marketplace}/api/2017/suggestions?alias=aps&mid=${mid}&prefix=${encodeURIComponent(variant.keyword)}&callback=${callbackName}`;
+            script.onerror = () => resolve();
+            document.head.appendChild(script);
+        });
+    }
+
+    handleResponse(variant, suggestions) {
+        const containerId = `${variant.type}Keywords`;
+        const container = document.getElementById(containerId);
+        
+        const suggestionList = suggestions
+            .filter(s => s.value !== variant.keyword)
+            .map(s => s.value);
+
+        if (suggestionList.length > 0) {
+            const html = `
+                <div class="keyword-item">
+                    <h6>${variant.keyword}</h6>
+                    <ul class="suggestion-list">
+                        ${suggestionList.map(s => `<li class="suggestion-item">${s}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', html);
+        }
+    }
+
+    clearResults() {
+        this.isProcessing = false;
+        this.requestQueue = [];
+        ['before', 'after', 'between'].forEach(type => {
+            document.getElementById(`${type}Keywords`).innerHTML = '';
+        });
+    }
+}
+
+// Initialize keyword research when DOM loads
+document.addEventListener('DOMContentLoaded', () => {
+    const keywordResearch = new KeywordResearch();
+    keywordResearch.init();
+});
+    //Search EXPANDER
+
     // Define product type availability for each marketplace
 const productTypeAvailability = {
     'com': [

@@ -27,6 +27,105 @@ document.addEventListener('DOMContentLoaded', function() {
         clearSearchBtn.style.display = 'block';
     }
 
+    // AMAZON EXPANDER
+    // Add these functions to your existing JS
+async function fetchKeywordSuggestions(seedKeyword) {
+    const variations = generateKeywordVariations(seedKeyword);
+    const marketplace = marketplaceSelect.value;
+    const mid = document.getElementById('sellerAmazon').value.split('%3A')[1];
+    
+    const results = {
+        before: new Set(),
+        after: new Set(),
+        between: new Set()
+    };
+
+    // Fetch suggestions for all variations
+    await Promise.all(Object.entries(variations).map(async ([type, queries]) => {
+        for (const query of queries) {
+            try {
+                const suggestions = await getAmazonSuggestions(query, marketplace, mid);
+                suggestions.forEach(s => results[type].add(s));
+            } catch (error) {
+                console.error('Error fetching suggestions:', error);
+            }
+        }
+    }));
+
+    displayKeywordResults(results);
+}
+
+function generateKeywordVariations(keyword) {
+    const letters = 'abcdefghijklmnopqrstuvwxyz'.split('');
+    const words = keyword.split(' ');
+    
+    return {
+        before: letters.map(l => `${l} ${keyword}`),
+        after: letters.map(l => `${keyword} ${l}`),
+        between: words.length > 1 ? letters.map(l => {
+            return words.slice(0, -1).join(' ') + ` ${l} ` + words.slice(-1);
+        }) : []
+    };
+}
+
+function getAmazonSuggestions(query, marketplace, mid) {
+    return new Promise((resolve, reject) => {
+        const callbackName = `jsonp_${Date.now()}`;
+        const url = `https://completion.amazon.${marketplace}/api/2017/suggestions?alias=aps&prefix=${encodeURIComponent(query)}&mid=${mid}&client=amazon-search-ui&mkt=1&callback=${callbackName}`;
+
+        window[callbackName] = (data) => {
+            delete window[callbackName];
+            document.head.removeChild(script);
+            resolve(data.suggestions.map(s => s.value));
+        };
+
+        const script = document.createElement('script');
+        script.src = url;
+        script.onerror = () => {
+            reject(new Error('Failed to load suggestions'));
+            delete window[callbackName];
+            document.head.removeChild(script);
+        };
+        
+        document.head.appendChild(script);
+    });
+}
+
+function displayKeywordResults(results) {
+    const container = document.querySelector('.keyword-groups-container');
+    container.innerHTML = '';
+    
+    Object.entries(results).forEach(([type, suggestions]) => {
+        if (suggestions.size === 0) return;
+        
+        const group = document.createElement('div');
+        group.className = 'keyword-group';
+        group.innerHTML = `
+            <h6>Keywords ${type.charAt(0).toUpperCase() + type.slice(1)}</h6>
+            <div class="suggestions-grid">
+                ${Array.from(suggestions).map(s => `
+                    <div class="suggestion-item">${s}</div>
+                `).join('')}
+            </div>
+        `;
+        
+        container.appendChild(group);
+    });
+}
+
+// Modify handleFormSubmit to include:
+function handleFormSubmit(e) {
+    e.preventDefault();
+    const amazonUrl = generateAmazonUrl();
+    window.open(amazonUrl, '_blank');
+    
+    const keyword = searchInput.value.trim();
+    if (keyword) {
+        fetchKeywordSuggestions(keyword);
+    }
+}
+    // AMAZON EXPANDER
+
     // Define product type availability for each marketplace
 const productTypeAvailability = {
     'com': [

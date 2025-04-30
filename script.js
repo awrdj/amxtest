@@ -1,3 +1,7 @@
+const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'.split('');
+const SUGGESTION_TYPES = ['before', 'after', 'between'];
+let currentRequests = [];
+
 document.addEventListener('DOMContentLoaded', function() {
     // Cache DOM elements
     const searchForm = document.getElementById('searchForm');
@@ -22,109 +26,13 @@ document.addEventListener('DOMContentLoaded', function() {
     //Search Clear
     const searchInput = document.getElementById('searchInput');
     const clearSearchBtn = document.getElementById('clearSearchBtn');
+
+    const suggestionsDropdown = document.getElementById('suggestionsDropdown');
+const suggestionGroupsContainer = document.querySelector('.suggestion-groups-container');
     
     if (searchInput.value.length > 0) {
         clearSearchBtn.style.display = 'block';
     }
-
-    // AMAZON EXPANDER
-    // Add these functions to your existing JS
-async function fetchKeywordSuggestions(seedKeyword) {
-    const variations = generateKeywordVariations(seedKeyword);
-    const marketplace = marketplaceSelect.value;
-    const mid = document.getElementById('sellerAmazon').value.split('%3A')[1];
-    
-    const results = {
-        before: new Set(),
-        after: new Set(),
-        between: new Set()
-    };
-
-    // Fetch suggestions for all variations
-    await Promise.all(Object.entries(variations).map(async ([type, queries]) => {
-        for (const query of queries) {
-            try {
-                const suggestions = await getAmazonSuggestions(query, marketplace, mid);
-                suggestions.forEach(s => results[type].add(s));
-            } catch (error) {
-                console.error('Error fetching suggestions:', error);
-            }
-        }
-    }));
-
-    displayKeywordResults(results);
-}
-
-function generateKeywordVariations(keyword) {
-    const letters = 'abcdefghijklmnopqrstuvwxyz'.split('');
-    const words = keyword.split(' ');
-    
-    return {
-        before: letters.map(l => `${l} ${keyword}`),
-        after: letters.map(l => `${keyword} ${l}`),
-        between: words.length > 1 ? letters.map(l => {
-            return words.slice(0, -1).join(' ') + ` ${l} ` + words.slice(-1);
-        }) : []
-    };
-}
-
-function getAmazonSuggestions(query, marketplace, mid) {
-    return new Promise((resolve, reject) => {
-        const callbackName = `jsonp_${Date.now()}`;
-        const url = `https://completion.amazon.${marketplace}/api/2017/suggestions?alias=aps&prefix=${encodeURIComponent(query)}&mid=${mid}&client=amazon-search-ui&mkt=1&callback=${callbackName}`;
-
-        window[callbackName] = (data) => {
-            delete window[callbackName];
-            document.head.removeChild(script);
-            resolve(data.suggestions.map(s => s.value));
-        };
-
-        const script = document.createElement('script');
-        script.src = url;
-        script.onerror = () => {
-            reject(new Error('Failed to load suggestions'));
-            delete window[callbackName];
-            document.head.removeChild(script);
-        };
-        
-        document.head.appendChild(script);
-    });
-}
-
-function displayKeywordResults(results) {
-    const container = document.querySelector('.keyword-groups-container');
-    container.innerHTML = '';
-    
-    Object.entries(results).forEach(([type, suggestions]) => {
-        if (suggestions.size === 0) return;
-        
-        const group = document.createElement('div');
-        group.className = 'keyword-group';
-        group.innerHTML = `
-            <h6>Keywords ${type.charAt(0).toUpperCase() + type.slice(1)}</h6>
-            <div class="suggestions-grid">
-                ${Array.from(suggestions).map(s => `
-                    <div class="suggestion-item">${s}</div>
-                `).join('')}
-            </div>
-        `;
-        
-        container.appendChild(group);
-    });
-}
-
-// Modify handleFormSubmit to include:
-function handleFormSubmit(e) {
-    e.preventDefault();
-    const amazonUrl = generateAmazonUrl();
-    window.open(amazonUrl, '_blank');
-    
-    const keyword = searchInput.value.trim();
-    if (keyword) {
-        fetchKeywordSuggestions(keyword);
-    }
-}
-    // AMAZON EXPANDER
 
     // Define product type availability for each marketplace
 const productTypeAvailability = {
@@ -1326,7 +1234,149 @@ function updateSortOrderOptions() {
     }
 }
 
+function debounce(fn, delay) {
+    let timeout;
+    return (...args) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => fn.apply(this, args), delay);
+    };
+}
 
+async function getExpandedSuggestions(seedKeyword) {
+    const requests = [];
+    const suggestionsMap = { before: [], after: [], between: [] };
+
+    // Generate variants and fetch suggestions
+    for (const type of SUGGESTION_TYPES) {
+        const variants = generateVariants(seedKeyword, type);
+        variants.forEach(variant => {
+            requests.push(
+                fetchSuggestions(variant.query)
+                .then(suggestions => {
+                    suggestions.forEach(suggestion => {
+                        suggestionsMap[type].push({
+                            text: suggestion,
+                            type: type,
+                            base: variant.display
+                        });
+                    });
+                })
+            );
+        });
+    }
+
+    await Promise.all(requests);
+    return suggestionsMap;
+}
+
+function generateVariants(keyword, type) {
+    const variants = [];
+    
+    switch(type) {
+        case 'before':
+            ALPHABET.forEach(letter => {
+                variants.push({
+                    query: `${letter} ${keyword}`,
+                    display: `${letter} [KEYWORD]`
+                });
+            });
+            break;
+            
+        case 'after':
+            ALPHABET.forEach(letter => {
+                variants.push({
+                    query: `${keyword} ${letter}`,
+                    display: `[KEYWORD] ${letter}`
+                });
+            });
+            break;
+            
+        case 'between':
+            // Optional: Implement if needed
+            break;
+    }
+    
+    return variants;
+}
+
+function fetchSuggestions(query) {
+    return new Promise((resolve, reject) => {
+        const marketplace = marketplaceSelect.value;
+        const script = document.createElement('script');
+        const callbackName = `jsonp_${Date.now()}`;
+        
+        const url = new URL(`https://completion.amazon.${marketplace}/api/2017/suggestions`);
+        url.searchParams.append('prefix', query);
+        url.searchParams.append('mid', 'ATVPDKIKX0DER'); // Marketplace ID
+        url.searchParams.append('alias', 'aps');
+        url.searchParams.append('lop', 'en_US');
+        url.searchParams.append('callback', callbackName);
+
+        window[callbackName] = (data) => {
+            resolve(data.suggestions.map(s => s.value));
+            delete window[callbackName];
+            document.body.removeChild(script);
+        };
+
+        script.src = url.toString();
+        script.onerror = reject;
+        document.body.appendChild(script);
+        
+        currentRequests.push({
+            cancel: () => {
+                delete window[callbackName];
+                document.body.removeChild(script);
+            }
+        });
+    });
+}
+
+function displaySuggestions(groupedSuggestions) {
+    suggestionGroupsContainer.innerHTML = '';
+    
+    Object.entries(groupedSuggestions).forEach(([type, items]) => {
+        if (items.length === 0) return;
+        
+        const group = document.createElement('div');
+        group.className = 'suggestion-group';
+        group.innerHTML = `
+            <div class="suggestion-group-title">${type.toUpperCase()} VARIATIONS</div>
+            ${items.map(item => `
+                <div class="suggestion-item" data-keyword="${item.text}">
+                    <span class="suggestion-keyword">${item.text}</span>
+                    <span class="suggestion-type">${item.base}</span>
+                </div>
+            `).join('')}
+        `;
+        
+        suggestionGroupsContainer.appendChild(group);
+    });
+    
+    suggestionsDropdown.style.display = 'block';
+}
+
+function hideSuggestions() {
+    suggestionsDropdown.style.display = 'none';
+}
+
+// Add click handler for suggestions
+suggestionsDropdown.addEventListener('click', (e) => {
+    const suggestionItem = e.target.closest('.suggestion-item');
+    if (suggestionItem) {
+        searchInput.value = suggestionItem.dataset.keyword;
+        searchInput.focus();
+        hideSuggestions();
+        updateGeneratedUrl();
+    }
+});
+
+    // Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    if (!searchInput.contains(e.target) {
+        hideSuggestions();
+    }
+});
+    
 // Replace departmentToProductType with marketplace-based handling
 function updateProductTypeFromDepartment() {
     const department = departmentSelect.value;
@@ -1360,13 +1410,25 @@ function updateProductTypeFromDepartment() {
     const clearSearchBtn = document.getElementById('clearSearchBtn');
     
     // Show/hide clear button based on input content
-    searchInput.addEventListener('input', function() {
-                if (this.value.length > 0) {
+    searchInput.addEventListener('input', debounce(async function(e) {
+                /* Oldif (this.value.length > 0) {
                     clearSearchBtn.style.display = 'block';
                 } else {
                     clearSearchBtn.style.display = 'none';
-                }
-            });
+                }*/
+        const keyword = this.value.trim();
+    
+    // Clear previous requests
+    currentRequests.forEach(req => req.cancel());
+    currentRequests = [];
+    
+    if (keyword) {
+        const allSuggestions = await getExpandedSuggestions(keyword);
+        displaySuggestions(allSuggestions);
+    } else {
+        hideSuggestions();
+    }
+            }, 300));
             
             // Clear the input when X is clicked
             clearSearchBtn.addEventListener('click', function() {

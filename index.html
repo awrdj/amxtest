@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Merch Amazon Research Tool - MerchScope</title>
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .logo-container {
+            display: inline-flex;
+            align-items: center;
+            vertical-align: middle;
+        }
+        .logo-image {
+            max-height: 40px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        .logo-text {
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .plz_hinweis:hover {
+            background-color: #fff!important;
+        }
+    </style>
+</head>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-YRZVE3RZCW"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+        
+          gtag('config', 'G-YRZVE3RZCW');
+        </script>
+<body>
+    <div class="header-section">
+        <div class="container">
+            <h1 class="text-center header-title">
+        <a href="./" style="color:white;">
+            <div class="logo-container">
+            <img src="icon.png" alt="MerchScope Logo" class="logo-image">
+            <span class="logo-text">Merch<span class="logo-highlight">Scope</span></span>
+            </div>
+        </a>
+    </h1>
+            <p class="text-center header-subtitle mb-0">Discover your niche. Design with insight.</p>
+        </div>
+    </div>
+
+    <div class="container-fluid px-4">
+        <div class="search-section">
+            <form id="searchForm">
+                <div class="row">
+                    <div class="col-md-6 mb-2">
+                        <label for="marketplaceSelect" class="small mb-1">Marketplace</label>
+                        <select id="marketplaceSelect" class="form-control">
+                            <option value="com">.COM - United States</option>
+                            <option value="co.uk">.CO.UK - United Kingdom</option>
+                            <option value="de">.DE - Germany</option>
+                            <option value="fr">.FR - France</option>
+                            <option value="it">.IT - Italy</option>
+                            <option value="es">.ES - Spain</option>
+                            <option value="jp">.CO.JP - Japan</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label for="productTypeSelect" class="small mb-1">Product Type</label>
+                        <select id="productTypeSelect" class="form-control" style="text-transform:uppercase;">
+                            <!-- Options will be populated dynamically based on marketplace -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-12 mb-2">
+                        <div class="search-input-group">
+                            <input id="searchInput" type="text" class="form-control" placeholder="Enter keyword or leave blank to see all">
+                            <span id="clearSearchBtn" class="clear-search-btn" style="display: none;">
+                                <i class="fas fa-times" aria-hidden="true"></i>
+                            </span>
+                            <button type="submit" class="search-button">
+                                <i class="fas fa-search" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-2" style="margin-top:0px!important;">
+                    <div class="col-12">
+                        <div class="plz_hinweis text-right" style="margin-top: 0;padding: 0;background-color: white;border: 0;">
+                            <div id="copy_to_clipboard">
+                                <div class="copy_area" title="Copy ZIP to Clipboard">
+                                    <span class="copied-message">Copied!&nbsp;</span> Valid ZIP for&nbsp;<span class="plz_helper">.COM: <span class="copy_me">90210</span> (Beverly Hills, CA)</span>
+                                    &nbsp;<i class="fas fa-clipboard" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- All filters in a horizontal layout -->
+        <div class="filters-container">
+            <div class="filter-box" id="departmentCategoryBox">
+                <div class="filter-title">Department & Category</div>
+                <select id="department" class="form-control mb-2">
+                    <!-- Additional departments will be populated dynamically -->
+                </select>
+                <select id="category" class="form-control" disabled>
+                    <option value="">No Category Filter</option>
+                    <!-- Categories will be populated by JavaScript based on department selection -->
+                </select>
+            </div>
+
+            <div class="filter-box">
+                <div class="filter-title">Sort Order</div>
+                <select id="sortOrder" class="form-control">
+                    <!-- Options will be dynamically populated based on marketplace -->
+                </select>
+            </div>
+
+            <div class="filter-box">
+                <div class="filter-title">Price Range</div>
+                <div class="row">
+                    <div class="col-6 pr-1">
+                        <input type="number" class="form-control" id="minPrice" min="0" step="1" placeholder="Min $">
+                    </div>
+                    <div class="col-6 pl-1">
+                        <input type="number" class="form-control" id="maxPrice" min="0" step="1" placeholder="Max $">
+                    </div>
+                </div>
+                <small class="form-text text-muted" style="font-size: 0.75rem;">For this filter to work, specify both min & max prices.</small>
+            </div>
+
+            <div class="filter-box">
+                <div class="filter-title">Seller Filters</div>
+                <div class="checkbox-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="sellerAmazon" value="p_6%3AATVPDKIKX0DER" checked>
+                        <label class="form-check-label" for="sellerAmazon">Seller is Amazon</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="reviewsFilter" value="p_72%3A2661618011">
+                        <label class="form-check-label" for="reviewsFilter">Reviews 4+</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filter-box">
+                <div class="filter-title">Time Filters</div>
+                <div class="checkbox-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="timeFilter" id="timeFilterNone" value="" checked>
+                        <label class="form-check-label" for="timeFilterNone">None</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="timeFilter" id="timeFilter30Days" value="p_n_date_first_available_absolute%3A15196852011">
+                        <label class="form-check-label" for="timeFilter30Days">Last 30 days</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="timeFilter" id="timeFilter90Days" value="p_n_date_first_available_absolute%3A15196853011">
+                        <label class="form-check-label" for="timeFilter90Days">Last 90 days</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filter-box">
+                <div class="filter-title">Presets</div>
+                <select id="presetsSelect" class="form-control">
+                    <!-- Options will be dynamically populated based on marketplace -->
+                </select>
+            </div>
+            
+        </div>
+
+        <div class="filter-box">
+            <div class="filter-title">Hidden Keywords</div>
+            <div class="checkbox-group" id="hiddenKeywordsContainer">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="filterExcludeBrands" value="">
+                    <label class="form-check-label" for="filterExcludeBrands">Exclude Major Brands</label>
+                </div>
+                <div class="mt-1">
+                    <input type="text" class="form-control custom-hidden-keywords" id="customHiddenKeywords" placeholder="Custom hidden keywords">
+                    <small class="form-text text-muted" style="font-size: 0.75rem;">Type normally to include keywords (e.g., funny cat). Precede a word with a minus sign to exclude it (e.g., -Marvel). Note: Excluding multi-word phrases (e.g., -Star Wars) is not working reliably.</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="result-url" id="resultUrlContainer">
+            <h5 class="mb-2">Generated Amazon URL Preview</h5>
+            <div class="url-copy-container">
+                <div class="url-box" id="generatedUrl"></div>
+                <button id="copyUrlBtn" class="btn-url-copy"><i class="fas fa-clipboard"></i></button>
+            </div>
+        </div>
+        
+    </div>
+
+    <footer>
+        <div class="container">
+            <p style="margin-bottom:0;">© 2025 MerchScope Research Tool. Created for personal research purposes.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript will be loaded externally -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

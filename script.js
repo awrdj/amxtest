@@ -1,32 +1,3 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Cache DOM elements
-    const searchForm = document.getElementById('searchForm');
-    const copyUrlBtn = document.getElementById('copyUrlBtn');
-    const resultUrlContainer = document.getElementById('resultUrlContainer');
-    const generatedUrlEl = document.getElementById('generatedUrl');
-    const visitUrlBtn = document.getElementById('visitUrlBtn');
-    const marketplaceSelect = document.getElementById('marketplaceSelect');
-    const copyZipBtn = document.querySelector('.copy_area');
-    const copyMessage = document.querySelector('.copied-message');
-    const productTypeSelect = document.getElementById('productTypeSelect');
-    const departmentSelect = document.getElementById('department');
-    const categorySelect = document.getElementById('category');
-    const basicTeesCheckbox = document.getElementById('filterBasicTees');
-    const cottonCheckbox = document.getElementById('filterCotton');
-    const hiddenKeywordsContainer = document.getElementById('hiddenKeywordsContainer');
-    const filterBasicTeesContainer = document.getElementById('filterBasicTeesContainer');
-    const filterCottonContainer = document.getElementById('filterCottonContainer');
-    const minPriceInput = document.getElementById('minPrice');
-    const maxPriceInput = document.getElementById('maxPrice');
-
-    //Search Clear
-    const searchInput = document.getElementById('searchInput');
-    const clearSearchBtn = document.getElementById('clearSearchBtn');
-    
-    if (searchInput.value.length > 0) {
-        clearSearchBtn.style.display = 'block';
-    }
-
     // SEARCH EXPANDER
     class KeywordResearch {
     constructor() {
@@ -188,6 +159,35 @@ document.addEventListener('DOMContentLoaded', () => {
     keywordResearch.init();
 });
     //Search EXPANDER
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Cache DOM elements
+    const searchForm = document.getElementById('searchForm');
+    const copyUrlBtn = document.getElementById('copyUrlBtn');
+    const resultUrlContainer = document.getElementById('resultUrlContainer');
+    const generatedUrlEl = document.getElementById('generatedUrl');
+    const visitUrlBtn = document.getElementById('visitUrlBtn');
+    const marketplaceSelect = document.getElementById('marketplaceSelect');
+    const copyZipBtn = document.querySelector('.copy_area');
+    const copyMessage = document.querySelector('.copied-message');
+    const productTypeSelect = document.getElementById('productTypeSelect');
+    const departmentSelect = document.getElementById('department');
+    const categorySelect = document.getElementById('category');
+    const basicTeesCheckbox = document.getElementById('filterBasicTees');
+    const cottonCheckbox = document.getElementById('filterCotton');
+    const hiddenKeywordsContainer = document.getElementById('hiddenKeywordsContainer');
+    const filterBasicTeesContainer = document.getElementById('filterBasicTeesContainer');
+    const filterCottonContainer = document.getElementById('filterCottonContainer');
+    const minPriceInput = document.getElementById('minPrice');
+    const maxPriceInput = document.getElementById('maxPrice');
+
+    //Search Clear
+    const searchInput = document.getElementById('searchInput');
+    const clearSearchBtn = document.getElementById('clearSearchBtn');
+    
+    if (searchInput.value.length > 0) {
+        clearSearchBtn.style.display = 'block';
+    }
 
     // Define product type availability for each marketplace
 const productTypeAvailability = {

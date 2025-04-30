@@ -496,91 +496,66 @@ footer {
 	background-color: #e8f5e9 !important;
 }
 
-/* Add to existing CSS */
-.keyword-results {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: var(--box-shadow);
-    padding: 1rem;
-    margin-top: 1rem;
-}
 
-.keyword-group {
-    margin-bottom: 2rem;
-}
 
-.keyword-group h6 {
-    color: var(--primary-color);
-    border-bottom: 2px solid var(--secondary-color);
-    padding-bottom: 0.5rem;
-    margin-bottom: 1rem;
-    font-size: 1rem;
-}
 
-.suggestions-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 0.75rem;
-}
 
-.suggestion-item {
-    background-color: var(--light-color);
-    padding: 0.75rem;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    word-break: break-word;
-    border: 1px solid var(--border-color);
-    transition: transform 0.2s ease;
-}
 
-.suggestion-item:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--box-shadow);
-}
 
-/* Add these styles */
-.search-input-group {
-    position: relative; /* Add this for absolute positioning of suggestions */
-}
 
-.suggestions-container {
+
+
+/* Add to your CSS */
+.suggestions-dropdown {
     position: absolute;
     top: 100%;
     left: 0;
     right: 0;
-    background: white;
-    border: 1px solid var(--border-color);
-    border-top: none;
-    border-radius: 0 0 6px 6px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    max-height: 300px;
-    overflow-y: auto;
     z-index: 1000;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     display: none;
+    margin-top: -1px;
+}
+
+.suggestion-group {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.suggestion-group:last-child {
+    border-bottom: 0;
+}
+
+.suggestion-group-title {
+    padding: 8px 15px;
+    font-weight: bold;
+    background: #f8f9fa;
+    color: #666;
+    font-size: 0.9em;
 }
 
 .suggestion-item {
-    padding: 10px 15px;
+    padding: 8px 15px;
     cursor: pointer;
-    color: var(--primary-color);
-    transition: background-color 0.2s ease;
-    font-size: 0.95rem;
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 8px;
 }
 
 .suggestion-item:hover {
     background-color: #f8f9fa;
 }
 
-.suggestion-item i {
-    color: var(--secondary-color);
-    font-size: 0.8rem;
+.suggestion-keyword {
+    flex-grow: 1;
 }
 
-.loading-indicator {
-    padding: 10px 15px;
+.suggestion-type {
     color: #666;
-    font-style: italic;
+    font-size: 0.8em;
+    margin-left: 15px;
+    text-transform: capitalize;
 }

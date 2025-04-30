@@ -1956,4 +1956,6 @@ if (filterExcludeBrands && config.excludeBrands) {
 
         return url;
     }
+    const keywordResearch = new KeywordResearch();
+    keywordResearch.init();
 });

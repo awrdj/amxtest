@@ -30,15 +30,26 @@ document.addEventListener('DOMContentLoaded', function() {
     // SEARCH EXPANDER
     class KeywordResearch {
     constructor() {
-        this.marketplaceMID = {
-            'com': 'ATVPDKIKX0DER',
-            'co.uk': 'A1F83G8C2ARO7P',
-            'de': 'A1PA6795UKMFR9',
-            'fr': 'A13V1IB3VIYZZH',
-            'it': 'A11IL2PNWYJU7H',
-            'es': 'A1RKKUPIHCS9HS',
-            'jp': 'A1VC38T7YXB528'
+        this.domains = {
+            'com': 'com',
+            'co.uk': 'co.uk',
+            'de': 'de',
+            'fr': 'fr',
+            'it': 'it',
+            'es': 'es',
+            'jp': 'co.jp'
         };
+        
+        this.marketplaceParams = {
+            'com': 'amazon',
+            'co.uk': 'amazon-uk',
+            'de': 'amazon-de',
+            'fr': 'amazon-fr',
+            'it': 'amazon-it',
+            'es': 'amazon-es',
+            'jp': 'amazon-jp'
+        };
+        
         this.requestQueue = [];
         this.isProcessing = false;
     }
@@ -106,36 +117,55 @@ document.addEventListener('DOMContentLoaded', function() {
     async fetchSuggestions(variant) {
         return new Promise((resolve) => {
             const marketplace = document.getElementById('marketplaceSelect').value;
-            const mid = this.marketplaceMID[marketplace];
-            const callbackName = `jsonp_${Date.now()}_${Math.random().toString(36).substr(2)}`;
+            const domain = this.domains[marketplace];
+            const params = this.marketplaceParams[marketplace];
+            const callbackName = `jsonp_${Date.now()}`;
 
             window[callbackName] = (data) => {
-                this.handleResponse(variant, data.suggestions);
+                this.handleResponse(variant, data);
                 delete window[callbackName];
                 resolve();
             };
 
             const script = document.createElement('script');
-            script.src = `https://completion.amazon.${marketplace}/api/2017/suggestions?alias=aps&mid=${mid}&prefix=${encodeURIComponent(variant.keyword)}&callback=${callbackName}`;
-            script.onerror = () => resolve();
+            const url = new URL(`https://completion.amazon.${domain}/api/2017/suggestions`);
+            url.searchParams.append('lop', 'en_US');
+            url.searchParams.append('site-variant', 'desktop');
+            url.searchParams.append('client-info', 'amazon-search-ui');
+            url.searchParams.append('mid', 'ATVPDKIKX0DER');
+            url.searchParams.append('alias', 'aps');
+            url.searchParams.append('ks', '71');
+            url.searchParams.append('prefix', variant.keyword);
+            url.searchParams.append('event', 'onKeyPress');
+            url.searchParams.append('limit', '11');
+            url.searchParams.append('fb', '1');
+            url.searchParams.append('suggestion-type', 'KEYWORD');
+            url.searchParams.append('_', Date.now());
+            url.searchParams.append('callback', callbackName);
+
+            script.src = url.toString();
+            script.onerror = () => {
+                console.error('Failed to load suggestions for:', variant.keyword);
+                resolve();
+            };
+            
             document.head.appendChild(script);
+            setTimeout(() => document.head.removeChild(script), 1000);
         });
     }
 
-    handleResponse(variant, suggestions) {
+    handleResponse(variant, data) {
         const containerId = `${variant.type}Keywords`;
         const container = document.getElementById(containerId);
         
-        const suggestionList = suggestions
-            .filter(s => s.value !== variant.keyword)
-            .map(s => s.value);
-
-        if (suggestionList.length > 0) {
+        const suggestions = data?.suggestions?.map(s => s.value) || [];
+        
+        if (suggestions.length > 0) {
             const html = `
                 <div class="keyword-item">
                     <h6>${variant.keyword}</h6>
                     <ul class="suggestion-list">
-                        ${suggestionList.map(s => `<li class="suggestion-item">${s}</li>`).join('')}
+                        ${suggestions.map(s => `<li class="suggestion-item">${s}</li>`).join('')}
                     </ul>
                 </div>
             `;

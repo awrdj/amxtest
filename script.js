@@ -1795,3 +1795,136 @@ if (filterExcludeBrands && config.excludeBrands) {
         return url;
     }
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchInput');
+    const suggestionsContainer = document.getElementById('suggestionsContainer');
+
+    // Function to fetch Amazon autocomplete suggestions using JSONP
+    function fetchAmazonSuggestions(keyword, callback) {
+        const script = document.createElement('script');
+        const endpoint = `https://completion.amazon.com/api/2017/suggestions?q=${encodeURIComponent(keyword)}&limit=10&lop=en_US&client=amazon-search-ui`; // You might need to adjust the 'lop' parameter for different Amazon marketplaces
+        script.src = endpoint + `&callback=${callback}`;
+        document.head.appendChild(script);
+        script.onerror = () => {
+            console.error('Failed to fetch suggestions for:', keyword);
+            if (typeof window[callback] === 'function') {
+                window[callback]({ suggestions: [] }); // Call the callback with an empty array on error
+            }
+        };
+    }
+
+    // Function to handle the JSONP response
+    window.handleAmazonSuggestions = (data) => {
+        return data.suggestions.map(suggestion => suggestion.value);
+    };
+
+    // Function to clear previous suggestions
+    function clearSuggestions() {
+        suggestionsContainer.innerHTML = '';
+        suggestionsContainer.style.display = 'none';
+    }
+
+    // Function to display suggestions in the dropdown
+    function displaySuggestions(suggestions) {
+        if (suggestions.before.length > 0 || suggestions.after.length > 0) {
+            suggestionsContainer.innerHTML = ''; // Clear previous suggestions
+
+            if (suggestions.before.length > 0) {
+                const beforeGroup = document.createElement('div');
+                beforeGroup.classList.add('suggestion-group');
+                const beforeHeading = document.createElement('h3');
+                beforeHeading.textContent = 'Keywords Before';
+                beforeGroup.appendChild(beforeHeading);
+                suggestions.before.forEach(suggestion => {
+                    const item = document.createElement('div');
+                    item.classList.add('suggestion-item');
+                    item.textContent = suggestion;
+                    item.addEventListener('click', () => {
+                        searchInput.value = suggestion;
+                        clearSuggestions();
+                    });
+                    beforeGroup.appendChild(item);
+                });
+                suggestionsContainer.appendChild(beforeGroup);
+            }
+
+            if (suggestions.after.length > 0) {
+                const afterGroup = document.createElement('div');
+                afterGroup.classList.add('suggestion-group');
+                const afterHeading = document.createElement('h3');
+                afterHeading.textContent = 'Keywords After';
+                afterGroup.appendChild(afterHeading);
+                suggestions.after.forEach(suggestion => {
+                    const item = document.createElement('div');
+                    item.classList.add('suggestion-item');
+                    item.textContent = suggestion;
+                    item.addEventListener('click', () => {
+                        searchInput.value = suggestion;
+                        clearSuggestions();
+                    });
+                    afterGroup.appendChild(item);
+                });
+                suggestionsContainer.appendChild(afterGroup);
+            }
+
+            suggestionsContainer.style.display = 'block';
+        } else {
+            clearSuggestions();
+        }
+    }
+
+    let timeoutId;
+    searchInput.addEventListener('input', function() {
+        const query = this.value.trim();
+        clearTimeout(timeoutId); // Clear any previous timeout
+
+        if (query) {
+            timeoutId = setTimeout(() => {
+                const beforeKeywords = ['a ', 'b ', 'c ']; // Add more prefixes as needed
+                const afterKeywords = [' a', ' b', ' c'];   // Add more suffixes as needed
+                const allSuggestions = { before: [], after: [] };
+                let pendingRequests = beforeKeywords.length + afterKeywords.length;
+
+                const processResults = () => {
+                    pendingRequests--;
+                    if (pendingRequests === 0) {
+                        displaySuggestions(allSuggestions);
+                    }
+                };
+
+                beforeKeywords.forEach(prefix => {
+                    const keywordBefore = prefix + query;
+                    const callbackNameBefore = `handleBeforeSuggestions_${keywordBefore.replace(/[^a-zA-Z0-9]/g, '')}_${Date.now()}`;
+                    window[callbackNameBefore] = (data) => {
+                        allSuggestions.before.push(...window.handleAmazonSuggestions(data).map(s => s));
+                        delete window[callbackNameBefore]; // Clean up the global scope
+                        processResults();
+                    };
+                    fetchAmazonSuggestions(keywordBefore, callbackNameBefore);
+                });
+
+                afterKeywords.forEach(suffix => {
+                    const keywordAfter = query + suffix;
+                    const callbackNameAfter = `handleAfterSuggestions_${keywordAfter.replace(/[^a-zA-Z0-9]/g, '')}_${Date.now()}`;
+                    window[callbackNameAfter] = (data) => {
+                        allSuggestions.after.push(...window.handleAmazonSuggestions(data).map(s => s));
+                        delete window[callbackNameAfter]; // Clean up the global scope
+                        processResults();
+                    };
+                    fetchAmazonSuggestions(keywordAfter, callbackNameAfter);
+                });
+
+            }, 300); // Debounce the input to avoid excessive API calls
+        } else {
+            clearSuggestions();
+        }
+    });
+
+    // Close the suggestions dropdown when clicking outside
+    document.addEventListener('click', (event) => {
+        if (!searchInput.contains(event.target) && !suggestionsContainer.contains(event.target)) {
+            clearSuggestions();
+        }
+    });
+});

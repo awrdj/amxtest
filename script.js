@@ -1880,6 +1880,17 @@ $(document).ready(function() {
       });
   }
 
+     function formatSuggestionType(type) {
+    // You might need to adjust this based on the actual 'type' values from the API
+    if (type === 'prefix') {
+      return 'Keywords Before';
+    } else if (type === 'suffix') {
+      return 'Keywords After';
+    } else {
+      return type.charAt(0).toUpperCase() + type.slice(1); // Capitalize other types
+    }
+  }
+
   function displaySuggestions(query) {
     if (!query.trim()) {
       suggestionsContainer.innerHTML = '';
@@ -1891,37 +1902,57 @@ $(document).ready(function() {
     const afterKeywords = [' a', ' b', ' c'];
     const allSuggestions = { before: [], after: [] };
     let pendingRequests = beforeKeywords.length + afterKeywords.length;
+    const combinedSuggestions = { suggestions: [] }; // To hold all fetched suggestions
 
-    const processResults = (type, data) => {
+    const processResults = (data) => {
       pendingRequests--;
-      if (data && data.suggestions && Array.isArray(data.suggestions) && data.suggestions.length > 0) {
-        allSuggestions[type].push(...data.suggestions.map(s => s.value));
+      if (data && data.suggestions && Array.isArray(data.suggestions)) {
+        combinedSuggestions.suggestions.push(...data.suggestions);
       }
       if (pendingRequests === 0) {
-        renderSuggestions(allSuggestions);
+        renderSuggestions(combinedSuggestions);
       }
     };
 
     beforeKeywords.forEach(prefix => {
-      getSuggestions(prefix, query).then(data => processResults('before', data));
+      getSuggestions(prefix, query).then(processResults);
     });
 
     afterKeywords.forEach(suffix => {
-      getSuggestions(query, suffix).then(data => processResults('after', data));
+      getSuggestions(query, suffix).then(processResults);
     });
   }
 
-  function renderSuggestions(suggestions) {
+  function renderSuggestions(data) {
     suggestionsContainer.innerHTML = '';
 
-    const renderGroup = (groupName, groupData) => {
-      if (groupData.length > 0) {
+    if (!data || !data.suggestions || !Array.isArray(data.suggestions)) {
+      suggestionsContainer.style.display = 'none';
+      return;
+    }
+
+    const suggestionsByType = {};
+
+    data.suggestions.forEach(suggestionObject => {
+      const value = suggestionObject.value;
+      const type = suggestionObject.type || 'other'; // Default type if not specified
+
+      if (value) {
+        if (!suggestionsByType[type]) {
+          suggestionsByType[type] = [];
+        }
+        suggestionsByType[type].push(value);
+      }
+    });
+
+    for (const type in suggestionsByType) {
+      if (suggestionsByType.hasOwnProperty(type) && suggestionsByType[type].length > 0) {
         const groupDiv = document.createElement('div');
         groupDiv.classList.add('suggestion-group');
         const heading = document.createElement('h3');
-        heading.textContent = groupName;
+        heading.textContent = formatSuggestionType(type);
         groupDiv.appendChild(heading);
-        groupData.forEach(suggestion => {
+        suggestionsByType[type].forEach(suggestion => {
           const item = document.createElement('div');
           item.classList.add('suggestion-item');
           item.textContent = suggestion;
@@ -1934,12 +1965,9 @@ $(document).ready(function() {
         });
         suggestionsContainer.appendChild(groupDiv);
       }
-    };
+    }
 
-    renderGroup('Keywords Before', suggestions.before);
-    renderGroup('Keywords After', suggestions.after);
-
-    if (suggestions.before.length > 0 || suggestions.after.length > 0) {
+    if (suggestionsContainer.children.length > 0) {
       suggestionsContainer.style.display = 'block';
     } else {
       suggestionsContainer.style.display = 'none';

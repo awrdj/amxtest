@@ -1828,42 +1828,42 @@ $(document).ready(function() {
     let market = "ATVPDKIKX0DER";
     let host = selectedDomain ? selectedDomain.toLowerCase() : location.hostname.toLowerCase();
 
-    if (host.indexOf("amazon.ca") > 0) {
+    if (host.indexOf("ca") > 0) {
       domain = "amazon.ca";
       webDomain = "amazon.ca";
       market = "A2EUQ1WTGCTBG2";
     }
-    if (host.indexOf("amazon.co.uk") > 0) {
+    if (host.indexOf("co.uk") > 0) {
       domain = "amazon.co.uk";
       webDomain = "amazon.co.uk";
       market = "A1F83G8C2ARO7P";
     }
-    if (host.indexOf("amazon.de") > 0) {
+    if (host.indexOf("de") > 0) {
       domain = "amazon.de";
       webDomain = "amazon.de";
       market = "A1PA6795UKMFR9";
     }
-    if (host.indexOf("amazon.fr") > 0) {
+    if (host.indexOf("fr") > 0) {
       domain = "amazon.fr";
       webDomain = "amazon.fr";
       market = "A13V1IB3VIYZZH";
     }
-    if (host.indexOf("amazon.it") > 0) {
-      domain = "amazon.it";
+    if (host.indexOf("it") > 0) {
+      domain = "it";
       webDomain = "amazon.it";
       market = "APJ6JRA9NG5V4";
     }
-    if (host.indexOf("amazon.es") > 0) {
+    if (host.indexOf("es") > 0) {
       domain = "amazon.es";
       webDomain = "amazon.es";
       market = "A1RKKUPIHCS9HS";
     }
-    if (host.indexOf("amazon.com.mx") > 0) {
+    if (host.indexOf("com.mx") > 0) {
       domain = "amazon.com.mx";
       webDomain = "amazon.com.mx";
       market = "A1AM78C64UM0Y8";
     }
-    if (host.indexOf("amazon.com.au") > 0) {
+    if (host.indexOf("com.au") > 0) {
       domain = "amazon.com.au";
       webDomain = "amazon.com.au";
       market = "A39IBJ37TRP1C6";
@@ -1873,7 +1873,7 @@ $(document).ready(function() {
 
   function getSuggestions(queryFirst, queryLast, departmentQuery) {
     let marketplace = currentMarketplace;
-    const suggestUrl = `https://completion.${marketplace.domain}/api/2017/suggestions?site-variant=desktop&mid=${marketplace.market}&alias=${departmentQuery}&prefix=${queryFirst}&suffix=${queryLast}`;
+    const suggestUrl = `https://completion.amazon.com/api/2017/suggestions?site-variant=desktop&mid=${marketplace.market}&alias=${departmentQuery}&prefix=${queryFirst}&suffix=${queryLast}`;
     return fetch(suggestUrl)
       .then(response => {
         if (!response.ok) {

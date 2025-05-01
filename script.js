@@ -1803,7 +1803,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to fetch Amazon autocomplete suggestions using JSONP
     function fetchAmazonSuggestions(keyword, callback) {
         const script = document.createElement('script');
-        const endpoint = `https://completion.amazon.com/api/2017/suggestions?q=${encodeURIComponent(keyword)}&limit=10&lop=en_US&client=amazon-search-ui`; // You might need to adjust the 'lop' parameter for different Amazon marketplaces
+        const endpoint = `https://completion.amazon.com/api/2017/suggestions?q=${encodeURIComponent(keyword)}&limit=10&lop=www&client=amazon-search-ui`; // You might need to adjust the 'lop' parameter for different Amazon marketplaces
         script.src = endpoint + `&callback=${callback}`;
         document.head.appendChild(script);
         script.onerror = () => {

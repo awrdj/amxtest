@@ -1799,12 +1799,14 @@ if (filterExcludeBrands && config.excludeBrands) {
 $(document).ready(function() {
   const searchInput = document.getElementById('searchInput');
   const suggestionsContainer = document.getElementById('suggestionsContainer');
-  const marketplaceSelect = document.getElementById('marketplaceSelect');
+  const marketplaceSelect = document.getElementById('marketplaceSelect'); // You might not need this if it's not in your HTML
+
   const MAX_KEYWORDS_IN_SEARCH = 50;
 
   let currentMarketplace = getMarketplace();
   let displayedKeywordData = null;
 
+  // If you don't have a marketplace select, you can set a default or remove this section
   if (marketplaceSelect) {
     marketplaceSelect.addEventListener('change', function() {
       currentMarketplace = getMarketplace(this.value);
@@ -1813,13 +1815,7 @@ $(document).ready(function() {
     currentMarketplace = getMarketplace(marketplaceSelect.value);
     console.log("Initial Marketplace:", currentMarketplace);
   } else {
-    console.warn("Marketplace select element with ID 'marketplace' not found.");
-  }
-
-  function getDepartmentQuery() {
-    let departmentQuery = $("#searchDropdownBox").val();
-    departmentQuery = departmentQuery.replace("search-alias=", "");
-    return departmentQuery;
+    console.warn("Marketplace select element with ID 'marketplace' not found. Using default 'amazon.com'.");
   }
 
   function getMarketplace(selectedDomain) {
@@ -1828,42 +1824,42 @@ $(document).ready(function() {
     let market = "ATVPDKIKX0DER";
     let host = selectedDomain ? selectedDomain.toLowerCase() : location.hostname.toLowerCase();
 
-    if (host.indexOf("ca") > 0) {
+    if (host.indexOf("amazon.ca") > 0) {
       domain = "amazon.ca";
       webDomain = "amazon.ca";
       market = "A2EUQ1WTGCTBG2";
     }
-    if (host.indexOf("co.uk") > 0) {
+    if (host.indexOf("amazon.co.uk") > 0) {
       domain = "amazon.co.uk";
       webDomain = "amazon.co.uk";
       market = "A1F83G8C2ARO7P";
     }
-    if (host.indexOf("de") > 0) {
+    if (host.indexOf("amazon.de") > 0) {
       domain = "amazon.de";
       webDomain = "amazon.de";
       market = "A1PA6795UKMFR9";
     }
-    if (host.indexOf("fr") > 0) {
+    if (host.indexOf("amazon.fr") > 0) {
       domain = "amazon.fr";
       webDomain = "amazon.fr";
       market = "A13V1IB3VIYZZH";
     }
-    if (host.indexOf("it") > 0) {
-      domain = "it";
+    if (host.indexOf("amazon.it") > 0) {
+      domain = "amazon.it";
       webDomain = "amazon.it";
       market = "APJ6JRA9NG5V4";
     }
-    if (host.indexOf("es") > 0) {
+    if (host.indexOf("amazon.es") > 0) {
       domain = "amazon.es";
       webDomain = "amazon.es";
       market = "A1RKKUPIHCS9HS";
     }
-    if (host.indexOf("com.mx") > 0) {
+    if (host.indexOf("amazon.com.mx") > 0) {
       domain = "amazon.com.mx";
       webDomain = "amazon.com.mx";
       market = "A1AM78C64UM0Y8";
     }
-    if (host.indexOf("com.au") > 0) {
+    if (host.indexOf("amazon.com.au") > 0) {
       domain = "amazon.com.au";
       webDomain = "amazon.com.au";
       market = "A39IBJ37TRP1C6";
@@ -1871,9 +1867,9 @@ $(document).ready(function() {
     return { domain, market, webDomain };
   }
 
-  function getSuggestions(queryFirst, queryLast, departmentQuery) {
+  function getSuggestions(queryFirst, queryLast) { // Removed departmentQuery parameter
     let marketplace = currentMarketplace;
-    const suggestUrl = `https://completion.amazon.com/api/2017/suggestions?site-variant=desktop&mid=${marketplace.market}&alias=${departmentQuery}&prefix=${queryFirst}&suffix=${queryLast}`;
+    const suggestUrl = `https://completion.${marketplace.domain}/api/2017/suggestions?site-variant=desktop&mid=${marketplace.market}&alias=aps&prefix=${queryFirst}&suffix=${queryLast}`; // Hardcoded 'aps' alias
     return fetch(suggestUrl)
       .then(response => {
         if (!response.ok) {
@@ -1917,23 +1913,22 @@ $(document).ready(function() {
     }
 
     let promises = [];
-    let departmentQuery = getDepartmentQuery();
 
-    promises.push(getSuggestions(search, "", departmentQuery));
-    promises.push(getSuggestions(" ", search.trim(), departmentQuery));
-    promises.push(getSuggestions(search.trim() + " ", "", departmentQuery));
+    promises.push(getSuggestions(search, ""));
+    promises.push(getSuggestions(" ", search.trim()));
+    promises.push(getSuggestions(search.trim() + " ", ""));
 
     let words = search.split(" ");
     if (words.length >= 2) {
       let lastWords = words.slice(1).join(" ");
-      promises.push(getSuggestions(words[0] + " ", " " + lastWords, departmentQuery));
+      promises.push(getSuggestions(words[0] + " ", " " + lastWords));
     } else {
-      promises.push(Promise.resolve({ suggestions: [] })); // Resolve with empty suggestions
+      promises.push(Promise.resolve({ suggestions: [] }));
     }
 
-    promises.push(getSuggestions(search + " for ", "", departmentQuery));
-    promises.push(getSuggestions(search + " and ", "", departmentQuery));
-    promises.push(getSuggestions(search + " with ", "", departmentQuery));
+    promises.push(getSuggestions(search + " for ", ""));
+    promises.push(getSuggestions(search + " and ", ""));
+    promises.push(getSuggestions(search + " with ", ""));
 
     Promise.all(promises)
       .then((results) => {

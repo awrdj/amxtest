@@ -1859,14 +1859,14 @@ $(document).ready(function() {
     return fetch(suggestUrl)
         .then(response => response.json())
     .then(res => debugResponse(queryFirst, queryLast, res));
-        /*.then(response => {
+        .then(response => {
             if (!response.ok) return null;
             return response.json();
         })
         .catch(error => {
             console.error('Error:', error);
             return null;
-        });*/
+        });
 }
 
     function parseResults(data) {

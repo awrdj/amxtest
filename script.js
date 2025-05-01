@@ -1805,9 +1805,15 @@ $(document).ready(function() {
     const suggestionsContainer = $("#suggestionsContainer");
     const marketplaceSelect = $("#marketplaceSelect"); // Ensure this ID matches your HTML
 
-    const MAX_KEYWORDS_IN_SEARCH = 50;
+    const MAX_KEYWORDS_IN_SEARCH = 200;
 
     let currentMarketplace = getMarketplace();
+
+    function debugResponse(queryFirst, queryLast, response) {
+    console.log(`Request: prefix="${queryFirst}" suffix="${queryLast}"`);
+    console.log('Response:', response);
+    return response;
+}
 
     function getMarketplace() {
         const selectedValue = marketplaceSelect.val();
@@ -1838,21 +1844,30 @@ $(document).ready(function() {
     }
 
     function getSuggestions(queryFirst, queryLast) {
-        let marketplace = currentMarketplace;
-        const suggestUrl = `https://completion.${marketplace.domain}/api/2017/suggestions?site-variant=desktop&mid=${marketplace.market}&alias=aps&prefix=${encodeURIComponent(queryFirst)}&suffix=${encodeURIComponent(queryLast)}`;
-        return fetch(suggestUrl)
-            .then(response => {
-                if (!response.ok) {
-                    console.error('API request failed:', response.status, response.statusText);
-                    return null;
-                }
-                return response.json();
-            })
-            .catch(error => {
-                console.error('Error fetching suggestions:', error);
-                return null;
-            });
-    }
+    let marketplace = currentMarketplace;
+    // Properly format prefix/suffix with URLSearchParams
+    const params = new URLSearchParams({
+        'site-variant': 'desktop',
+        'mid': marketplace.market,
+        'alias': 'aps', // Hardcoded to 'All Departments' like original
+        'prefix': queryFirst,
+        'suffix': queryLast
+    });
+    
+    const suggestUrl = `https://completion.${marketplace.domain}/api/2017/suggestions?${params}`;
+    
+    return fetch(suggestUrl)
+        .then(response => response.json())
+    .then(res => debugResponse(queryFirst, queryLast, res));
+        /*.then(response => {
+            if (!response.ok) return null;
+            return response.json();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            return null;
+        });*/
+}
 
     function parseResults(data) {
         let keywords = [];
@@ -1882,9 +1897,14 @@ $(document).ready(function() {
         }
 
         let promises = [];
-        promises.push(getSuggestions(search, "")); // Main suggestions
-        promises.push(getSuggestions(" ", search.trim())); // Keywords before
-        promises.push(getSuggestions(search.trim() + " ", "")); // Keywords after
+        ppromises.push(
+            getSuggestions(search, ""), // Main
+            getSuggestions("", search.trim()), // Before (empty prefix)
+            getSuggestions(search.trim(), ""), // After
+            words.length >= 2 
+                ? getSuggestions(words[0], words.slice(1).join(" ")) 
+                : Promise.resolve(null) // Between
+        );
 
         let words = search.split(" ");
         if (words.length >= 2) {
@@ -1914,8 +1934,18 @@ $(document).ready(function() {
         suggestionsContainer.empty();
         let keywordCount = 0;
 
-        const addGroup = (title, keywords, backgroundColor) => {
-            if (keywords && keywords.length > 0 && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
+        function processAndRenderSuggestions(search, results) {
+    const mainKeywords = parseResults(results[0] || { suggestions: [] });
+    let displayedKeywords = new Set(mainKeywords); // Use Set for better performance
+    let keywordCount = 0;
+
+    console.log('Raw API Results:', results); // Debug logging
+
+    const addGroup = (title, resultIndex, backgroundColor) => {
+        const keywords = parseResults(results[resultIndex] || { suggestions: [] })
+            .filter(kw => !displayedKeywords.has(kw));
+        
+            if (keywords.length > 0 && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
                 const groupDiv = $('<div class="suggestion-group"></div>');
                 const heading = $('<h3></h3>').text(title);
                 groupDiv.append(heading);
@@ -1949,19 +1979,20 @@ $(document).ready(function() {
                 if (groupDiv.children().length > 1) {
                     suggestionsContainer.append(groupDiv);
                 }
+                keywords.forEach(kw => displayedKeywords.add(kw));
             }
         };
 
-        addGroup("Amazon Suggestions", mainKeywords, "white");
-        addGroup("Keywords Before", parseResults(results[1] || { suggestions: [] }), "#ebfaeb");
-        addGroup("Keywords After", parseResults(results[2] || { suggestions: [] }), "#ffe6e6");
-        addGroup("Keywords Between", parseResults(results[3] || { suggestions: [] }), "#e6ecff");
+        addGroup("Amazon Suggestions", 0, "white");
+    addGroup("Keywords Before", 1, "#ebfaeb");
+    addGroup("Keywords Between", 3, "#e6ecff");
+    addGroup("Keywords After", 2, "#ffe6e6");
+// Handle "Other" suggestions
+    const otherKeywords = [4,5,6]
+        .flatMap(i => parseResults(results[i] || { suggestions: [] }))
+        .filter(kw => !displayedKeywords.has(kw));
 
-        let otherKeywords = [];
-        for (let i = 4; i < results.length; i++) {
-            otherKeywords = [...otherKeywords, ...parseResults(results[i] || { suggestions: [] })];
-        }
-        addGroup("Other Suggestions", otherKeywords, "#f2f2f2");
+    addGroup("Other Suggestions", otherKeywords, "#f2f2f2");
 
         if (suggestionsContainer.children().length > 0) {
             suggestionsContainer.show();

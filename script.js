@@ -1799,7 +1799,7 @@ if (filterExcludeBrands && config.excludeBrands) {
 $(document).ready(function() {
   const searchInput = document.getElementById('searchInput');
   const suggestionsContainer = document.getElementById('suggestionsContainer');
-  const marketplaceSelect = document.getElementById('marketplaceSelect');
+  const marketplaceSelect = document.getElementById('marketplace');
 
   let currentMarketplace = getMarketplace();
 
@@ -1880,17 +1880,6 @@ $(document).ready(function() {
       });
   }
 
-     function formatSuggestionType(type) {
-    // You might need to adjust this based on the actual 'type' values from the API
-    if (type === 'prefix') {
-      return 'Keywords Before';
-    } else if (type === 'suffix') {
-      return 'Keywords After';
-    } else {
-      return type.charAt(0).toUpperCase() + type.slice(1); // Capitalize other types
-    }
-  }
-
   function displaySuggestions(query) {
     if (!query.trim()) {
       suggestionsContainer.innerHTML = '';
@@ -1902,46 +1891,38 @@ $(document).ready(function() {
     const afterKeywords = [' a', ' b', ' c'];
     const allSuggestions = { before: [], after: [] };
     let pendingRequests = beforeKeywords.length + afterKeywords.length;
-    const combinedSuggestions = { suggestions: [] }; // To hold all fetched suggestions
 
-    const processResults = (data) => {
+    const processResults = (type, data) => {
       pendingRequests--;
-      if (data && data.suggestions && Array.isArray(data.suggestions)) {
-        combinedSuggestions.suggestions.push(...data.suggestions);
+      if (data && data.suggestions && Array.isArray(data.suggestions) && data.suggestions.length > 0) {
+        allSuggestions[type].push(...data.suggestions.map(s => ({ value: s.value, type: type === 'before' ? 'prefix' : 'suffix' })));
       }
       if (pendingRequests === 0) {
-        renderSuggestions(combinedSuggestions);
+        renderSuggestions(allSuggestions);
       }
     };
 
     beforeKeywords.forEach(prefix => {
-      getSuggestions(prefix, query).then(processResults);
+      getSuggestions(prefix, query).then(data => processResults('before', data));
     });
 
     afterKeywords.forEach(suffix => {
-      getSuggestions(query, suffix).then(processResults);
+      getSuggestions(query, suffix).then(data => processResults('after', data));
     });
   }
 
-  function renderSuggestions(data) {
+  function renderSuggestions(suggestions) {
     suggestionsContainer.innerHTML = '';
-
-    if (!data || !data.suggestions || !Array.isArray(data.suggestions)) {
-      suggestionsContainer.style.display = 'none';
-      return;
-    }
-
+    const allCombinedSuggestions = [...suggestions.before, ...suggestions.after];
     const suggestionsByType = {};
 
-    data.suggestions.forEach(suggestionObject => {
-      const value = suggestionObject.value;
-      const type = suggestionObject.type || 'other'; // Default type if not specified
-
-      if (value) {
+    allCombinedSuggestions.forEach(suggestion => {
+      if (suggestion && suggestion.value) {
+        const type = suggestion.type || 'other';
         if (!suggestionsByType[type]) {
           suggestionsByType[type] = [];
         }
-        suggestionsByType[type].push(value);
+        suggestionsByType[type].push(suggestion.value);
       }
     });
 
@@ -1971,6 +1952,16 @@ $(document).ready(function() {
       suggestionsContainer.style.display = 'block';
     } else {
       suggestionsContainer.style.display = 'none';
+    }
+  }
+
+  function formatSuggestionType(type) {
+    if (type === 'prefix') {
+      return 'Keywords Before';
+    } else if (type === 'suffix') {
+      return 'Keywords After';
+    } else {
+      return type.charAt(0).toUpperCase() + type.slice(1);
     }
   }
 

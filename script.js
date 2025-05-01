@@ -1798,112 +1798,197 @@ if (filterExcludeBrands && config.excludeBrands) {
 
 // script.js
 
+// script.js
+
 $(document).ready(function() {
-    const SUGGESTION_TYPES = ["KEYWORD"];
-    const BEFORE_AFTER_KEYWORDS = ["best", "new", "funny", "for", "under", "with"]; // Example keywords
+    const searchInput = $("#searchInput");
+    const suggestionsContainer = $("#suggestionsContainer");
+    const marketplaceSelect = $("#marketplaceSelect"); // Ensure this ID matches your HTML
 
-    function getMarketplaceDomain() {
-        const selectedValue = $("#marketplaceSelect").val();
-        return selectedValue === "com" ? "amazon.com" : `amazon.${selectedValue}`;
+    const MAX_KEYWORDS_IN_SEARCH = 50;
+
+    let currentMarketplace = getMarketplace();
+
+    function getMarketplace() {
+        const selectedValue = marketplaceSelect.val();
+        const domainConfig = {
+            "com": { domain: "amazon.com", market: "ATVPDKIKX0DER" },
+            "ca": { domain: "amazon.ca", market: "A2EUQ1WTGCTBG2" },
+            "co.uk": { domain: "amazon.co.uk", market: "A1F83G8C2ARO7P" },
+            "de": { domain: "amazon.de", market: "A1PA6795UKMFR9" },
+            "fr": { domain: "amazon.fr", market: "A13V1IB3VIYZZH" },
+            "it": { domain: "amazon.it", market: "APJ6JRA9NG5V4" },
+            "es": { domain: "amazon.es", market: "A1RKKUPIHCS9HS" },
+            "com.mx": { domain: "amazon.com.mx", market: "A1AM78C64UM0Y8" },
+            "com.au": { domain: "amazon.com.au", market: "A39IBJ37TRP1C6" },
+            "jp": { domain: "amazon.co.jp", market: "A1VC38TJH7YXB5" } // Added Japan
+        };
+        return domainConfig[selectedValue] || domainConfig["com"]; // Default to .com
     }
 
-    function fetchAmazonSuggestions(keyword) {
-        const marketplaceDomain = getMarketplaceDomain();
-        const url = `https://${marketplaceDomain}/complete/search?client=amazon-search-ui&mkt=${$("#marketplaceSelect").val()}&q=${encodeURIComponent(keyword)}`;
-
-        return $.ajax({
-            url: url,
-            dataType: 'jsonp' // Amazon suggestions typically use JSONP
+    if (marketplaceSelect.length) {
+        marketplaceSelect.on('change', function() {
+            currentMarketplace = getMarketplace();
+            console.log("Selected Marketplace:", currentMarketplace);
         });
+        currentMarketplace = getMarketplace();
+        console.log("Initial Marketplace:", currentMarketplace);
+    } else {
+        console.warn("Marketplace select element with ID 'marketplaceSelect' not found. Using default 'amazon.com'.");
     }
 
-    function displaySuggestions(suggestions) {
-        const suggestionsContainer = $("#suggestionsContainer").empty();
-        if (suggestions && suggestions[1] && suggestions[1].length > 0) {
-            const keywords = suggestions[1].filter(item => item.type ? SUGGESTION_TYPES.includes(item.type) : true).map(item => item.value || item);
-
-            if (keywords.length > 0) {
-                keywords.forEach(keyword => {
-                    suggestionsContainer.append(`<div class="suggestion-item">${escapeHtml(keyword)}</div>`);
-                });
-                $(".suggestion-item").click(function() {
-                    $("#searchInput").val($(this).text());
-                    $("#searchForm").submit(); // Or just trigger the URL generation
-                    suggestionsContainer.empty();
-                });
-            } else {
-                suggestionsContainer.append(`<div class="suggestion-item">No suggestions found.</div>`);
-            }
-        }
-    }
-
-    function generateBeforeAfterSuggestions(keyword) {
-        const beforeAfterSuggestions = [];
-        BEFORE_AFTER_KEYWORDS.forEach(prefix => {
-            if (keyword && keyword.trim() !== "") {
-                beforeAfterSuggestions.push(`${prefix} ${keyword}`);
-                beforeAfterSuggestions.push(`${keyword} ${prefix}`);
-            } else if (keyword.trim() === "" && beforeAfterSuggestions.length < 10) {
-                beforeAfterSuggestions.push(prefix);
-            }
-        });
-        return [...new Set(beforeAfterSuggestions)].slice(0, 10); // Remove duplicates and limit
-    }
-
-    function displayBeforeAfterSuggestions(suggestions) {
-        const suggestionsContainer = $("#suggestionsContainer");
-        const beforeAfterSection = $(`<div class="suggestion-section"><strong>Other Suggestions:</strong></div>`);
-        suggestions.forEach(suggestion => {
-            beforeAfterSection.append(`<div class="suggestion-item other-suggestion">${escapeHtml(suggestion)}</div>`);
-        });
-        suggestionsContainer.append(beforeAfterSection);
-
-        $(".other-suggestion").click(function() {
-            $("#searchInput").val($(this).text());
-            $("#searchForm").submit(); // Or just trigger the URL generation
-            suggestionsContainer.empty();
-        });
-    }
-
-    $("#searchInput").on("input", function() {
-        const searchText = $(this).val().trim();
-        $("#suggestionsContainer").empty();
-        $("#clearSearchBtn").toggle(searchText.length > 0);
-
-        if (searchText.length >= 2) {
-            fetchAmazonSuggestions(searchText).done(displaySuggestions).fail(function() {
-                $("#suggestionsContainer").html(`<div class="suggestion-item error">Could not fetch suggestions.</div>`);
+    function getSuggestions(queryFirst, queryLast) {
+        let marketplace = currentMarketplace;
+        const suggestUrl = `https://completion.${marketplace.domain}/api/2017/suggestions?site-variant=desktop&mid=${marketplace.market}&alias=aps&prefix=${encodeURIComponent(queryFirst)}&suffix=${encodeURIComponent(queryLast)}`;
+        return fetch(suggestUrl)
+            .then(response => {
+                if (!response.ok) {
+                    console.error('API request failed:', response.status, response.statusText);
+                    return null;
+                }
+                return response.json();
+            })
+            .catch(error => {
+                console.error('Error fetching suggestions:', error);
+                return null;
             });
+    }
 
-            const beforeAfter = generateBeforeAfterSuggestions(searchText);
-            if (beforeAfter.length > 0) {
-                displayBeforeAfterSuggestions(beforeAfter);
-            }
-        } else if (searchText.length === 0) {
-            const initialSuggestions = generateBeforeAfterSuggestions("");
-            if (initialSuggestions.length > 0) {
-                $("#suggestionsContainer").append(`<div class="suggestion-section"><strong>Popular Searches:</strong></div>`);
-                initialSuggestions.forEach(suggestion => {
-                    $("#suggestionsContainer").append(`<div class="suggestion-item other-suggestion">${escapeHtml(suggestion)}</div>`);
-                });
-                $(".other-suggestion").click(function() {
-                    $("#searchInput").val($(this).text());
-                    $("#searchForm").submit();
-                    $("#suggestionsContainer").empty();
-                });
-            }
+    function parseResults(data) {
+        let keywords = [];
+        if (data && data.suggestions) {
+            keywords = data.suggestions.filter(function(value) {
+                return value.type === "KEYWORD";
+            }).map(function(value) {
+                if (value.highlightFragments && value.highlightFragments.length > 0) {
+                    let text = "";
+                    for (const fragment of value.highlightFragments) {
+                        text += fragment.text;
+                    }
+                    return text;
+                } else {
+                    return value.value;
+                }
+            });
         }
+        console.debug("Parsed Keywords:", keywords);
+        return keywords;
+    }
+
+    function displaySuggestions(search) {
+        if (!search.trim()) {
+            suggestionsContainer.empty().hide();
+            return;
+        }
+
+        let promises = [];
+        promises.push(getSuggestions(search, "")); // Main suggestions
+        promises.push(getSuggestions(" ", search.trim())); // Keywords before
+        promises.push(getSuggestions(search.trim() + " ", "")); // Keywords after
+
+        let words = search.split(" ");
+        if (words.length >= 2) {
+            let lastWords = words.slice(1).join(" ");
+            promises.push(getSuggestions(words[0] + " ", " " + lastWords)); // Keywords between
+        } else {
+            promises.push(Promise.resolve({ suggestions: [] }));
+        }
+
+        promises.push(getSuggestions(search + " for ", "")); // Other suggestions
+        promises.push(getSuggestions(search + " and ", "")); // Other suggestions
+        promises.push(getSuggestions(search + " with ", "")); // Other suggestions
+
+        Promise.all(promises)
+            .then((results) => {
+                if (!results || results.some(res => res === null)) {
+                    console.warn("One or more suggestion requests failed.");
+                    return;
+                }
+                processAndRenderSuggestions(search, results);
+            });
+    }
+
+    function processAndRenderSuggestions(search, results) {
+        const mainKeywords = parseResults(results[0] || { suggestions: [] });
+        let displayedKeywords = [...mainKeywords];
+        suggestionsContainer.empty();
+        let keywordCount = 0;
+
+        const addGroup = (title, keywords, backgroundColor) => {
+            if (keywords && keywords.length > 0 && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
+                const groupDiv = $('<div class="suggestion-group"></div>');
+                const heading = $('<h3></h3>').text(title);
+                groupDiv.append(heading);
+
+                keywords.forEach(keyword => {
+                    if (!displayedKeywords.includes(keyword) && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
+                        const item = $('<div class="suggestion-item"></div>');
+                        let beforeKeyword = "";
+                        let middleKeyword = search;
+                        let afterKeyword = "";
+                        let pos = keyword.toLowerCase().indexOf(search.toLowerCase());
+                        if (pos >= 0) {
+                            beforeKeyword = keyword.substring(0, pos);
+                            afterKeyword = keyword.substring(pos + search.length);
+                        } else {
+                            beforeKeyword = keyword;
+                            middleKeyword = "";
+                        }
+                        item.html(`<span class="s-heavy">${escapeHtml(beforeKeyword)}</span>${escapeHtml(middleKeyword)}<span class="s-heavy">${escapeHtml(afterKeyword)}</span>`);
+                        item.on('click', () => {
+                            searchInput.val(keyword);
+                            suggestionsContainer.empty().hide();
+                            $("#searchForm").submit(); // Or just trigger URL update
+                        });
+                        groupDiv.append(item);
+                        displayedKeywords.push(keyword);
+                        keywordCount++;
+                    }
+                });
+
+                if (groupDiv.children().length > 1) {
+                    suggestionsContainer.append(groupDiv);
+                }
+            }
+        };
+
+        addGroup("Amazon Suggestions", mainKeywords, "white");
+        addGroup("Keywords Before", parseResults(results[1] || { suggestions: [] }), "#ebfaeb");
+        addGroup("Keywords After", parseResults(results[2] || { suggestions: [] }), "#ffe6e6");
+        addGroup("Keywords Between", parseResults(results[3] || { suggestions: [] }), "#e6ecff");
+
+        let otherKeywords = [];
+        for (let i = 4; i < results.length; i++) {
+            otherKeywords = [...otherKeywords, ...parseResults(results[i] || { suggestions: [] })];
+        }
+        addGroup("Other Suggestions", otherKeywords, "#f2f2f2");
+
+        if (suggestionsContainer.children().length > 0) {
+            suggestionsContainer.show();
+        } else {
+            suggestionsContainer.hide();
+        }
+    }
+
+    let timeoutId;
+    searchInput.on('input', function() {
+        const query = $(this).val().trim();
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            displaySuggestions(query);
+        }, 300);
     });
 
-    $("#clearSearchBtn").click(function() {
-        $("#searchInput").val("").trigger("input");
-        $("#suggestionsContainer").empty();
+    $(document).on('click', (event) => {
+        if (!searchInput.is(event.target) && !suggestionsContainer.is(event.target) && suggestionsContainer.has(event.target).length === 0) {
+            suggestionsContainer.empty().hide();
+        }
     });
 
     $("#searchForm").submit(function(event) {
         event.preventDefault();
-        const searchTerm = $("#searchInput").val().trim();
-        const marketplace = $("#marketplaceSelect").val();
+        const searchTerm = searchInput.val().trim();
+        const marketplace = marketplaceSelect.val();
         let url = `https://www.amazon.${marketplace}/s?k=${encodeURIComponent(searchTerm)}`;
         $("#generatedUrl").text(url);
         $("#resultUrlContainer").slideDown("fast");

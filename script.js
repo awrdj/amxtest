@@ -1799,100 +1799,119 @@ if (filterExcludeBrands && config.excludeBrands) {
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
     const suggestionsContainer = document.getElementById('suggestionsContainer');
+    const marketplaceSelect2 = document.getElementById('marketplaceSelect'); // Assuming you have this select element
 
-    // Function to determine the correct Amazon domain based on a best guess
-    function getAmazonDomain() {
-        // This is a simplified approach. A more robust solution might involve
-        // inspecting the current page URL if the tool is used on an Amazon page.
-        const host = window.location.hostname;
-        if (host.includes("amazon.ca")) return "www.amazon.ca";
-        if (host.includes("amazon.co.uk")) return "www.amazon.co.uk";
-        if (host.includes("amazon.de")) return "www.amazon.de";
-        if (host.includes("amazon.fr")) return "www.amazon.fr";
-        if (host.includes("amazon.it")) return "www.amazon.it";
-        if (host.includes("amazon.es")) return "www.amazon.es";
-        if (host.includes("amazon.com.mx")) return "www.amazon.com.mx";
-        if (host.includes("amazon.com.au")) return "www.amazon.com.au";
-        return "www.amazon.com"; // Default to US
-    }
-
-    // Function to fetch Amazon autocomplete suggestions using JSONP
-    function fetchAmazonSuggestions(keyword, callback) {
-        const domain = getAmazonDomain();
-        const script = document.createElement('script');
-        const endpoint = `https://${domain}/complete/search?q=${encodeURIComponent(keyword)}&mkt=1&client=amazon-search-ui&s=k`; // Parameters closer to the extension
-        script.src = endpoint + `&callback=${callback}`;
-        document.head.appendChild(script);
-        script.onerror = () => {
-            console.error('Failed to fetch suggestions for:', keyword);
-            if (typeof window[callback] === 'function') {
-                window[callback]({ suggestions: [] }); // Call the callback with an empty array on error
-            }
-        };
-    }
-
-    // Function to handle the JSONP response (adjusting to the extension's data structure)
-    window.handleAmazonSuggestions = (data) => {
-        console.log("Full API Response:", data); // Log the entire response to inspect its structure
-        if (data && Array.isArray(data) && data.length > 1 && Array.isArray(data[1])) {
-            return data[1];
-        } else if (data && Array.isArray(data) && data.length > 0 && Array.isArray(data[0])) {
-            // Try the first element as well, in case the structure varies
-            return data[0];
-        } else {
-            return [];
-        }
+    const marketplaceMap = {
+        "www.amazon.com": "A1F83G8C2ARO7P",   // US
+        "www.amazon.ca": "A2EUQ1WTGCTBG2",   // Canada
+        "www.amazon.co.uk": "A1F83G8C2ARO7P",  // UK (Needs verification - might be A1RKKUPIHCS9HS)
+        "www.amazon.de": "A1PA6795UKMFR9",    // Germany
+        "www.amazon.fr": "A13V1IB3VIYZZH",    // France
+        "www.amazon.it": "APJ6JRA9NG5V4",     // Italy
+        "www.amazon.es": "A1RKKUPIHCS9HS",    // Spain
+        "www.amazon.com.mx": "A1AM78C64Y39B9", // Mexico
+        "www.amazon.com.au": "A3Y0IB3BDVR5PM"  // Australia
+        // Add more marketplaces as needed
     };
 
-    // Function to clear previous suggestions (remains the same)
+    let currentMarketId = marketplaceMap["www.amazon.com"]; // Default to US
+
+    if (marketplaceSelect2) {
+        marketplaceSelect2.addEventListener('change', function() {
+            currentMarketId = marketplaceMap[this.value] || marketplaceMap["www.amazon.com"];
+            console.log("Selected Marketplace ID:", currentMarketId);
+        });
+        currentMarketId = marketplaceMap[marketplaceSelect2.value] || currentMarketId;
+        console.log("Initial Marketplace ID:", currentMarketId);
+    } else {
+        console.warn("Marketplace select element with ID 'marketplace' not found.");
+    }
+
+    async function fetchAmazonSuggestions(keyword) {
+        const domain = Object.keys(marketplaceMap).find(key => marketplaceMap[key] === currentMarketId) || "www.amazon.com";
+        const endpoint = `${window.location.origin}/suggestions?k=${encodeURIComponent(keyword)}&m=${currentMarketId}&client=amazon-search-ui&mid=${currentMarketId}&alias=aps&fb=1`;
+        try {
+            const response = await fetch(endpoint);
+            if (!response.ok) {
+                console.error('API request failed:', response.status, response.statusText);
+                return [];
+            }
+            const data = await response.json();
+            if (data && Array.isArray(data) && data.length > 1 && Array.isArray(data[1])) {
+                return data[1];
+            } else if (data && Array.isArray(data) && data.length > 0 && Array.isArray(data[0])) {
+                return data[0];
+            } else {
+                console.warn('Unexpected API response structure:', data);
+                return [];
+            }
+        } catch (error) {
+            console.error('Error fetching suggestions:', error);
+            return [];
+        }
+    }
+
     function clearSuggestions() {
         suggestionsContainer.innerHTML = '';
         suggestionsContainer.style.display = 'none';
     }
 
-    // Function to display suggestions in the dropdown (remains largely the same)
-    function displaySuggestions(suggestions) {
-        if (suggestions.before.length > 0 || suggestions.after.length > 0) {
-            suggestionsContainer.innerHTML = ''; // Clear previous suggestions
+    async function displaySuggestions(query) {
+        if (!query.trim()) {
+            clearSuggestions();
+            return;
+        }
 
-            if (suggestions.before.length > 0) {
-                const beforeGroup = document.createElement('div');
-                beforeGroup.classList.add('suggestion-group');
-                const beforeHeading = document.createElement('h3');
-                beforeHeading.textContent = 'Keywords Before';
-                beforeGroup.appendChild(beforeHeading);
-                suggestions.before.forEach(suggestion => {
-                    const item = document.createElement('div');
-                    item.classList.add('suggestion-item');
-                    item.textContent = suggestion;
-                    item.addEventListener('click', () => {
-                        searchInput.value = suggestion;
-                        clearSuggestions();
-                    });
-                    beforeGroup.appendChild(item);
+        const beforeKeywords = ['a ', 'b ', 'c '];
+        const afterKeywords = [' a', ' b', ' c'];
+        const allSuggestions = { before: [], after: [] };
+
+        const fetchBefore = beforeKeywords.map(prefix => fetchAmazonSuggestions(prefix + query).then(suggestions => allSuggestions.before.push(...suggestions)));
+        const fetchAfter = afterKeywords.map(suffix => fetchAmazonSuggestions(query + suffix).then(suggestions => allSuggestions.after.push(...suggestions)));
+
+        await Promise.all([...fetchBefore, ...fetchAfter]);
+
+        suggestionsContainer.innerHTML = '';
+
+        if (allSuggestions.before.length > 0) {
+            const beforeGroup = document.createElement('div');
+            beforeGroup.classList.add('suggestion-group');
+            const beforeHeading = document.createElement('h3');
+            beforeHeading.textContent = 'Keywords Before';
+            beforeGroup.appendChild(beforeHeading);
+            allSuggestions.before.forEach(suggestion => {
+                const item = document.createElement('div');
+                item.classList.add('suggestion-item');
+                item.textContent = suggestion;
+                item.addEventListener('click', () => {
+                    searchInput.value = suggestion;
+                    clearSuggestions();
                 });
-                suggestionsContainer.appendChild(beforeGroup);
-            }
+                beforeGroup.appendChild(item);
+            });
+            suggestionsContainer.appendChild(beforeGroup);
+        }
 
-            if (suggestions.after.length > 0) {
-                const afterGroup = document.createElement('div');
-                afterGroup.classList.add('suggestion-group');
-                const afterHeading = document.createElement('h3');
-                afterHeading.textContent = 'Keywords After';
-                afterGroup.appendChild(afterHeading);
-                suggestions.after.forEach(suggestion => {
-                    const item = document.createElement('div');
-                    item.classList.add('suggestion-item');
-                    item.textContent = suggestion;
-                    item.addEventListener('click', () => {
-                        searchInput.value = suggestion;
-                        clearSuggestions();
-                    });
-                    afterGroup.appendChild(item);
+        if (allSuggestions.after.length > 0) {
+            const afterGroup = document.createElement('div');
+            afterGroup.classList.add('suggestion-group');
+            const afterHeading = document.createElement('h3');
+            afterHeading.textContent = 'Keywords After';
+            afterGroup.appendChild(afterHeading);
+            allSuggestions.after.forEach(suggestion => {
+                const item = document.createElement('div');
+                item.classList.add('suggestion-item');
+                item.textContent = suggestion;
+                item.addEventListener('click', () => {
+                    searchInput.value = suggestion;
+                    clearSuggestions();
                 });
-                suggestionsContainer.appendChild(afterGroup);
-            }
+                afterGroup.appendChild(item);
+            });
+            suggestionsContainer.appendChild(afterGroup);
+        }
 
+        if (allSuggestions.before.length > 0 || allSuggestions.after.length > 0) {
             suggestionsContainer.style.display = 'block';
         } else {
             clearSuggestions();
@@ -1901,24 +1920,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let timeoutId;
     searchInput.addEventListener('input', function() {
-    const query = this.value.trim();
-    clearTimeout(timeoutId);
+        const query = this.value.trim();
+        clearTimeout(timeoutId);
 
-    if (query) {
         timeoutId = setTimeout(() => {
-            const callbackName = `handleSingleSuggestions_${query.replace(/[^a-zA-Z0-9]/g, '')}_${Date.now()}`;
-            window[callbackName] = (data) => {
-                console.log("Suggestions received:", window.handleAmazonSuggestions(data));
-                delete window[callbackName];
-            };
-            fetchAmazonSuggestions(query, callbackName);
+            displaySuggestions(query);
         }, 300);
-    } else {
-        clearSuggestions();
-    }
-});
+    });
 
-    // Close the suggestions dropdown when clicking outside (remains the same)
     document.addEventListener('click', (event) => {
         if (!searchInput.contains(event.target) && !suggestionsContainer.contains(event.target)) {
             clearSuggestions();

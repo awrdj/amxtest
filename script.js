@@ -1799,7 +1799,7 @@ if (filterExcludeBrands && config.excludeBrands) {
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
     const suggestionsContainer = document.getElementById('suggestionsContainer');
-    const marketplaceSelect2 = document.getElementById('marketplaceSelect'); // Assuming you have this select element
+    const marketplaceSelect = document.getElementById('marketplaceSelect');
 
     const marketplaceMap = {
         "www.amazon.com": "A1F83G8C2ARO7P",   // US
@@ -1816,40 +1816,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentMarketId = marketplaceMap["www.amazon.com"]; // Default to US
 
-    if (marketplaceSelect2) {
-        marketplaceSelect2.addEventListener('change', function() {
+    if (marketplaceSelect) {
+        marketplaceSelect.addEventListener('change', function() {
             currentMarketId = marketplaceMap[this.value] || marketplaceMap["www.amazon.com"];
             console.log("Selected Marketplace ID:", currentMarketId);
         });
-        currentMarketId = marketplaceMap[marketplaceSelect2.value] || currentMarketId;
+        currentMarketId = marketplaceMap[marketplaceSelect.value] || currentMarketId;
         console.log("Initial Marketplace ID:", currentMarketId);
     } else {
         console.warn("Marketplace select element with ID 'marketplace' not found.");
     }
 
-    async function fetchAmazonSuggestions(keyword) {
+    function fetchAmazonSuggestions(keyword, callback) {
         const domain = Object.keys(marketplaceMap).find(key => marketplaceMap[key] === currentMarketId) || "www.amazon.com";
-        const endpoint = `${window.location.origin}/suggestions?k=${encodeURIComponent(keyword)}&m=${currentMarketId}&client=amazon-search-ui&mid=${currentMarketId}&alias=aps&fb=1`;
-        try {
-            const response = await fetch(endpoint);
-            if (!response.ok) {
-                console.error('API request failed:', response.status, response.statusText);
-                return [];
+        const endpoint = `${window.location.origin}/suggestions?k=${encodeURIComponent(keyword)}&m=${currentMarketId}&client=amazon-search-ui&mid=${currentMarketId}&alias=aps&fb=1&callback=${callback}`;
+        const script = document.createElement('script');
+        script.src = endpoint;
+        document.head.appendChild(script);
+        script.onerror = () => {
+            console.error('Failed to fetch suggestions for:', keyword);
+            if (typeof window[callback] === 'function') {
+                window[callback]({ suggestions: [] });
             }
-            const data = await response.json();
-            if (data && Array.isArray(data) && data.length > 1 && Array.isArray(data[1])) {
-                return data[1];
-            } else if (data && Array.isArray(data) && data.length > 0 && Array.isArray(data[0])) {
-                return data[0];
-            } else {
-                console.warn('Unexpected API response structure:', data);
-                return [];
-            }
-        } catch (error) {
-            console.error('Error fetching suggestions:', error);
-            return [];
-        }
+        };
     }
+
+    window.handleAmazonSuggestionsResponse = (data) => {
+        console.log("JSONP Response:", data);
+        if (data && Array.isArray(data) && data.length > 1 && Array.isArray(data[1])) {
+            return data[1];
+        } else if (data && Array.isArray(data) && data.length > 0 && Array.isArray(data[0])) {
+            return data[0];
+        } else if (data && data.suggestions && Array.isArray(data.suggestions)) {
+            return data.suggestions; // Try a different structure
+        }
+        return [];
+    };
 
     function clearSuggestions() {
         suggestionsContainer.innerHTML = '';
@@ -1865,21 +1867,41 @@ document.addEventListener('DOMContentLoaded', () => {
         const beforeKeywords = ['a ', 'b ', 'c '];
         const afterKeywords = [' a', ' b', ' c'];
         const allSuggestions = { before: [], after: [] };
+        let pendingRequests = beforeKeywords.length + afterKeywords.length;
 
-        const fetchBefore = beforeKeywords.map(prefix => fetchAmazonSuggestions(prefix + query).then(suggestions => allSuggestions.before.push(...suggestions)));
-        const fetchAfter = afterKeywords.map(suffix => fetchAmazonSuggestions(query + suffix).then(suggestions => allSuggestions.after.push(...suggestions)));
+        const processResults = (type, suggestions) => {
+            allSuggestions[type].push(...suggestions);
+            pendingRequests--;
+            if (pendingRequests === 0) {
+                updateSuggestionDisplay(allSuggestions);
+            }
+        };
 
-        await Promise.all([...fetchBefore, ...fetchAfter]);
+        beforeKeywords.forEach(prefix => {
+            const keywordBefore = prefix + query;
+            const callbackName = `handleBefore_${keywordBefore.replace(/[^a-zA-Z0-9]/g, '')}_${Date.now()}`;
+            window[callbackName] = (data) => processResults('before', window.handleAmazonSuggestionsResponse(data));
+            fetchAmazonSuggestions(keywordBefore, callbackName);
+        });
 
+        afterKeywords.forEach(suffix => {
+            const keywordAfter = query + suffix;
+            const callbackName = `handleAfter_${keywordAfter.replace(/[^a-zA-Z0-9]/g, '')}_${Date.now()}`;
+            window[callbackName] = (data) => processResults('after', window.handleAmazonSuggestionsResponse(data));
+            fetchAmazonSuggestions(keywordAfter, callbackName);
+        });
+    }
+
+    function updateSuggestionDisplay(suggestions) {
         suggestionsContainer.innerHTML = '';
 
-        if (allSuggestions.before.length > 0) {
+        if (suggestions.before.length > 0) {
             const beforeGroup = document.createElement('div');
             beforeGroup.classList.add('suggestion-group');
             const beforeHeading = document.createElement('h3');
             beforeHeading.textContent = 'Keywords Before';
             beforeGroup.appendChild(beforeHeading);
-            allSuggestions.before.forEach(suggestion => {
+            suggestions.before.forEach(suggestion => {
                 const item = document.createElement('div');
                 item.classList.add('suggestion-item');
                 item.textContent = suggestion;
@@ -1892,13 +1914,13 @@ document.addEventListener('DOMContentLoaded', () => {
             suggestionsContainer.appendChild(beforeGroup);
         }
 
-        if (allSuggestions.after.length > 0) {
+        if (suggestions.after.length > 0) {
             const afterGroup = document.createElement('div');
             afterGroup.classList.add('suggestion-group');
             const afterHeading = document.createElement('h3');
             afterHeading.textContent = 'Keywords After';
             afterGroup.appendChild(afterHeading);
-            allSuggestions.after.forEach(suggestion => {
+            suggestions.after.forEach(suggestion => {
                 const item = document.createElement('div');
                 item.classList.add('suggestion-item');
                 item.textContent = suggestion;
@@ -1911,7 +1933,7 @@ document.addEventListener('DOMContentLoaded', () => {
             suggestionsContainer.appendChild(afterGroup);
         }
 
-        if (allSuggestions.before.length > 0 || allSuggestions.after.length > 0) {
+        if (suggestions.before.length > 0 || suggestions.after.length > 0) {
             suggestionsContainer.style.display = 'block';
         } else {
             clearSuggestions();

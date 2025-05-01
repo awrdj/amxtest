@@ -1799,7 +1799,7 @@ if (filterExcludeBrands && config.excludeBrands) {
 $(document).ready(function() {
   const searchInput = document.getElementById('searchInput');
   const suggestionsContainer = document.getElementById('suggestionsContainer');
-  const marketplaceSelect = document.getElementById('marketplace');
+  const marketplaceSelect = document.getElementById('marketplaceSelect');
 
   let currentMarketplace = getMarketplace();
 
@@ -1820,7 +1820,41 @@ $(document).ready(function() {
     let market = "ATVPDKIKX0DER";
     let host = selectedDomain ? selectedDomain.toLowerCase() : location.hostname.toLowerCase();
 
-    // ... (rest of the getMarketplace function remains the same)
+    if (host.indexOf("amazon.ca") > 0) {
+      domain = "amazon.ca";
+      webDomain = "amazon.ca";
+      market = "A2EUQ1WTGCTBG2";
+    }
+    if (host.indexOf("amazon.co.uk") > 0) {
+      domain = "amazon.co.uk";
+      webDomain = "amazon.co.uk";
+      market = "A1F83G8C2ARO7P";
+    }
+    if (host.indexOf("amazon.de") > 0) {
+      domain = "amazon.de";
+      webDomain = "amazon.de";
+      market = "A1PA6795UKMFR9";
+    }
+    if (host.indexOf("amazon.fr") > 0) {
+      domain = "amazon.fr";
+      webDomain = "amazon.fr";
+      market = "A13V1IB3VIYZZH";
+    }
+    if (host.indexOf("amazon.it") > 0) {
+      domain = "amazon.it";
+      webDomain = "amazon.it";
+      market = "APJ6JRA9NG5V4";
+    }
+    if (host.indexOf("amazon.es") > 0) {
+      domain = "amazon.es";
+      webDomain = "amazon.es";
+      market = "A1RKKUPIHCS9HS";
+    }
+    if (host.indexOf("amazon.com.mx") > 0) {
+      domain = "amazon.com.mx";
+      webDomain = "amazon.com.mx";
+      market = "A1AM78C64Y39B9";
+    }
     if (host.indexOf("amazon.com.au") > 0) {
       domain = "amazon.com.au";
       webDomain = "amazon.com.au";
@@ -1870,11 +1904,11 @@ $(document).ready(function() {
     };
 
     beforeKeywords.forEach(prefix => {
-      getSuggestions(prefix, query).then(data => processResults('before', data));
+      getSuggestions(prefix, query).then(processResults);
     });
 
     afterKeywords.forEach(suffix => {
-      getSuggestions(query, suffix).then(data => processResults('after', data));
+      getSuggestions(query, suffix).then(processResults);
     });
   }
 
@@ -1890,7 +1924,7 @@ $(document).ready(function() {
 
     data.suggestions.forEach(suggestionObject => {
       const value = suggestionObject.value;
-      const type = suggestionObject.type || 'default'; // Try 'default' for standard suggestions
+      const type = suggestionObject.type || 'default';
 
       if (value) {
         if (!suggestionsByType[type]) {
@@ -1900,7 +1934,6 @@ $(document).ready(function() {
       }
     });
 
-    // Define the order of categories you want to display
     const categoryOrder = ['default', 'prefix', 'suffix', 'other'];
 
     categoryOrder.forEach(type => {
@@ -1923,7 +1956,7 @@ $(document).ready(function() {
         });
         suggestionsContainer.appendChild(groupDiv);
       }
-    });
+    }
 
     if (suggestionsContainer.children.length > 0) {
       suggestionsContainer.style.display = 'block';
@@ -1940,7 +1973,7 @@ $(document).ready(function() {
     } else if (type === 'default') {
       return 'Amazon Suggestions';
     } else {
-      return type.charAt(0).toUpperCase() + type.slice(1);
+      return 'Other';
     }
   }
 

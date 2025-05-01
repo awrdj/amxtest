@@ -1800,10 +1800,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
     const suggestionsContainer = document.getElementById('suggestionsContainer');
 
+    // Function to determine the correct Amazon domain based on a best guess
+    function getAmazonDomain() {
+        // This is a simplified approach. A more robust solution might involve
+        // inspecting the current page URL if the tool is used on an Amazon page.
+        const host = window.location.hostname;
+        if (host.includes("amazon.ca")) return "www.amazon.ca";
+        if (host.includes("amazon.co.uk")) return "www.amazon.co.uk";
+        if (host.includes("amazon.de")) return "www.amazon.de";
+        if (host.includes("amazon.fr")) return "www.amazon.fr";
+        if (host.includes("amazon.it")) return "www.amazon.it";
+        if (host.includes("amazon.es")) return "www.amazon.es";
+        if (host.includes("amazon.com.mx")) return "www.amazon.com.mx";
+        if (host.includes("amazon.com.au")) return "www.amazon.com.au";
+        return "www.amazon.com"; // Default to US
+    }
+
     // Function to fetch Amazon autocomplete suggestions using JSONP
     function fetchAmazonSuggestions(keyword, callback) {
+        const domain = getAmazonDomain();
         const script = document.createElement('script');
-        const endpoint = `https://completion.amazon.com/api/2017/suggestions?q=${encodeURIComponent(keyword)}&limit=10&lop=www&client=amazon-search-ui`; // You might need to adjust the 'lop' parameter for different Amazon marketplaces
+        const endpoint = `https://${domain}/complete/search?q=${encodeURIComponent(keyword)}&mkt=1&client=amazon-search-ui&s=k`; // Parameters closer to the extension
         script.src = endpoint + `&callback=${callback}`;
         document.head.appendChild(script);
         script.onerror = () => {
@@ -1814,18 +1831,21 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // Function to handle the JSONP response
+    // Function to handle the JSONP response (adjusting to the extension's data structure)
     window.handleAmazonSuggestions = (data) => {
-        return data.suggestions.map(suggestion => suggestion.value);
+        if (data && data[1]) { // The extension seems to use the second element of the array
+            return data[1];
+        }
+        return [];
     };
 
-    // Function to clear previous suggestions
+    // Function to clear previous suggestions (remains the same)
     function clearSuggestions() {
         suggestionsContainer.innerHTML = '';
         suggestionsContainer.style.display = 'none';
     }
 
-    // Function to display suggestions in the dropdown
+    // Function to display suggestions in the dropdown (remains largely the same)
     function displaySuggestions(suggestions) {
         if (suggestions.before.length > 0 || suggestions.after.length > 0) {
             suggestionsContainer.innerHTML = ''; // Clear previous suggestions
@@ -1921,7 +1941,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Close the suggestions dropdown when clicking outside
+    // Close the suggestions dropdown when clicking outside (remains the same)
     document.addEventListener('click', (event) => {
         if (!searchInput.contains(event.target) && !suggestionsContainer.contains(event.target)) {
             clearSuggestions();

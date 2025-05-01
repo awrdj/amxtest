@@ -1897,35 +1897,31 @@ $(document).ready(function() {
     }
 
     function displaySuggestions(search) {
-        if (!search.trim()) {
-            suggestionsContainer.empty().hide();
-            return;
-        }
+    if (!search.trim()) {
+        suggestionsContainer.empty().hide();
+        return;
+    }
 
-        let promises = [];
-        promises.push(
-    getSuggestions(search, ""),          // Main suggestions
-    getSuggestions("", search.trim()),   // Before (empty prefix)
-    getSuggestions(search.trim(), ""),   // After (empty suffix)
-    words.length >= 2 
-        ? getSuggestions(words[0], words.slice(1).join(" "))  // Between
-        : Promise.resolve(null)
-);
+    // 1. FIRST split into words HERE
+    let words = search.split(" "); // <-- INITIALIZE FIRST
 
+    // 2. THEN use words in promises
+    let promises = [
+        getSuggestions(search, ""),          // Main
+        getSuggestions("", search.trim()),   // Before
+        getSuggestions(search.trim(), ""),   // After
+        words.length >= 2 
+            ? getSuggestions(words[0], words.slice(1).join(" "))
+            : Promise.resolve(null)          // Between
+    ];
 
-        let words = search.split(" ");
-        if (words.length >= 2) {
-            let lastWords = words.slice(1).join(" ");
-            promises.push(getSuggestions(words[0] + " ", " " + lastWords)); // Keywords between
-        } else {
-            promises.push(Promise.resolve({ suggestions: [] }));
-        }
+    // Add additional queries
+    promises.push(
+        getSuggestions(search + " for ", ""),
+        getSuggestions(search + " and ", ""),
+        getSuggestions(search + " with ", "")
+    );
 
-        promises.push(
-    getSuggestions(search + " for ", ""),
-    getSuggestions(search + " and ", ""),
-    getSuggestions(search + " with ", "")
-);
 
         Promise.all(promises)
             .then((results) => {

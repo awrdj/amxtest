@@ -1874,43 +1874,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
         suggestionsContainer.innerHTML = '';
 
-        if (allSuggestions.before.length > 0) {
-            const beforeGroup = document.createElement('div');
-            beforeGroup.classList.add('suggestion-group');
-            const beforeHeading = document.createElement('h3');
-            beforeHeading.textContent = 'Keywords Before';
-            beforeGroup.appendChild(beforeHeading);
-            allSuggestions.before.forEach(suggestion => {
-                const item = document.createElement('div');
-                item.classList.add('suggestion-item');
-                item.textContent = suggestion;
-                item.addEventListener('click', () => {
-                    searchInput.value = suggestion;
-                    clearSuggestions();
-                });
-                beforeGroup.appendChild(item);
-            });
-            suggestionsContainer.appendChild(beforeGroup);
-        }
+        const displayGroup = (groupName, groupData) => {
+            if (groupData.length > 0) {
+                const groupDiv = document.createElement('div');
+                groupDiv.classList.add('suggestion-group');
+                const heading = document.createElement('h3');
+                heading.textContent = groupName;
+                groupDiv.appendChild(heading);
+                groupData.forEach(suggestion => {
+                    let suggestionText = '';
+                    if (typeof suggestion === 'string') {
+                        suggestionText = suggestion;
+                    } else if (typeof suggestion === 'object' && suggestion !== null && (suggestion.value || suggestion.suggestion || suggestion.term)) {
+                        // Try to access common keys for the suggestion text
+                        suggestionText = suggestion.value || suggestion.suggestion || suggestion.term;
+                    } else {
+                        console.warn('Unexpected suggestion format:', suggestion);
+                        suggestionText = '[Invalid Suggestion]';
+                    }
 
-        if (allSuggestions.after.length > 0) {
-            const afterGroup = document.createElement('div');
-            afterGroup.classList.add('suggestion-group');
-            const afterHeading = document.createElement('h3');
-            afterHeading.textContent = 'Keywords After';
-            afterGroup.appendChild(afterHeading);
-            allSuggestions.after.forEach(suggestion => {
-                const item = document.createElement('div');
-                item.classList.add('suggestion-item');
-                item.textContent = suggestion;
-                item.addEventListener('click', () => {
-                    searchInput.value = suggestion;
-                    clearSuggestions();
+                    const item = document.createElement('div');
+                    item.classList.add('suggestion-item');
+                    item.textContent = suggestionText;
+                    item.addEventListener('click', () => {
+                        searchInput.value = suggestionText;
+                        clearSuggestions();
+                    });
+                    groupDiv.appendChild(item);
                 });
-                afterGroup.appendChild(item);
-            });
-            suggestionsContainer.appendChild(afterGroup);
-        }
+                suggestionsContainer.appendChild(groupDiv);
+            }
+        };
+
+        displayGroup('Keywords Before', allSuggestions.before);
+        displayGroup('Keywords After', allSuggestions.after);
 
         if (allSuggestions.before.length > 0 || allSuggestions.after.length > 0) {
             suggestionsContainer.style.display = 'block';

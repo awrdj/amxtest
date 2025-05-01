@@ -1800,8 +1800,10 @@ $(document).ready(function() {
   const searchInput = document.getElementById('searchInput');
   const suggestionsContainer = document.getElementById('suggestionsContainer');
   const marketplaceSelect = document.getElementById('marketplace');
+  const MAX_KEYWORDS_IN_SEARCH = 50;
 
   let currentMarketplace = getMarketplace();
+  let displayedKeywordData = null;
 
   if (marketplaceSelect) {
     marketplaceSelect.addEventListener('change', function() {
@@ -1812,6 +1814,12 @@ $(document).ready(function() {
     console.log("Initial Marketplace:", currentMarketplace);
   } else {
     console.warn("Marketplace select element with ID 'marketplace' not found.");
+  }
+
+  function getDepartmentQuery() {
+    let departmentQuery = $("#searchDropdownBox").val();
+    departmentQuery = departmentQuery.replace("search-alias=", "");
+    return departmentQuery;
   }
 
   function getMarketplace(selectedDomain) {
@@ -1853,17 +1861,17 @@ $(document).ready(function() {
     if (host.indexOf("amazon.com.mx") > 0) {
       domain = "amazon.com.mx";
       webDomain = "amazon.com.mx";
-      market = "A1AM78C64Y39B9";
+      market = "A1AM78C64UM0Y8";
     }
     if (host.indexOf("amazon.com.au") > 0) {
       domain = "amazon.com.au";
       webDomain = "amazon.com.au";
-      market = "A3Y0IB3BDVR5PM";
+      market = "A39IBJ37TRP1C6";
     }
     return { domain, market, webDomain };
   }
 
-  function getSuggestions(queryFirst, queryLast, departmentQuery = "aps") {
+  function getSuggestions(queryFirst, queryLast, departmentQuery) {
     let marketplace = currentMarketplace;
     const suggestUrl = `https://completion.${marketplace.domain}/api/2017/suggestions?site-variant=desktop&mid=${marketplace.market}&alias=${departmentQuery}&prefix=${queryFirst}&suffix=${queryLast}`;
     return fetch(suggestUrl)
@@ -1880,100 +1888,125 @@ $(document).ready(function() {
       });
   }
 
-  function displaySuggestions(query) {
-    if (!query.trim()) {
+  function parseResults(data) {
+    let keywords = [];
+    if (data && data.suggestions) {
+      keywords = data.suggestions.filter(function(value) {
+        return value.type === "KEYWORD";
+      }).map(function(value) {
+        if (value.highlightFragments && value.highlightFragments.length > 0) {
+          let text = "";
+          for (const fragment of value.highlightFragments) {
+            text += fragment.text;
+          }
+          return text;
+        } else {
+          return value.value;
+        }
+      });
+    }
+    console.debug("Parsed Keywords:", keywords);
+    return keywords;
+  }
+
+  function displaySuggestions(search) {
+    if (!search.trim()) {
       suggestionsContainer.innerHTML = '';
       suggestionsContainer.style.display = 'none';
       return;
     }
 
-    const beforeKeywords = ['a ', 'b ', 'c '];
-    const afterKeywords = [' a', ' b', ' c'];
-    const allSuggestions = { before: [], after: [] };
-    let pendingRequests = beforeKeywords.length + afterKeywords.length;
-    const combinedSuggestions = { suggestions: [] };
+    let promises = [];
+    let departmentQuery = getDepartmentQuery();
 
-    const processResults = (type, data) => {
-      pendingRequests--;
-      if (data && data.suggestions && Array.isArray(data.suggestions)) {
-        data.suggestions.forEach(s => combinedSuggestions.suggestions.push({ value: s.value, type: type === 'before' ? 'prefix' : 'suffix' }));
-      }
-      if (pendingRequests === 0) {
-        renderSuggestions(combinedSuggestions);
-      }
-    };
+    promises.push(getSuggestions(search, "", departmentQuery));
+    promises.push(getSuggestions(" ", search.trim(), departmentQuery));
+    promises.push(getSuggestions(search.trim() + " ", "", departmentQuery));
 
-    beforeKeywords.forEach(prefix => {
-      getSuggestions(prefix, query).then(processResults);
-    });
-
-    afterKeywords.forEach(suffix => {
-      getSuggestions(query, suffix).then(processResults);
-    });
-  }
-
-  function renderSuggestions(data) {
-    suggestionsContainer.innerHTML = '';
-
-    if (!data || !data.suggestions || !Array.isArray(data.suggestions)) {
-      suggestionsContainer.style.display = 'none';
-      return;
+    let words = search.split(" ");
+    if (words.length >= 2) {
+      let lastWords = words.slice(1).join(" ");
+      promises.push(getSuggestions(words[0] + " ", " " + lastWords, departmentQuery));
+    } else {
+      promises.push(Promise.resolve({ suggestions: [] })); // Resolve with empty suggestions
     }
 
-    const suggestionsByType = {};
+    promises.push(getSuggestions(search + " for ", "", departmentQuery));
+    promises.push(getSuggestions(search + " and ", "", departmentQuery));
+    promises.push(getSuggestions(search + " with ", "", departmentQuery));
 
-    data.suggestions.forEach(suggestionObject => {
-      const value = suggestionObject.value;
-      const type = suggestionObject.type || 'default';
-
-      if (value) {
-        if (!suggestionsByType[type]) {
-          suggestionsByType[type] = [];
+    Promise.all(promises)
+      .then((results) => {
+        if (!results || results.some(res => res === null)) {
+          console.warn("One or more suggestion requests failed.");
+          return;
         }
-        suggestionsByType[type].push(value);
-      }
-    });
+        processAndRenderSuggestions(search, results);
+      });
+  }
 
-    const categoryOrder = ['default', 'prefix', 'suffix', 'other'];
+  function processAndRenderSuggestions(search, results) {
+    const mainKeywords = parseResults(results[0] || { suggestions: [] });
+    let displayedKeywords = [...mainKeywords];
+    suggestionsContainer.innerHTML = '';
+    let keywordCount = 0;
 
-    categoryOrder.forEach(type => {
-      if (suggestionsByType[type] && suggestionsByType[type].length > 0) {
+    const addGroup = (title, keywords, backgroundColor) => {
+      if (keywords && keywords.length > 0 && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
         const groupDiv = document.createElement('div');
         groupDiv.classList.add('suggestion-group');
         const heading = document.createElement('h3');
-        heading.textContent = formatSuggestionType(type);
+        heading.textContent = title;
         groupDiv.appendChild(heading);
-        suggestionsByType[type].forEach(suggestion => {
-          const item = document.createElement('div');
-          item.classList.add('suggestion-item');
-          item.textContent = suggestion;
-          item.addEventListener('click', () => {
-            searchInput.value = suggestion;
-            suggestionsContainer.innerHTML = '';
-            suggestionsContainer.style.display = 'none';
-          });
-          groupDiv.appendChild(item);
+
+        keywords.forEach(keyword => {
+          if (!displayedKeywords.includes(keyword) && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
+            const item = document.createElement('div');
+            item.classList.add('suggestion-item');
+            let beforeKeyword = "";
+            let middleKeyword = search;
+            let afterKeyword = "";
+            let pos = keyword.toLowerCase().indexOf(search.toLowerCase());
+            if (pos >= 0) {
+              beforeKeyword = keyword.substring(0, pos);
+              afterKeyword = keyword.substring(pos + search.length);
+            } else {
+              beforeKeyword = keyword;
+              middleKeyword = "";
+            }
+            item.innerHTML = `<span class="s-heavy">${beforeKeyword}</span>${middleKeyword}<span class="s-heavy">${afterKeyword}</span>`;
+            item.addEventListener('click', () => {
+              searchInput.value = keyword;
+              suggestionsContainer.innerHTML = '';
+              suggestionsContainer.style.display = 'none';
+            });
+            groupDiv.appendChild(item);
+            displayedKeywords.push(keyword);
+            keywordCount++;
+          }
         });
-        suggestionsContainer.appendChild(groupDiv);
+
+        if (groupDiv.children.length > 1) { // Only add group if it has suggestions
+          suggestionsContainer.appendChild(groupDiv);
+        }
       }
+    };
+
+    addGroup("Amazon Suggestions", mainKeywords, "white");
+    addGroup("Keywords Before", parseResults(results[1] || { suggestions: [] }), "#ebfaeb");
+    addGroup("Keywords After", parseResults(results[2] || { suggestions: [] }), "#ffe6e6");
+    addGroup("Keywords Between", parseResults(results[3] || { suggestions: [] }), "#e6ecff");
+
+    let otherKeywords = [];
+    for (let i = 4; i < results.length; i++) {
+      otherKeywords = [...otherKeywords, ...parseResults(results[i] || { suggestions: [] })];
     }
+    addGroup("Other Suggestions", otherKeywords, "#f2f2f2");
 
     if (suggestionsContainer.children.length > 0) {
       suggestionsContainer.style.display = 'block';
     } else {
       suggestionsContainer.style.display = 'none';
-    }
-  }
-
-  function formatSuggestionType(type) {
-    if (type === 'prefix') {
-      return 'Keywords Before';
-    } else if (type === 'suffix') {
-      return 'Keywords After';
-    } else if (type === 'default') {
-      return 'Amazon Suggestions';
-    } else {
-      return 'Other';
     }
   }
 

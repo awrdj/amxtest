@@ -1956,7 +1956,7 @@ $(document).ready(function() {
         });
         suggestionsContainer.appendChild(groupDiv);
       }
-    }
+    )}
 
     if (suggestionsContainer.children.length > 0) {
       suggestionsContainer.style.display = 'block';

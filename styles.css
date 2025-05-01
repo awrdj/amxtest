@@ -495,3 +495,45 @@ footer {
 .copy-success {
 	background-color: #e8f5e9 !important;
 }
+
+/* code for suggestions */ 
+.suggestions-container {
+    position: absolute; /* Position it below the input */
+    left: 0;
+    width: 100%; /* Match the input width */
+    background-color: #fff; /* White background */
+    border: 1px solid #ccc; /* Light border */
+    border-top: none; /* No top border to connect visually */
+    margin-top: -2px; /* Adjust to close any gap */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    z-index: 10; /* Ensure it's above other elements */
+    max-height: 300px; /* Limit the height with scrollbar */
+    overflow-y: auto; /* Enable vertical scrolling if needed */
+    display: none; /* Hidden by default */
+}
+
+.suggestion-group {
+    padding: 10px;
+    border-bottom: 1px solid #eee; /* Separator between groups */
+}
+
+.suggestion-group:last-child {
+    border-bottom: none; /* No separator for the last group */
+}
+
+.suggestion-group h3 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    color: #777;
+}
+
+.suggestion-item {
+    padding: 8px 10px;
+    cursor: pointer;
+    font-size: 0.95em;
+}
+
+.suggestion-item:hover {
+    background-color: #f0f0f0; /* Light background on hover */
+}

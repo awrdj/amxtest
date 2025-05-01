@@ -1846,34 +1846,30 @@ $(document).ready(function() {
     }
 
     function getSuggestions(queryFirst, queryLast) {
-        let marketplace = currentMarketplace;
- // Properly format prefix/suffix with URLSearchParams
+    let marketplace = currentMarketplace;
+    
+    // Properly handle spaces and encoding
     const params = new URLSearchParams({
         'site-variant': 'desktop',
         'mid': marketplace.market,
-        'alias': 'aps', // Hardcoded to 'All Departments' like original
-        'prefix': queryFirst,
-        'suffix': queryLast
+        'alias': 'aps',
+        'prefix': queryFirst.trim() + (queryLast ? ' ' : ''), // Add space if suffix exists
+        'suffix': (queryFirst ? ' ' : '') + queryLast.trim() // Add space if prefix exists
     });
-    
+
     const suggestUrl = `https://completion.${marketplace.domain}/api/2017/suggestions?${params}`;
-        return fetch(suggestUrl)
-    .then(response => {
-        if (!response.ok) {
-            console.error(`API Error: ${response.status} ${response.statusText}`);
-            return null;
-        }
-        return response.json();
-    })
-    .then(res => {
-        debugResponse(queryFirst, queryLast, res);
-        return res;
-    })
-    .catch(error => {
-        console.error('Fetch Error:', error);
-        return null;
-    });
-    }
+
+    return fetch(suggestUrl)
+        .then(response => {
+            if (!response.ok) return { suggestions: [] }; // Return empty instead of null
+            return response.json();
+        })
+        .then(res => debugResponse(queryFirst, queryLast, res))
+        .catch(error => {
+            console.error('Fetch Error:', error);
+            return { suggestions: [] }; // Always return valid response shape
+        });
+}
 
     function parseResults(data) {
         let keywords = [];
@@ -1896,42 +1892,57 @@ $(document).ready(function() {
         return keywords;
     }
 
-    function displaySuggestions(search) {
+    // IN DISPLAYSUGGESTIONS - FIX PROMISE HANDLING
+function displaySuggestions(search) {
     if (!search.trim()) {
         suggestionsContainer.empty().hide();
         return;
     }
 
-    // 1. FIRST split into words HERE
-    let words = search.split(" "); // <-- INITIALIZE FIRST
-
-    // 2. THEN use words in promises
+    let words = search.split(" ").filter(w => w !== ""); // Clean empty words
+    
     let promises = [
-        getSuggestions(search, ""),          // Main
-        getSuggestions("", search.trim()),   // Before
-        getSuggestions(search.trim(), ""),   // After
+        // Main suggestions (exact match)
+        getSuggestions(search, ""),
+        
+        // Before suggestions (empty prefix)
+        getSuggestions("", search),
+        
+        // After suggestions (empty suffix)
+        getSuggestions(search, ""),
+        
+        // Between suggestions (only if 2+ words)
         words.length >= 2 
             ? getSuggestions(words[0], words.slice(1).join(" "))
-            : Promise.resolve(null)          // Between
+            : Promise.resolve({ suggestions: [] })
     ];
 
-    // Add additional queries
-    promises.push(
-        getSuggestions(search + " for ", ""),
-        getSuggestions(search + " and ", ""),
-        getSuggestions(search + " with ", "")
-    );
+    // Add contextual expansions
+    const expansions = ['for', 'and', 'with'];
+    expansions.forEach(term => {
+        promises.push(getSuggestions(`${search} ${term}`, ""));
+    });
 
-
-        Promise.all(promises)
-            .then((results) => {
-                if (!results || results.some(res => res === null)) {
-                    console.warn("One or more suggestion requests failed.");
-                    return;
-                }
-                processAndRenderSuggestions(search, results);
-            });
-    }
+    // PROCESS RESULTS DIFFERENTLY
+    Promise.all(promises)
+        .then((results) => {
+            // Filter out empty results
+            const validResults = results.filter(r => 
+                r?.suggestions?.length > 0
+            );
+            
+            if (validResults.length === 0) {
+                suggestionsContainer.hide();
+                return;
+            }
+            
+            processAndRenderSuggestions(search, validResults);
+        })
+        .catch(error => {
+            console.error('Suggestions Error:', error);
+            suggestionsContainer.hide();
+        });
+}
 
     function processAndRenderSuggestions(search, results) {
     const mainKeywords = parseResults(results[0] || { suggestions: [] });

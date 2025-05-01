@@ -1829,7 +1829,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function fetchAmazonSuggestions(keyword, callback) {
         const domain = Object.keys(marketplaceMap).find(key => marketplaceMap[key] === currentMarketId) || "www.amazon.com";
-        const endpoint = `${window.location.origin}/suggestions?k=${encodeURIComponent(keyword)}&m=${currentMarketId}&client=amazon-search-ui&mid=${currentMarketId}&alias=aps&fb=1&callback=${callback}`;
+        const endpoint = `https://www.amazon.com/suggestions?k=${encodeURIComponent(keyword)}&m=${currentMarketId}&client=amazon-search-ui&mid=${currentMarketId}&alias=aps&fb=1&callback=${callback}`;
         const script = document.createElement('script');
         script.src = endpoint;
         document.head.appendChild(script);

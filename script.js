@@ -1799,7 +1799,7 @@ if (filterExcludeBrands && config.excludeBrands) {
 $(document).ready(function() {
   const searchInput = document.getElementById('searchInput');
   const suggestionsContainer = document.getElementById('suggestionsContainer');
-  const marketplaceSelect = document.getElementById('marketplaceSelect');
+  const marketplaceSelect = document.getElementById('marketplace');
 
   let currentMarketplace = getMarketplace();
 

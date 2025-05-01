@@ -1873,10 +1873,6 @@ $(document).ready(function() {
         console.error('Fetch Error:', error);
         return null;
     });
-        .catch(error => {
-            console.error('Error:', error);
-            return null;
-        });
     }
 
     function parseResults(data) {

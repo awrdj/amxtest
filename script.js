@@ -1896,50 +1896,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let timeoutId;
     searchInput.addEventListener('input', function() {
-        const query = this.value.trim();
-        clearTimeout(timeoutId); // Clear any previous timeout
+    const query = this.value.trim();
+    clearTimeout(timeoutId);
 
-        if (query) {
-            timeoutId = setTimeout(() => {
-                const beforeKeywords = ['a ', 'b ', 'c ']; // Add more prefixes as needed
-                const afterKeywords = [' a', ' b', ' c'];   // Add more suffixes as needed
-                const allSuggestions = { before: [], after: [] };
-                let pendingRequests = beforeKeywords.length + afterKeywords.length;
-
-                const processResults = () => {
-                    pendingRequests--;
-                    if (pendingRequests === 0) {
-                        displaySuggestions(allSuggestions);
-                    }
-                };
-
-                beforeKeywords.forEach(prefix => {
-                    const keywordBefore = prefix + query;
-                    const callbackNameBefore = `handleBeforeSuggestions_${keywordBefore.replace(/[^a-zA-Z0-9]/g, '')}_${Date.now()}`;
-                    window[callbackNameBefore] = (data) => {
-                        allSuggestions.before.push(...window.handleAmazonSuggestions(data).map(s => s));
-                        delete window[callbackNameBefore]; // Clean up the global scope
-                        processResults();
-                    };
-                    fetchAmazonSuggestions(keywordBefore, callbackNameBefore);
-                });
-
-                afterKeywords.forEach(suffix => {
-                    const keywordAfter = query + suffix;
-                    const callbackNameAfter = `handleAfterSuggestions_${keywordAfter.replace(/[^a-zA-Z0-9]/g, '')}_${Date.now()}`;
-                    window[callbackNameAfter] = (data) => {
-                        allSuggestions.after.push(...window.handleAmazonSuggestions(data).map(s => s));
-                        delete window[callbackNameAfter]; // Clean up the global scope
-                        processResults();
-                    };
-                    fetchAmazonSuggestions(keywordAfter, callbackNameAfter);
-                });
-
-            }, 300); // Debounce the input to avoid excessive API calls
-        } else {
-            clearSuggestions();
-        }
-    });
+    if (query) {
+        timeoutId = setTimeout(() => {
+            const callbackName = `handleSingleSuggestions_${query.replace(/[^a-zA-Z0-9]/g, '')}_${Date.now()}`;
+            window[callbackName] = (data) => {
+                console.log("Suggestions received:", window.handleAmazonSuggestions(data));
+                delete window[callbackName];
+            };
+            fetchAmazonSuggestions(query, callbackName);
+        }, 300);
+    } else {
+        clearSuggestions();
+    }
+});
 
     // Close the suggestions dropdown when clicking outside (remains the same)
     document.addEventListener('click', (event) => {

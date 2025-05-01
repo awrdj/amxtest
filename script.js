@@ -1799,22 +1799,22 @@ if (filterExcludeBrands && config.excludeBrands) {
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
     const suggestionsContainer = document.getElementById('suggestionsContainer');
-    const marketplaceSelect = document.getElementById('marketplace');
+    const marketplaceSelect = document.getElementById('marketplaceSelect');
 
     const marketplaceMap = {
-        "www.amazon.com": { domain: "amazon.com", market: "ATVPDKIKX0DER" },
-        "www.amazon.ca": { domain: "amazon.ca", market: "A2EUQ1WTGCTBG2" },
-        "www.amazon.co.uk": { domain: "amazon.co.uk", market: "A1F83G8C2ARO7P" },
-        "www.amazon.de": { domain: "amazon.de", market: "A1PA6795UKMFR9" },
-        "www.amazon.fr": { domain: "amazon.fr", market: "A13V1IB3VIYZZH" },
-        "www.amazon.it": { domain: "amazon.it", market: "APJ6JRA9NG5V4" },
-        "www.amazon.es": { domain: "amazon.es", market: "A1RKKUPIHCS9HS" },
-        "www.amazon.com.mx": { domain: "amazon.com.mx", market: "A1AM78C64Y39B9" },
-        "www.amazon.com.au": { domain: "amazon.com.au", market: "A3Y0IB3BDVR5PM" }
+        "com": { domain: "amazon.com", market: "ATVPDKIKX0DER" },
+        "ca": { domain: "amazon.ca", market: "A2EUQ1WTGCTBG2" },
+        "co.uk": { domain: "amazon.co.uk", market: "A1F83G8C2ARO7P" },
+        "de": { domain: "amazon.de", market: "A1PA6795UKMFR9" },
+        "fr": { domain: "amazon.fr", market: "A13V1IB3VIYZZH" },
+        "it": { domain: "amazon.it", market: "APJ6JRA9NG5V4" },
+        "es": { domain: "amazon.es", market: "A1RKKUPIHCS9HS" },
+        "com.mx": { domain: "amazon.com.mx", market: "A1AM78C64Y39B9" },
+        "com.au": { domain: "amazon.com.au", market: "A3Y0IB3BDVR5PM" }
         // Add more marketplaces as needed
     };
 
-    let currentMarketplace = marketplaceMap["www.amazon.com"]; // Default to US
+    let currentMarketplace = marketplaceMap["com"]; // Default to US
 
     if (marketplaceSelect) {
         marketplaceSelect.addEventListener('change', function() {

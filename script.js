@@ -1833,10 +1833,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to handle the JSONP response (adjusting to the extension's data structure)
     window.handleAmazonSuggestions = (data) => {
-        if (data && data[1]) { // The extension seems to use the second element of the array
+        console.log("Full API Response:", data); // Log the entire response to inspect its structure
+        if (data && Array.isArray(data) && data.length > 1 && Array.isArray(data[1])) {
             return data[1];
+        } else if (data && Array.isArray(data) && data.length > 0 && Array.isArray(data[0])) {
+            // Try the first element as well, in case the structure varies
+            return data[0];
+        } else {
+            return [];
         }
-        return [];
     };
 
     // Function to clear previous suggestions (remains the same)

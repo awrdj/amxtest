@@ -2050,12 +2050,27 @@ function displaySuggestions(search) { 
         $("#resultUrlContainer").slideDown("fast"); 
     }); 
 
-    function escapeHtml(unsafe) { 
-        return unsafe 
-             .replace(/&/g, "&amp;") 
-             .replace(/</g, "&lt;") 
-             .replace(/>/g, "&gt;") 
-             .replace(/"/g, "&quot;") 
-             .replace(/'/g, "&#039;"); 
-     } 
+    function highlightMatch(keyword, search) {
+    const searchLower = search.toLowerCase();
+    const keywordLower = keyword.toLowerCase();
+    const index = keywordLower.indexOf(searchLower);
+
+    if (index >= 0) {
+        const before = keyword.substring(0, index);
+        const match = keyword.substring(index, index + search.length);
+        const after = keyword.substring(index + search.length);
+        return `${escapeHtml(before)}<strong>${escapeHtml(match)}</strong>${escapeHtml(after)}`;
+    } else {
+        return escapeHtml(keyword);
+    }
+}
+
+function escapeHtml(unsafe) {
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+}
 }); 

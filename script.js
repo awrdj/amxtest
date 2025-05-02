@@ -1903,7 +1903,7 @@ $(document).ready(function() {
 
     function processAndRenderSuggestions(search, results) {
     const mainKeywords = parseResults(results[0] || { suggestions: [] });
-    let displayedKeywords = new Set(mainKeywords.map(kw => kw.toLowerCase()));
+    let displayedKeywords = new Set();
     suggestionsContainer.empty();
     let keywordCount = 0;
 
@@ -1948,14 +1948,26 @@ $(document).ready(function() {
         }
     };
 
-    // Show main Amazon suggestions first (without a title)
+    // 1. Display Default Amazon Suggestions (first result) without a title
     addGroup(null, mainKeywords, "white");
+    mainKeywords.forEach(kw => displayedKeywords.add(kw.toLowerCase())); // Add to displayed set
 
-    // Add other suggestion groups
-    addGroup("Keywords Before", parseResults(results[1] || { suggestions: [] }), "#ebfaeb");
-    addGroup("Keywords After", parseResults(results[2] || { suggestions: [] }), "#ffe6e6");
-    addGroup("Keywords Between", parseResults(results[3] || { suggestions: [] }), "#e6ecff");
+    // 2. Display "Keywords Before" (second result)
+    const beforeKeywords = parseResults(results[1] || { suggestions: [] });
+    addGroup("Keywords Before", beforeKeywords, "#ebfaeb");
+    beforeKeywords.forEach(kw => displayedKeywords.add(kw.toLowerCase())); // Add to displayed set
 
+    // 3. Display "Keywords After" (third result)
+    const afterKeywords = parseResults(results[2] || { suggestions: [] });
+    addGroup("Keywords After", afterKeywords, "#ffe6e6");
+    afterKeywords.forEach(kw => displayedKeywords.add(kw.toLowerCase())); // Add to displayed set
+
+    // 4. Display "Keywords Between" (fourth result)
+    const betweenKeywords = parseResults(results[3] || { suggestions: [] });
+    addGroup("Keywords Between", betweenKeywords, "#e6ecff");
+    betweenKeywords.forEach(kw => displayedKeywords.add(kw.toLowerCase())); // Add to displayed set
+
+    // 5. Display "Other Suggestions" (remaining results)
     let otherKeywords = [];
     for (let i = 4; i < results.length; i++) {
         otherKeywords = [...otherKeywords, ...parseResults(results[i] || { suggestions: [] })];

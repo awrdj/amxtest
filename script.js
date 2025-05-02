@@ -1798,289 +1798,299 @@ if (filterExcludeBrands && config.excludeBrands) {
 
 // script.js
 // script.js
+    // --- Configuration ---
+        const API_ENDPOINT = 'https://completion.amazon.com/search/complete';
+        const MARKET_ID = '1';
+        const CLIENT_INFO = 'amazon-search-ui';
+        const SEARCH_ALIAS = 'aps';
+        const OTHER_KEYWORDS = ["for", "with", "and", "vs", "without", "to", "under", "from", "in"];
+        const ALPHABET = "abcdefghijklmnopqrstuvwxyz".split('');
+        const NUMBERS = "0123456789".split('');
+        const ALPHANUMERIC = [...ALPHABET, ...NUMBERS];
+        const COLORS = {
+            standard: '#FFFFFF',
+            before: '#E6F7FF',
+            after: '#E6FFFA',
+            other: '#FFFBE6',
+        };
 
-$(document).ready(function() { 
-    function debugResponse(queryFirst, queryLast, response) { 
-    console.groupCollapsed(`Suggestions Debug: "${queryFirst}|${queryLast}"`); 
-    console.log('Prefix:', queryFirst); 
-    console.log('Suffix:', queryLast); 
-    console.log('API Response:', response); 
-    console.groupEnd(); 
-    return response; 
-} 
+        // --- DOM Elements ---
+        const searchInput = document.getElementById('searchInput');
+        const suggestionsContainer = document.getElementById('suggestionsContainer');
+        const loadingIndicator = document.getElementById('loadingIndicator');
 
-    const searchInput = $("#searchInput"); 
-    const suggestionsContainer = $("#suggestionsContainer"); 
-    const marketplaceSelect = $("#marketplaceSelect"); // Ensure this ID matches your HTML 
+        // --- State ---
+        let displayedKeywords = new Set();
+        let debounceTimer;
 
-    const MAX_KEYWORDS_IN_SEARCH = 500; 
+        // --- API Fetch Function ---
+        async function fetchSuggestions(query) {
+            const url = new URL(API_ENDPOINT);
+            url.searchParams.append('q', query);
+            url.searchParams.append('search-alias', SEARCH_ALIAS);
+            url.searchParams.append('client', CLIENT_INFO);
+            url.searchParams.append('mkt', MARKET_ID);
+            // Add alias=aps for good measure, though search-alias might cover it
+            // url.searchParams.append('alias', SEARCH_ALIAS);
 
-    let currentMarketplace = getMarketplace(); 
+            console.log(`Fetching suggestions for query: "${query}" from URL: ${url.toString()}`); // DEBUG
 
-    function getMarketplace() { 
-        const selectedValue = marketplaceSelect.val(); 
-        const domainConfig = { 
-            "com": { domain: "amazon.com", market: "ATVPDKIKX0DER" }, 
-            "ca": { domain: "amazon.ca", market: "A2EUQ1WTGCTBG2" }, 
-            "co.uk": { domain: "amazon.co.uk", market: "A1F83G8C2ARO7P" }, 
-            "de": { domain: "amazon.de", market: "A1PA6795UKMFR9" }, 
-            "fr": { domain: "amazon.fr", market: "A13V1IB3VIYZZH" }, 
-            "it": { domain: "amazon.it", market: "APJ6JRA9NG5V4" }, 
-            "es": { domain: "amazon.es", market: "A1RKKUPIHCS9HS" }, 
-            "com.mx": { domain: "amazon.com.mx", market: "A1AM78C64UM0Y8" }, 
-            "com.au": { domain: "amazon.com.au", market: "A39IBJ37TRP1C6" }, 
-            "jp": { domain: "amazon.co.jp", market: "A1VC38TJH7YXB5" } // Added Japan 
-        }; 
-        return domainConfig[selectedValue] || domainConfig["com"]; // Default to .com 
-    } 
+            try {
+                // Added 'no-cors' mode for initial testing - THIS MIGHT PREVENT READING THE RESPONSE BODY
+                // If 'no-cors' works to stop errors but you get no data, a proxy is likely needed.
+                // Remove mode: 'no-cors' if you have a proxy or if it doesn't help.
+                const response = await fetch(url.toString()/*, { mode: 'no-cors' }*/);
 
-    if (marketplaceSelect.length) { 
-        marketplaceSelect.on('change', function() { 
-            currentMarketplace = getMarketplace(); 
-            console.log("Selected Marketplace:", currentMarketplace); 
-        }); 
-        currentMarketplace = getMarketplace(); 
-        console.log("Initial Marketplace:", currentMarketplace); 
-    } else { 
-        console.warn("Marketplace select element with ID 'marketplaceSelect' not found. Using default 'amazon.com'."); 
-    } 
+                console.log(`Response status for query "${query}": ${response.status}`); // DEBUG
 
-    function getSuggestions(queryFirst, queryLast) { 
-    let marketplace = currentMarketplace; 
-     
-    // Properly handle spaces and encoding 
-    const params = new URLSearchParams({ 
-        'site-variant': 'desktop', 
-        'mid': marketplace.market, 
-        'alias': 'aps', 
-        'prefix': queryFirst.trim() + (queryLast ? ' ' : ''), // Add space if suffix exists 
-        'suffix': (queryFirst ? ' ' : '') + queryLast.trim() // Add space if prefix exists 
-    }); 
+                if (!response.ok) {
+                    // Log the response body if possible, even for errors
+                    let errorBody = await response.text().catch(() => 'Could not read error body');
+                    console.error(`HTTP error for query "${query}"! Status: ${response.status}. Body: ${errorBody}`);
+                    return null;
+                }
 
-    const suggestUrl = `https://completion.${marketplace.domain}/api/2017/suggestions?${params}`; 
+                // Check content type - Amazon might return non-JSON sometimes
+                 const contentType = response.headers.get("content-type");
+                 if (!contentType || !contentType.includes("application/json")) {
+                     let responseBody = await response.text();
+                     console.warn(`Received non-JSON response for query "${query}". Content-Type: ${contentType}. Body: ${responseBody}`);
+                     // Attempt to parse anyway, might be jsonp-like
+                     try {
+                         // Amazon sometimes wraps JSON in a function call (jsonp style)
+                         // Try to extract JSON part if it looks like jsonp
+                         const jsonpMatch = responseBody.match(/^[^\(]*\((.*)\)[;\s]*$/);
+                         if (jsonpMatch && jsonpMatch[1]) {
+                             console.log(`Attempting to parse extracted JSONP content for query "${query}"`);
+                             const data = JSON.parse(jsonpMatch[1]);
+                             console.log(`Successfully parsed JSONP data for query "${query}":`, data); // DEBUG
+                             return data && Array.isArray(data) && data.length > 1 ? data[1] : [];
+                         } else {
+                              console.warn(`Could not extract JSON from non-JSON response for query "${query}".`);
+                              return []; // Return empty array if parsing fails
+                         }
+                     } catch (parseError) {
+                         console.error(`Error parsing potentially non-JSON response for query "${query}":`, parseError, "Response body:", responseBody);
+                         return []; // Return empty array on parsing error
+                     }
+                 }
 
-    return fetch(suggestUrl) 
-        .then(response => { 
-            if (!response.ok) return { suggestions: [] }; // Return empty instead of null 
-            return response.json(); 
-        }) 
-        .then(res => debugResponse(queryFirst, queryLast, res)) 
-        .catch(error => { 
-            console.error('Fetch Error:', error); 
-            return { suggestions: [] }; // Always return valid response shape 
-        }); 
-} 
 
-    function parseResults(data) { 
-        let keywords = []; 
-        if (data && data.suggestions) { 
-            keywords = data.suggestions.filter(function(value) { 
-                return value.type === "KEYWORD"; 
-            }).map(function(value) { 
-                if (value.highlightFragments && value.highlightFragments.length > 0) { 
-                    let text = ""; 
-                    for (const fragment of value.highlightFragments) { 
-                        text += fragment.text; 
-                    } 
-                    return text; 
-                } else { 
-                    return value.value; 
-                } 
-            }); 
-        } 
-        console.debug("Parsed Keywords:", keywords); 
-        return keywords; 
-    } 
+                // Proceed with standard JSON parsing
+                const data = await response.json();
+                console.log(`Successfully fetched data for query "${query}":`, data); // DEBUG
+                // Data format is [query, [suggestions], ?, ?]
+                return data && Array.isArray(data) && data.length > 1 ? data[1] : [];
+            } catch (error) {
+                // Catch potential CORS errors or network issues
+                console.error(`Error fetching suggestions for query "${query}":`, error);
+                // Check if it's a TypeError which often indicates CORS issues when mode is not 'no-cors'
+                if (error instanceof TypeError) {
+                    console.error("This might be a CORS issue. The browser might be blocking the request to the Amazon API from your domain. Consider using a server-side proxy.");
+                }
+                return null; // Return null on network or parsing error
+            }
+        }
 
-function displaySuggestions(search) {
-    if (!search.trim()) {
-        suggestionsContainer.empty().hide();
-        return;
-    }
+        // --- Suggestion Processing and Rendering ---
 
-    let words = search.split(" ").filter(w => w !== ""); // Clean empty words
+        function addSuggestionItem(container, keyword, backgroundColor, displayedKeywordsSet, highlightedPart = null) {
+            const lowerCaseKeyword = keyword.toLowerCase();
+            if (displayedKeywordsSet.has(lowerCaseKeyword)) {
+                // console.log(`Skipping duplicate: "${keyword}"`); // DEBUG (Optional: uncomment to see duplicates)
+                return;
+            }
+            displayedKeywordsSet.add(lowerCaseKeyword);
 
-    let promises = [
-        // Main suggestions (exact match)
-        getSuggestions(search, ""),
-        // Keywords Before and After (a-z)
-        ...Array.from('abcdefghijklmnopqrstuvwxyz').flatMap(letter => [
-            getSuggestions(letter + " " + search, ""), // Keywords Before
-            getSuggestions(search + " " + letter, "")  // Keywords After
-        ]),
-        // Between suggestions (only if 2+ words)
-        words.length >= 2
-            ? getSuggestions(words[0], words.slice(1).join(" "))
-            : Promise.resolve({ suggestions: [] }),
-        // Other contextual expansions (you can expand this list)
-        getSuggestions(`${search} for`, ""),
-        getSuggestions(`${search} and`, ""),
-        getSuggestions(`${search} with`, "")
-    ];
+            const item = document.createElement('div');
+            item.classList.add('suggestion-item');
+            item.style.backgroundColor = backgroundColor;
 
-    Promise.all(promises)
-        .then((results) => {
-            const validResults = results.filter(r => r?.suggestions?.length > 0);
+            let highlightedHtml = keyword;
 
-            if (validResults.length === 0) {
-                suggestionsContainer.hide();
+            if (highlightedPart) {
+                const index = lowerCaseKeyword.indexOf(highlightedPart.toLowerCase());
+                if (index !== -1) {
+                     const originalCaseHighlight = keyword.substring(index, index + highlightedPart.length);
+                     highlightedHtml = keyword.substring(0, index) +
+                                      `<span class="s-heavy">${originalCaseHighlight}</span>` +
+                                      keyword.substring(index + highlightedPart.length);
+                } else {
+                    console.warn(`Could not find "${highlightedPart}" in "${keyword}" for highlighting.`);
+                }
+            }
+
+            item.innerHTML = highlightedHtml;
+            item.title = `Click to search for: "${keyword}"`;
+            item.onclick = () => {
+                searchInput.value = keyword;
+                suggestionsContainer.innerHTML = '';
+                suggestionsContainer.classList.add('hidden');
+            };
+            // console.log(`Adding item: "${keyword}" with highlight "${highlightedPart || 'none'}"`); // DEBUG
+            container.appendChild(item);
+        }
+
+        function createCategoryContainer(title) {
+            const categoryDiv = document.createElement('div');
+            const titleDiv = document.createElement('div');
+            titleDiv.classList.add('category-title');
+            titleDiv.textContent = title;
+            categoryDiv.appendChild(titleDiv);
+            suggestionsContainer.appendChild(categoryDiv);
+            console.log(`Created category: "${title}"`); // DEBUG
+            return categoryDiv;
+        }
+
+        async function processAndRenderSuggestions(search) {
+            if (!search || search.length < 1) {
+                suggestionsContainer.innerHTML = '';
+                suggestionsContainer.classList.add('hidden');
                 return;
             }
 
-            processAndRenderSuggestions(search, validResults);
-        })
-        .catch(error => {
-            console.error('Suggestions Error:', error);
-            suggestionsContainer.hide();
-        });
-}
+            console.log(`Starting suggestion processing for: "${search}"`); // DEBUG
+            loadingIndicator.classList.remove('hidden');
+            suggestionsContainer.innerHTML = '';
+            displayedKeywords.clear();
 
-   function addSuggestionItem(container, keyword, backgroundColor, displayedKeywords, highlightedKeyword = null) {
-    if (displayedKeywords.size >= MAX_KEYWORDS_IN_SEARCH || displayedKeywords.has(keyword.toLowerCase())) return;
-    const item = $('<div class="ase-suggestion" style="background-color:' + backgroundColor + '"></div>');
-    item.html(highlightedKeyword || escapeHtml(keyword));
-    item.attr('data-keyword', keyword);
-    item.on('click', () => {
-        searchInput.val(keyword);
-        suggestionsContainer.empty().hide();
-    });
-    container.append(item);
-    displayedKeywords.add(keyword.toLowerCase());
-}
+            const promises = [];
+            const lowerSearch = search.toLowerCase();
 
-function processAndRenderSuggestions(search, results) {
-    const mainKeywords = parseResults(results[0] || { suggestions: [] });
-    const displayedKeywords = new Set(mainKeywords.map(kw => kw.toLowerCase()));
+            // 1. Standard Suggestions
+            promises.push(fetchSuggestions(search).then(results => ({ type: 'standard', results })));
 
-    suggestionsContainer.empty();
+            // 2. Keywords Before (a-z, 0-9)
+            ALPHANUMERIC.forEach(prefix => {
+                const query = `${prefix} ${search}`;
+                promises.push(fetchSuggestions(query).then(results => ({ type: 'before', prefix, results, originalQuery: query })));
+            });
 
-    const amazonSuggestionsContainer = $('<div class="suggestion-group"><h3>Amazon Suggestions</h3></div>');
-    mainKeywords.forEach(keyword => {
-        const item = $('<div class="suggestion-item"></div>').html(highlightMatch(keyword, search));
-        item.on('click', () => {
-            searchInput.val(keyword);
-            suggestionsContainer.empty().hide();
-        });
-        amazonSuggestionsContainer.append(item);
-    });
-    if (amazonSuggestionsContainer.children().length > 0) {
-        suggestionsContainer.append(amazonSuggestionsContainer);
-    }
+            // 3. Keywords After (a-z, 0-9)
+            ALPHANUMERIC.forEach(suffix => {
+                const query = `${search} ${suffix}`;
+                promises.push(fetchSuggestions(query).then(results => ({ type: 'after', suffix, results, originalQuery: query })));
+            });
 
-    const aseCol1 = $('<div id="ase-col1" style="display: flex; flex-flow: column wrap; align-content: left;"></div>');
+            // 4. Other Keywords
+            OTHER_KEYWORDS.forEach(otherWord => {
+                const query = `${search} ${otherWord}`;
+                promises.push(fetchSuggestions(query).then(results => ({ type: 'other', otherWord, results, originalQuery: query })));
+            });
 
-    // Process Keywords Before (results[1] to results[26])
-    if (results.length > 1) {
-        aseCol1.append('<div class="s-suggestion" style="background-color:#ffe6e6;"><b>Keywords Before</b></div>');
-        for (let i = 1; i <= 26 && i < results.length; i++) {
-            const keywords = parseResults(results[i] || { suggestions: [] });
-            keywords.forEach(keyword => {
-                if (displayedKeywords.size >= MAX_KEYWORDS_IN_SEARCH || displayedKeywords.has(keyword.toLowerCase())) return;
-                const letter = 'abcdefghijklmnopqrstuvwxyz'[i - 1];
-                const index = keyword.toLowerCase().indexOf(letter + " " + search.toLowerCase());
-                let highlightedKeyword = escapeHtml(keyword);
-                if (index >= 0) {
-                    const match = escapeHtml(keyword.substring(index, letter.length + 1));
-                    highlightedKeyword = escapeHtml(keyword.substring(0, index)) + `<span class="s-heavy">${match}</span>` + escapeHtml(keyword.substring(index + letter.length + 1));
+            console.log(`Waiting for ${promises.length} API calls to complete...`); // DEBUG
+            const allResults = await Promise.all(promises);
+            console.log("All API calls completed. Raw results:", allResults); // DEBUG
+
+            loadingIndicator.classList.add('hidden');
+            suggestionsContainer.classList.remove('hidden');
+
+            let standardContainer, beforeContainer, afterContainer, otherContainer;
+
+            allResults.forEach((resultData, index) => {
+                 // DEBUG: Log processing attempt for each result
+                // console.log(`Processing result index ${index}:`, resultData);
+
+                if (!resultData || !resultData.results) {
+                    console.warn(`Skipping result index ${index} due to missing data or failed fetch.`); // DEBUG
+                    return;
                 }
-                addSuggestionItem(aseCol1, keyword, "#ffe6e6", displayedKeywords, highlightedKeyword);
-            });
-        }
-    }
-
-    // Process Keywords After (results[27] to results[52])
-    if (results.length > 27) {
-        aseCol1.append('<div class="s-suggestion" style="background-color:#ebfaeb;"><b>Keywords After</b></div>');
-        for (let i = 27; i <= 52 && i < results.length; i++) {
-            const keywords = parseResults(results[i] || { suggestions: [] });
-            keywords.forEach(keyword => {
-                if (displayedKeywords.size >= MAX_KEYWORDS_IN_SEARCH || displayedKeywords.has(keyword.toLowerCase())) return;
-                const letter = 'abcdefghijklmnopqrstuvwxyz'[i - 27];
-                const index = keyword.toLowerCase().indexOf(search.toLowerCase() + " " + letter);
-                let highlightedKeyword = escapeHtml(keyword);
-                if (index >= 0) {
-                    const match = escapeHtml(keyword.substring(index + search.length, search.length + 1 + letter.length));
-                    highlightedKeyword = escapeHtml(keyword.substring(0, index + search.length)) + `<span class="s-heavy">${match}</span>` + escapeHtml(keyword.substring(index + search.length + 1 + letter.length));
+                // DEBUG: Log if results array is empty
+                if (resultData.results.length === 0) {
+                    // console.log(`Result index ${index} (type: ${resultData.type}) has an empty results array.`); // DEBUG
                 }
-                addSuggestionItem(aseCol1, keyword, "#ebfaeb", displayedKeywords, highlightedKeyword);
+
+
+                const { type, results } = resultData;
+
+                switch (type) {
+                    case 'standard':
+                        if (results.length > 0) {
+                            console.log(`Processing ${results.length} standard suggestions.`); // DEBUG
+                            standardContainer = createCategoryContainer('Standard Suggestions');
+                            results.forEach(keyword => addSuggestionItem(standardContainer, keyword, COLORS.standard, displayedKeywords));
+                        }
+                        break;
+
+                    case 'before':
+                        const { prefix } = resultData;
+                        const relevantBefore = results.filter(k => k.toLowerCase().startsWith(prefix + ' ' + lowerSearch));
+                        if (relevantBefore.length > 0) {
+                            console.log(`Processing ${relevantBefore.length} relevant 'before' suggestions for prefix "${prefix}".`); // DEBUG
+                            if (!beforeContainer) beforeContainer = createCategoryContainer('Keywords Before');
+                            relevantBefore.forEach(keyword => addSuggestionItem(beforeContainer, keyword, COLORS.before, displayedKeywords, prefix));
+                        }
+                        break;
+
+                    case 'after':
+                         const { suffix } = resultData;
+                         const relevantAfter = results.filter(k => k.toLowerCase().startsWith(resultData.originalQuery.toLowerCase()));
+                         if (relevantAfter.length > 0) {
+                             console.log(`Processing ${relevantAfter.length} relevant 'after' suggestions for suffix "${suffix}".`); // DEBUG
+                            if (!afterContainer) afterContainer = createCategoryContainer('Keywords After');
+                             relevantAfter.forEach(keyword => {
+                                 const potentialSuffix = keyword.substring(search.length + 1);
+                                 if (potentialSuffix.toLowerCase().startsWith(suffix.toLowerCase())) {
+                                     addSuggestionItem(afterContainer, keyword, COLORS.after, displayedKeywords, keyword.substring(search.length + 1, search.length + 1 + suffix.length));
+                                 } else {
+                                     addSuggestionItem(afterContainer, keyword, COLORS.after, displayedKeywords, null);
+                                 }
+                             });
+                         }
+                        break;
+
+                    case 'other':
+                        const { otherWord } = resultData;
+                        const relevantOther = results.filter(k => k.toLowerCase().startsWith(resultData.originalQuery.toLowerCase()));
+                         if (relevantOther.length > 0) {
+                             console.log(`Processing ${relevantOther.length} relevant 'other' suggestions for word "${otherWord}".`); // DEBUG
+                            if (!otherContainer) otherContainer = createCategoryContainer('Other Suggestions');
+                            relevantOther.forEach(keyword => {
+                                const indexOther = keyword.toLowerCase().indexOf(otherWord.toLowerCase(), search.length);
+                                if (indexOther === search.length + 1) {
+                                    const highlightedPart = keyword.substring(indexOther, indexOther + otherWord.length);
+                                    addSuggestionItem(otherContainer, keyword, COLORS.other, displayedKeywords, highlightedPart);
+                                } else {
+                                     addSuggestionItem(otherContainer, keyword, COLORS.other, displayedKeywords, null);
+                                }
+                            });
+                        }
+                        break;
+                }
             });
+
+             if (suggestionsContainer.children.length === 0) {
+                 console.log("No suggestions were added to any category. Displaying 'No suggestions found'."); // DEBUG
+                 suggestionsContainer.innerHTML = '<div class="p-4 text-center text-gray-500">No suggestions found.</div>';
+                 suggestionsContainer.classList.remove('hidden');
+             } else {
+                 console.log("Finished processing. Suggestions should be visible."); // DEBUG
+             }
         }
-    }
 
-    // Process Keywords Between (results[53])
-    if (results.length > 53) {
-        const keywords = parseResults(results[53] || { suggestions: [] });
-        if (keywords.length > 0) {
-            aseCol1.append('<div class="s-suggestion" style="background-color:#e6ecff;"><b>Keywords Between</b></div>');
-            keywords.forEach(keyword => {
-                addSuggestionItem(aseCol1, keyword, "#e6ecff", displayedKeywords);
-            });
-        }
-    }
+        // --- Event Listener with Debouncing ---
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(debounceTimer);
+            const searchTerm = e.target.value.trim();
 
-    // Process Other Suggestions (results[54] onwards)
-    if (results.length > 54) {
-        aseCol1.append('<div class="s-suggestion" style="background-color:#f2f2f2;"><b>Other</b></div>');
-        for (let i = 54; i < results.length; i++) {
-            const keywords = parseResults(results[i] || { suggestions: [] });
-            keywords.forEach(keyword => {
-                addSuggestionItem(aseCol1, keyword, "#f2f2f2", displayedKeywords);
-            });
-        }
-    }
+            if (searchTerm) {
+                loadingIndicator.classList.remove('hidden');
+                suggestionsContainer.classList.add('hidden');
+                suggestionsContainer.innerHTML = '';
 
-    if (aseCol1.children().length > 0) {
-        suggestionsContainer.append(aseCol1);
-    }
+                debounceTimer = setTimeout(() => {
+                    processAndRenderSuggestions(searchTerm);
+                }, 300);
+            } else {
+                suggestionsContainer.innerHTML = '';
+                suggestionsContainer.classList.add('hidden');
+                loadingIndicator.classList.add('hidden');
+            }
+        });
 
-    suggestionsContainer.toggle(suggestionsContainer.children().length > 0);
-}
-
-    let timeoutId; 
-    searchInput.on('input', function() { 
-        const query = $(this).val().trim(); 
-        clearTimeout(timeoutId); 
-        timeoutId = setTimeout(() => { 
-            displaySuggestions(query); 
-        }, 300); 
-    }); 
-
-    $(document).on('click', (event) => { 
-        if (!searchInput.is(event.target) && !suggestionsContainer.is(event.target) && suggestionsContainer.has(event.target).length === 0) { 
-            suggestionsContainer.empty().hide(); 
-        } 
-    }); 
-
-    $("#searchForm").submit(function(event) { 
-        event.preventDefault(); 
-        const searchTerm = searchInput.val().trim(); 
-        const marketplace = marketplaceSelect.val(); 
-        let url = `https://www.amazon.${marketplace}/s?k=${encodeURIComponent(searchTerm)}`; 
-        $("#generatedUrl").text(url); 
-        $("#resultUrlContainer").slideDown("fast"); 
-    }); 
-
-    function highlightMatch(keyword, search) {
-    const searchLower = search.toLowerCase();
-    const keywordLower = keyword.toLowerCase();
-    const index = keywordLower.indexOf(searchLower);
-
-    if (index >= 0) {
-        const before = keyword.substring(0, index);
-        const match = keyword.substring(index, index + search.length);
-        const after = keyword.substring(index + search.length);
-        return `${escapeHtml(before)}<strong>${escapeHtml(match)}</strong>${escapeHtml(after)}`;
-    } else {
-        return escapeHtml(keyword);
-    }
-}
-
-function escapeHtml(unsafe) {
-    return unsafe
-         .replace(/&/g, "&amp;")
-         .replace(/</g, "&lt;")
-         .replace(/>/g, "&gt;")
-         .replace(/"/g, "&quot;")
-         .replace(/'/g, "&#039;");
-}
-}); 
+        // Optional: Clear suggestions if the user clicks outside
+        document.addEventListener('click', (event) => {
+            if (!searchInput.contains(event.target) && !suggestionsContainer.contains(event.target)) {
+                suggestionsContainer.classList.add('hidden');
+            }
+        });

@@ -1914,18 +1914,26 @@ function processAndRenderSuggestions(search, results) {
                 if (!displayedKeywords.has(lowerKeyword) && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
                     const item = $('<div class="suggestion-item"></div>');
                     let before = "";
-                    let match = search;
+                    let match = "";
                     let after = "";
                     const index = lowerKeyword.indexOf(search.toLowerCase());
-                    if (index !== -1) {
-                        before = keyword.substring(0, index);
-                        match = keyword.substring(index, index + search.length);
-                        after = keyword.substring(index + search.length);
+
+                    if (title === "Keywords Before" && lowerKeyword.endsWith(" " + search.toLowerCase())) {
+                        const beforePart = keyword.substring(0, keyword.lastIndexOf(" " + search));
+                        before = escapeHtml(beforePart);
+                        match = `<span class="s-heavy">${escapeHtml(search)}</span>`;
+                    } else if (title === "Keywords After" && lowerKeyword.startsWith(search.toLowerCase() + " ")) {
+                        match = `<span class="s-heavy">${escapeHtml(search)}</span>`;
+                        after = escapeHtml(keyword.substring(search.length));
+                    } else if (index !== -1) {
+                        before = escapeHtml(keyword.substring(0, index));
+                        match = `<span class="s-heavy">${escapeHtml(keyword.substring(index, index + search.length)}}</span>`;
+                        after = escapeHtml(keyword.substring(index + search.length));
                     } else {
-                        before = keyword;
-                        match = "";
+                        before = escapeHtml(keyword);
                     }
-                    item.html(`${escapeHtml(before)}<span class="s-heavy">${escapeHtml(match)}</span>${escapeHtml(after)}`);
+
+                    item.html(`${before}${match}${after}`);
                     item.on('click', () => {
                         searchInput.val(keyword);
                         suggestionsContainer.empty().hide();
@@ -1946,19 +1954,26 @@ function processAndRenderSuggestions(search, results) {
     // 1. Default Amazon Suggestions
     addGroup(null, mainKeywords, "white");
 
-    // 2. Keywords Before
-    const beforeKeywords = parseResults(results[1] || { suggestions: [] });
+    // 2. Keywords Before - Filtering for suggestions ending with " love"
+    const allBeforeKeywords = parseResults(results[1] || { suggestions: [] });
+    const beforeKeywords = allBeforeKeywords.filter(keyword => keyword.toLowerCase().endsWith(" " + search.toLowerCase()));
     addGroup("Keywords Before", beforeKeywords, "#ffe6e6"); // Matching extension's color
 
-    // 3. Keywords After - Filtering to start with "love"
+    // 3. Keywords After - Filtering for suggestions starting with "love "
     const allAfterKeywords = parseResults(results[2] || { suggestions: [] });
     const afterKeywords = allAfterKeywords.filter(keyword => keyword.toLowerCase().startsWith(search.toLowerCase() + " "));
     addGroup("Keywords After", afterKeywords, "#ebfaeb"); // Matching extension's color
 
-    // 4. Other Suggestions
+    // 4. Other Suggestions - Include all other results, ensuring no duplicates
     let otherKeywords = [];
     for (let i = 3; i < results.length; i++) {
-        otherKeywords = [...otherKeywords, ...parseResults(results[i] || { suggestions: [] })];
+        const parsed = parseResults(results[i] || { suggestions: [] });
+        parsed.forEach(kw => {
+            if (!displayedKeywords.has(kw.toLowerCase())) {
+                otherKeywords.push(kw);
+                displayedKeywords.add(kw.toLowerCase());
+            }
+        });
     }
     addGroup("Other Suggestions", otherKeywords, "#f2f2f2"); // Matching extension's color
 

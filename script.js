@@ -1875,35 +1875,28 @@ $(document).ready(function() {
         return keywords;
     }
 
-    function displaySuggestions(search) {
-    if (!search.trim()) {
-        suggestionsContainer.empty().hide();
-        return;
-    }
-
-    let promises = [];
-    promises.push(getSuggestions(search, "")); // Main suggestions
-
-    // Keywords Before
-    promises.push(getSuggestions(" ", search.trim()));
-
-    // Keywords After - Let's try a slightly different suffix
-    promises.push(getSuggestions(search.trim(), " ")); // Space after the initial term
-
-    // Other Keywords - Expanding the prefixes
-    promises.push(getSuggestions(search + " for ", ""));
-    promises.push(getSuggestions(search + " and ", ""));
-    promises.push(getSuggestions(search + " with ", ""));
-    promises.push(getSuggestions(search + " of ", "")); // Added "of"
-    promises.push(getSuggestions(search + " in ", "")); // Added "in"
-
-    Promise.all(promises)
-        .then((results) => {
-            processAndRenderSuggestions(search, results);
+    function getSuggestions(queryFirst, queryLast) {
+    let marketplace = currentMarketplace;
+    const departmentQuery = $("#departmentSelect").val() || "aps";
+    const suggestUrl = `https://completion.${marketplace.domain}/api/2017/suggestions?site-variant=desktop&mid=${marketplace.market}&alias=${departmentQuery}&prefix=${encodeURIComponent(queryFirst)}&suffix=${encodeURIComponent(queryLast)}`;
+    console.log("Fetching suggestions for:", { prefix: queryFirst, suffix: queryLast }); // Log the API call
+    return fetch(suggestUrl)
+        .then(response => {
+            if (!response.ok) {
+                console.error('API request failed:', response.status, response.statusText, suggestUrl);
+                return { suggestions: [] };
+            }
+            return response.json();
+        })
+        .catch(error => {
+            console.error('Error fetching suggestions:', error, suggestUrl);
+            return { suggestions: [] };
         });
 }
 
 function processAndRenderSuggestions(search, results) {
+    console.log("Raw API Results:", results); // Log the raw results
+
     const mainKeywords = parseResults(results[0] || { suggestions: [] });
     let displayedKeywords = new Set(mainKeywords.map(kw => kw.toLowerCase()));
     suggestionsContainer.empty();
@@ -1957,7 +1950,7 @@ function processAndRenderSuggestions(search, results) {
     const beforeKeywords = parseResults(results[1] || { suggestions: [] });
     addGroup("Keywords Before", beforeKeywords, "#ebfaeb");
 
-    // 3. Keywords After - Using the modified API call
+    // 3. Keywords After - Reverting to the previous query
     const afterKeywords = parseResults(results[2] || { suggestions: [] });
     addGroup("Keywords After", afterKeywords, "#ffe6e6");
 
@@ -1969,6 +1962,34 @@ function processAndRenderSuggestions(search, results) {
     addGroup("Other Suggestions", otherKeywords, "#f2f2f2");
 
     suggestionsContainer.toggle(suggestionsContainer.children().length > 0);
+}
+
+function displaySuggestions(search) {
+    if (!search.trim()) {
+        suggestionsContainer.empty().hide();
+        return;
+    }
+
+    let promises = [];
+    promises.push(getSuggestions(search, "")); // Main suggestions
+
+    // Keywords Before
+    promises.push(getSuggestions(" ", search.trim()));
+
+    // Keywords After - Reverting to the previous query
+    promises.push(getSuggestions(search.trim() + " ", ""));
+
+    // Other Keywords
+    promises.push(getSuggestions(search + " for ", ""));
+    promises.push(getSuggestions(search + " and ", ""));
+    promises.push(getSuggestions(search + " with ", ""));
+    promises.push(getSuggestions(search + " of ", ""));
+    promises.push(getSuggestions(search + " in ", ""));
+
+    Promise.all(promises)
+        .then((results) => {
+            processAndRenderSuggestions(search, results);
+        });
 }
 
     let timeoutId;

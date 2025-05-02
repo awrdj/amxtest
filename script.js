@@ -1948,18 +1948,19 @@ function processAndRenderSuggestions(search, results) {
 
     // 2. Keywords Before
     const beforeKeywords = parseResults(results[1] || { suggestions: [] });
-    addGroup("Keywords Before", beforeKeywords, "#ebfaeb");
+    addGroup("Keywords Before", beforeKeywords, "#ffe6e6"); // Matching extension's color
 
-    // 3. Keywords After - Using the results from the "love " prefix
-    const afterKeywords = parseResults(results[2] || { suggestions: [] });
-    addGroup("Keywords After", afterKeywords, "#ffe6e6");
+    // 3. Keywords After - Filtering to start with "love"
+    const allAfterKeywords = parseResults(results[2] || { suggestions: [] });
+    const afterKeywords = allAfterKeywords.filter(keyword => keyword.toLowerCase().startsWith(search.toLowerCase() + " "));
+    addGroup("Keywords After", afterKeywords, "#ebfaeb"); // Matching extension's color
 
     // 4. Other Suggestions
     let otherKeywords = [];
     for (let i = 3; i < results.length; i++) {
         otherKeywords = [...otherKeywords, ...parseResults(results[i] || { suggestions: [] })];
     }
-    addGroup("Other Suggestions", otherKeywords, "#f2f2f2");
+    addGroup("Other Suggestions", otherKeywords, "#f2f2f2"); // Matching extension's color
 
     suggestionsContainer.toggle(suggestionsContainer.children().length > 0);
 }

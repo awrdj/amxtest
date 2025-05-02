@@ -1895,7 +1895,7 @@ $(document).ready(function() {
 }
 
 function processAndRenderSuggestions(search, results) {
-    console.log("Raw API Results:", results); // Log the raw results
+    console.log("Raw API Results:", results);
 
     const mainKeywords = parseResults(results[0] || { suggestions: [] });
     let displayedKeywords = new Set(mainKeywords.map(kw => kw.toLowerCase()));
@@ -1950,7 +1950,7 @@ function processAndRenderSuggestions(search, results) {
     const beforeKeywords = parseResults(results[1] || { suggestions: [] });
     addGroup("Keywords Before", beforeKeywords, "#ebfaeb");
 
-    // 3. Keywords After - Reverting to the previous query
+    // 3. Keywords After - Using the results from the "love " prefix
     const afterKeywords = parseResults(results[2] || { suggestions: [] });
     addGroup("Keywords After", afterKeywords, "#ffe6e6");
 

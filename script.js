@@ -1884,14 +1884,16 @@ $(document).ready(function() {
     let promises = [];
     promises.push(getSuggestions(search, "")); // Main suggestions
 
-    // Keywords Before (Extension seems to prepend a space)
+    // Keywords Before
     promises.push(getSuggestions(" ", search.trim()));
 
-    // Keywords After (Extension seems to append a space)
+    // Keywords After
     promises.push(getSuggestions(search.trim() + " ", ""));
 
-    // Other Keywords - Let's try a simpler approach for now
-    promises.push(getSuggestions(search + " ", "")); // Adding a space after the search term
+    // Other Keywords - Trying specific prefixes
+    promises.push(getSuggestions(search + " for ", ""));
+    promises.push(getSuggestions(search + " and ", ""));
+    promises.push(getSuggestions(search + " with ", ""));
 
     Promise.all(promises)
         .then((results) => {
@@ -1899,7 +1901,7 @@ $(document).ready(function() {
         });
 }
 
-    function processAndRenderSuggestions(search, results) {
+function processAndRenderSuggestions(search, results) {
     const mainKeywords = parseResults(results[0] || { suggestions: [] });
     let displayedKeywords = new Set(mainKeywords.map(kw => kw.toLowerCase()));
     suggestionsContainer.empty();
@@ -1957,8 +1959,11 @@ $(document).ready(function() {
     const afterKeywords = parseResults(results[2] || { suggestions: [] });
     addGroup("Keywords After", afterKeywords, "#ffe6e6");
 
-    // 4. Other Suggestions (Simplified)
-    const otherKeywords = parseResults(results[3] || { suggestions: [] });
+    // 4. Other Suggestions
+    let otherKeywords = [];
+    for (let i = 3; i < results.length; i++) { // Start from index 3 for the "Other" promises
+        otherKeywords = [...otherKeywords, ...parseResults(results[i] || { suggestions: [] })];
+    }
     addGroup("Other Suggestions", otherKeywords, "#f2f2f2");
 
     suggestionsContainer.toggle(suggestionsContainer.children().length > 0);

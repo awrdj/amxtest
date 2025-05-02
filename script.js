@@ -1904,9 +1904,9 @@ function processAndRenderSuggestions(search, results) {
 
     const addGroup = (title, keywords, backgroundColor) => {
         if (keywords && keywords.length > 0 && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
-            const groupDiv = $('<div class="suggestion-group"></div>');
-            if (title) {
-                groupDiv.append($('<h3></h3>').text(title));
+            const groupDiv = <span class="math-inline">\('<div class\="suggestion\-group"\></div\>'\);
+if \(title\) \{
+groupDiv\.append\(</span>('<h3></h3>').text(title));
             }
 
             keywords.forEach(keyword => {
@@ -1927,7 +1927,7 @@ function processAndRenderSuggestions(search, results) {
                         after = escapeHtml(keyword.substring(search.length));
                     } else if (index !== -1) {
                         before = escapeHtml(keyword.substring(0, index));
-                        match = `<span class="s-heavy">${escapeHtml(keyword.substring(index, index + search.length)}}</span>`;
+                        match = `<span class="s-heavy">${escapeHtml(keyword.substring(index, index + search.length))}</span>`;
                         after = escapeHtml(keyword.substring(index + search.length));
                     } else if (title === null) { // Default Suggestions
                         before = escapeHtml(keyword);
@@ -1935,7 +1935,7 @@ function processAndRenderSuggestions(search, results) {
                         before = escapeHtml(keyword);
                         if (index !== -1) {
                             before = escapeHtml(keyword.substring(0, index));
-                            match = `<span class="s-heavy">${escapeHtml(keyword.substring(index, index + search.length)}}</span>`;
+                            match = `<span class="s-heavy">${escapeHtml(keyword.substring(index, index + search.length))}</span>`;
                             after = escapeHtml(keyword.substring(index + search.length));
                         }
                     }

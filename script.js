@@ -1935,59 +1935,63 @@ function processAndRenderSuggestions(search, results) {
     const displayedKeywords = new Set();
     let keywordCount = 0;
 
-    const addGroup = (title, resultIndex) => {
-        const rawData = results[resultIndex] || { suggestions: [] };
-        const keywords = parseResults(rawData)
-            .filter(kw => {
-                const kwLower = kw.toLowerCase();
-                const isNew = !displayedKeywords.has(kwLower);
-                const hasCapacity = keywordCount < MAX_KEYWORDS_IN_SEARCH;
-                return isNew && hasCapacity;
-            });
+    const mainSuggestionsContainer = $('<div class="suggestion-group"><h3>Amazon Suggestions</h3></div>');
+    const beforeSuggestionsContainer = $('<div class="suggestion-group"><h3>Keywords Before</h3></div>');
+    const afterSuggestionsContainer = $('<div class="suggestion-group"><h3>Keywords After</h3></div>');
+    const otherSuggestionsContainer = $('<div class="suggestion-group"><h3>Other Suggestions</h3></div>');
 
-        if (keywords.length > 0) {
-            const groupDiv = $('<div class="suggestion-group"></div>').append($('<h3></h3>').text(title));
-            keywords.forEach(keyword => {
-                if (keywordCount >= MAX_KEYWORDS_IN_SEARCH) return;
-                const item = $('<div class="suggestion-item"></div>').html(highlightMatch(keyword, search));
-                item.on('click', () => {
-                    searchInput.val(keyword);
-                    suggestionsContainer.empty().hide();
-                });
-                groupDiv.append(item);
-                suggestionsContainer.append(groupDiv);
-                displayedKeywords.add(keyword.toLowerCase());
-                keywordCount++;
-            });
-        }
+    const addSuggestionItem = (container, keyword) => {
+        if (keywordCount >= MAX_KEYWORDS_IN_SEARCH) return;
+        const item = $('<div class="suggestion-item"></div>').html(highlightMatch(keyword, search));
+        item.on('click', () => {
+            searchInput.val(keyword);
+            suggestionsContainer.empty().hide();
+        });
+        container.append(item);
+        displayedKeywords.add(keyword.toLowerCase());
+        keywordCount++;
     };
 
-    // Add suggestion groups in the order of the promises
-    addGroup("Amazon Suggestions", 0);
-    addGroup("Keywords Before", 1);
-    addGroup("Keywords After", 2);
-    addGroup("Keywords Between", 3);
+    // Process Main Amazon Suggestions (index 0)
+    parseResults(results[0] || { suggestions: [] }).forEach(keyword => {
+        if (!displayedKeywords.has(keyword.toLowerCase()) && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
+            addSuggestionItem(mainSuggestionsContainer, keyword);
+        }
+    });
+    if (mainSuggestionsContainer.children().length > 1) { // Only add if there are suggestions
+        suggestionsContainer.append(mainSuggestionsContainer);
+    }
 
-    // Handle "Other" suggestions (for, and, with)
-    const otherKeywords = [4, 5, 6].flatMap(i => parseResults(results[i] || { suggestions: [] }))
-        .filter(kw => {
-            const kwLower = kw.toLowerCase();
-            return !displayedKeywords.has(kwLower) && keywordCount < MAX_KEYWORDS_IN_SEARCH;
-        });
+    // Process "Keywords Before" (index 1)
+    parseResults(results[1] || { suggestions: [] }).forEach(keyword => {
+        if (!displayedKeywords.has(keyword.toLowerCase()) && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
+            addSuggestionItem(beforeSuggestionsContainer, keyword);
+        }
+    });
+    if (beforeSuggestionsContainer.children().length > 1) {
+        suggestionsContainer.append(beforeSuggestionsContainer);
+    }
 
-    if (otherKeywords.length > 0) {
-        const groupDiv = $('<div class="suggestion-group"></div>').append($('<h3></h3>').text("Other Suggestions"));
-        otherKeywords.forEach(keyword => {
-            const item = $('<div class="suggestion-item"></div>').html(highlightMatch(keyword, search));
-            item.on('click', () => {
-                searchInput.val(keyword);
-                suggestionsContainer.empty().hide();
-            });
-            groupDiv.append(item);
-            suggestionsContainer.append(groupDiv);
-            displayedKeywords.add(keyword.toLowerCase());
-            keywordCount++;
+    // Process "Keywords After" (index 2)
+    parseResults(results[2] || { suggestions: [] }).forEach(keyword => {
+        if (!displayedKeywords.has(keyword.toLowerCase()) && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
+            addSuggestionItem(afterSuggestionsContainer, keyword);
+        }
+    });
+    if (afterSuggestionsContainer.children().length > 1) {
+        suggestionsContainer.append(afterSuggestionsContainer);
+    }
+
+    // Process "Keywords Between" (index 3) and Contextual (index 4, 5, 6) for "Other"
+    [3, 4, 5, 6].forEach(index => {
+        parseResults(results[index] || { suggestions: [] }).forEach(keyword => {
+            if (!displayedKeywords.has(keyword.toLowerCase()) && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
+                addSuggestionItem(otherSuggestionsContainer, keyword);
+            }
         });
+    });
+    if (otherSuggestionsContainer.children().length > 1) {
+        suggestionsContainer.append(otherSuggestionsContainer);
     }
 
     suggestionsContainer.toggle(suggestionsContainer.children().length > 0);

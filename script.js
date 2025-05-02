@@ -1876,34 +1876,32 @@ $(document).ready(function() {
     }
 
     function displaySuggestions(search) {
-        if (!search.trim()) {
-            suggestionsContainer.empty().hide();
-            return;
-        }
-
-        let promises = [];
-        promises.push(getSuggestions(search, "")); // Main suggestions
-        promises.push(getSuggestions(" ", search.trim())); // Keywords Before
-        promises.push(getSuggestions(search.trim() + " ", "")); // Keywords After
-        let words = search.split(" ").filter(w => w !== "");
-        if (words.length >= 2) {
-            promises.push(getSuggestions(words[0] + " ", words.slice(1).join(" "))); // Keywords Between
-        } else {
-            promises.push(Promise.resolve({ suggestions: [] }));
-        }
-        promises.push(getSuggestions(search + " for ", "")); // Other
-        promises.push(getSuggestions(search + " and ", "")); // Other
-        promises.push(getSuggestions(search + " with ", "")); // Other
-
-        Promise.all(promises)
-            .then((results) => {
-                processAndRenderSuggestions(search, results);
-            });
+    if (!search.trim()) {
+        suggestionsContainer.empty().hide();
+        return;
     }
+
+    let promises = [];
+    promises.push(getSuggestions(search, "")); // Main suggestions
+
+    // Keywords Before (Extension seems to prepend a space)
+    promises.push(getSuggestions(" ", search.trim()));
+
+    // Keywords After (Extension seems to append a space)
+    promises.push(getSuggestions(search.trim() + " ", ""));
+
+    // Other Keywords - Let's try a simpler approach for now
+    promises.push(getSuggestions(search + " ", "")); // Adding a space after the search term
+
+    Promise.all(promises)
+        .then((results) => {
+            processAndRenderSuggestions(search, results);
+        });
+}
 
     function processAndRenderSuggestions(search, results) {
     const mainKeywords = parseResults(results[0] || { suggestions: [] });
-    let displayedKeywords = new Set();
+    let displayedKeywords = new Set(mainKeywords.map(kw => kw.toLowerCase()));
     suggestionsContainer.empty();
     let keywordCount = 0;
 
@@ -1948,30 +1946,19 @@ $(document).ready(function() {
         }
     };
 
-    // 1. Display Default Amazon Suggestions (first result) without a title
+    // 1. Default Amazon Suggestions
     addGroup(null, mainKeywords, "white");
-    mainKeywords.forEach(kw => displayedKeywords.add(kw.toLowerCase())); // Add to displayed set
 
-    // 2. Display "Keywords Before" (second result)
+    // 2. Keywords Before
     const beforeKeywords = parseResults(results[1] || { suggestions: [] });
     addGroup("Keywords Before", beforeKeywords, "#ebfaeb");
-    beforeKeywords.forEach(kw => displayedKeywords.add(kw.toLowerCase())); // Add to displayed set
 
-    // 3. Display "Keywords After" (third result)
+    // 3. Keywords After
     const afterKeywords = parseResults(results[2] || { suggestions: [] });
     addGroup("Keywords After", afterKeywords, "#ffe6e6");
-    afterKeywords.forEach(kw => displayedKeywords.add(kw.toLowerCase())); // Add to displayed set
 
-    // 4. Display "Keywords Between" (fourth result)
-    const betweenKeywords = parseResults(results[3] || { suggestions: [] });
-    addGroup("Keywords Between", betweenKeywords, "#e6ecff");
-    betweenKeywords.forEach(kw => displayedKeywords.add(kw.toLowerCase())); // Add to displayed set
-
-    // 5. Display "Other Suggestions" (remaining results)
-    let otherKeywords = [];
-    for (let i = 4; i < results.length; i++) {
-        otherKeywords = [...otherKeywords, ...parseResults(results[i] || { suggestions: [] })];
-    }
+    // 4. Other Suggestions (Simplified)
+    const otherKeywords = parseResults(results[3] || { suggestions: [] });
     addGroup("Other Suggestions", otherKeywords, "#f2f2f2");
 
     suggestionsContainer.toggle(suggestionsContainer.children().length > 0);

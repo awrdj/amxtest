@@ -1938,7 +1938,6 @@ function displaySuggestions(search) {
     function processAndRenderSuggestions(search, results) {
     const mainKeywords = parseResults(results[0] || { suggestions: [] });
     const displayedKeywords = new Set(mainKeywords.map(kw => kw.toLowerCase()));
-    let keywordCount = displayedKeywords.size;
 
     suggestionsContainer.empty();
 
@@ -1956,7 +1955,6 @@ function displaySuggestions(search) {
     }
 
     const aseCol1 = $('<div id="ase-col1" style="display: flex; flex-flow: column wrap; align-content: left;"></div>');
-    let otherTitleDisplayed = false;
 
     // Process Keywords Before (results[1] to results[26])
     if (results.length > 1) {
@@ -1964,18 +1962,16 @@ function displaySuggestions(search) {
         for (let i = 1; i <= 26 && i < results.length; i++) {
             const keywords = parseResults(results[i] || { suggestions: [] });
             keywords.forEach(keyword => {
-                if (keywordCount < MAX_KEYWORDS_IN_SEARCH && !displayedKeywords.has(keyword.toLowerCase())) {
-                    const letter = 'abcdefghijklmnopqrstuvwxyz'[i - 1];
-                    const index = keyword.toLowerCase().indexOf(letter + " " + search.toLowerCase());
-                    let highlightedKeyword = escapeHtml(keyword);
-                    if (index >= 0) {
-                        const before = escapeHtml(keyword.substring(0, index));
-                        const match = escapeHtml(keyword.substring(index, index + (letter.length + 1 + search.length)));
-                        const after = escapeHtml(keyword.substring(index + (letter.length + 1 + search.length)));
-                        highlightedKeyword = `${before}<span class="s-heavy">${match}</span>${after}`;
-                    }
-                    addSuggestionItem(aseCol1, keyword, "#ffe6e6", highlightedKeyword);
+                const letter = 'abcdefghijklmnopqrstuvwxyz'[i - 1];
+                const index = keyword.toLowerCase().indexOf(letter + " " + search.toLowerCase());
+                let highlightedKeyword = escapeHtml(keyword);
+                if (index >= 0) {
+                    const before = escapeHtml(keyword.substring(0, index));
+                    const match = escapeHtml(keyword.substring(index, index + (letter.length + 1 + search.length)));
+                    const after = escapeHtml(keyword.substring(index + (letter.length + 1 + search.length)));
+                    highlightedKeyword = `${before}<span class="s-heavy">${match}</span>${after}`;
                 }
+                addSuggestionItem(aseCol1, keyword, "#ffe6e6", displayedKeywords, highlightedKeyword);
             });
         }
     }
@@ -1986,18 +1982,16 @@ function displaySuggestions(search) {
         for (let i = 27; i <= 52 && i < results.length; i++) {
             const keywords = parseResults(results[i] || { suggestions: [] });
             keywords.forEach(keyword => {
-                if (keywordCount < MAX_KEYWORDS_IN_SEARCH && !displayedKeywords.has(keyword.toLowerCase())) {
-                    const letter = 'abcdefghijklmnopqrstuvwxyz'[i - 27];
-                    const index = keyword.toLowerCase().indexOf(search.toLowerCase() + " " + letter);
-                    let highlightedKeyword = escapeHtml(keyword);
-                    if (index >= 0) {
-                        const before = escapeHtml(keyword.substring(0, index));
-                        const match = escapeHtml(keyword.substring(index, index + search.length + 1 + letter.length));
-                        const after = escapeHtml(keyword.substring(index + search.length + 1 + letter.length));
-                        highlightedKeyword = `${before}<span class="s-heavy">${match}</span>${after}`;
-                    }
-                    addSuggestionItem(aseCol1, keyword, "#ebfaeb", highlightedKeyword);
+                const letter = 'abcdefghijklmnopqrstuvwxyz'[i - 27];
+                const index = keyword.toLowerCase().indexOf(search.toLowerCase() + " " + letter);
+                let highlightedKeyword = escapeHtml(keyword);
+                if (index >= 0) {
+                    const before = escapeHtml(keyword.substring(0, index));
+                    const match = escapeHtml(keyword.substring(index, index + search.length + 1 + letter.length));
+                    const after = escapeHtml(keyword.substring(index + search.length + 1 + letter.length));
+                    highlightedKeyword = `${before}<span class="s-heavy">${match}</span>${after}`;
                 }
+                addSuggestionItem(aseCol1, keyword, "#ebfaeb", displayedKeywords, highlightedKeyword);
             });
         }
     }
@@ -2008,9 +2002,7 @@ function displaySuggestions(search) {
         if (keywords.length > 0) {
             aseCol1.append('<div class="s-suggestion" style="background-color:#e6ecff;"><b>Keywords Between</b></div>');
             keywords.forEach(keyword => {
-                if (keywordCount < MAX_KEYWORDS_IN_SEARCH && !displayedKeywords.has(keyword.toLowerCase())) {
-                    addSuggestionItem(aseCol1, keyword, "#e6ecff");
-                }
+                addSuggestionItem(aseCol1, keyword, "#e6ecff", displayedKeywords);
             });
         }
     }
@@ -2021,9 +2013,7 @@ function displaySuggestions(search) {
         for (let i = 54; i < results.length; i++) {
             const keywords = parseResults(results[i] || { suggestions: [] });
             keywords.forEach(keyword => {
-                if (keywordCount < MAX_KEYWORDS_IN_SEARCH && !displayedKeywords.has(keyword.toLowerCase())) {
-                    addSuggestionItem(aseCol1, keyword, "#f2f2f2");
-                }
+                addSuggestionItem(aseCol1, keyword, "#f2f2f2", displayedKeywords);
             });
         }
     }
@@ -2035,8 +2025,8 @@ function displaySuggestions(search) {
     suggestionsContainer.toggle(suggestionsContainer.children().length > 0);
 }
 
-function addSuggestionItem(container, keyword, backgroundColor, highlightedKeyword = null) {
-    if (keywordCount >= MAX_KEYWORDS_IN_SEARCH || displayedKeywords.has(keyword.toLowerCase())) return;
+function addSuggestionItem(container, keyword, backgroundColor, displayedKeywords, highlightedKeyword = null) {
+    if (displayedKeywords.size >= MAX_KEYWORDS_IN_SEARCH || displayedKeywords.has(keyword.toLowerCase())) return;
     const item = $('<div class="ase-suggestion" style="background-color:' + backgroundColor + '"></div>');
     item.html(highlightedKeyword || escapeHtml(keyword));
     item.attr('data-keyword', keyword);
@@ -2046,7 +2036,6 @@ function addSuggestionItem(container, keyword, backgroundColor, highlightedKeywo
     });
     container.append(item);
     displayedKeywords.add(keyword.toLowerCase());
-    keywordCount++;
 }
 
     let timeoutId; 

@@ -1887,13 +1887,15 @@ $(document).ready(function() {
     // Keywords Before
     promises.push(getSuggestions(" ", search.trim()));
 
-    // Keywords After
-    promises.push(getSuggestions(search.trim() + " ", ""));
+    // Keywords After - Let's try a slightly different suffix
+    promises.push(getSuggestions(search.trim(), " ")); // Space after the initial term
 
-    // Other Keywords - Trying specific prefixes
+    // Other Keywords - Expanding the prefixes
     promises.push(getSuggestions(search + " for ", ""));
     promises.push(getSuggestions(search + " and ", ""));
     promises.push(getSuggestions(search + " with ", ""));
+    promises.push(getSuggestions(search + " of ", "")); // Added "of"
+    promises.push(getSuggestions(search + " in ", "")); // Added "in"
 
     Promise.all(promises)
         .then((results) => {
@@ -1955,13 +1957,13 @@ function processAndRenderSuggestions(search, results) {
     const beforeKeywords = parseResults(results[1] || { suggestions: [] });
     addGroup("Keywords Before", beforeKeywords, "#ebfaeb");
 
-    // 3. Keywords After
+    // 3. Keywords After - Using the modified API call
     const afterKeywords = parseResults(results[2] || { suggestions: [] });
     addGroup("Keywords After", afterKeywords, "#ffe6e6");
 
     // 4. Other Suggestions
     let otherKeywords = [];
-    for (let i = 3; i < results.length; i++) { // Start from index 3 for the "Other" promises
+    for (let i = 3; i < results.length; i++) {
         otherKeywords = [...otherKeywords, ...parseResults(results[i] || { suggestions: [] })];
     }
     addGroup("Other Suggestions", otherKeywords, "#f2f2f2");

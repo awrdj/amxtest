@@ -1892,150 +1892,120 @@ $(document).ready(function() {
         return keywords;
     }
 
-    // IN DISPLAYSUGGESTIONS - FIX PROMISE HANDLING
 function displaySuggestions(search) {
-    if (!search.trim()) {
-        suggestionsContainer.empty().hide();
-        return;
-    }
+    if (!search.trim()) {
+        suggestionsContainer.empty().hide();
+        return;
+    }
 
-    let words = search.split(" ").filter(w => w !== ""); // Clean empty words
-    
-    let promises = [
-        // Main suggestions (exact match)
-        getSuggestions(search, ""),
-        
-        // Before suggestions (empty prefix)
-        getSuggestions("", search),
-        
-        // After suggestions (empty suffix)
-        getSuggestions(search, ""),
-        
-        // Between suggestions (only if 2+ words)
-        words.length >= 2 
-            ? getSuggestions(words[0], words.slice(1).join(" "))
-            : Promise.resolve({ suggestions: [] })
-    ];
+    let words = search.split(" ").filter(w => w !== "");
 
-    // Add contextual expansions
-    const expansions = ['for', 'and', 'with'];
-    expansions.forEach(term => {
-        promises.push(getSuggestions(`${search} ${term}`, ""));
-    });
+    let promises = [
+        // Main suggestions (like default Amazon)
+        getSuggestions(search, ""),
+        // Keywords Before (note the space before search)
+        getSuggestions(" ", search.trim()),
+        // Keywords After (note the space after search)
+        getSuggestions(search.trim() + " ", ""),
+        // Keywords Between (if 2+ words)
+        words.length >= 2 ? getSuggestions(words[0] + " ", words.slice(1).join(" ")) : Promise.resolve({ suggestions: [] }),
+        // Contextual expansions
+        getSuggestions(search + " for ", ""),
+        getSuggestions(search + " and ", ""),
+        getSuggestions(search + " with ", "")
+    ];
 
-    // PROCESS RESULTS DIFFERENTLY
-    Promise.all(promises)
-        .then((results) => {
-            // Filter out empty results
-            const validResults = results.filter(r => 
-                r?.suggestions?.length > 0
-            );
-            
-            if (validResults.length === 0) {
-                suggestionsContainer.hide();
-                return;
-            }
-            
-            processAndRenderSuggestions(search, validResults);
-        })
-        .catch(error => {
-            console.error('Suggestions Error:', error);
-            suggestionsContainer.hide();
-        });
+    Promise.all(promises)
+        .then((results) => {
+            const validResults = results.filter(r => r?.suggestions?.length > 0);
+            if (validResults.length === 0) {
+                suggestionsContainer.hide();
+                return;
+            }
+            processAndRenderSuggestions(search, validResults);
+        })
+        .catch(error => {
+            console.error('Suggestions Error:', error);
+            suggestionsContainer.hide();
+        });
 }
 
-    function processAndRenderSuggestions(search, results) {
-    const mainKeywords = parseResults(results[0] || { suggestions: [] });
-    let displayedKeywords = new Set(mainKeywords);
-    let keywordCount = 0;
+function processAndRenderSuggestions(search, results) {
+    suggestionsContainer.empty();
+    const displayedKeywords = new Set();
+    let keywordCount = 0;
 
-    console.log('Raw API Results:', results);
+    const addGroup = (title, resultIndex) => {
+        const rawData = results[resultIndex] || { suggestions: [] };
+        const keywords = parseResults(rawData)
+            .filter(kw => {
+                const kwLower = kw.toLowerCase();
+                const isNew = !displayedKeywords.has(kwLower);
+                const hasCapacity = keywordCount < MAX_KEYWORDS_IN_SEARCH;
+                return isNew && hasCapacity;
+            });
 
-    const addGroup = (title, resultIndex, backgroundColor) => {
-        const rawData = results[resultIndex] || { suggestions: [] };
-        const keywords = parseResults(rawData)
-            .filter(kw => {
-                const isNew = !displayedKeywords.has(kw.toLowerCase());
-                const hasCapacity = keywordCount < MAX_KEYWORDS_IN_SEARCH;
-                return isNew && hasCapacity;
-            });
+        if (keywords.length > 0) {
+            const groupDiv = $('<div class="suggestion-group"></div>').append($('<h3></h3>').text(title));
+            keywords.forEach(keyword => {
+                if (keywordCount >= MAX_KEYWORDS_IN_SEARCH) return;
+                const item = $('<div class="suggestion-item"></div>').html(highlightMatch(keyword, search));
+                item.on('click', () => {
+                    searchInput.val(keyword);
+                    suggestionsContainer.empty().hide();
+                });
+                groupDiv.append(item);
+                suggestionsContainer.append(groupDiv);
+                displayedKeywords.add(keyword.toLowerCase());
+                keywordCount++;
+            });
+        }
+    };
 
-        if (keywords.length > 0) {
-            const groupDiv = $('<div class="suggestion-group"></div>');
-            groupDiv.append($('<h3></h3>').text(title));
-            
-            keywords.forEach(keyword => {
-                if (keywordCount >= MAX_KEYWORDS_IN_SEARCH) return;
-                
-                const item = $('<div class="suggestion-item"></div>');
-                // Highlight matching parts logic
-                const searchLower = search.toLowerCase();
-                const kwLower = keyword.toLowerCase();
-                const matchIndex = kwLower.indexOf(searchLower);
-                
-                let before, match, after;
-                if (matchIndex >= 0) {
-                    before = keyword.substring(0, matchIndex);
-                    match = keyword.substring(matchIndex, matchIndex + search.length);
-                    after = keyword.substring(matchIndex + search.length);
-                } else {
-                    before = keyword;
-                    match = '';
-                    after = '';
-                }
+    // Add suggestion groups in the order of the promises
+    addGroup("Amazon Suggestions", 0);
+    addGroup("Keywords Before", 1);
+    addGroup("Keywords After", 2);
+    addGroup("Keywords Between", 3);
 
-                item.html(`
-                    ${escapeHtml(before)}
-                    <strong>${escapeHtml(match)}</strong>
-                    ${escapeHtml(after)}
-                `);
+    // Handle "Other" suggestions (for, and, with)
+    const otherKeywords = [4, 5, 6].flatMap(i => parseResults(results[i] || { suggestions: [] }))
+        .filter(kw => {
+            const kwLower = kw.toLowerCase();
+            return !displayedKeywords.has(kwLower) && keywordCount < MAX_KEYWORDS_IN_SEARCH;
+        });
 
-                item.on('click', () => {
-                    searchInput.val(keyword);
-                    suggestionsContainer.empty().hide();
-                });
+    if (otherKeywords.length > 0) {
+        const groupDiv = $('<div class="suggestion-group"></div>').append($('<h3></h3>').text("Other Suggestions"));
+        otherKeywords.forEach(keyword => {
+            const item = $('<div class="suggestion-item"></div>').html(highlightMatch(keyword, search));
+            item.on('click', () => {
+                searchInput.val(keyword);
+                suggestionsContainer.empty().hide();
+            });
+            groupDiv.append(item);
+            suggestionsContainer.append(groupDiv);
+            displayedKeywords.add(keyword.toLowerCase());
+            keywordCount++;
+        });
+    }
 
-                groupDiv.append(item);
-                displayedKeywords.add(kwLower);
-                keywordCount++;
-            });
+    suggestionsContainer.toggle(suggestionsContainer.children().length > 0);
+}
 
-            if (groupDiv.children().length > 1) {
-                suggestionsContainer.append(groupDiv);
-            }
-        }
-    };
+function highlightMatch(keyword, search) {
+    const searchLower = search.toLowerCase();
+    const kwLower = keyword.toLowerCase();
+    const matchIndex = kwLower.indexOf(searchLower);
 
-    // Add suggestion groups
-    addGroup("Amazon Suggestions", 0, "#ffffff");
-    addGroup("Keywords Before", 1, "#ebfaeb");
-    addGroup("Keywords After", 2, "#ffe6e6");
-    addGroup("Keywords Between", 3, "#e6ecff");
-
-    // Handle Other suggestions (indices 4-6)
-    const otherKeywords = [4, 5, 6].flatMap(i => 
-        parseResults(results[i] || { suggestions: [] })
-    ).filter(kw => {
-        const kwLower = kw.toLowerCase();
-        return !displayedKeywords.has(kwLower) && 
-               keywordCount < MAX_KEYWORDS_IN_SEARCH;
-    });
-
-    if (otherKeywords.length > 0) {
-        const groupDiv = $('<div class="suggestion-group"></div>');
-        groupDiv.append($('<h3></h3>').text("Other Suggestions"));
-        otherKeywords.forEach(keyword => {
-            const item = $('<div class="suggestion-item"></div>').text(keyword);
-            item.on('click', () => {
-                searchInput.val(keyword);
-                suggestionsContainer.empty().hide();
-            });
-            groupDiv.append(item);
-        });
-        suggestionsContainer.append(groupDiv);
-    }
-
-    suggestionsContainer.toggle(suggestionsContainer.children().length > 0);
+    if (matchIndex >= 0) {
+        const before = escapeHtml(keyword.substring(0, matchIndex));
+        const match = escapeHtml(keyword.substring(matchIndex, matchIndex + search.length));
+        const after = escapeHtml(keyword.substring(matchIndex + search.length));
+        return `${before}<strong>${match}</strong>${after}`;
+    } else {
+        return escapeHtml(keyword);
+    }
 }
 
     let timeoutId;

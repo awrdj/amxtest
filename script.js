@@ -1936,9 +1936,9 @@ function processAndRenderSuggestions(search, results) {
     let keywordCount = 0;
 
     const mainSuggestionsContainer = $('<div class="suggestion-group"><h3>Amazon Suggestions</h3></div>');
-    const beforeSuggestionsContainer = $('<div class="suggestion-group"><h3>Keywords Before</h3></div>');
-    const afterSuggestionsContainer = $('<div class="suggestion-group"><h3>Keywords After</h3></div>');
-    const otherSuggestionsContainer = $('<div class="suggestion-group"><h3>Other Suggestions</h3></div>');
+    const beforeSuggestionsContainer = $('<div class="suggestion-group" style="background-color:#ffe6e6"><h3>Keywords Before</h3></div>'); // Match extension's style
+    const afterSuggestionsContainer = $('<div class="suggestion-group" style="background-color:#ebfaeb"><h3>Keywords After</h3></div>');  // Match extension's style
+    const otherSuggestionsContainer = $('<div class="suggestion-group"><h3>Other</h3></div>');       // Match extension's title
 
     const addSuggestionItem = (container, keyword) => {
         if (keywordCount >= MAX_KEYWORDS_IN_SEARCH) return;
@@ -1958,39 +1958,64 @@ function processAndRenderSuggestions(search, results) {
             addSuggestionItem(mainSuggestionsContainer, keyword);
         }
     });
-    if (mainSuggestionsContainer.children().length > 1) { // Only add if there are suggestions
+    if (mainSuggestionsContainer.children().length > 1) {
         suggestionsContainer.append(mainSuggestionsContainer);
     }
 
-    // Process "Keywords Before" (index 1)
-    parseResults(results[1] || { suggestions: [] }).forEach(keyword => {
-        if (!displayedKeywords.has(keyword.toLowerCase()) && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
-            addSuggestionItem(beforeSuggestionsContainer, keyword);
-        }
-    });
-    if (beforeSuggestionsContainer.children().length > 1) {
+    // Process "Keywords Before" (index 1) - Keeping the original logic which worked
+    const beforeKeywords = parseResults(results[1] || { suggestions: [] })
+        .filter(kw => !displayedKeywords.has(kw.toLowerCase()) && keywordCount < MAX_KEYWORDS_IN_SEARCH);
+    if (beforeKeywords.length > 0) {
+        beforeSuggestionsContainer.append($('<b></b>').text("Keywords Before")); // Match extension's bold title
+        beforeKeywords.forEach(keyword => {
+            if (keywordCount >= MAX_KEYWORDS_IN_SEARCH) return;
+            const item = $('<div class="ase-suggestion" style="background-color:#ffe6e6"></div>').html(highlightMatch(keyword, search)); // Match extension's class and style
+            item.on('click', () => {
+                searchInput.val(keyword);
+                suggestionsContainer.empty().hide();
+            });
+            beforeSuggestionsContainer.append(item);
+            displayedKeywords.add(keyword.toLowerCase());
+            keywordCount++;
+        });
         suggestionsContainer.append(beforeSuggestionsContainer);
     }
 
-    // Process "Keywords After" (index 2)
-    parseResults(results[2] || { suggestions: [] }).forEach(keyword => {
-        if (!displayedKeywords.has(keyword.toLowerCase()) && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
-            addSuggestionItem(afterSuggestionsContainer, keyword);
-        }
-    });
-    if (afterSuggestionsContainer.children().length > 1) {
+    // Process "Keywords After" (index 2) - Adjusting to match extension's "Other" category
+    const afterKeywords = parseResults(results[2] || { suggestions: [] })
+        .filter(kw => !displayedKeywords.has(kw.toLowerCase()) && keywordCount < MAX_KEYWORDS_IN_SEARCH);
+    if (afterKeywords.length > 0) {
+        afterSuggestionsContainer.append($('<b></b>').text("Keywords After")); // Match extension's bold title
+        afterKeywords.forEach(keyword => {
+            if (keywordCount >= MAX_KEYWORDS_IN_SEARCH) return;
+            const item = $('<div class="ase-suggestion" style="background-color:#ebfaeb"></div>').html(highlightMatch(keyword, search)); // Match extension's class and style
+            item.on('click', () => {
+                searchInput.val(keyword);
+                suggestionsContainer.empty().hide();
+            });
+            afterSuggestionsContainer.append(item);
+            displayedKeywords.add(keyword.toLowerCase());
+            keywordCount++;
+        });
         suggestionsContainer.append(afterSuggestionsContainer);
     }
 
     // Process "Keywords Between" (index 3) and Contextual (index 4, 5, 6) for "Other"
-    [3, 4, 5, 6].forEach(index => {
-        parseResults(results[index] || { suggestions: [] }).forEach(keyword => {
-            if (!displayedKeywords.has(keyword.toLowerCase()) && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
-                addSuggestionItem(otherSuggestionsContainer, keyword);
-            }
+    const otherKeywordsCombined = [3, 4, 5, 6].flatMap(index => parseResults(results[index] || { suggestions: [] }))
+        .filter(kw => !displayedKeywords.has(kw.toLowerCase()) && keywordCount < MAX_KEYWORDS_IN_SEARCH);
+
+    if (otherKeywordsCombined.length > 0) {
+        otherSuggestionsContainer.append($('<b></b>').text("Other")); // Match extension's bold title
+        otherKeywordsCombined.forEach(keyword => {
+            const item = $('<div class="ase-suggestion" style="background-color:#f2f2f2"></div>').html(highlightMatch(keyword, search)); // Match extension's class and style
+            item.on('click', () => {
+                searchInput.val(keyword);
+                suggestionsContainer.empty().hide();
+            });
+            otherSuggestionsContainer.append(item);
+            displayedKeywords.add(keyword.toLowerCase());
+            keywordCount++;
         });
-    });
-    if (otherSuggestionsContainer.children().length > 1) {
         suggestionsContainer.append(otherSuggestionsContainer);
     }
 

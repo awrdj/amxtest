@@ -2052,7 +2052,7 @@ $(document).ready(function() {
         // Define all API calls as per extension logic
         let promises = [
             // 1. Main/Default (results[0])
-            getSuggestions(trimmedSearch, "", marketplace, 'Main'),
+            getSuggestions(search, "", marketplace, 'Main'),
             // 2. Before (results[1]) (Note: space prefix)
             getSuggestions(" ", trimmedSearch, marketplace, 'Before'),
             // 3. After (results[2]) (Note: space suffix)
@@ -2063,11 +2063,11 @@ $(document).ready(function() {
                 : Promise.resolve({ suggestions: [] }) // Resolve empty if not applicable
             ),
             // 5. Expansion: for (results[4])
-            getSuggestions(trimmedSearch + " for ", "", marketplace, 'Exp: for'),
+            getSuggestions(search + " for ", "", marketplace, 'Exp: for'),
             // 6. Expansion: and (results[5])
-            getSuggestions(trimmedSearch + " and ", "", marketplace, 'Exp: and'),
+            getSuggestions(search + " and ", "", marketplace, 'Exp: and'),
             // 7. Expansion: with (results[6])
-            getSuggestions(trimmedSearch + " with ", "", marketplace, 'Exp: with')
+            getSuggestions(search + " with ", "", marketplace, 'Exp: with')
         ];
 
         Promise.all(promises)

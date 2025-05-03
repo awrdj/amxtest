@@ -1843,7 +1843,7 @@ $(document).ready(function() {
         return domainConfig[selectedValue];
     }
 
-    // HTML Escaper
+    // HTML Escaper (like extension's quoteattr)
     function escapeHtml(unsafe) {
         if (typeof unsafe !== 'string') {
             return unsafe;
@@ -1853,68 +1853,94 @@ $(document).ready(function() {
              .replace(/</g, "&lt;")
              .replace(/>/g, "&gt;")
              .replace(/"/g, "&quot;")
-             .replace(/'/g, "&#039;");
-     }
+             .replace(/'/g, "&#039;"); // Use &#039; for single quote
+    }
 
     // --- Core Suggestion Logic ---
 
     // Fetch suggestions from Amazon API
     function getSuggestions(queryFirst, queryLast, marketplace, apiType = 'Generic') {
-        const departmentQuery = 'aps'; // Hardcoded 'aps' (All Departments) like extension seems to use
+        const departmentQuery = 'aps'; // Hardcoded 'aps' (All Departments) like extension
         const params = new URLSearchParams({
             'site-variant': 'desktop',
             'mid': marketplace.market,
             'alias': departmentQuery,
             // Only include prefix/suffix if they are not empty strings
-            ...(queryFirst && { 'prefix': queryFirst }),
-            ...(queryLast && { 'suffix': queryLast })
+            // The extension seems to send empty strings, let's replicate that
+            'prefix': queryFirst || "",
+            'suffix': queryLast || ""
         });
 
         // The URLSearchParams constructor handles encoding automatically
         const suggestUrl = `https://completion.${marketplace.domain}/api/2017/suggestions?${params.toString()}`;
-        // console.log(`Requesting: ${suggestUrl}`); // Log the URL being requested
+        // console.log(`Requesting [${apiType}]: ${suggestUrl}`); // Log the URL being requested
 
         // Use fetch API
         return fetch(suggestUrl)
             .then(response => {
                 if (!response.ok) {
                     console.error(`API Error for ${apiType} (${response.status}): ${response.statusText}, URL: ${suggestUrl}`);
-                    return { suggestions: [] }; // Return empty on error
+                    // Extension's parseResults handles empty string, let's return empty JSON text
+                    return "{}";
                 }
-                return response.json(); // Assuming response is JSON
+                return response.text(); // Get raw text like extension
             })
-            .then(res => debugResponse(apiType, queryFirst, queryLast, res))
+            .then(text => {
+                 // Parse here to simulate extension's early parse if needed for debugging,
+                 // but pass raw text to main processing like extension does
+                 try {
+                    const jsonData = JSON.parse(text || "{}"); // Ensure valid JSON even if empty text
+                    return debugResponse(apiType, queryFirst, queryLast, jsonData);
+                 } catch (e) {
+                    console.error(`JSON Parse Error for ${apiType}:`, e, "Raw text:", text);
+                    return debugResponse(apiType, queryFirst, queryLast, { suggestions: [] }); // Return empty structure
+                 }
+
+            })
             .catch(error => {
                 console.error(`Network/Fetch Error for ${apiType} (${suggestUrl}):`, error);
-                return { suggestions: [] }; // Always return valid shape
+                 // Return empty structure on fetch error
+                return { suggestions: [] };
             });
     }
 
-
-    // Parse keywords from API response object
-     function parseResults(data) {
-         let keywords = [];
-         if (data && Array.isArray(data.suggestions)) {
-             keywords = data.suggestions
-                 .filter(value => value.type === "KEYWORD")
-                 .map(value => {
-                     // Prefer concatenated highlightFragments if available (like extension)
-                     if (value.highlightFragments && value.highlightFragments.length > 0) {
-                         return value.highlightFragments.map(fragment => fragment.text).join('');
-                     }
-                     return value.value || ''; // Fallback to value, ensure string
-                 })
-                 .filter(kw => typeof kw === 'string' && kw.trim() !== ''); // Ensure non-empty strings
-         }
-         // console.debug("Parsed Keywords:", keywords);
-         return keywords;
-     }
+    // Parse keywords from API response object (Matches extension logic)
+    function parseResults(data) {
+        let keywords = [];
+        // Check if data is valid object and has suggestions array
+        if (data && typeof data === 'object' && Array.isArray(data.suggestions)) {
+            keywords = data.suggestions
+                .filter(value => value.type === "KEYWORD")
+                .map(value => {
+                    // Prefer concatenated highlightFragments if available (like extension)
+                    if (value.highlightFragments && value.highlightFragments.length > 0) {
+                        return value.highlightFragments.map(fragment => fragment.text).join('');
+                    }
+                    return value.value || ''; // Fallback to value, ensure string
+                })
+                .filter(kw => typeof kw === 'string' && kw.trim() !== ''); // Ensure non-empty strings
+        } else if (data && typeof data === 'string' && data.length > 0) {
+            // Handle case where raw JSON text might be passed (though shouldn't happen with current getSuggestions)
+            try {
+                const jsonData = JSON.parse(data);
+                return parseResults(jsonData); // Recurse with parsed data
+            } catch (e) {
+                console.error("Error parsing raw JSON text in parseResults:", e, "Raw text:", data);
+                return [];
+            }
+        } else if (data && typeof data === 'object' && !Array.isArray(data.suggestions)) {
+             // console.warn("parseResults received object without suggestions array:", data);
+             return [];
+        }
+        // console.debug("Parsed Keywords:", keywords);
+        return keywords;
+    }
 
     // Adds a group title (like "Keywords Before")
-    function addGroupTitle(title) {
+    function addGroupTitle(title, container) {
         const groupDiv = $('<div class="suggestion-group"></div>');
         groupDiv.append($('<h3></h3>').text(title));
-        suggestionsContainer.append(groupDiv);
+        container.append(groupDiv);
         return groupDiv; // Return the group div to append items to
     }
 
@@ -1926,21 +1952,31 @@ $(document).ready(function() {
         const item = $('<div class="suggestion-item"></div>').addClass(groupClass);
         const searchLower = search.toLowerCase();
         const kwLower = keyword.toLowerCase();
+        // Find the first occurrence of the search term, case-insensitive
         const matchIndex = kwLower.indexOf(searchLower);
 
         let before = '', match = '', after = '';
 
+        // Only highlight if search term is found AND search term is not empty
         if (search.length > 0 && matchIndex > -1) {
             // Extract parts based on case-insensitive find, but use original casing from keyword
             before = keyword.substring(0, matchIndex);
             match = keyword.substring(matchIndex, matchIndex + search.length); // Original case match
             after = keyword.substring(matchIndex + search.length);
         } else {
-            // If search term not found or empty, display the whole keyword as the 'match' part (not wrapped)
-            match = keyword;
+            // If search term not found or empty, display the whole keyword as 'before' (wrapped)
+            // This seems closer to extension's visual output when no direct match part exists
+             before = keyword;
+             match = ''; // No specific match part
+             after = '';
+            // Alternative: Treat the whole keyword as the match part (not wrapped)
+            // match = keyword;
+            // before = '';
+            // after = '';
         }
 
         // Extension HTML structure: <span class="s-heavy">NON_MATCH</span>MATCH<span class="s-heavy">NON_MATCH</span>
+        // Using escapeHtml for safety
         item.html(`
             <span class="s-heavy">${escapeHtml(before)}</span>${escapeHtml(match)}<span class="s-heavy">${escapeHtml(after)}</span>
         `);
@@ -1950,7 +1986,7 @@ $(document).ready(function() {
             searchInput.val(keyword); // Fill input with clicked keyword
             suggestionsContainer.empty().hide(); // Hide suggestions
             searchInput.focus(); // Optionally refocus input
-            // You might want to trigger a new search or action here
+            // Optionally trigger a new search automatically after click:
             // fetchAndDisplaySuggestions(keyword);
         });
 
@@ -1959,86 +1995,129 @@ $(document).ready(function() {
 
 
     /**
-     * Renders all suggestions, categorized and deduplicated similar to the extension.
-     * Filters keywords from "Before", "After", "Other" if they were present in "Amazon Suggestions".
+     * Renders suggestions mimicking the extension's categorization, filtering, and ordering.
      */
     function renderCategorizedSuggestions(search, results) {
         suggestionsContainer.empty(); // Clear previous results first
 
-        // 1. Get keywords from the main suggestions (index 0) to filter against later
-        let mainSuggestionKeywords = new Set();
-        const mainResultsRaw = parseResults(results[0] || { suggestions: [] });
-        mainResultsRaw.forEach(kw => mainSuggestionKeywords.add(kw.toLowerCase()));
-
-        // 2. Setup tracking for all keywords added to the display
-        let allDisplayedKeywords = new Set(); // Track all keywords added (case-insensitive)
+        // Use Sets for efficient, case-sensitive lookups (like extension's indexOf)
+        const mainKeywordsSet = new Set();
+        const allDisplayedKeywordsSet = new Set();
         let keywordCount = 0;
-        let currentGroupDiv = null; // To hold the current group container
+        let currentGroupDiv = null;
+        let otherTitleDisplayed = false; // Flag for "Other" title
 
-        // 3. Define Categories (match extension structure/titles)
-        const categories = [
-            { title: "Amazon Suggestions", index: 0, className: "group-main" },
-            { title: "Keywords Before", index: 1, className: "group-before" },
-            { title: "Keywords After", index: 2, className: "group-after" },
-            // "Between" only relevant if API call was made (multi-word search)
-            ...(results[3] ? [{ title: "Keywords Between", index: 3, className: "group-between" }] : []),
-            { title: "Other", index: [4, 5, 6], className: "group-other" } // Combine others, use title "Other"
-        ];
+        // --- Process results mimicking the extension's loop ---
 
-        // 4. Process each category
-        categories.forEach(category => {
-            if (keywordCount >= MAX_KEYWORDS_IN_SEARCH) return; // Stop if max reached
+        for (let i = 0; i < results.length; i++) {
+             if (keywordCount >= MAX_KEYWORDS_IN_SEARCH) break; // Stop if max reached globally
 
-            let keywordsRaw = [];
-            if (Array.isArray(category.index)) {
-                // Combine results for 'Other'
-                category.index.forEach(idx => {
-                    keywordsRaw = keywordsRaw.concat(parseResults(results[idx] || { suggestions: [] }));
+            const currentResultData = results[i] || { suggestions: [] }; // Ensure valid data structure
+            const keywordsRaw = parseResults(currentResultData);
+
+            let keywordsFiltered = [];
+            let suggestionType = "";
+            let groupClass = "";
+
+            if (i === 0) {
+                // --- Amazon Suggestions (Index 0) ---
+                suggestionType = "Amazon Suggestions";
+                groupClass = "group-main";
+                keywordsFiltered = keywordsRaw; // No filtering for the main list
+
+                // Populate tracking sets
+                keywordsFiltered.forEach(kw => {
+                    mainKeywordsSet.add(kw);
+                    allDisplayedKeywordsSet.add(kw); // Add main keywords to overall displayed set
                 });
+
             } else {
-                keywordsRaw = parseResults(results[category.index] || { suggestions: [] });
+                 // --- Before, After, Between, Other (Index 1+) ---
+                 // Filter against main list AND already displayed keywords from previous groups (i > 0)
+                 keywordsFiltered = keywordsRaw.filter(kw => {
+                    // Check 1: Not in main suggestions (case-sensitive)
+                    if (mainKeywordsSet.has(kw)) return false;
+                    // Check 2: Not already displayed in *any* category rendered so far (case-sensitive)
+                    if (allDisplayedKeywordsSet.has(kw)) return false;
+                    // Check 3: Extension doesn't seem to filter the search term itself explicitly here,
+                    // it relies on the API not returning it or the main list filter catching it.
+
+                    return true; // Keep it
+                 });
+
+                 // Add the newly filtered keywords to the tracking set *before* rendering them
+                 keywordsFiltered.forEach(kw => allDisplayedKeywordsSet.add(kw));
+
+                // Determine Suggestion Type / Group Class based on index `i`
+                switch(i) {
+                    case 1:
+                        suggestionType = "Keywords Before";
+                        groupClass = "group-before";
+                        break;
+                    case 2:
+                        suggestionType = "Keywords After";
+                        groupClass = "group-after";
+                        break;
+                    case 3:
+                        // Only relevant if API call was made (multi-word search results[3] has items)
+                        if (keywordsFiltered.length > 0) { // Check if 'Between' actually yielded results
+                             suggestionType = "Keywords Between";
+                             groupClass = "group-between";
+                        } else {
+                             suggestionType = ""; // Skip title if no keywords for 'Between'
+                        }
+                        break;
+                    default: // i >= 4 (Expansions: for, and, with)
+                        suggestionType = "Other";
+                        groupClass = "group-other";
+                        break;
+                }
             }
 
-            // Filter out duplicates and keywords already shown in main suggestions (if not the main category itself)
-            const keywordsFiltered = keywordsRaw.filter(kw => {
-                 const kwLower = kw.toLowerCase();
-                 // Check 1: Not already displayed in *any* category rendered so far by this function
-                 if (allDisplayedKeywords.has(kwLower)) {
-                     return false;
+            // --- Render the filtered keywords for this category ---
+            if (keywordsFiltered.length > 0 && suggestionType) {
+                 // Add title only if there are keywords for this group
+                 // For "Other", only add the title once
+                 let shouldAddTitle = true;
+                 if (suggestionType === "Other") {
+                    if (!otherTitleDisplayed) {
+                        otherTitleDisplayed = true; // Add title this time
+                    } else {
+                        shouldAddTitle = false; // Already added "Other" title
+                    }
                  }
-                 // Check 2: If NOT the main category, check it wasn't in the main suggestions list
-                 if (category.title !== "Amazon Suggestions" && mainSuggestionKeywords.has(kwLower)) {
-                      return false;
+
+                 if (shouldAddTitle) {
+                    currentGroupDiv = addGroupTitle(suggestionType, suggestionsContainer);
+                 } else if (suggestionType === "Other" && !currentGroupDiv) {
+                     // Edge case: if first 'Other' category (e.g., 'for') had 0 results,
+                     // but a later one (e.g., 'and') has results, we still need the groupDiv.
+                     // Find the existing 'Other' group if it exists, otherwise create it.
+                     currentGroupDiv = suggestionsContainer.find('.suggestion-group:contains("Other")');
+                     if (currentGroupDiv.length === 0) {
+                         currentGroupDiv = addGroupTitle(suggestionType, suggestionsContainer);
+                         otherTitleDisplayed = true;
+                     }
                  }
-                 // Check 3: Don't add the exact search term itself to "Other" category
-                 if (category.title === "Other" && kwLower === search.toLowerCase()) {
-                      return false;
-                 }
-                 return true; // Keep it
-            });
 
-
-            if (keywordsFiltered.length > 0) {
-                // Add title only if there are keywords for this group
-                currentGroupDiv = addGroupTitle(category.title); // Use title directly ("Other" will be used)
-
-                keywordsFiltered.forEach(keyword => {
+                 // Add keyword items to the current group
+                 keywordsFiltered.forEach(keyword => {
                     if (keywordCount < MAX_KEYWORDS_IN_SEARCH) {
-                        addKeywordItem(keyword, search, category.className, currentGroupDiv);
-                        allDisplayedKeywords.add(keyword.toLowerCase()); // Add to tracking set *after* adding
+                        addKeywordItem(keyword, search, groupClass, currentGroupDiv);
                         keywordCount++;
                     }
-                });
+                 });
             }
-        });
+        } // End loop through results
 
         // Show container only if keywords were added
         suggestionsContainer.toggle(keywordCount > 0);
     }
 
+
     // Fetches all suggestion types and triggers rendering
     function fetchAndDisplaySuggestions(search) {
-        const trimmedSearch = search.trim();
+        const trimmedSearch = search.trim(); // Use trimmed for logic, pass raw to API
         if (!trimmedSearch) {
             suggestionsContainer.empty().hide();
             clearSearchBtn.hide();
@@ -2046,37 +2125,41 @@ $(document).ready(function() {
         }
         clearSearchBtn.show();
 
-        const words = trimmedSearch.split(" ").filter(w => w !== ""); // Clean empty words
+        // Use the potentially un-trimmed search for API calls like the extension
+        const rawSearch = searchInput.val(); // Get the exact current value
+        const words = trimmedSearch.split(" ").filter(w => w !== ""); // Clean empty words from trimmed version
         const marketplace = currentMarketplace; // Use the currently selected marketplace
 
-        // Define all API calls as per extension logic
+        // Define all API calls as per extension logic (indices 0-6)
         let promises = [
-            // 1. Main/Default (results[0])
-            getSuggestions(search, "", marketplace, 'Main'),
-            // 2. Before (results[1]) (Note: space prefix)
+            // 0. Main/Default
+            getSuggestions(rawSearch, "", marketplace, 'Main'),
+            // 1. Before (Note: space prefix, use trimmed search after space)
             getSuggestions(" ", trimmedSearch, marketplace, 'Before'),
-            // 3. After (results[2]) (Note: space suffix)
+            // 2. After (Note: space suffix, use trimmed search before space)
             getSuggestions(trimmedSearch + " ", "", marketplace, 'After'),
-            // 4. Between (results[3]) (Note: spaces around middle words, conditional)
+            // 3. Between (Note: spaces around middle words, conditional)
             (words.length >= 2
                 ? getSuggestions(words[0] + " ", " " + words.slice(1).join(" "), marketplace, 'Between')
                 : Promise.resolve({ suggestions: [] }) // Resolve empty if not applicable
             ),
-            // 5. Expansion: for (results[4])
-            getSuggestions(search + " for ", "", marketplace, 'Exp: for'),
-            // 6. Expansion: and (results[5])
-            getSuggestions(search + " and ", "", marketplace, 'Exp: and'),
-            // 7. Expansion: with (results[6])
-            getSuggestions(search + " with ", "", marketplace, 'Exp: with')
+            // 4. Expansion: for (use raw search)
+            getSuggestions(rawSearch + " for ", "", marketplace, 'Exp: for'),
+            // 5. Expansion: and (use raw search)
+            getSuggestions(rawSearch + " and ", "", marketplace, 'Exp: and'),
+            // 6. Expansion: with (use raw search)
+            getSuggestions(rawSearch + " with ", "", marketplace, 'Exp: with')
         ];
 
         Promise.all(promises)
             .then((results) => {
                 // Check if the search input value hasn't changed while waiting
-                if (searchInput.val().trim() === trimmedSearch) {
-                     renderCategorizedSuggestions(trimmedSearch, results);
+                 // Compare against the raw value at the time of *initiation*
+                if (searchInput.val() === rawSearch) {
+                    renderCategorizedSuggestions(trimmedSearch, results); // Pass trimmed for highlighting logic
                 } else {
                     console.log("Search input changed before suggestions arrived. Ignoring old results.");
+                     suggestionsContainer.hide(); // Hide stale suggestions
                 }
             })
             .catch(error => {
@@ -2090,22 +2173,21 @@ $(document).ready(function() {
 
     // Handle input changes with debounce
     searchInput.on('input', function() {
-        const query = $(this).val(); // Get raw value with potential leading/trailing spaces
-        const trimmedQuery = query.trim();
+        const query = $(this).val(); // Get raw value
         clearTimeout(suggestionTimeoutId); // Clear previous timer
 
-        if (trimmedQuery) {
+        if (query.trim()) { // Check trimmed value for showing button/triggering fetch
              clearSearchBtn.show();
              suggestionTimeoutId = setTimeout(() => {
-                 fetchAndDisplaySuggestions(query); // Pass the potentially un-trimmed query for API calls
+                fetchAndDisplaySuggestions(query); // Pass the raw query
              }, SUGGESTION_DEBOUNCE_MS);
         } else {
-            suggestionsContainer.empty().hide(); // Hide immediately if effectively empty
+             suggestionsContainer.empty().hide(); // Hide immediately if effectively empty
              clearSearchBtn.hide();
         }
     });
 
-     // Handle clear button click
+    // Handle clear button click
      clearSearchBtn.on('click', function() {
          searchInput.val(''); // Clear the input
          suggestionsContainer.empty().hide(); // Hide suggestions
@@ -2113,27 +2195,25 @@ $(document).ready(function() {
          searchInput.focus(); // Focus the input
      });
 
-
     // Update marketplace and potentially trigger new suggestions if input has value
     marketplaceSelect.on('change', function() {
-        // console.log("Marketplace changed");
         currentMarketplace = getMarketplace();
         const currentQuery = searchInput.val(); // Get raw value
         if (currentQuery.trim()) {
-             // Immediately refresh suggestions for the new marketplace
+            // Immediately refresh suggestions for the new marketplace
              clearTimeout(suggestionTimeoutId); // Clear any pending suggestion fetch
-             fetchAndDisplaySuggestions(currentQuery); // Use potentially untrimmed query
+             fetchAndDisplaySuggestions(currentQuery); // Use raw query
              // console.log(`Refetching suggestions for "${currentQuery}" in ${currentMarketplace.domain}`);
         }
     });
 
     // Hide suggestions when clicking outside
     $(document).on('click', (event) => {
-        // Check if the click target is not the input, not the container, and not inside the container
+        // Check if the click target is NOT the input or suggestion areas or clear button
         if (!$(event.target).is(searchInput) &&
             !$(event.target).is(suggestionsContainer) &&
             suggestionsContainer.has(event.target).length === 0 &&
-            !$(event.target).is(clearSearchBtn) && // Also check for clear button
+            !$(event.target).is(clearSearchBtn) &&
             clearSearchBtn.has(event.target).length === 0
            )
         {
@@ -2141,16 +2221,13 @@ $(document).ready(function() {
         }
     });
 
-     // Show suggestions when input is focused and has text
+     // Show suggestions when input is focused and has text + results exist
      searchInput.on('focus', function() {
          if ($(this).val().trim() && suggestionsContainer.children().length > 0) {
              suggestionsContainer.show();
          }
      });
 
-
     // --- Initial Setup ---
-    // console.log("Initial Marketplace:", currentMarketplace);
      clearSearchBtn.hide(); // Initially hide clear button
-
 });

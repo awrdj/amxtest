@@ -1798,456 +1798,333 @@ if (filterExcludeBrands && config.excludeBrands) {
 
 // script.js
 // script.js
-// --- Configuration ---
-const API_ENDPOINT = 'https://completion.amazon.com/search/complete';
-// Market (mkt=1 is US). Change if needed for other regions.
-const MARKET_ID = '1';
-const CLIENT_INFO = 'amazon-search-ui'; // Mimic client
-const SEARCH_ALIAS = 'aps'; // All departments
+$(document).ready(function() {
+    const searchInput = $("#searchInput");
+    const suggestionsContainer = $("#suggestionsContainer");
+    const marketplaceSelect = $("#marketplaceSelect");
+    const clearSearchBtn = $("#clearSearchBtn");
 
-// Keywords used by the extension for the "Other" category
-const OTHER_KEYWORDS = ["for", "with", "and", "vs", "without", "to", "under", "from", "in"];
-const ALPHABET = "abcdefghijklmnopqrstuvwxyz".split('');
-const NUMBERS = "0123456789".split('');
-const ALPHANUMERIC = [...ALPHABET, ...NUMBERS];
+    // --- Configuration ---
+    const MAX_KEYWORDS_IN_SEARCH = 500; // From extension
+    const SUGGESTION_DEBOUNCE_MS = 300; // Delay after typing stops
 
-// Background colors for categories (adjust as needed)
-const COLORS = {
-    standard: '#FFFFFF', // White
-    before: '#E6F7FF',   // Light Blue
-    after: '#E6FFFA',    // Light Teal
-    other: '#FFFBE6',    // Light Yellow
-    // Add 'between' color if implementing
-};
+    // --- State ---
+    let currentMarketplace = getMarketplace();
+    let suggestionTimeoutId;
 
-// --- DOM Elements ---
-// Ensure these elements exist in your HTML file with these exact IDs
-const searchInput = document.getElementById('searchInput');
-const suggestionsContainer = document.getElementById('suggestionsContainer');
-const loadingIndicator = document.getElementById('loadingIndicator');
+    // --- Utility Functions ---
 
-// --- State ---
-let displayedKeywords = new Set(); // Track displayed keywords to avoid duplicates
-let debounceTimer;
+    // Debug helper (optional)
+    function debugResponse(apiType, queryFirst, queryLast, response) {
+        console.groupCollapsed(`Suggestions Debug [${apiType}]: "${queryFirst}|${queryLast}"`);
+        console.log('Prefix:', queryFirst);
+        console.log('Suffix:', queryLast);
+        console.log('API Response:', response);
+        console.groupEnd();
+        return response; // Pass through
+    }
 
-// --- API Fetch Function ---
-/**
- * Fetches suggestions from the Amazon completion API.
- * @param {string} query - The search query.
- * @returns {Promise<string[]|null>} A promise that resolves to an array of suggestions or null on error.
- */
-async function fetchSuggestions(query) {
-    const url = new URL(API_ENDPOINT);
-    url.searchParams.append('q', query);
-    url.searchParams.append('search-alias', SEARCH_ALIAS);
-    url.searchParams.append('client', CLIENT_INFO);
-    url.searchParams.append('mkt', MARKET_ID);
+    // Get marketplace details from dropdown
+    function getMarketplace() {
+        const selectedValue = marketplaceSelect.val() || "com"; // Default to com if null
+        const domainConfig = {
+            "com": { domain: "amazon.com", market: "ATVPDKIKX0DER" },
+            "ca": { domain: "amazon.ca", market: "A2EUQ1WTGCTBG2" },
+            "co.uk": { domain: "amazon.co.uk", market: "A1F83G8C2ARO7P" },
+            "de": { domain: "amazon.de", market: "A1PA6795UKMFR9" },
+            "fr": { domain: "amazon.fr", market: "A13V1IB3VIYZZH" },
+            "it": { domain: "amazon.it", market: "APJ6JRA9NG5V4" },
+            "es": { domain: "amazon.es", market: "A1RKKUPIHCS9HS" },
+            "com.mx": { domain: "amazon.com.mx", market: "A1AM78C64UM0Y8" },
+            "com.au": { domain: "amazon.com.au", market: "A39IBJ37TRP1C6" },
+            "jp": { domain: "amazon.co.jp", market: "A1VC38TJH7YXB5" }
+        };
+        return domainConfig[selectedValue];
+    }
 
-    console.log(`Fetching suggestions for query: "${query}" from URL: ${url.toString()}`); // DEBUG
+    // HTML Escaper
+    function escapeHtml(unsafe) {
+        if (typeof unsafe !== 'string') {
+            return unsafe;
+        }
+        return unsafe
+             .replace(/&/g, "&amp;")
+             .replace(/</g, "&lt;")
+             .replace(/>/g, "&gt;")
+             .replace(/"/g, "&quot;")
+             .replace(/'/g, "&#039;");
+     }
 
-    try {
-        // Standard fetch. If you encounter CORS errors, a server-side proxy is the standard solution.
-        const response = await fetch(url.toString());
+    // --- Core Suggestion Logic ---
 
-        console.log(`Response status for query "${query}": ${response.status}`); // DEBUG
+    // Fetch suggestions from Amazon API
+    function getSuggestions(queryFirst, queryLast, marketplace, apiType = 'Generic') {
+        const departmentQuery = 'aps'; // Hardcoded for now, could be dynamic
+        const params = new URLSearchParams({
+            'site-variant': 'desktop',
+            'mid': marketplace.market,
+            'alias': departmentQuery,
+            'prefix': queryFirst,
+            'suffix': queryLast
+        });
 
-        if (!response.ok) {
-            let errorBody = await response.text().catch(() => 'Could not read error body');
-            console.error(`HTTP error for query "${query}"! Status: ${response.status}. Body: ${errorBody}`);
-            return null; // Indicate fetch failure
+        // Filter out empty params (though API might handle them)
+        for (let key of ['prefix', 'suffix']) {
+            if (!params.get(key)) {
+                params.delete(key);
+            }
         }
 
-        // Check content type - Amazon might return non-JSON sometimes (e.g., JSONP)
-         const contentType = response.headers.get("content-type");
-         // Allow JSON and JavaScript (for JSONP) content types
-         if (!contentType || !(contentType.includes("application/json") || contentType.includes("application/javascript"))) {
-             let responseBody = await response.text();
-             console.warn(`Received unexpected Content-Type for query "${query}". Content-Type: ${contentType}. Body: ${responseBody}`);
-             // Attempt to parse JSONP-like response even with wrong content type
-             try {
-                 const jsonpMatch = responseBody.match(/^[^\(]*\((.*)\)[;\s]*$/);
-                 if (jsonpMatch && jsonpMatch[1]) {
-                     console.log(`Attempting to parse extracted JSONP content despite Content-Type for query "${query}"`);
-                     const data = JSON.parse(jsonpMatch[1]);
-                     console.log(`Successfully parsed JSONP data for query "${query}":`, data); // DEBUG
-                     // Standard Amazon format: [query, [suggestions], metadat?, nodes?]
-                     return data && Array.isArray(data) && data.length > 1 && Array.isArray(data[1]) ? data[1] : [];
-                 } else {
-                      console.warn(`Could not extract JSON from non-JSON/JS response for query "${query}".`);
-                      return []; // Return empty array if no JSONP structure found
-                 }
-             } catch (parseError) {
-                 console.error(`Error parsing potentially non-JSON/JS response for query "${query}":`, parseError, "Response body:", responseBody);
-                 return []; // Return empty array on parsing error
-             }
-         }
+        const suggestUrl = `https://completion.${marketplace.domain}/api/2017/suggestions?${params.toString()}`;
+        console.log(`Requesting: ${suggestUrl}`); // Log the URL being requested
 
-        // If content type is correct (JSON or JavaScript), attempt parsing
-        let responseBody = await response.text();
-        try {
-            let data;
-            // Try standard JSON parse first
-            if (contentType.includes("application/json")) {
-                 data = JSON.parse(responseBody);
-            } else { // Assume JSONP for application/javascript
-                 const jsonpMatch = responseBody.match(/^[^\(]*\((.*)\)[;\s]*$/);
-                 if (jsonpMatch && jsonpMatch[1]) {
-                     data = JSON.parse(jsonpMatch[1]);
-                 } else {
-                     throw new Error("JavaScript content type received, but not in expected JSONP format.");
-                 }
+        return fetch(suggestUrl)
+            .then(response => {
+                if (!response.ok) {
+                    console.error(`API Error for ${apiType} (${response.status}): ${response.statusText}`);
+                    return { suggestions: [] }; // Return empty on error
+                }
+                return response.json();
+            })
+            .then(res => debugResponse(apiType, queryFirst, queryLast, res))
+            .catch(error => {
+                console.error(`Workspace Error for ${apiType}:`, error);
+                return { suggestions: [] }; // Always return valid shape
+            });
+    }
+
+    // Parse keywords from API response object
+    function parseResults(data) {
+        let keywords = [];
+        if (data && Array.isArray(data.suggestions)) {
+            keywords = data.suggestions
+                .filter(value => value.type === "KEYWORD")
+                .map(value => {
+                    // Prefer concatenated highlightFragments if available
+                    if (value.highlightFragments && value.highlightFragments.length > 0) {
+                        return value.highlightFragments.map(fragment => fragment.text).join('');
+                    }
+                    return value.value || ''; // Fallback to value, ensure string
+                })
+                .filter(kw => typeof kw === 'string' && kw.trim() !== ''); // Ensure non-empty strings
+        }
+        // console.debug("Parsed Keywords:", keywords);
+        return keywords;
+    }
+
+    // Adds a group title (like "Keywords Before")
+    function addGroupTitle(title) {
+        const groupDiv = $('<div class="suggestion-group"></div>');
+        groupDiv.append($('<h3></h3>').text(title));
+        suggestionsContainer.append(groupDiv);
+        return groupDiv; // Return the group div to append items to
+    }
+
+    // Adds a single suggestion item with highlighting
+    function addKeywordItem(keyword, search, groupClass, groupDiv) {
+        const item = $('<div class="suggestion-item"></div>').addClass(groupClass);
+        const searchLower = search.toLowerCase();
+        const kwLower = keyword.toLowerCase();
+        const matchIndex = kwLower.indexOf(searchLower);
+
+        let before = '', match = '', after = '';
+
+        if (search.length > 0 && matchIndex > -1) {
+            // Extract parts based on case-insensitive find, but use original casing
+            before = keyword.substring(0, matchIndex);
+            match = keyword.substring(matchIndex, matchIndex + search.length);
+            after = keyword.substring(matchIndex + search.length);
+        } else {
+            // If search term not found or empty, display the whole keyword normally
+            before = keyword;
+        }
+
+        // Use .html() carefully with escaped parts
+        item.html(`
+            ${escapeHtml(before)}<strong>${escapeHtml(match)}</strong>${escapeHtml(after)}
+        `);
+
+        item.on('click', () => {
+            searchInput.val(keyword); // Fill input with clicked keyword
+            suggestionsContainer.empty().hide(); // Hide suggestions
+            searchInput.focus(); // Optionally refocus input
+            // You might want to trigger a new search or action here
+        });
+
+        groupDiv.append(item); // Append item to its group
+    }
+
+
+    // Renders all suggestions, categorized and deduplicated
+    function renderCategorizedSuggestions(search, results) {
+        suggestionsContainer.empty(); // Clear previous results first
+        let allDisplayedKeywords = new Set(); // Track all keywords added (case-insensitive)
+        let keywordCount = 0;
+        let currentGroupDiv = null; // To hold the current group container
+
+        const categories = [
+            { title: "Amazon Suggestions", index: 0, className: "group-main" },
+            { title: "Keywords Before", index: 1, className: "group-before" },
+            { title: "Keywords After", index: 2, className: "group-after" },
+            { title: "Keywords Between", index: 3, className: "group-between" },
+            { title: "Other Keywords", index: [4, 5, 6], className: "group-other" } // Combine others
+        ];
+
+        categories.forEach(category => {
+            if (keywordCount >= MAX_KEYWORDS_IN_SEARCH) return; // Stop if max reached
+
+            let keywordsRaw = [];
+            if (Array.isArray(category.index)) {
+                // Combine results for 'Other'
+                category.index.forEach(idx => {
+                    keywordsRaw = keywordsRaw.concat(parseResults(results[idx] || { suggestions: [] }));
+                });
+            } else {
+                keywordsRaw = parseResults(results[category.index] || { suggestions: [] });
             }
 
-            console.log(`Successfully parsed data for query "${query}":`, data); // DEBUG
-            // Standard Amazon format: [query, [suggestions], metadat?, nodes?]
-            return data && Array.isArray(data) && data.length > 1 && Array.isArray(data[1]) ? data[1] : [];
-
-        } catch (parseError) {
-             console.error(`Error parsing response for query "${query}":`, parseError, "Response body:", responseBody);
-             return []; // Return empty array on parsing error
-        }
-
-    } catch (error) {
-        console.error(`Network or other error fetching suggestions for query "${query}":`, error);
-        if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
-             // This specific TypeError often indicates a CORS issue or network problem
-            console.error("This might be a CORS issue (if running in a browser without a proxy) or a network connectivity problem.");
-        }
-        return null; // Indicate fetch failure
-    }
-}
-
-// --- Suggestion Processing and Rendering ---
-
-/**
- * Adds a single suggestion item to the UI container.
- * @param {HTMLElement} container - The container element for the category.
- * @param {string} keyword - The suggestion keyword.
- * @param {string} backgroundColor - The background color for the item.
- * @param {Set<string>} displayedKeywordsSet - Set of already displayed keywords (lowercase).
- * @param {string|null} highlightedPart - The specific part of the keyword to highlight (prefix/suffix/other).
- */
-function addSuggestionItem(container, keyword, backgroundColor, displayedKeywordsSet, highlightedPart = null) {
-    const lowerCaseKeyword = keyword.toLowerCase();
-    // Avoid adding duplicates
-    if (displayedKeywordsSet.has(lowerCaseKeyword)) {
-        // console.log(`Skipping duplicate: "${keyword}"`); // Optional DEBUG
-        return false; // Indicate that item was not added
-    }
-    displayedKeywordsSet.add(lowerCaseKeyword);
-
-    const item = document.createElement('div');
-    // Add base class and any specific styling classes needed (assuming CSS handles .suggestion-item)
-    item.className = 'suggestion-item'; // Use className for broader compatibility
-    item.style.backgroundColor = backgroundColor;
-
-    let highlightedHtml = keyword; // Default to the original keyword text
-
-    // Apply highlighting if a part is specified and valid
-    if (highlightedPart && typeof highlightedPart === 'string' && highlightedPart.length > 0) {
-        // Find the first occurrence of the highlighted part (case-insensitive index)
-        const index = lowerCaseKeyword.indexOf(highlightedPart.toLowerCase());
-
-        if (index !== -1) {
-             // Extract the substring with original casing from the keyword
-             const originalCaseHighlight = keyword.substring(index, index + highlightedPart.length);
-             // Reconstruct the string with the highlighted part wrapped in a span
-             // Ensure HTML entities are handled correctly by setting textContent first, then manipulating innerHTML if needed,
-             // or carefully constructing the HTML string. Using innerHTML directly is simpler here but be mindful of potential XSS if keyword source is untrusted.
-             highlightedHtml = keyword.substring(0, index) +
-                              `<span class="s-heavy">${originalCaseHighlight}</span>` + // Assuming .s-heavy class exists in CSS
-                              keyword.substring(index + highlightedPart.length);
-        } else {
-            // Log if the part to highlight wasn't found (might indicate a logic issue or API variation)
-            console.warn(`Could not find "${highlightedPart}" in "${keyword}" for highlighting.`);
-            // Keep highlightedHtml as the original keyword if part not found
-        }
-    }
-
-    item.innerHTML = highlightedHtml; // Use innerHTML to render the potential span
-    item.title = `Click to search for: "${keyword}"`; // Tooltip for usability
-
-    // Event listener for clicking a suggestion
-    item.onclick = () => {
-        searchInput.value = keyword; // Fill input on click
-        suggestionsContainer.innerHTML = ''; // Clear suggestions display
-        if (suggestionsContainer.classList) { // Check if classList is supported
-             suggestionsContainer.classList.add('hidden'); // Hide container using class
-        } else {
-            suggestionsContainer.style.display = 'none'; // Fallback for older browsers
-        }
-        // Optionally trigger a new search immediately after click:
-        // processAndRenderSuggestions(keyword);
-    };
-
-    container.appendChild(item);
-    return true; // Indicate that item was added
-}
-
-/**
- * Creates a category container element with a title and appends it to the main suggestions container.
- * @param {string} title - The title for the category.
- * @returns {HTMLElement} - The created category container element (where items should be appended).
- */
-function createCategoryContainer(title) {
-    const categoryDiv = document.createElement('div'); // This will hold the title and items
-    const titleDiv = document.createElement('div');
-    // Add base class and any specific styling classes needed (assuming CSS handles .category-title)
-    titleDiv.className = 'category-title'; // Use className
-    titleDiv.textContent = title; // Safer than innerHTML for plain text
-    categoryDiv.appendChild(titleDiv); // Add title to the category container
-
-    // Check if suggestionsContainer exists before appending
-    if (suggestionsContainer) {
-        suggestionsContainer.appendChild(categoryDiv); // Add the whole category container to the main display
-        console.log(`Created category: "${title}"`); // DEBUG
-    } else {
-        console.error("suggestionsContainer element not found in the DOM.");
-    }
-    return categoryDiv; // Return the category container so items can be added to it
-}
+            // Filter out duplicates and already displayed keywords
+            const keywordsFiltered = keywordsRaw.filter(kw => {
+                 // Basic check: is it already added? (case-insensitive)
+                if (allDisplayedKeywords.has(kw.toLowerCase())) {
+                    return false;
+                }
+                 // Additional check for "Other": don't add if it's identical to the search term itself
+                 if (category.title === "Other Keywords" && kw.toLowerCase() === search.toLowerCase()) {
+                     return false;
+                 }
+                return true; // Keep it
+            });
 
 
-/**
- * Fetches all suggestion types (standard, before, after, other),
- * processes them, filters relevant ones, and renders them in categorized sections.
- * @param {string} search - The search term entered by the user.
- */
-async function processAndRenderSuggestions(search) {
-    // Basic validation and DOM checks
-    if (!searchInput || !suggestionsContainer || !loadingIndicator) {
-        console.error("Required DOM elements (searchInput, suggestionsContainer, loadingIndicator) not found.");
-        return;
-    }
-    if (!search || typeof search !== 'string' || search.trim().length < 1) {
-        suggestionsContainer.innerHTML = '';
-        suggestionsContainer.classList.add('hidden');
-        return;
-    }
+            if (keywordsFiltered.length > 0) {
+                // Add title only if there are keywords for this group
+                currentGroupDiv = addGroupTitle(category.title);
 
-    const searchTerm = search.trim(); // Use trimmed search term
-    const lowerSearch = searchTerm.toLowerCase();
-
-    console.log(`Starting suggestion processing for: "${searchTerm}"`); // DEBUG
-    loadingIndicator.classList.remove('hidden'); // Show loading
-    suggestionsContainer.innerHTML = ''; // Clear previous suggestions
-    suggestionsContainer.classList.add('hidden'); // Hide until results are ready
-    displayedKeywords.clear(); // Reset duplicate tracker for this new search
-
-    const promises = [];
-
-    // --- Create Promises for API Calls ---
-
-    // 1. Standard Suggestions
-    promises.push(fetchSuggestions(searchTerm).then(results => ({ type: 'standard', results })));
-
-    // 2. Keywords Before (a-z, 0-9)
-    ALPHANUMERIC.forEach(prefix => {
-        const query = `${prefix} ${searchTerm}`;
-        promises.push(fetchSuggestions(query).then(results => ({ type: 'before', prefix, results, originalQuery: query })));
-    });
-
-    // 3. Keywords After (a-z, 0-9)
-    ALPHANUMERIC.forEach(suffix => {
-        const query = `${searchTerm} ${suffix}`;
-        promises.push(fetchSuggestions(query).then(results => ({ type: 'after', suffix, results, originalQuery: query })));
-    });
-
-    // 4. Other Keywords
-    OTHER_KEYWORDS.forEach(otherWord => {
-        const query = `${searchTerm} ${otherWord}`;
-        promises.push(fetchSuggestions(query).then(results => ({ type: 'other', otherWord, results, originalQuery: query })));
-    });
-
-    console.log(`Waiting for ${promises.length} API calls to complete...`); // DEBUG
-
-    // --- Wait for all API calls ---
-    // Promise.allSettled is better as it waits for all promises, even if some fail
-    const settledResults = await Promise.allSettled(promises);
-    console.log("All API calls settled. Raw results:", settledResults); // DEBUG
-
-    // Filter out failed promises and extract successful results' values
-    // Ensure the value contains a 'results' array before including it
-    const allResults = settledResults
-        .filter(result => result.status === 'fulfilled' && result.value && Array.isArray(result.value.results))
-        .map(result => result.value);
-
-    // --- Process and Render Results ---
-    loadingIndicator.classList.add('hidden'); // Hide loading indicator
-
-    let standardContainer, beforeContainer, afterContainer, otherContainer;
-    let suggestionsFound = false; // Flag to track if *any* suggestions are added
-
-    allResults.forEach((resultData) => {
-        const { type, results } = resultData;
-
-        // Skip if results array is empty (already filtered above, but good practice)
-        if (results.length === 0) {
-            return;
-        }
-
-        let itemsAddedInCategory = 0; // Track items added per category
-
-        switch (type) {
-            case 'standard':
-                console.log(`Processing ${results.length} standard suggestions.`); // DEBUG
-                if (!standardContainer) standardContainer = createCategoryContainer('Standard Suggestions');
-                results.forEach(keyword => {
-                    if(addSuggestionItem(standardContainer, keyword, COLORS.standard, displayedKeywords)) {
-                        itemsAddedInCategory++;
+                keywordsFiltered.forEach(keyword => {
+                    if (keywordCount < MAX_KEYWORDS_IN_SEARCH) {
+                        addKeywordItem(keyword, search, category.className, currentGroupDiv);
+                        allDisplayedKeywords.add(keyword.toLowerCase()); // Add to tracking set
+                        keywordCount++;
                     }
                 });
-                break;
+            }
+        });
 
-            case 'before':
-                const { prefix } = resultData;
-                // Filter: suggestion must start with "prefix<space>searchTerm" (case insensitive)
-                const relevantBefore = results.filter(k => k.toLowerCase().startsWith(prefix.toLowerCase() + ' ' + lowerSearch));
-                if (relevantBefore.length > 0) {
-                    console.log(`Processing ${relevantBefore.length} relevant 'before' suggestions for prefix "${prefix}".`); // DEBUG
-                    if (!beforeContainer) beforeContainer = createCategoryContainer('Keywords Before');
-                    // Highlight the prefix part (use the actual prefix from the keyword start)
-                    relevantBefore.forEach(keyword => {
-                         if(addSuggestionItem(beforeContainer, keyword, COLORS.before, displayedKeywords, keyword.substring(0, prefix.length))) {
-                             itemsAddedInCategory++;
-                         }
-                    });
-                }
-                break;
+        // Show container only if keywords were added
+        suggestionsContainer.toggle(keywordCount > 0);
+    }
 
-            case 'after':
-                 const { suffix } = resultData;
-                 // Filter: suggestion must start with the original query "searchTerm<space>suffix" (case insensitive)
-                 // This filter might be too strict if Amazon returns variations.
-                 // A looser filter could be just checking if it starts with searchTerm.
-                 const relevantAfter = results.filter(k => k.toLowerCase().startsWith(resultData.originalQuery.toLowerCase()));
-                 // Alternative looser filter: const relevantAfter = results.filter(k => k.toLowerCase().startsWith(lowerSearch));
-
-                 if (relevantAfter.length > 0) {
-                     console.log(`Processing ${relevantAfter.length} relevant 'after' suggestions for suffix "${suffix}".`); // DEBUG
-                    if (!afterContainer) afterContainer = createCategoryContainer('Keywords After');
-                     relevantAfter.forEach(keyword => {
-                         // Try to highlight the specific suffix character/word if it appears right after the search term + space
-                         const expectedSuffixStart = searchTerm.length + 1;
-                         if (keyword.length > expectedSuffixStart && keyword.toLowerCase().substring(expectedSuffixStart).startsWith(suffix.toLowerCase())) {
-                             // Highlight the part matching the suffix length, starting after the space
-                             const highlight = keyword.substring(expectedSuffixStart, expectedSuffixStart + suffix.length);
-                              if(addSuggestionItem(afterContainer, keyword, COLORS.after, displayedKeywords, highlight)) {
-                                  itemsAddedInCategory++;
-                              }
-                         } else {
-                             // Fallback: Add without specific highlight or highlight the whole part after search term?
-                             // Let's add without specific highlight for now if the exact suffix isn't found immediately after.
-                              if(addSuggestionItem(afterContainer, keyword, COLORS.after, displayedKeywords, null)) {
-                                  itemsAddedInCategory++;
-                              }
-                         }
-                     });
-                 }
-                break;
-
-            case 'other':
-                const { otherWord } = resultData;
-                // Filter: suggestion must start with the original query "searchTerm<space>otherWord" (case insensitive)
-                const relevantOther = results.filter(k => k.toLowerCase().startsWith(resultData.originalQuery.toLowerCase()));
-                 if (relevantOther.length > 0) {
-                     console.log(`Processing ${relevantOther.length} relevant 'other' suggestions for word "${otherWord}".`); // DEBUG
-                    if (!otherContainer) otherContainer = createCategoryContainer('Other Suggestions');
-                    relevantOther.forEach(keyword => {
-                        // Find the 'otherWord' right after the search term + space
-                        const expectedOtherStart = searchTerm.length + 1;
-                        // Use indexOf to find the word, ensuring it starts at the expected position
-                        const indexOther = keyword.toLowerCase().indexOf(otherWord.toLowerCase(), expectedOtherStart);
-
-                        if (indexOther === expectedOtherStart) {
-                            // Highlight the found 'otherWord' with original casing
-                            const highlightedPart = keyword.substring(indexOther, indexOther + otherWord.length);
-                             if(addSuggestionItem(otherContainer, keyword, COLORS.other, displayedKeywords, highlightedPart)) {
-                                 itemsAddedInCategory++;
-                             }
-                        } else {
-                             // Add without highlight if the 'otherWord' isn't exactly where expected
-                              if(addSuggestionItem(otherContainer, keyword, COLORS.other, displayedKeywords, null)) {
-                                  itemsAddedInCategory++;
-                              }
-                        }
-                    });
-                 }
-                break;
+    // Fetches all suggestion types and triggers rendering
+    function fetchAndDisplaySuggestions(search) {
+        if (!search.trim()) {
+            suggestionsContainer.empty().hide();
+            clearSearchBtn.hide();
+            return;
         }
-         if (itemsAddedInCategory > 0) {
-             suggestionsFound = true; // Mark true if any category added items
-         }
-    });
+         clearSearchBtn.show();
 
-     // --- Final Display Handling ---
-     if (suggestionsFound) {
-         console.log("Finished processing. Suggestions should be visible."); // DEBUG
-         suggestionsContainer.classList.remove('hidden'); // Show container only if suggestions were found
-     } else {
-         console.log("No suggestions were added to any category. Displaying 'No suggestions found'."); // DEBUG
-         // Display "No suggestions found" message inside the container
-         suggestionsContainer.innerHTML = '<div class="p-4 text-center text-gray-500">No suggestions found.</div>'; // Adjust classes as needed
-         suggestionsContainer.classList.remove('hidden'); // Show the container to display the message
-     }
-}
+        const words = search.split(" ").filter(w => w !== ""); // Clean empty words
+        const marketplace = currentMarketplace; // Use the currently selected marketplace
 
+        // Define all API calls as per extension logic
+        let promises = [
+            // 1. Main/Default
+            getSuggestions(search, "", marketplace, 'Main'),
+            // 2. Before (Note: space prefix)
+            getSuggestions(" ", search.trim(), marketplace, 'Before'),
+            // 3. After (Note: space suffix)
+            getSuggestions(search.trim() + " ", "", marketplace, 'After'),
+            // 4. Between (Note: spaces around middle words, conditional)
+            (words.length >= 2
+                ? getSuggestions(words[0] + " ", " " + words.slice(1).join(" "), marketplace, 'Between')
+                : Promise.resolve({ suggestions: [] }) // Resolve empty if not applicable
+            ),
+            // 5. Expansion: for
+            getSuggestions(search + " for ", "", marketplace, 'Exp: for'),
+            // 6. Expansion: and
+            getSuggestions(search + " and ", "", marketplace, 'Exp: and'),
+            // 7. Expansion: with
+            getSuggestions(search + " with ", "", marketplace, 'Exp: with')
+        ];
 
-// --- Event Listener Setup ---
-
-// Ensure DOM is fully loaded before adding listeners
-document.addEventListener('DOMContentLoaded', () => {
-    // Check again if elements exist after DOM load
-    const searchInputElem = document.getElementById('searchInput');
-    const suggestionsContainerElem = document.getElementById('suggestionsContainer');
-
-    if (!searchInputElem || !suggestionsContainerElem || !loadingIndicator) {
-         console.error("DOM elements missing after DOMContentLoaded. Cannot attach event listeners.");
-         return; // Stop if essential elements aren't there
+        Promise.all(promises)
+            .then((results) => {
+                // Check if the search input value hasn't changed while waiting
+                if (searchInput.val().trim() === search) {
+                     renderCategorizedSuggestions(search, results);
+                } else {
+                    console.log("Search input changed before suggestions arrived. Ignoring old results.");
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching suggestions:', error);
+                suggestionsContainer.empty().hide(); // Hide on error
+            });
     }
 
 
-    // Input event listener with debouncing
-    searchInputElem.addEventListener('input', (e) => {
-        // Clear any existing timer
-        clearTimeout(debounceTimer);
+    // --- Event Handlers ---
 
-        const searchTerm = e.target.value; // Get value directly
+    // Handle input changes with debounce
+    searchInput.on('input', function() {
+        const query = $(this).val().trim();
+        clearTimeout(suggestionTimeoutId); // Clear previous timer
 
-        if (searchTerm && searchTerm.trim().length > 0) {
-            // Show loading indicator immediately for better UX
-            if (loadingIndicator) loadingIndicator.classList.remove('hidden');
-            // Optionally hide suggestions container while loading
-            // if (suggestionsContainerElem) suggestionsContainerElem.classList.add('hidden');
-            // Optionally clear old results instantly
-            // if (suggestionsContainerElem) suggestionsContainerElem.innerHTML = '';
-
-            // Set a new timer
-            debounceTimer = setTimeout(() => {
-                processAndRenderSuggestions(searchTerm); // Pass the current search term
-            }, 300); // Debounce time in milliseconds (e.g., 300ms)
+        if (query) {
+             clearSearchBtn.show();
+            suggestionTimeoutId = setTimeout(() => {
+                fetchAndDisplaySuggestions(query);
+            }, SUGGESTION_DEBOUNCE_MS);
         } else {
-            // Clear suggestions and hide indicator if input is empty
-            if (suggestionsContainerElem) {
-                suggestionsContainerElem.innerHTML = '';
-                suggestionsContainerElem.classList.add('hidden');
-            }
-            if (loadingIndicator) loadingIndicator.classList.add('hidden');
+            suggestionsContainer.empty().hide(); // Hide immediately if empty
+             clearSearchBtn.hide();
         }
     });
 
-    // Optional: Click outside listener to hide suggestions
-    document.addEventListener('click', (event) => {
-        // Check if the click was outside the search input AND outside the suggestions container
-        if (searchInputElem && suggestionsContainerElem &&
-            !searchInputElem.contains(event.target) &&
-            !suggestionsContainerElem.contains(event.target))
+     // Handle clear button click
+     clearSearchBtn.on('click', function() {
+         searchInput.val(''); // Clear the input
+         suggestionsContainer.empty().hide(); // Hide suggestions
+         $(this).hide(); // Hide the clear button itself
+         searchInput.focus(); // Focus the input
+     });
+
+
+    // Update marketplace and potentially trigger new suggestions if input has value
+    marketplaceSelect.on('change', function() {
+        console.log("Marketplace changed");
+        currentMarketplace = getMarketplace();
+        const currentQuery = searchInput.val().trim();
+        if (currentQuery) {
+            // Optional: Immediately refresh suggestions for the new marketplace
+             clearTimeout(suggestionTimeoutId); // Clear any pending suggestion fetch
+             fetchAndDisplaySuggestions(currentQuery);
+             console.log(`Refetching suggestions for "${currentQuery}" in ${currentMarketplace.domain}`);
+        }
+    });
+
+    // Hide suggestions when clicking outside
+    $(document).on('click', (event) => {
+        // Check if the click target is not the input, not the container, and not inside the container
+        if (!$(event.target).is(searchInput) &&
+            !$(event.target).is(suggestionsContainer) &&
+            suggestionsContainer.has(event.target).length === 0)
         {
-            suggestionsContainerElem.classList.add('hidden');
-            // Optionally clear the content as well:
-            // suggestionsContainerElem.innerHTML = '';
+            suggestionsContainer.hide(); // Hide without clearing, allows reopening
         }
     });
 
-     console.log("Suggestion tool script initialized."); // DEBUG
+     // Show suggestions when input is focused and has text
+     searchInput.on('focus', function() {
+         if ($(this).val().trim() && suggestionsContainer.children().length > 0) {
+             suggestionsContainer.show();
+         }
+     });
+
+
+    // --- Initial Setup ---
+    console.log("Initial Marketplace:", currentMarketplace);
+     clearSearchBtn.hide(); // Initially hide clear button
+
 });

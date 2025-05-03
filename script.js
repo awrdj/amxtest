@@ -1955,21 +1955,29 @@ $(document).ready(function() {
     }
 
 
-    // Renders all suggestions, categorized and deduplicated
+    // Renders all suggestions, categorized and deduplicated (Aligned with Extension Logic)
     function renderCategorizedSuggestions(search, results) {
         suggestionsContainer.empty(); // Clear previous results first
-        let allDisplayedKeywords = new Set(); // Track all keywords added (case-insensitive)
+
+        // 1. Get the baseline main keywords for deduplication, but don't display them as the first group.
+        const mainKeywordsRaw = parseResults(results[0] || { suggestions: [] });
+        const mainKeywordsSet = new Set(mainKeywordsRaw.map(kw => kw.toLowerCase())); // For quick lookup
+
+        // 2. Track keywords added to OUR container to prevent duplicates across subsequent groups
+        let allDisplayedKeywords = new Set(); // Tracks keywords added to suggestionContainer (case-insensitive)
         let keywordCount = 0;
         let currentGroupDiv = null; // To hold the current group container
 
+        // 3. Define categories, NOTE: We skip index 0 for direct display
         const categories = [
-            { title: "Amazon Suggestions", index: 0, className: "group-main" },
+            // Index 0 is used for mainKeywordsSet baseline, not displayed directly.
             { title: "Keywords Before", index: 1, className: "group-before" },
             { title: "Keywords After", index: 2, className: "group-after" },
             { title: "Keywords Between", index: 3, className: "group-between" },
             { title: "Other Keywords", index: [4, 5, 6], className: "group-other" } // Combine others
         ];
 
+        // 4. Process categories intended for display (index 1 onwards)
         categories.forEach(category => {
             if (keywordCount >= MAX_KEYWORDS_IN_SEARCH) return; // Stop if max reached
 
@@ -1977,34 +1985,39 @@ $(document).ready(function() {
             if (Array.isArray(category.index)) {
                 // Combine results for 'Other'
                 category.index.forEach(idx => {
-                    keywordsRaw = keywordsRaw.concat(parseResults(results[idx] || { suggestions: [] }));
+                    if (results[idx]) { // Check if result exists
+                         keywordsRaw = keywordsRaw.concat(parseResults(results[idx]));
+                    }
                 });
             } else {
-                keywordsRaw = parseResults(results[category.index] || { suggestions: [] });
+                 if (results[category.index]) { // Check if result exists
+                    keywordsRaw = parseResults(results[category.index]);
+                 }
             }
 
-            // Filter out duplicates and already displayed keywords
+            // Filter: Must NOT be in main results (index 0) AND NOT already displayed in our list.
             const keywordsFiltered = keywordsRaw.filter(kw => {
-                 // Basic check: is it already added? (case-insensitive)
-                if (allDisplayedKeywords.has(kw.toLowerCase())) {
-                    return false;
-                }
+                const kwLower = kw.toLowerCase();
+                // Check against baseline (results[0]) AND against already added items
+                const isNew = !mainKeywordsSet.has(kwLower) && !allDisplayedKeywords.has(kwLower);
+
                  // Additional check for "Other": don't add if it's identical to the search term itself
-                 if (category.title === "Other Keywords" && kw.toLowerCase() === search.toLowerCase()) {
+                 if (category.title === "Other Keywords" && kwLower === search.toLowerCase()) {
                      return false;
                  }
-                return true; // Keep it
+
+                return isNew;
             });
 
 
             if (keywordsFiltered.length > 0) {
-                // Add title only if there are keywords for this group
+                // Add title only if there are *new* keywords for this group
                 currentGroupDiv = addGroupTitle(category.title);
 
                 keywordsFiltered.forEach(keyword => {
                     if (keywordCount < MAX_KEYWORDS_IN_SEARCH) {
                         addKeywordItem(keyword, search, category.className, currentGroupDiv);
-                        allDisplayedKeywords.add(keyword.toLowerCase()); // Add to tracking set
+                        allDisplayedKeywords.add(keyword.toLowerCase()); // Add to tracking set *after* deciding to display
                         keywordCount++;
                     }
                 });

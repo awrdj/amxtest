@@ -516,7 +516,7 @@ footer {
 
     /* --- Key changes/confirmations --- */
     display: none; /* Initially hidden, JS will change this */
-    height: 350px; /* Slightly reduced height, adjust as needed */
+    height: 350px; /* Adjusted height (or keep 400px if preferred) */
     flex-flow: column wrap; /* Use flexbox for column wrapping */
     align-content: flex-start; /* Align wrapped columns to the start */
     overflow-y: hidden; /* Hide vertical scrollbar */
@@ -526,6 +526,11 @@ footer {
     margin: 0;
     padding: 10px;
     box-sizing: border-box;
+}
+.suggestion-group,
+.suggestion-item {
+    break-inside: avoid;
+    page-break-inside: avoid;
 }
 
 /* Keep existing styles for groups and items, ensure they work */

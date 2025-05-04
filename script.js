@@ -1980,8 +1980,9 @@ $(document).ready(function() {
 
         groupDiv.append(item); // Append item to its group
     }*/
-    function addKeywordItem(keyword, search, targetContainer) { // Changed parameters
-    const item = $('<div class="suggestion-item"></div>'); // Removed addClass(groupClass)
+    
+function addKeywordItem(keyword, search, targetContainer) { // Note: targetContainer parameter
+    const item = $('<div class="suggestion-item"></div>');
 
     const matchIndex = keyword.indexOf(search);
     let before = '', match = '', after = '';
@@ -1996,7 +1997,7 @@ $(document).ready(function() {
          after = '';
     }
 
-    // Use escapeHtml for safety - make sure escapeHtml function exists in your scope
+    // Ensure escapeHtml function exists and is used
     item.html(
         `<span class="s-heavy"><span class="math-inline">\{escapeHtml\(before\)\}</span\></span>{escapeHtml(match)}<span class="s-heavy">${escapeHtml(after)}</span>`
     );
@@ -2004,13 +2005,13 @@ $(document).ready(function() {
 
     item.on('click', () => {
         searchInput.val(keyword);
-        suggestionsContainer.empty().css('display', 'none'); // Use .css() to hide
+        suggestionsContainer.empty().css('display', 'none'); // Use .css()
         searchInput.focus();
     });
 
     // Append item directly to the target container
     if (targetContainer instanceof jQuery && targetContainer.length > 0) {
-        targetContainer.append(item); // Append to the passed container
+        targetContainer.append(item); // Append here
     } else {
         console.error("Attempted to append suggestion item to an invalid target container:", targetContainer);
     }
@@ -2161,7 +2162,7 @@ $(document).ready(function() {
         suggestionsContainer.toggle(keywordCount > 0);
     }*/
 
-    function renderCategorizedSuggestions(search, results) {
+    /*function renderCategorizedSuggestions(search, results) {
     suggestionsContainer.empty();
     const mainKeywordsSet = new Set();
     const allDisplayedKeywordsSet = new Set(); // Tracks everything added to the UI
@@ -2298,6 +2299,40 @@ $(document).ready(function() {
 }
 // Optional: Log the count to help diagnose content issues
 // console.log(`Rendered ${keywordCount} total suggestion items.`);
+}*/
+
+    function renderCategorizedSuggestions(search, results) {
+    suggestionsContainer.empty(); // Clear previous results first
+
+    const allKeywordsSet = new Set(); // Use a Set for uniqueness
+    let keywordCount = 0;
+    const MAX_KEYWORDS_IN_SEARCH = 500; // Make sure constant is defined
+
+    // --- 1. Collect unique keywords ---
+    results.forEach(currentResultData => {
+        if (currentResultData && typeof currentResultData === 'object' && Array.isArray(currentResultData.suggestions)) {
+            const keywordsRaw = parseResults(currentResultData); // Use your parseResults
+            keywordsRaw.forEach(kw => {
+                if (kw) { allKeywordsSet.add(kw); }
+            });
+        }
+    });
+
+    // --- 2. Render each unique keyword ---
+    allKeywordsSet.forEach(keyword => {
+        if (keywordCount < MAX_KEYWORDS_IN_SEARCH) {
+            // Call addKeywordItem, passing the main container directly
+            addKeywordItem(keyword, search, suggestionsContainer); // Pass container
+            keywordCount++;
+        }
+    });
+
+    // --- 3. Show or hide the container ---
+    if (keywordCount > 0) {
+        suggestionsContainer.css('display', 'flex'); // Use display: flex
+    } else {
+        suggestionsContainer.css('display', 'none');
+    }
 }
 
 

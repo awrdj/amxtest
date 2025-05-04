@@ -1816,11 +1816,12 @@ $(document).ready(function() {
 
     // Debug helper (optional)
     function debugResponse(apiType, queryFirst, queryLast, response) {
-        // console.groupCollapsed(`Suggestions Debug [${apiType}]: "${queryFirst}|${queryLast}"`);
-        // console.log('Prefix:', queryFirst);
-        // console.log('Suffix:', queryLast);
-        // console.log('API Response:', response);
-        // console.groupEnd();
+        // all console was commented
+        console.groupCollapsed(`Suggestions Debug [${apiType}]: "${queryFirst}|${queryLast}"`);
+        console.log('Prefix:', queryFirst);
+        console.log('Suffix:', queryLast);
+        console.log('API Response:', response);
+        console.groupEnd();
         return response; // Pass through
     }
 
@@ -1871,7 +1872,8 @@ $(document).ready(function() {
         });
 
         const suggestUrl = `https://completion.${marketplace.domain}/api/2017/suggestions?${params.toString()}`;
-        // console.log(`Requesting [${apiType}]: ${suggestUrl}`); // Log the URL being requested
+        // was commented
+        console.log(`Requesting [${apiType}]: ${suggestUrl}`); // Log the URL being requested
 
         return fetch(suggestUrl)
             .then(response => {
@@ -1926,7 +1928,8 @@ $(document).ready(function() {
             // console.warn("parseResults received invalid data:", data);
             return []; // Return empty array if data is not a valid object
         }
-        // console.debug("Parsed Keywords:", keywords);
+        // was commented
+        console.debug("Parsed Keywords:", keywords);
         return keywords;
     }
 

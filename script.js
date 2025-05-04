@@ -1961,54 +1961,60 @@ $(document).ready(function() {
         groupDiv.append(item); // Append item to its group
     }*/
     
-// Corrected addKeywordItem function
+// Ensure escapeHtml function exists before this one
 function escapeHtml(unsafe) {
-    console.log("escapeHtml received:", unsafe, "(type:", typeof unsafe, ")"); // <<< ADD LOG
+    // Using the version from your provided script
     if (typeof unsafe !== 'string') {
+         // Return an empty string if input is not a string
+         // to prevent errors in concatenation later
         return '';
     }
-    const escaped = unsafe
+    return unsafe
          .replace(/&/g, "&amp;")
          .replace(/</g, "&lt;")
          .replace(/>/g, "&gt;")
          .replace(/"/g, "&quot;")
          .replace(/'/g, "&#039;");
-    console.log("escapeHtml returned:", escaped); // <<< ADD LOG
-    return escaped;
 }
 
-// Corrected addKeywordItem function
-// script.js
 
-function addKeywordItem(keyword, search, groupClass) { // Keep groupClass for styling
-    const item = $('<div class="suggestion-item"></div>').addClass(groupClass);
+function addKeywordItem(keyword, search, groupClass) { // Function signature might need adjustment later depending on how renderCategorizedSuggestions calls it
+    const item = $('<div class="suggestion-item"></div>').addClass(groupClass); // Add class for styling
 
-    const matchIndex = keyword.indexOf(search);
+    const matchIndex = keyword.indexOf(search); // Case-sensitive index search
     let before = '', match = '', after = '';
 
+    // Split the keyword based on the search term
     if (search.length > 0 && matchIndex > -1) {
         before = keyword.substring(0, matchIndex);
         match = keyword.substring(matchIndex, matchIndex + search.length);
         after = keyword.substring(matchIndex + search.length);
     } else {
-         before = keyword;
-         match = '';
-         after = '';
+        // If search term is empty or not found, the whole keyword is 'before'
+        before = keyword;
+        match = '';
+        after = '';
     }
-    
+
+    // --- This is the corrected HTML creation ---
+    // It uses backticks ` ` and ${...} to insert the escaped variables
     item.html(
         `<span class="s-heavy"><span class="math-inline">\{escapeHtml\(before\)\}</span\></span>{escapeHtml(match)}<span class="s-heavy">${escapeHtml(after)}</span>`
     );
+    // --- End Corrected HTML ---
 
-    item.attr('data-keyword', keyword);
+    item.attr('data-keyword', keyword); // Add data attribute
 
+    // Add click handler to fill search input
     item.on('click', () => {
-        searchInput.val(keyword);
-        suggestionsContainer.empty().css('display', 'none');
+        searchInput.val(keyword); // Use the jQuery variable for searchInput
+        suggestionsContainer.empty().css('display', 'none'); // Use jQuery variable and .css()
         searchInput.focus();
     });
 
-    suggestionsContainer.append(item); // Keep appending directly
+    // Append the item to the main suggestions container
+    // Ensure 'suggestionsContainer' is the jQuery object defined earlier
+    suggestionsContainer.append(item);
 }
 
     /**

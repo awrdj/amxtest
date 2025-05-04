@@ -2329,7 +2329,6 @@ console.log(`[DEBUG] parseResults[${i}] returned:`, JSON.stringify(keywordsRaw))
             keywordsRaw.forEach(kw => {
                 if (!allDisplayedKeywordsSet.has(kw) && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
                     keywordsToAddInCategory.push(kw);
-                    console.log(`[DEBUG] Adding to Set: "${kw}" (Type: ${typeof kw})`);
                     allDisplayedKeywordsSet.add(kw);
                 }
             });
@@ -2378,7 +2377,6 @@ console.log(`[DEBUG] parseResults[${i}] returned:`, JSON.stringify(keywordsRaw))
             });
         }
     }
-    console.log('[DEBUG] Final Set contains:', Array.from(allKeywordsSet));
     // End loop
 
     // --- Final Show/Hide ---

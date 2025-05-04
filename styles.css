@@ -502,11 +502,11 @@ footer {
 
 /* --- NEW CSS for Floating Suggestions --- */
 #suggestionsContainer {
-    position: absolute; /* Keep it floating */
+    position: absolute;
     top: 100%;
     left: 0;
-    width: 100%; /* Let it take full width relative to parent */
-    max-width: 100%; /* Ensure it doesn't overflow parent horizontally */
+    width: 100%;
+    max-width: 100%;
     z-index: 1000;
     background-color: #fff;
     border: 1px solid var(--border-color);
@@ -514,20 +514,18 @@ footer {
     border-radius: 0 0 6px 6px;
     box-shadow: var(--box-shadow);
 
-    /* Flexbox for column wrapping */
-    display: none; /* Hidden initially, shown by JS */
-    height: 400px; /* ***** SET A FIXED height for column wrap calculation ***** */
-    flex-flow: column wrap; /* Flow vertically, then wrap columns */
+    /* --- Key changes/confirmations --- */
+    display: none; /* Initially hidden, JS will change this */
+    height: 350px; /* Slightly reduced height, adjust as needed */
+    flex-flow: column wrap; /* Use flexbox for column wrapping */
     align-content: flex-start; /* Align wrapped columns to the start */
+    overflow-y: hidden; /* Hide vertical scrollbar */
+    overflow-x: auto; /* Show horizontal scrollbar ONLY if needed */
+    /* --- End key changes --- */
 
-    /* Scrolling: Hide internal vertical scroll, allow horizontal for columns */
-    overflow-y: hidden;
-    overflow-x: auto;
-
-    /* Reset margin/padding that might interfere */
     margin: 0;
-    padding: 10px; /* Add some padding inside the container */
-    box-sizing: border-box; /* Include padding in width/height */
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 /* Keep existing styles for groups and items, ensure they work */

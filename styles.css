@@ -538,20 +538,36 @@ footer {
     background-color: #f0f0f0;
 }*/
 
-/* Basic styling for the suggestions container */
-.suggestions-container {
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-top: 5px;
-    max-height: 400px; /* Adjust as needed */
-    overflow-y: auto;
+/* Ensure the parent of the search input group allows relative positioning, */
+/* or add position: relative; to a specific container if needed.       */
+/* Your .search-input-group already has position: relative, which works. */
+
+/* --- NEW CSS for Floating Suggestions --- */
+#suggestionsContainer {
+    position: absolute; /* Take it out of the normal document flow */
+    top: 100%; /* Position it right below its relative parent */
+    left: 0;
+    width: 100%; /* Make it as wide as its relative parent */
+    z-index: 1000; /* Ensure it floats above other elements */
+
     background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    z-index: 1000; /* Ensure it appears above other content */
-    position: relative; /* Or absolute depending on layout */
+    border: 1px solid var(--border-color); /* Use your variable */
+    border-top: none; /* Often looks better without top border */
+    border-radius: 0 0 6px 6px; /* Optional: round bottom corners */
+    box-shadow: var(--box-shadow); /* Use your variable */
+
+    /* Scrolling */
+    max-height: 400px; /* Set a maximum height */
+    overflow-y: auto; /* Add vertical scrollbar only when needed */
+
+    /* Ensure it's hidden initially - your JS handles showing/hiding */
+    display: none;
+
+    /* Remove any conflicting margin from previous static layout */
+    margin-top: 0;
 }
 
-/* Styling for each suggestion group */
+/* Keep existing styles for groups and items, ensure they work */
 .suggestion-group {
     margin-bottom: 5px;
     border-bottom: 1px solid #eee;
@@ -564,9 +580,8 @@ footer {
     padding-bottom: 0;
 }
 
-/* Styling for group titles */
 .suggestion-group h3 {
-    background-color: #f8f9fa; /* Light grey background */
+    background-color: #f8f9fa;
     padding: 8px 12px;
     margin: 0 0 5px 0;
     font-size: 0.9em;
@@ -578,67 +593,32 @@ footer {
     border-top: none;
 }
 
-
-/* Styling for individual suggestion items */
 .suggestion-item {
     padding: 8px 12px;
     cursor: pointer;
-    font-size: 1rem; /* Match input font size */
+    font-size: 1rem;
     line-height: 1.5;
     color: #212529;
 }
 
 .suggestion-item:hover {
-    background-color: #e9ecef; /* Highlight on hover */
+    background-color: #e9ecef;
 }
 
-/* Styling for the matched part of the keyword */
-.suggestion-item strong {
+/* Highlighting styles */
+.suggestion-item .s-heavy {
+    font-weight: normal; /* Assuming non-matching part is normal */
+}
+.suggestion-item > span:not(.s-heavy) { /* Style the matching part differently if needed */
     font-weight: bold;
-    color: #007bff; /* Or your preferred highlight color */
+     /* color: #007bff; */ /* Optional: color the match */
 }
 
-/* Optional: Different backgrounds for groups (like the extension) */
-.suggestion-item.group-main { background-color: #ffffff; }
-.suggestion-item.group-before { background-color: #ebfaeb; } /* Light green */
-.suggestion-item.group-after { background-color: #ffe6e6; } /* Light red */
-.suggestion-item.group-between { background-color: #e6ecff; } /* Light blue */
-.suggestion-item.group-other { background-color: #f2f2f2; } /* Light grey */
-
-.suggestion-item.group-main:hover,
-.suggestion-item.group-before:hover,
-.suggestion-item.group-after:hover,
-.suggestion-item.group-between:hover,
-.suggestion-item.group-other:hover {
-    background-color: #dee2e6; /* Consistent darker hover */
+/* Ensure spans from addKeywordItem display correctly */
+.suggestion-item span {
+    /* Default span styling if needed */
 }
 
-
-/* Input group styling (example) */
-.search-input-group {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap; /* Allow wrapping if needed */
-    align-items: stretch;
-    width: 100%;
-}
-.search-input-group .form-control {
-    position: relative;
-    flex: 1 1 auto;
-    width: 1%;
-    min-width: 0;
-    margin-bottom: 0; /* Reset margin */
-}
-
-.clear-search-btn {
-    position: absolute;
-    right: 10px; /* Adjust as needed */
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    color: #aaa;
-    z-index: 3; /* Above input */
-}
-.clear-search-btn:hover {
-    color: #333;
+.suggestion-item span.s-heavy {
+     font-weight: normal; /* Make sure non-matched parts are normal */
 }

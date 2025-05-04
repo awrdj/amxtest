@@ -1796,7 +1796,7 @@ if (filterExcludeBrands && config.excludeBrands) {
     }
 });
 
-// script.js
+// AMZ
 $(document).ready(function() {
     const searchInput = $("#searchInput");
     const suggestionsContainer = $("#suggestionsContainer");
@@ -1816,12 +1816,11 @@ $(document).ready(function() {
 
     // Debug helper (optional)
     function debugResponse(apiType, queryFirst, queryLast, response) {
-        // all console was commented
-        console.groupCollapsed(`Suggestions Debug [${apiType}]: "${queryFirst}|${queryLast}"`);
-        console.log('Prefix:', queryFirst);
-        console.log('Suffix:', queryLast);
-        console.log('API Response:', response);
-        console.groupEnd();
+        // console.groupCollapsed(`Suggestions Debug [${apiType}]: "${queryFirst}|${queryLast}"`);
+        // console.log('Prefix:', queryFirst);
+        // console.log('Suffix:', queryLast);
+        // console.log('API Response:', response);
+        // console.groupEnd();
         return response; // Pass through
     }
 
@@ -1872,8 +1871,7 @@ $(document).ready(function() {
         });
 
         const suggestUrl = `https://completion.${marketplace.domain}/api/2017/suggestions?${params.toString()}`;
-        // was commented
-        console.log(`Requesting [${apiType}]: ${suggestUrl}`); // Log the URL being requested
+        // console.log(`Requesting [${apiType}]: ${suggestUrl}`); // Log the URL being requested
 
         return fetch(suggestUrl)
             .then(response => {
@@ -1928,8 +1926,7 @@ $(document).ready(function() {
             // console.warn("parseResults received invalid data:", data);
             return []; // Return empty array if data is not a valid object
         }
-        // was commented
-        console.debug("Parsed Keywords:", keywords);
+        // console.debug("Parsed Keywords:", keywords);
         return keywords;
     }
 

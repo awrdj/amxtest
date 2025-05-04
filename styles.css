@@ -514,14 +514,14 @@ footer {
     border-radius: 0 0 6px 6px;
     box-shadow: var(--box-shadow);
 
-    /* --- Multi-column Layout --- */
+    /* --- Flexbox Column Wrap Layout --- */
     display: none; /* Initially hidden */
-    height: 300px; /* Adjust height as needed */
-    column-width: 180px; /* Define the width of each column */
-    column-gap: 10px; /* Space between columns */
-    overflow-x: auto; /* Allow horizontal scrolling */
-    overflow-y: hidden; /* Prevent vertical scrolling on container */
-    /* --- End Multi-column --- */
+    height: 350px; /* Fixed height for column wrap calculation */
+    flex-flow: column wrap; /* Flow items vertically, wrap to columns */
+    align-content: flex-start; /* Align columns to the start */
+    overflow-y: hidden; /* Hide vertical scrollbar */
+    overflow-x: auto; /* Allow horizontal scrollbar if columns overflow */
+    /* --- End Flexbox --- */
 
     padding: 10px;
     box-sizing: border-box;
@@ -535,16 +535,15 @@ footer {
     color: #212529;
     white-space: normal;
     word-break: break-word;
-    background-color: #ffffff;
+    background-color: #ffffff; /* Default background */
     border: 1px solid #eee;
-    margin: 0 0 5px 0; /* Add some bottom margin instead of side margin */
+    margin: 2px;
     box-sizing: border-box;
 
-    /* --- Key properties for multi-column --- */
-    break-inside: avoid; /* Crucial to prevent items breaking across columns */
-    display: inline-block; /* Ensure items behave correctly in columns */
-    width: 100%; /* Make item take full width *of its column* */
-    /* --- End Key properties --- */
+    /* --- Fixed Width & Column Behavior --- */
+    width: 180px; /* Fixed width for items */
+    break-inside: avoid; /* Try to prevent breaking across columns */
+    /* --- End Fixed Width --- */
 }
 
 .suggestion-item:hover {

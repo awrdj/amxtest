@@ -1843,19 +1843,6 @@ $(document).ready(function() {
         return domainConfig[selectedValue];
     }
 
-    // HTML Escaper (like extension's quoteattr)
-    function escapeHtml(unsafe) {
-        if (typeof unsafe !== 'string') {
-            return unsafe;
-        }
-        return unsafe
-             .replace(/&/g, "&amp;")
-             .replace(/</g, "&lt;")
-             .replace(/>/g, "&gt;")
-             .replace(/"/g, "&quot;")
-             .replace(/'/g, "&#039;"); // Use &#039; for single quote
-    }
-
     // --- Core Suggestion Logic ---
 
     // Fetch suggestions from Amazon API
@@ -1981,37 +1968,59 @@ $(document).ready(function() {
         groupDiv.append(item); // Append item to its group
     }*/
     
-function addKeywordItem(keyword, search, targetContainer) { // Note: targetContainer parameter
-    const item = $('<div class="suggestion-item"></div>');
+function escapeHtml(unsafe) {
+    if (typeof unsafe !== 'string') {
+        // If it's not a string (e.g., null, undefined), return an empty string
+        // or handle as appropriate for your logic. Returning empty string is safest here.
+        return '';
+    }
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+}
 
-    const matchIndex = keyword.indexOf(search);
+// Corrected addKeywordItem function
+function addKeywordItem(keyword, search, targetContainer) {
+    const item = $('<div class="suggestion-item"></div>'); // Base item
+
+    const matchIndex = keyword.indexOf(search); // Case-sensitive search
     let before = '', match = '', after = '';
 
+    // Split keyword based on search term presence
     if (search.length > 0 && matchIndex > -1) {
         before = keyword.substring(0, matchIndex);
         match = keyword.substring(matchIndex, matchIndex + search.length);
         after = keyword.substring(matchIndex + search.length);
     } else {
-         before = keyword;
+         before = keyword; // If no match or empty search, treat whole keyword as 'before'
          match = '';
          after = '';
     }
 
-    // Ensure escapeHtml function exists and is used
-    item.html(
-        `<span class="s-heavy"><span class="math-inline">\{escapeHtml\(before\)\}</span\></span>{escapeHtml(match)}<span class="s-heavy">${escapeHtml(after)}</span>`
-    );
-    item.attr('data-keyword', keyword);
+    // --- THIS IS THE CORRECTED LINE ---
+    // Build the inner HTML string using template literals and interpolation
+    const innerHTMLString = `
+        <span class="s-heavy"><span class="math-inline">\{escapeHtml\(before\)\}</span\></span>{escapeHtml(match)}<span class="s-heavy">${escapeHtml(after)}</span>
+    `;
+    // Set the item's HTML
+    item.html(innerHTMLString);
+    // --- END CORRECTION ---
 
+    item.attr('data-keyword', keyword); // Set data attribute
+
+    // Add click handler
     item.on('click', () => {
         searchInput.val(keyword);
         suggestionsContainer.empty().css('display', 'none'); // Use .css()
         searchInput.focus();
     });
 
-    // Append item directly to the target container
+    // Append to the target container
     if (targetContainer instanceof jQuery && targetContainer.length > 0) {
-        targetContainer.append(item); // Append here
+        targetContainer.append(item);
     } else {
         console.error("Attempted to append suggestion item to an invalid target container:", targetContainer);
     }

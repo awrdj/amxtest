@@ -544,26 +544,23 @@ footer {
 
 /* --- NEW CSS for Floating Suggestions --- */
 #suggestionsContainer {
-    position: absolute; /* Take it out of the normal document flow */
-    top: 100%; /* Position it right below its relative parent */
+    position: absolute;
+    top: 100%;
     left: 0;
-    width: 100%; /* Make it as wide as its relative parent */
-    z-index: 1000; /* Ensure it floats above other elements */
-
+    width: 100%;
+    z-index: 1000;
     background-color: #fff;
-    border: 1px solid var(--border-color); /* Use your variable */
-    border-top: none; /* Often looks better without top border */
-    border-radius: 0 0 6px 6px; /* Optional: round bottom corners */
-    box-shadow: var(--box-shadow); /* Use your variable */
+    border: 1px solid var(--border-color);
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    box-shadow: var(--box-shadow);
 
     /* Scrolling */
-    max-height: 400px; /* Set a maximum height */
-    overflow-y: auto; /* Add vertical scrollbar only when needed */
+    max-height: 400px; /* Adjust as needed */
+    overflow-y: auto;  /* Vertical scroll */
+    overflow-x: auto;  /* ADDED: Horizontal scroll (if needed) */
 
-    /* Ensure it's hidden initially - your JS handles showing/hiding */
     display: none;
-
-    /* Remove any conflicting margin from previous static layout */
     margin-top: 0;
 }
 
@@ -602,7 +599,7 @@ footer {
 }
 
 .suggestion-item:hover {
-    background-color: #e9ecef;
+    background-color: #dee2e6 !important;
 }
 
 /* Highlighting styles */
@@ -622,3 +619,11 @@ footer {
 .suggestion-item span.s-heavy {
      font-weight: normal; /* Make sure non-matched parts are normal */
 }
+
+.suggestion-item.group-main { background-color: #ffffff; } /* White */
+.suggestion-item.group-before { background-color: #ffe6e6; } /* Light Red/Pink */
+.suggestion-item.group-after { background-color: #ebfaeb; } /* Light Green */
+.suggestion-item.group-between { background-color: #e6ecff; } /* Light Blue */
+.suggestion-item.group-other { background-color: #f2f2f2; } /* Light Grey */
+
+

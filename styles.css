@@ -502,25 +502,25 @@ footer {
 
 /* --- NEW CSS for Floating Suggestions --- */
 #suggestionsContainer {
-    position: absolute;
+    position: relative;
     top: 100%;
     left: 0;
     width: 100%;
     max-width: 100%;
     z-index: 1000;
     background-color: #fff;
-    border: 1px solid var(--border-color);
+    /*border: 1px solid var(--border-color);*/
     border-top: none;
     border-radius: 0 0 6px 6px;
     box-shadow: var(--box-shadow);
     display: none; /* Initially hidden */
     /* Consider adjusting height if needed */
-    height: 380px; /* Keep your current height or change to ~300px like extension */
+    height: 371px; /* Keep your current height or change to ~300px like extension */
     flex-flow: column wrap;
-    align-content: flex-start;
+    /*align-content: flex-start;*/
     overflow-y: hidden;
     overflow-x: auto;
-    padding: 10px;
+    padding: 0 15px;
     box-sizing: border-box;
 }
 
@@ -528,15 +528,13 @@ footer {
 #suggestionsContainer > h3 {
     background-color: #f8f9fa;
     /* Adjusted padding */
-    padding: 8px 10px;
-    margin: 10px 0 5px 0;
+    padding: 7px 10px;
+    margin: 0;
     /* Adjusted font-size (using 1rem which is often default 16px) */
-    font-size: 1rem;
+    font-size: 14px;
+line-height:1.4;
     font-weight: bold;
     color: #333;
-    border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee;
-    width: 100%;
     box-sizing: border-box;
     break-inside: avoid; /* Keep this for column layout */
     page-break-inside: avoid; /* Keep this for column layout */
@@ -548,22 +546,21 @@ footer {
 
 .suggestion-item {
     /* Adjusted padding */
-    padding: 8px 10px;
+    padding: 7px 10px;
     cursor: pointer;
     /* Adjusted font-size */
-    font-size: 1rem; /* or 16px */
+    font-size: 14px; /* or 16px */
     /* Added font-family like extension (using common fallbacks) */
     font-family: "Amazon Ember", Arial, sans-serif;
     line-height: 1.4;
     color: #212529;
     white-space: normal;
     word-break: break-word;
-    border-radius: 4px;
-    margin-bottom: 4px;
+    border-radius: 0;
+    margin-bottom: 0;
     box-sizing: border-box;
-    width: auto;
     /* Removed min-width unless you specifically need it */
-    /* min-width: 350px; */
+    min-width: 300px;
     break-inside: avoid; /* Keep this */
     page-break-inside: avoid; /* Keep this */
 

@@ -1961,14 +1961,11 @@ $(document).ready(function() {
         groupDiv.append(item); // Append item to its group
     }*/
     
+// PASTE THIS ENTIRE BLOCK TO REPLACE THE EXISTING addKeywordItem function
+
 // Ensure escapeHtml function exists before this one
 function escapeHtml(unsafe) {
-    // Using the version from your provided script
-    if (typeof unsafe !== 'string') {
-         // Return an empty string if input is not a string
-         // to prevent errors in concatenation later
-        return '';
-    }
+    if (typeof unsafe !== 'string') { return ''; }
     return unsafe
          .replace(/&/g, "&amp;")
          .replace(/</g, "&lt;")
@@ -1977,45 +1974,41 @@ function escapeHtml(unsafe) {
          .replace(/'/g, "&#039;");
 }
 
+function addKeywordItem(keyword, search, groupClass) {
+    const item = $('<div class="suggestion-item"></div>').addClass(groupClass);
 
-function addKeywordItem(keyword, search, groupClass) { // Function signature might need adjustment later depending on how renderCategorizedSuggestions calls it
-    const item = $('<div class="suggestion-item"></div>').addClass(groupClass); // Add class for styling
-
-    const matchIndex = keyword.indexOf(search); // Case-sensitive index search
+    const matchIndex = keyword.indexOf(search);
     let before = '', match = '', after = '';
 
-    // Split the keyword based on the search term
     if (search.length > 0 && matchIndex > -1) {
         before = keyword.substring(0, matchIndex);
         match = keyword.substring(matchIndex, matchIndex + search.length);
         after = keyword.substring(matchIndex + search.length);
     } else {
-        // If search term is empty or not found, the whole keyword is 'before'
         before = keyword;
         match = '';
         after = '';
     }
 
-    // --- This is the corrected HTML creation ---
-    // It uses backticks ` ` and ${...} to insert the escaped variables
+    // --- This is the corrected HTML creation line using BACKTICKS ` ` ---
     item.html(
         `<span class="s-heavy"><span class="math-inline">\{escapeHtml\(before\)\}</span\></span>{escapeHtml(match)}<span class="s-heavy">${escapeHtml(after)}</span>`
     );
     // --- End Corrected HTML ---
 
-    item.attr('data-keyword', keyword); // Add data attribute
+    item.attr('data-keyword', keyword);
 
-    // Add click handler to fill search input
     item.on('click', () => {
-        searchInput.val(keyword); // Use the jQuery variable for searchInput
-        suggestionsContainer.empty().css('display', 'none'); // Use jQuery variable and .css()
+        searchInput.val(keyword);
+        suggestionsContainer.empty().css('display', 'none');
         searchInput.focus();
     });
 
-    // Append the item to the main suggestions container
-    // Ensure 'suggestionsContainer' is the jQuery object defined earlier
+    // Append item directly to the main suggestionsContainer
+    // (This matches the logic in your current renderCategorizedSuggestions)
     suggestionsContainer.append(item);
 }
+// END PASTE
 
     /**
      * Renders suggestions mimicking the extension's categorization, filtering, and ordering.
@@ -2324,7 +2317,7 @@ function renderCategorizedSuggestions(search, results) {
         const currentResultData = results[i] || { suggestions: [] };
         const keywordsRaw = parseResults(currentResultData);
         // Use 'i' if your loop is a for loop, 'index' if it's forEach with index
-console.log(`[DEBUG] parseResults[${index}] returned:`, JSON.stringify(keywordsRaw)); // Make sure index variable name matches your loop
+console.log(`[DEBUG] parseResults[${i}] returned:`, JSON.stringify(keywordsRaw)); // Changed index to i
         let keywordsToAddInCategory = []; // Keywords to add for *this* category
         let suggestionType = "";
         let groupClass = "";

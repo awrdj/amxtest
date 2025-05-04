@@ -1995,23 +1995,10 @@ function addKeywordItem(keyword, search, groupClass) { // Keep groupClass for st
          match = '';
          after = '';
     }
-
-    // --- Log variables BEFORE setting HTML ---
-    console.log(`addKeywordItem: keyword="<span class="math-inline">\{keyword\}", search\="</span>{search}", before="<span class="math-inline">\{before\}", match\="</span>{match}", after="${after}"`);
-    // --- End Log ---
-
-    // --- TEMPORARY SIMPLIFIED HTML for testing ---
-    // We use simple concatenation here to rule out template literal issues
-    const testHtml = '[B]' + escapeHtml(before) + '[M]' + escapeHtml(match) + '[A]' + escapeHtml(after);
-    item.html(testHtml);
-    console.log("Setting item HTML to:", testHtml); // <<< ADD LOG
-    // --- END TEMPORARY ---
-
-    /* --- COMMENT OUT ORIGINAL LINE FOR NOW ---
+    
     item.html(
         `<span class="s-heavy"><span class="math-inline">\{escapeHtml\(before\)\}</span\></span>{escapeHtml(match)}<span class="s-heavy">${escapeHtml(after)}</span>`
     );
-    --- END COMMENT --- */
 
     item.attr('data-keyword', keyword);
 
@@ -2330,6 +2317,8 @@ function renderCategorizedSuggestions(search, results) {
 
         const currentResultData = results[i] || { suggestions: [] };
         const keywordsRaw = parseResults(currentResultData);
+        // Use 'i' if your loop is a for loop, 'index' if it's forEach with index
+console.log(`[DEBUG] parseResults[${index}] returned:`, JSON.stringify(keywordsRaw)); // Make sure index variable name matches your loop
         let keywordsToAddInCategory = []; // Keywords to add for *this* category
         let suggestionType = "";
         let groupClass = "";
@@ -2341,6 +2330,7 @@ function renderCategorizedSuggestions(search, results) {
             keywordsRaw.forEach(kw => {
                 if (!allDisplayedKeywordsSet.has(kw) && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
                     keywordsToAddInCategory.push(kw);
+                    console.log(`[DEBUG] Adding to Set: "${kw}" (Type: ${typeof kw})`);
                     allDisplayedKeywordsSet.add(kw);
                 }
             });
@@ -2388,7 +2378,9 @@ function renderCategorizedSuggestions(search, results) {
                  }
             });
         }
-    } // End loop
+    }
+    console.log('[DEBUG] Final Set contains:', Array.from(allKeywordsSet));
+    // End loop
 
     // --- Final Show/Hide ---
     if (keywordCount > 0) {

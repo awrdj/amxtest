@@ -2129,85 +2129,135 @@ $(document).ready(function() {
 
     function renderCategorizedSuggestions(search, results) {
     suggestionsContainer.empty();
-    let keywordCount = 0; // Global count across ALL categories
+    const mainKeywordsSet = new Set();
+    const allDisplayedKeywordsSet = new Set(); // Tracks everything added to the UI
+    let keywordCount = 0;
+    let currentGroupDiv = null;
+    let otherTitleDisplayed = false;
 
-    // --- Step 1: Process Main Suggestions (results[0]) ---
+    // 1. Process Main Suggestions (results[0]) - Assuming you always want to show them
     const mainKeywordsRaw = parseResults(results[0] || { suggestions: [] });
-    // Create a Set of main keywords for efficient filtering checks later
-    const mainKeywordsSet = new Set(mainKeywordsRaw);
-
-    // Display "Amazon Suggestions" group if keywords exist
-    if (mainKeywordsRaw.length > 0 && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
-        const mainGroupDiv = addGroupTitle("Amazon Suggestions", suggestionsContainer);
-        mainKeywordsRaw.forEach(keyword => {
-            if (keywordCount < MAX_KEYWORDS_IN_SEARCH) {
-                addKeywordItem(keyword, search, "group-main", mainGroupDiv);
-                keywordCount++;
+    let mainKeywordsFiltered = []; // Keep track of keywords actually added in this section
+    if (mainKeywordsRaw.length > 0) {
+         currentGroupDiv = addGroupTitle("Amazon Suggestions", suggestionsContainer);
+         if (!currentGroupDiv || currentGroupDiv.length === 0) {
+            console.error("Failed to create group div for: Amazon Suggestions");
+         } else {
+            mainKeywordsRaw.forEach(keyword => {
+                // Check if keyword is unique overall and if we haven't hit the limit
+                if (!allDisplayedKeywordsSet.has(keyword) && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
+                    addKeywordItem(keyword, search, "group-main", currentGroupDiv);
+                    mainKeywordsSet.add(keyword); // Keep track of main keywords specifically
+                    allDisplayedKeywordsSet.add(keyword); // Add to overall tracking set *immediately*
+                    keywordCount++;
+                    mainKeywordsFiltered.push(keyword);
+                }
+            });
+            // If no keywords were actually added to this group (e.g., all duplicates or limit reached early), remove the title.
+            if (mainKeywordsFiltered.length === 0) {
+               currentGroupDiv.remove();
             }
-        });
+         }
     }
+    // Stop if max reached after processing main suggestions
+     if (keywordCount >= MAX_KEYWORDS_IN_SEARCH) {
+         suggestionsContainer.toggle(keywordCount > 0);
+         return;
+     }
 
-    // --- Step 2: Initialize Tracker for Keywords Displayed in EXTRA Categories (i >= 1) ---
-    // This set tracks keywords added to "Before", "After", "Other" etc.
-    // to prevent duplicates *between these categories*.
-    const displayedExtraKeywordsSet = new Set();
 
-    // --- Step 3: Loop, Filter, and Display Subsequent Categories (i >= 1) ---
-    // Start loop from index 1 to process "Before", "After", etc.
+    // 2. Process Other Categories (results[1] onwards)
     for (let i = 1; i < results.length; i++) {
-        if (keywordCount >= MAX_KEYWORDS_IN_SEARCH) break; // Stop if global limit reached
+        if (keywordCount >= MAX_KEYWORDS_IN_SEARCH) break; // Check limit at the start of each category loop
 
         const currentResultData = results[i] || { suggestions: [] };
         const keywordsRaw = parseResults(currentResultData);
-
-        let filteredKeywordsForCategory = []; // Stores keywords passing filters for *this* category (i)
+        let keywordsFilteredInCategory = []; // Track keywords added *for this specific category*
         let suggestionType = "";
         let groupClass = "";
+        let groupAdded = false; // Track if group title was added for this iteration
+        let categoryGroupDiv = null; // Use a variable specific to this category's loop iteration
 
-        // Determine category type based on index 'i'
+        // Determine category type (same as before)
         switch (i) {
             case 1: suggestionType = "Keywords Before"; groupClass = "group-before"; break;
             case 2: suggestionType = "Keywords After"; groupClass = "group-after"; break;
-            case 3: suggestionType = "Keywords Between"; groupClass = "group-between"; break;
-            default: suggestionType = "Other"; groupClass = "group-other"; break; // Handles 4, 5, 6 etc.
+            case 3:
+                // Check if the original API call (results[3]) wasn't empty/failed before filtering
+                if (results[3] && results[3].suggestions && results[3].suggestions.length > 0) {
+                    suggestionType = "Keywords Between"; groupClass = "group-between";
+                } else {
+                    suggestionType = ""; // Skip this index if original API call was empty
+                }
+                break;
+            default: suggestionType = "Other"; groupClass = "group-other"; break;
         }
 
-        // Filter keywordsRaw for this specific category (i)
-        for (const keyword of keywordsRaw) {
-            if (keywordCount >= MAX_KEYWORDS_IN_SEARCH) break; // Check limit again
+        if (keywordsRaw.length > 0 && suggestionType) {
+            // Inner loop to process keywords one by one and add to set immediately
+            keywordsRaw.forEach(keyword => {
+                if (keywordCount < MAX_KEYWORDS_IN_SEARCH) {
+                    // *** Core Filtering Logic ***
+                    // Check if it's NOT a main keyword AND NOT already displayed in any category
+                    if (!mainKeywordsSet.has(keyword) && !allDisplayedKeywordsSet.has(keyword)) {
 
-            // Apply the two key filters mimicking the extension:
-            // 1. Is it NOT a main suggestion?
-            const isNotMainKeyword = !mainKeywordsSet.has(keyword);
-            // 2. Has it NOT been displayed in a *previous* EXTRA category (Before, After, etc.)?
-            const isNotDisplayedExtra = !displayedExtraKeywordsSet.has(keyword);
+                        // Add title only when the first valid keyword for this group is found
+                        if (!groupAdded) {
+                            let shouldAddTitle = true;
+                            if (suggestionType === "Other") {
+                                if (!otherTitleDisplayed) {
+                                    // This is the first "Other" group
+                                    otherTitleDisplayed = true;
+                                } else {
+                                    // An "Other" group already exists, don't add title, find existing group
+                                    shouldAddTitle = false;
+                                    categoryGroupDiv = suggestionsContainer.find('.suggestion-group:has(h3:contains("Other"))').first();
+                                    if (!categoryGroupDiv || categoryGroupDiv.length === 0) {
+                                        console.error("Could not find existing Other group, though otherTitleDisplayed is true.");
+                                        // Fallback: create it anyway? Or skip? Skipping might be safer.
+                                        return; // Skip this keyword if group logic fails
+                                    }
+                                }
+                            }
 
-            if (isNotMainKeyword && isNotDisplayedExtra) {
-                // If it passes both filters, add it to this category's list
-                filteredKeywordsForCategory.push(keyword);
-                // AND immediately add it to the tracker for extra keywords to prevent
-                // it showing up in *subsequent* extra categories (e.g., i+1, i+2).
-                displayedExtraKeywordsSet.add(keyword);
-            }
-        }
+                            if (shouldAddTitle) {
+                                categoryGroupDiv = addGroupTitle(suggestionType, suggestionsContainer);
+                                if (!categoryGroupDiv || categoryGroupDiv.length === 0) {
+                                   console.error("Failed to create group div for:", suggestionType);
+                                   return; // Skip this keyword if group creation failed
+                                }
+                            }
+                            groupAdded = true; // Mark title/group as handled for this category iteration
+                        }
 
-        // Display this category's group and items *only if* keywords passed the filters
-        if (filteredKeywordsForCategory.length > 0) {
-             // Optional: Refined check for "Between" - only show if original result had suggestions?
-             // if (i === 3 && !(currentResultData && currentResultData.suggestions && currentResultData.suggestions.length > 0)) {
-             //     continue; // Skip creating the "Between" group if the raw API result was empty
-             // }
+                        // Add the item if categoryGroupDiv is valid
+                        if (categoryGroupDiv && categoryGroupDiv.length > 0) {
+                             addKeywordItem(keyword, search, groupClass, categoryGroupDiv);
+                             allDisplayedKeywordsSet.add(keyword); // Add to tracking set *immediately*
+                             keywordsFilteredInCategory.push(keyword);
+                             keywordCount++;
+                        } else if (groupAdded && (!categoryGroupDiv || categoryGroupDiv.length === 0)) {
+                             // This case should ideally not be reached if error handling above is correct
+                             console.error("Attempted to add keyword item but categoryGroupDiv is invalid for type:", suggestionType);
+                        }
+                    }
+                }
+            }); // End inner forEach keyword loop
 
-            const currentGroupDiv = addGroupTitle(suggestionType, suggestionsContainer);
-            filteredKeywordsForCategory.forEach(keyword => {
-                // Add the item and increment the global count
-                addKeywordItem(keyword, search, groupClass, currentGroupDiv);
-                keywordCount++;
-            });
-        }
-    } // End of loop for i >= 1
+             // Clean up the group title *for this category* if no keywords were actually added to it
+             // Check groupAdded flag to ensure a title was potentially added in this iteration
+             if (groupAdded && keywordsFilteredInCategory.length === 0 && categoryGroupDiv && categoryGroupDiv.parent().length) {
+                 categoryGroupDiv.remove();
+                 // If we removed the "Other" title because it ended up empty, reset the flag
+                 // so it can be potentially added again by a later "Other" category (i>3)
+                 if (suggestionType === "Other") {
+                     otherTitleDisplayed = false;
+                 }
+             }
+        } // End if keywordsRaw.length > 0
+    } // end outer for loop (categories i=1 onwards)
 
-    suggestionsContainer.toggle(keywordCount > 0); // Show/hide based on total keywords displayed
+    suggestionsContainer.toggle(keywordCount > 0); // Show/hide container based on whether any keywords were added overall
 }
 
 

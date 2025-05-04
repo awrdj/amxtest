@@ -1806,7 +1806,7 @@ $(document).ready(function() {
     // --- Configuration ---
     const MAX_KEYWORDS_IN_SEARCH = 500; // From extension
     const SUGGESTION_DEBOUNCE_MS = 300; // Delay after typing stops
-    const RENDER_DELAY_MS = 100; // Small delay before rendering, less than extension's 500ms
+    const RENDER_DELAY_MS = 500; // Small delay before rendering, less than extension's 500ms
 
     // --- State ---
     let currentMarketplace = getMarketplace();

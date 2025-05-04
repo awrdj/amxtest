@@ -2006,7 +2006,9 @@ function addKeywordItem(keyword, search, targetContainer) {
         <span class="s-heavy"><span class="math-inline">\{escapeHtml\(before\)\}</span\></span>{escapeHtml(match)}<span class="s-heavy">${escapeHtml(after)}</span>
     `;
     // Set the item's HTML
-    item.html(innerHTMLString);
+    item.html(
+        `<span class="s-heavy"><span class="math-inline">\{escapeHtml\(before\)\}</span\></span>{escapeHtml(match)}<span class="s-heavy">${escapeHtml(after)}</span>`
+    );
     // --- END CORRECTION ---
 
     item.attr('data-keyword', keyword); // Set data attribute

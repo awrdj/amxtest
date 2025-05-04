@@ -515,35 +515,57 @@ footer {
     box-shadow: var(--box-shadow);
 
     /* --- Flexbox Column Wrap Layout --- */
-    display: none; /* Initially hidden */
-    height: 350px; /* Fixed height for column wrap calculation */
-    flex-flow: column wrap; /* Flow items vertically, wrap to columns */
-    align-content: flex-start; /* Align columns to the start */
-    overflow-y: hidden; /* Hide vertical scrollbar */
-    overflow-x: auto; /* Allow horizontal scrollbar if columns overflow */
+    display: none;
+    height: 350px; /* Fixed height */
+    flex-flow: column wrap; /* Wrap vertically then columns */
+    align-content: flex-start; /* Align columns left */
+    overflow-y: hidden; /* Hide container vertical scroll */
+    overflow-x: auto; /* Allow horizontal scroll */
     /* --- End Flexbox --- */
 
     padding: 10px;
     box-sizing: border-box;
 }
 
-.suggestion-item {
+#suggestionsContainer > h3 {
+    background-color: #f8f9fa;
     padding: 8px 12px;
+    margin: 10px 0 5px 0; /* Add top margin for spacing */
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #333;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee; /* Add bottom border for separation */
+    break-before: column; /* Try to start a title in a new column */
+    break-inside: avoid; /* Prevent title from splitting */
+    page-break-before: column;
+    page-break-inside: avoid;
+    width: 100%; /* Make title span the column width */
+    box-sizing: border-box;
+}
+#suggestionsContainer > h3:first-of-type {
+     margin-top: 0; /* Remove top margin for the very first title */
+     border-top: none;
+}
+
+.suggestion-item {
+    padding: 6px 12px; /* Slightly reduced padding */
     cursor: pointer;
-    font-size: 1rem;
-    line-height: 1.5;
+    font-size: 0.95rem; /* Slightly smaller font */
+    line-height: 1.4;
     color: #212529;
     white-space: normal;
     word-break: break-word;
-    background-color: #ffffff; /* Default background */
-    border: 1px solid #eee;
-    margin: 2px;
-    box-sizing: border-box;
+    border-radius: 4px; /* Add slight rounding */
+    margin-bottom: 4px; /* Space below items */
 
-    /* --- Fixed Width & Column Behavior --- */
-    width: 180px; /* Fixed width for items */
-    break-inside: avoid; /* Try to prevent breaking across columns */
-    /* --- End Fixed Width --- */
+    /* --- Key for Layout --- */
+    break-inside: avoid; /* Prevent item breaking across columns */
+    page-break-inside: avoid;
+    width: 100%; /* Make item take full width *of its column* */
+    box-sizing: border-box;
+     /* Background color is now handled by .group-* rules */
+     /* Border removed, background colors provide visual grouping */
 }
 
 .suggestion-item:hover {
@@ -567,4 +589,10 @@ footer {
 .suggestion-item span.s-heavy {
      font-weight: normal; /* Make sure non-matched parts are normal */
 }
+
+.suggestion-item.group-main { background-color: #ffffff; }
+.suggestion-item.group-before { background-color: #ffe6e6; }
+.suggestion-item.group-after { background-color: #ebfaeb; }
+.suggestion-item.group-between { background-color: #e6ecff; }
+.suggestion-item.group-other { background-color: #f2f2f2; }
 

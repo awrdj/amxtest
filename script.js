@@ -1983,44 +1983,49 @@ function escapeHtml(unsafe) {
 }
 
 // Corrected addKeywordItem function
-function addKeywordItem(keyword, search, targetContainer) {
-    const item = $('<div class="suggestion-item"></div>'); // Base item
+function escapeHtml(unsafe) {
+    if (typeof unsafe !== 'string') {
+        return '';
+    }
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+}
 
-    const matchIndex = keyword.indexOf(search); // Case-sensitive search
+// Corrected addKeywordItem function
+function addKeywordItem(keyword, search, targetContainer) {
+    const item = $('<div class="suggestion-item"></div>');
+
+    const matchIndex = keyword.indexOf(search); // Case-sensitive
     let before = '', match = '', after = '';
 
-    // Split keyword based on search term presence
     if (search.length > 0 && matchIndex > -1) {
         before = keyword.substring(0, matchIndex);
         match = keyword.substring(matchIndex, matchIndex + search.length);
         after = keyword.substring(matchIndex + search.length);
     } else {
-         before = keyword; // If no match or empty search, treat whole keyword as 'before'
+         before = keyword;
          match = '';
          after = '';
     }
 
-    // --- THIS IS THE CORRECTED LINE ---
-    // Build the inner HTML string using template literals and interpolation
-    const innerHTMLString = `
-        <span class="s-heavy"><span class="math-inline">\{escapeHtml\(before\)\}</span\></span>{escapeHtml(match)}<span class="s-heavy">${escapeHtml(after)}</span>
-    `;
-    // Set the item's HTML
+    // --- VERIFY THIS LINE CAREFULLY (use backticks ` `) ---
     item.html(
-        `<span class="s-heavy"><span class="math-inline">\{escapeHtml\(before\)\}</span\></span>{escapeHtml(match)}<span class="s-heavy">${escapeHtml(after)}</span>`
+        `<span class="s-heavy">${escapeHtml(before)}</span>${escapeHtml(match)}<span class="s-heavy">${escapeHtml(after)}</span>`
     );
-    // --- END CORRECTION ---
+    // --- END VERIFICATION ---
 
-    item.attr('data-keyword', keyword); // Set data attribute
+    item.attr('data-keyword', keyword);
 
-    // Add click handler
     item.on('click', () => {
         searchInput.val(keyword);
-        suggestionsContainer.empty().css('display', 'none'); // Use .css()
+        suggestionsContainer.empty().css('display', 'none');
         searchInput.focus();
     });
 
-    // Append to the target container
     if (targetContainer instanceof jQuery && targetContainer.length > 0) {
         targetContainer.append(item);
     } else {

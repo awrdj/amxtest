@@ -1992,7 +1992,7 @@ function addKeywordItem(keyword, search, groupClass) {
 
     // --- This is the corrected HTML creation line using BACKTICKS ` ` ---
     item.html(
-        `<span class="s-heavy"><span class="math-inline">\{escapeHtml\(before\)\}</span\></span>{escapeHtml(match)}<span class="s-heavy">${escapeHtml(after)}</span>`
+        `<span class="s-heavy">${escapeHtml(before)}</span>${escapeHtml(match)}<span class="s-heavy">${escapeHtml(after)}</span>`
     );
     // --- End Corrected HTML ---
 

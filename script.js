@@ -2129,74 +2129,85 @@ $(document).ready(function() {
 
     function renderCategorizedSuggestions(search, results) {
     suggestionsContainer.empty();
-    // Keep track of keywords from results[0] (main suggestions) separately for filtering
+    let keywordCount = 0; // Global count across ALL categories
+
+    // --- Step 1: Process Main Suggestions (results[0]) ---
     const mainKeywordsRaw = parseResults(results[0] || { suggestions: [] });
-    const mainKeywordsSet = new Set(mainKeywordsRaw); // Use a Set for efficient lookup
+    // Create a Set of main keywords for efficient filtering checks later
+    const mainKeywordsSet = new Set(mainKeywordsRaw);
 
-    // Keep track of keywords actually displayed in *this container*
-    // Mimic extension's 'displayedKeywords' array logic for filtering checks
-    const allDisplayedKeywordsSet = new Set(); // Use a Set for quick checks
+    // Display "Amazon Suggestions" group if keywords exist
+    if (mainKeywordsRaw.length > 0 && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
+        const mainGroupDiv = addGroupTitle("Amazon Suggestions", suggestionsContainer);
+        mainKeywordsRaw.forEach(keyword => {
+            if (keywordCount < MAX_KEYWORDS_IN_SEARCH) {
+                addKeywordItem(keyword, search, "group-main", mainGroupDiv);
+                keywordCount++;
+            }
+        });
+    }
 
-    let keywordCount = 0;
-    // Removed 'otherTitleDisplayed' and related logic to simplify and match extension's apparent behavior
-    let currentGroupDiv = null;
+    // --- Step 2: Initialize Tracker for Keywords Displayed in EXTRA Categories (i >= 1) ---
+    // This set tracks keywords added to "Before", "After", "Other" etc.
+    // to prevent duplicates *between these categories*.
+    const displayedExtraKeywordsSet = new Set();
 
-    // Start loop from index 1 to skip displaying main suggestions (results[0])
-    // This mimics the extension's `if (i == 0 && !subSearch) continue;` for the non-subSearch case.
+    // --- Step 3: Loop, Filter, and Display Subsequent Categories (i >= 1) ---
+    // Start loop from index 1 to process "Before", "After", etc.
     for (let i = 1; i < results.length; i++) {
-        if (keywordCount >= MAX_KEYWORDS_IN_SEARCH) break;
+        if (keywordCount >= MAX_KEYWORDS_IN_SEARCH) break; // Stop if global limit reached
 
         const currentResultData = results[i] || { suggestions: [] };
         const keywordsRaw = parseResults(currentResultData);
 
-        let filteredKeywords = []; // Keywords that pass filtering for this category
+        let filteredKeywordsForCategory = []; // Stores keywords passing filters for *this* category (i)
         let suggestionType = "";
         let groupClass = "";
 
-        // Filter logic mimicking extension: Check against main AND already displayed in this container
+        // Determine category type based on index 'i'
+        switch (i) {
+            case 1: suggestionType = "Keywords Before"; groupClass = "group-before"; break;
+            case 2: suggestionType = "Keywords After"; groupClass = "group-after"; break;
+            case 3: suggestionType = "Keywords Between"; groupClass = "group-between"; break;
+            default: suggestionType = "Other"; groupClass = "group-other"; break; // Handles 4, 5, 6 etc.
+        }
+
+        // Filter keywordsRaw for this specific category (i)
         for (const keyword of keywordsRaw) {
-            // Check if it was a main suggestion OR if it's already been added to our display set
-            if (!mainKeywordsSet.has(keyword) && !allDisplayedKeywordsSet.has(keyword)) {
-                // Check max keywords limit *before* adding
-                if (keywordCount < MAX_KEYWORDS_IN_SEARCH) {
-                    // If not, it's a candidate for display in this category
-                    filteredKeywords.push(keyword);
-                    // Add it to tracking immediately, like the extension does with displayedKeywords.push()
-                    allDisplayedKeywordsSet.add(keyword); // Add to set for fast lookup in next iterations/categories
-                    // Increment keywordCount only for keywords actually added
-                    // keywordCount++; // Increment count later when actually adding DOM element
-                } else {
-                    // Stop processing keywords for this category if max is reached
-                    break;
-                }
+            if (keywordCount >= MAX_KEYWORDS_IN_SEARCH) break; // Check limit again
+
+            // Apply the two key filters mimicking the extension:
+            // 1. Is it NOT a main suggestion?
+            const isNotMainKeyword = !mainKeywordsSet.has(keyword);
+            // 2. Has it NOT been displayed in a *previous* EXTRA category (Before, After, etc.)?
+            const isNotDisplayedExtra = !displayedExtraKeywordsSet.has(keyword);
+
+            if (isNotMainKeyword && isNotDisplayedExtra) {
+                // If it passes both filters, add it to this category's list
+                filteredKeywordsForCategory.push(keyword);
+                // AND immediately add it to the tracker for extra keywords to prevent
+                // it showing up in *subsequent* extra categories (e.g., i+1, i+2).
+                displayedExtraKeywordsSet.add(keyword);
             }
         }
 
-        // Only proceed if there are filtered keywords for this category
-        if (filteredKeywords.length > 0) {
-            // Determine category type based on index 'i'
-            switch (i) {
-                case 1: suggestionType = "Keywords Before"; groupClass = "group-before"; break;
-                case 2: suggestionType = "Keywords After"; groupClass = "group-after"; break;
-                case 3: suggestionType = "Keywords Between"; groupClass = "group-between"; break;
-                default: suggestionType = "Other"; groupClass = "group-other"; break; // Includes indices 4, 5, 6 etc.
-            }
+        // Display this category's group and items *only if* keywords passed the filters
+        if (filteredKeywordsForCategory.length > 0) {
+             // Optional: Refined check for "Between" - only show if original result had suggestions?
+             // if (i === 3 && !(currentResultData && currentResultData.suggestions && currentResultData.suggestions.length > 0)) {
+             //     continue; // Skip creating the "Between" group if the raw API result was empty
+             // }
 
-            // Add the group title - Create a new group for each category like the extension
-            currentGroupDiv = addGroupTitle(suggestionType, suggestionsContainer);
-
-            // Add the keyword items
-            filteredKeywords.forEach(keyword => {
-                // Double-check count just in case, though ideally handled above
-                if (keywordCount < MAX_KEYWORDS_IN_SEARCH) {
-                     addKeywordItem(keyword, search, groupClass, currentGroupDiv);
-                     keywordCount++; // Increment count here as item is added
-                }
+            const currentGroupDiv = addGroupTitle(suggestionType, suggestionsContainer);
+            filteredKeywordsForCategory.forEach(keyword => {
+                // Add the item and increment the global count
+                addKeywordItem(keyword, search, groupClass, currentGroupDiv);
+                keywordCount++;
             });
         }
-    } // End of loop
+    } // End of loop for i >= 1
 
-    suggestionsContainer.toggle(keywordCount > 0); // Toggle based on if *any* keywords were added
+    suggestionsContainer.toggle(keywordCount > 0); // Show/hide based on total keywords displayed
 }
 
 

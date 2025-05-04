@@ -1963,20 +1963,25 @@ $(document).ready(function() {
     
 // Corrected addKeywordItem function
 function escapeHtml(unsafe) {
+    console.log("escapeHtml received:", unsafe, "(type:", typeof unsafe, ")"); // <<< ADD LOG
     if (typeof unsafe !== 'string') {
         return '';
     }
-    return unsafe
+    const escaped = unsafe
          .replace(/&/g, "&amp;")
          .replace(/</g, "&lt;")
          .replace(/>/g, "&gt;")
          .replace(/"/g, "&quot;")
          .replace(/'/g, "&#039;");
+    console.log("escapeHtml returned:", escaped); // <<< ADD LOG
+    return escaped;
 }
 
 // Corrected addKeywordItem function
-function addKeywordItem(keyword, search, groupClass) { // Removed groupDiv parameter
-    const item = $('<div class="suggestion-item"></div>').addClass(groupClass); // Add group class
+// script.js
+
+function addKeywordItem(keyword, search, groupClass) { // Keep groupClass for styling
+    const item = $('<div class="suggestion-item"></div>').addClass(groupClass);
 
     const matchIndex = keyword.indexOf(search);
     let before = '', match = '', after = '';
@@ -1991,20 +1996,32 @@ function addKeywordItem(keyword, search, groupClass) { // Removed groupDiv param
          after = '';
     }
 
+    // --- Log variables BEFORE setting HTML ---
+    console.log(`addKeywordItem: keyword="<span class="math-inline">\{keyword\}", search\="</span>{search}", before="<span class="math-inline">\{before\}", match\="</span>{match}", after="${after}"`);
+    // --- End Log ---
+
+    // --- TEMPORARY SIMPLIFIED HTML for testing ---
+    // We use simple concatenation here to rule out template literal issues
+    const testHtml = '[B]' + escapeHtml(before) + '[M]' + escapeHtml(match) + '[A]' + escapeHtml(after);
+    item.html(testHtml);
+    console.log("Setting item HTML to:", testHtml); // <<< ADD LOG
+    // --- END TEMPORARY ---
+
+    /* --- COMMENT OUT ORIGINAL LINE FOR NOW ---
     item.html(
         `<span class="s-heavy"><span class="math-inline">\{escapeHtml\(before\)\}</span\></span>{escapeHtml(match)}<span class="s-heavy">${escapeHtml(after)}</span>`
     );
+    --- END COMMENT --- */
+
     item.attr('data-keyword', keyword);
 
     item.on('click', () => {
         searchInput.val(keyword);
-        suggestionsContainer.empty().css('display', 'none'); // Use .css()
+        suggestionsContainer.empty().css('display', 'none');
         searchInput.focus();
     });
 
-    // Append item directly to the main suggestionsContainer
-    // Ensure suggestionsContainer is accessible here (it's defined globally in your script)
-    suggestionsContainer.append(item);
+    suggestionsContainer.append(item); // Keep appending directly
 }
 
     /**

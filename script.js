@@ -1980,45 +1980,39 @@ $(document).ready(function() {
 
         groupDiv.append(item); // Append item to its group
     }*/
-    function addKeywordItem(keyword, search, groupClass, groupDiv) {
-    const item = $('<div class="suggestion-item"></div>').addClass(groupClass);
+    function addKeywordItem(keyword, search, targetContainer) { // Changed parameters
+    const item = $('<div class="suggestion-item"></div>'); // Removed addClass(groupClass)
 
-    // Use case-sensitive indexOf, like the extension
     const matchIndex = keyword.indexOf(search);
-
     let before = '', match = '', after = '';
 
-    // Only highlight if search term is found AND search term is not empty
     if (search.length > 0 && matchIndex > -1) {
-        // Extract parts using original casing
         before = keyword.substring(0, matchIndex);
-        match = keyword.substring(matchIndex, matchIndex + search.length); // The exact search term found
+        match = keyword.substring(matchIndex, matchIndex + search.length);
         after = keyword.substring(matchIndex + search.length);
     } else {
-        // If search term not found (case-sensitive) or empty, display the whole keyword as 'before' (wrapped)
          before = keyword;
-         match = ''; // No specific match part
+         match = '';
          after = '';
     }
 
-    // Using escapeHtml for safety
+    // Use escapeHtml for safety - make sure escapeHtml function exists in your scope
     item.html(
-        `<span class="s-heavy">${escapeHtml(before)}</span>${escapeHtml(match)}<span class="s-heavy">${escapeHtml(after)}</span>`
+        `<span class="s-heavy"><span class="math-inline">\{escapeHtml\(before\)\}</span\></span>{escapeHtml(match)}<span class="s-heavy">${escapeHtml(after)}</span>`
     );
-    item.attr('data-keyword', keyword); // Add data attribute
+    item.attr('data-keyword', keyword);
 
     item.on('click', () => {
-        searchInput.val(keyword); // Fill input with clicked keyword
-        suggestionsContainer.empty().hide(); // Hide suggestions
-        searchInput.focus(); // Refocus input
-        // Optionally trigger fetch: fetchAndDisplaySuggestions(keyword);
+        searchInput.val(keyword);
+        suggestionsContainer.empty().css('display', 'none'); // Use .css() to hide
+        searchInput.focus();
     });
 
-    // Ensure groupDiv is a valid jQuery object before appending
-    if (groupDiv instanceof jQuery && groupDiv.length > 0) {
-        groupDiv.append(item); // Append item to its group
+    // Append item directly to the target container
+    if (targetContainer instanceof jQuery && targetContainer.length > 0) {
+        targetContainer.append(item); // Append to the passed container
     } else {
-        console.error("Attempted to append suggestion item to an invalid groupDiv:", groupDiv);
+        console.error("Attempted to append suggestion item to an invalid target container:", targetContainer);
     }
 }
 

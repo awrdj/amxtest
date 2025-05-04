@@ -2297,7 +2297,13 @@ $(document).ready(function() {
         } // End if keywordsRaw.length > 0
     } // end outer for loop (categories i=1 onwards)
 
-    suggestionsContainer.toggle(keywordCount > 0); // Show/hide container based on whether any keywords were added overall
+    if (keywordCount > 0) {
+    suggestionsContainer.css('display', 'flex'); // SET TO FLEX
+} else {
+    suggestionsContainer.css('display', 'none'); // SET TO NONE
+}
+// Optional: Log the count to help diagnose content issues
+// console.log(`Rendered ${keywordCount} total suggestion items.`);
 }
 
 
@@ -2343,23 +2349,18 @@ $(document).ready(function() {
             .then((results) => {
                 // Check if the search input value hasn't changed while waiting
                 if (searchInput.val() === rawSearch) {
-                    // ---- ADDED DELAY ---
-                    // Introduce a small delay to mimic the extension's setTimeout,
-                    // although the core issue is likely API variance.
-                    setTimeout(() => {
-                        // Ensure input hasn't changed *during* the short delay either
-                        if (searchInput.val() === rawSearch) {
-                             renderCategorizedSuggestions(trimmedSearch, results); // Pass trimmed for highlighting logic
-                        } else {
-                             console.log("Search input changed during render delay. Ignoring old results.");
-                             suggestionsContainer.hide();
-                        }
-                    }, RENDER_DELAY_MS);
-                    // ---- END ADDED DELAY ---
-                } else {
-                    console.log("Search input changed before suggestions arrived. Ignoring old results.");
-                    suggestionsContainer.hide(); // Hide potentially stale suggestions
-                }
+    setTimeout(() => {
+        if (searchInput.val() === rawSearch) {
+             renderCategorizedSuggestions(trimmedSearch, results);
+        } else {
+             console.log("Search input changed during render delay. Ignoring old results.");
+             suggestionsContainer.css('display', 'none'); // CHANGE HERE
+        }
+    }, RENDER_DELAY_MS);
+} else {
+    console.log("Search input changed before suggestions arrived. Ignoring old results.");
+    suggestionsContainer.css('display', 'none'); // CHANGE HERE
+}
             })
             .catch(error => {
                 console.error('Error fetching one or more suggestions:', error);
@@ -2381,7 +2382,7 @@ $(document).ready(function() {
                 fetchAndDisplaySuggestions(query); // Pass the raw query
             }, SUGGESTION_DEBOUNCE_MS);
         } else {
-            suggestionsContainer.empty().hide(); // Hide immediately if effectively empty
+            suggestionsContainer.empty().css('display', 'none'); // Hide immediately if effectively empty
             clearSearchBtn.hide();
         }
     });
@@ -2389,7 +2390,7 @@ $(document).ready(function() {
     // Handle clear button click
      clearSearchBtn.on('click', function() {
          searchInput.val(''); // Clear the input
-         suggestionsContainer.empty().hide(); // Hide suggestions
+         suggestionsContainer.empty().css('display', 'none'); // Hide suggestions
          $(this).hide(); // Hide the clear button itself
          searchInput.focus(); // Focus the input
      });
@@ -2413,14 +2414,14 @@ $(document).ready(function() {
             !$(event.target).closest(suggestionsContainer).length &&
             !$(event.target).closest(clearSearchBtn).length)
         {
-            suggestionsContainer.hide(); // Hide without clearing, allows reopening
+            suggestionsContainer.css('display', 'none'); // Hide without clearing, allows reopening
         }
     });
 
      // Show suggestions when input is focused and has text + results exist
      searchInput.on('focus', function() {
          if ($(this).val().trim() && suggestionsContainer.children().length > 0) {
-             suggestionsContainer.show();
+             suggestionsContainer.css('display', 'flex');
          }
      });
 

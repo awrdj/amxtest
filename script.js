@@ -1961,20 +1961,6 @@ $(document).ready(function() {
         groupDiv.append(item); // Append item to its group
     }*/
     
-function escapeHtml(unsafe) {
-    if (typeof unsafe !== 'string') {
-        // If it's not a string (e.g., null, undefined), return an empty string
-        // or handle as appropriate for your logic. Returning empty string is safest here.
-        return '';
-    }
-    return unsafe
-         .replace(/&/g, "&amp;")
-         .replace(/</g, "&lt;")
-         .replace(/>/g, "&gt;")
-         .replace(/"/g, "&quot;")
-         .replace(/'/g, "&#039;");
-}
-
 // Corrected addKeywordItem function
 function escapeHtml(unsafe) {
     if (typeof unsafe !== 'string') {

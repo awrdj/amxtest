@@ -513,16 +513,13 @@ footer {
     border-top: none;
     border-radius: 0 0 6px 6px;
     box-shadow: var(--box-shadow);
-
-    /* --- Flexbox Column Wrap Layout --- */
     display: none; /* Initially hidden */
-    height: 380px; /* ADJUSTABLE: Aiming for ~11 items. May need tweaking based on final item height. */
-    flex-flow: column wrap; /* Flow vertically, then wrap to columns */
-    align-content: flex-start; /* Align columns left */
-    overflow-y: hidden; /* Hide container vertical scroll */
-    overflow-x: auto; /* Allow horizontal scroll if columns overflow */
-    /* --- End Flexbox --- */
-
+    /* Consider adjusting height if needed */
+    height: 380px; /* Keep your current height or change to ~300px like extension */
+    flex-flow: column wrap;
+    align-content: flex-start;
+    overflow-y: hidden;
+    overflow-x: auto;
     padding: 10px;
     box-sizing: border-box;
 }
@@ -530,16 +527,19 @@ footer {
 /* Style for Titles (direct children) */
 #suggestionsContainer > h3 {
     background-color: #f8f9fa;
-    padding: 8px 12px;
-    margin: 10px 0 5px 0; /* Add top margin for spacing */
-    font-size: 0.9em;
+    /* Adjusted padding */
+    padding: 8px 10px;
+    margin: 10px 0 5px 0;
+    /* Adjusted font-size (using 1rem which is often default 16px) */
+    font-size: 1rem;
     font-weight: bold;
     color: #333;
     border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee; /* Add bottom border for separation */
-    width: 100%; /* Make title span the column width */
+    border-bottom: 1px solid #eee;
+    width: 100%;
     box-sizing: border-box;
-    /* break-before: column; /* CSS Multi-column only - REMOVE if present */
+    break-inside: avoid; /* Keep this for column layout */
+    page-break-inside: avoid; /* Keep this for column layout */
 }
 #suggestionsContainer > h3:first-of-type {
      margin-top: 0; /* Remove top margin for the very first title */
@@ -547,9 +547,13 @@ footer {
 }
 
 .suggestion-item {
-    padding: 6px 12px; /* Slightly reduced padding */
+    /* Adjusted padding */
+    padding: 8px 10px;
     cursor: pointer;
-    font-size: 0.95rem; /* Slightly smaller font */
+    /* Adjusted font-size */
+    font-size: 1rem; /* or 16px */
+    /* Added font-family like extension (using common fallbacks) */
+    font-family: "Amazon Ember", Arial, sans-serif;
     line-height: 1.4;
     color: #212529;
     white-space: normal;
@@ -557,17 +561,19 @@ footer {
     border-radius: 4px;
     margin-bottom: 4px;
     box-sizing: border-box;
-    width: auto; /* Allow natural width */
+    width: auto;
+    /* Removed min-width unless you specifically need it */
+    /* min-width: 350px; */
+    break-inside: avoid; /* Keep this */
+    page-break-inside: avoid; /* Keep this */
 
-    /* --- ADD Minimum Width --- */
-    min-width: 350px; /* Set the minimum width */
-
-    /* Background color is now handled by .group-* rules */
-    /* Border removed, background colors provide visual grouping */
+    /* Keep your existing background color classes (.group-*) */
+    /* Exact color matching requires JS changes to apply inline styles */
 }
 
 .suggestion-item:hover {
-    background-color: #dee2e6 !important; /* Or #e5e5e5 like extension */
+    /* Adjusted hover color to match extension's alternative */
+    background-color: #e5e5e5 !important; /* Consider removing !important if possible */
 }
 
 #suggestionsContainer > h3,
@@ -576,11 +582,12 @@ footer {
     page-break-inside: avoid;
 }
 
+/* Highlighting Style - This should visually match the extension */
 .suggestion-item .s-heavy {
-    font-weight: normal;
+    font-weight: normal; /* Non-matched part */
 }
 .suggestion-item > span:not(.s-heavy) {
-    font-weight: bold;
+    font-weight: bold; /* Matched part */
 }
 
 /* Ensure spans from addKeywordItem display correctly */

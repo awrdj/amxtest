@@ -1917,13 +1917,6 @@ $(document).ready(function() {
         return keywords;
     }
 
-    // Adds a group title (like "Keywords Before")
-    function addGroupTitle(title, container) {
-        const groupDiv = $('<div class="suggestion-group"></div>');
-        groupDiv.append($('<h3></h3>').text(title));
-        container.append(groupDiv);
-        return groupDiv; // Return the group div to append items to
-    }
 
     /**
      * Adds a single suggestion item with highlighting mimicking the extension.
@@ -1996,10 +1989,10 @@ function escapeHtml(unsafe) {
 }
 
 // Corrected addKeywordItem function
-function addKeywordItem(keyword, search, targetContainer) {
-    const item = $('<div class="suggestion-item"></div>');
+function addKeywordItem(keyword, search, groupClass) { // Removed groupDiv parameter
+    const item = $('<div class="suggestion-item"></div>').addClass(groupClass); // Add group class
 
-    const matchIndex = keyword.indexOf(search); // Case-sensitive
+    const matchIndex = keyword.indexOf(search);
     let before = '', match = '', after = '';
 
     if (search.length > 0 && matchIndex > -1) {
@@ -2012,25 +2005,20 @@ function addKeywordItem(keyword, search, targetContainer) {
          after = '';
     }
 
-    // --- VERIFY THIS LINE CAREFULLY (use backticks ` `) ---
     item.html(
-        `<span class="s-heavy">${escapeHtml(before)}</span>${escapeHtml(match)}<span class="s-heavy">${escapeHtml(after)}</span>`
+        `<span class="s-heavy"><span class="math-inline">\{escapeHtml\(before\)\}</span\></span>{escapeHtml(match)}<span class="s-heavy">${escapeHtml(after)}</span>`
     );
-    // --- END VERIFICATION ---
-
     item.attr('data-keyword', keyword);
 
     item.on('click', () => {
         searchInput.val(keyword);
-        suggestionsContainer.empty().css('display', 'none');
+        suggestionsContainer.empty().css('display', 'none'); // Use .css()
         searchInput.focus();
     });
 
-    if (targetContainer instanceof jQuery && targetContainer.length > 0) {
-        targetContainer.append(item);
-    } else {
-        console.error("Attempted to append suggestion item to an invalid target container:", targetContainer);
-    }
+    // Append item directly to the main suggestionsContainer
+    // Ensure suggestionsContainer is accessible here (it's defined globally in your script)
+    suggestionsContainer.append(item);
 }
 
     /**
@@ -2317,35 +2305,91 @@ function addKeywordItem(keyword, search, targetContainer) {
 // console.log(`Rendered ${keywordCount} total suggestion items.`);
 }*/
 
-    function renderCategorizedSuggestions(search, results) {
-    suggestionsContainer.empty(); // Clear previous results first
+    // script.js
 
-    const allKeywordsSet = new Set(); // Use a Set for uniqueness
-    let keywordCount = 0;
-    const MAX_KEYWORDS_IN_SEARCH = 500; // Make sure constant is defined
+// Renders titles and items directly into the container
+function renderCategorizedSuggestions(search, results) {
+    suggestionsContainer.empty(); // Clear previous
 
-    // --- 1. Collect unique keywords ---
-    results.forEach(currentResultData => {
-        if (currentResultData && typeof currentResultData === 'object' && Array.isArray(currentResultData.suggestions)) {
-            const keywordsRaw = parseResults(currentResultData); // Use your parseResults
+    const mainKeywordsSet = new Set();
+    const allDisplayedKeywordsSet = new Set();
+    let keywordCount = 0; // Total keywords added
+    const MAX_KEYWORDS_IN_SEARCH = 500;
+    let otherTitleDisplayed = false;
+
+    // --- Pre-populate mainKeywordsSet ---
+    const initialMainKeywords = parseResults(results[0] || { suggestions: [] });
+    initialMainKeywords.forEach(kw => mainKeywordsSet.add(kw));
+
+    // --- Loop through results (categories) ---
+    for (let i = 0; i < results.length; i++) {
+        if (keywordCount >= MAX_KEYWORDS_IN_SEARCH) break;
+
+        const currentResultData = results[i] || { suggestions: [] };
+        const keywordsRaw = parseResults(currentResultData);
+        let keywordsToAddInCategory = []; // Keywords to add for *this* category
+        let suggestionType = "";
+        let groupClass = "";
+
+        // --- Filter keywords for uniqueness ---
+        if (i === 0) { // Main Suggestions
+            suggestionType = "Amazon Suggestions";
+            groupClass = "group-main";
             keywordsRaw.forEach(kw => {
-                if (kw) { allKeywordsSet.add(kw); }
+                if (!allDisplayedKeywordsSet.has(kw) && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
+                    keywordsToAddInCategory.push(kw);
+                    allDisplayedKeywordsSet.add(kw);
+                }
+            });
+        } else { // Other categories
+            keywordsRaw.forEach(kw => {
+                if (!mainKeywordsSet.has(kw) && !allDisplayedKeywordsSet.has(kw) && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
+                    keywordsToAddInCategory.push(kw);
+                    allDisplayedKeywordsSet.add(kw);
+                }
+            });
+            // Determine type/class
+            switch(i) { /* ... same switch logic as before ... */
+                case 1: suggestionType = "Keywords Before"; groupClass = "group-before"; break;
+                case 2: suggestionType = "Keywords After"; groupClass = "group-after"; break;
+                case 3:
+                    if (results[3] && results[3].suggestions && results[3].suggestions.length > 0 && keywordsToAddInCategory.length > 0) {
+                        suggestionType = "Keywords Between"; groupClass = "group-between";
+                    } else { suggestionType = ""; }
+                    break;
+                default: suggestionType = "Other"; groupClass = "group-other"; break;
+            }
+        }
+
+        // --- Append Title and Items directly to container if keywords exist ---
+        if (keywordsToAddInCategory.length > 0 && suggestionType) {
+            let shouldAddTitle = true;
+            if (suggestionType === "Other") {
+                if (!otherTitleDisplayed) {
+                    otherTitleDisplayed = true;
+                } else {
+                    shouldAddTitle = false; // Only add "Other" title once
+                }
+            }
+
+            // Append the title directly to the main container
+            if (shouldAddTitle) {
+                suggestionsContainer.append($('<h3></h3>').text(suggestionType));
+            }
+
+            // Append each item for this category directly to the main container
+            keywordsToAddInCategory.forEach(keyword => {
+                 if (keywordCount < MAX_KEYWORDS_IN_SEARCH) {
+                     addKeywordItem(keyword, search, groupClass); // Call modified function
+                     keywordCount++;
+                 }
             });
         }
-    });
+    } // End loop
 
-    // --- 2. Render each unique keyword ---
-    allKeywordsSet.forEach(keyword => {
-        if (keywordCount < MAX_KEYWORDS_IN_SEARCH) {
-            // Call addKeywordItem, passing the main container directly
-            addKeywordItem(keyword, search, suggestionsContainer); // Pass container
-            keywordCount++;
-        }
-    });
-
-    // --- 3. Show or hide the container ---
+    // --- Final Show/Hide ---
     if (keywordCount > 0) {
-        suggestionsContainer.css('display', 'flex'); // Use display: flex
+        suggestionsContainer.css('display', 'flex');
     } else {
         suggestionsContainer.css('display', 'none');
     }

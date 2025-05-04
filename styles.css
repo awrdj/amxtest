@@ -515,18 +515,19 @@ footer {
     box-shadow: var(--box-shadow);
 
     /* --- Flexbox Column Wrap Layout --- */
-    display: none;
-    height: 350px; /* Fixed height */
-    flex-flow: column wrap; /* Wrap vertically then columns */
+    display: none; /* Initially hidden */
+    height: 380px; /* ADJUSTABLE: Aiming for ~11 items. May need tweaking based on final item height. */
+    flex-flow: column wrap; /* Flow vertically, then wrap to columns */
     align-content: flex-start; /* Align columns left */
     overflow-y: hidden; /* Hide container vertical scroll */
-    overflow-x: auto; /* Allow horizontal scroll */
+    overflow-x: auto; /* Allow horizontal scroll if columns overflow */
     /* --- End Flexbox --- */
 
     padding: 10px;
     box-sizing: border-box;
 }
 
+/* Style for Titles (direct children) */
 #suggestionsContainer > h3 {
     background-color: #f8f9fa;
     padding: 8px 12px;
@@ -536,12 +537,9 @@ footer {
     color: #333;
     border-top: 1px solid #eee;
     border-bottom: 1px solid #eee; /* Add bottom border for separation */
-    break-before: column; /* Try to start a title in a new column */
-    break-inside: avoid; /* Prevent title from splitting */
-    page-break-before: column;
-    page-break-inside: avoid;
     width: 100%; /* Make title span the column width */
     box-sizing: border-box;
+    /* break-before: column; /* CSS Multi-column only - REMOVE if present */
 }
 #suggestionsContainer > h3:first-of-type {
      margin-top: 0; /* Remove top margin for the very first title */
@@ -556,29 +554,33 @@ footer {
     color: #212529;
     white-space: normal;
     word-break: break-word;
-    border-radius: 4px; /* Add slight rounding */
-    margin-bottom: 4px; /* Space below items */
-
-    /* --- Key for Layout --- */
-    break-inside: avoid; /* Prevent item breaking across columns */
-    page-break-inside: avoid;
-    width: 100%; /* Make item take full width *of its column* */
+    border-radius: 4px;
+    margin-bottom: 4px;
     box-sizing: border-box;
-     /* Background color is now handled by .group-* rules */
-     /* Border removed, background colors provide visual grouping */
+    width: auto; /* Allow natural width */
+
+    /* --- ADD Minimum Width --- */
+    min-width: 350px; /* Set the minimum width */
+
+    /* Background color is now handled by .group-* rules */
+    /* Border removed, background colors provide visual grouping */
 }
 
 .suggestion-item:hover {
-    background-color: #dee2e6 !important; /* Extension uses #e5e5e5, change if preferred */
+    background-color: #dee2e6 !important; /* Or #e5e5e5 like extension */
 }
 
-/* Highlighting styles */
-.suggestion-item .s-heavy {
-    font-weight: normal; /* Assuming non-matching part is normal */
+#suggestionsContainer > h3,
+.suggestion-item {
+    break-inside: avoid;
+    page-break-inside: avoid;
 }
-.suggestion-item > span:not(.s-heavy) { /* Style the matching part differently if needed */
+
+.suggestion-item .s-heavy {
+    font-weight: normal;
+}
+.suggestion-item > span:not(.s-heavy) {
     font-weight: bold;
-     /* color: #007bff; */ /* Optional: color the match */
 }
 
 /* Ensure spans from addKeywordItem display correctly */

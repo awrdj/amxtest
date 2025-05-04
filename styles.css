@@ -514,23 +514,17 @@ footer {
     border-radius: 0 0 6px 6px;
     box-shadow: var(--box-shadow);
 
-    /* --- Key changes/confirmations --- */
-    display: none; /* Initially hidden, JS will change this */
-    height: 350px; /* Adjusted height (or keep 400px if preferred) */
-    flex-flow: column wrap; /* Use flexbox for column wrapping */
-    align-content: flex-start; /* Align wrapped columns to the start */
-    overflow-y: hidden; /* Hide vertical scrollbar */
-    overflow-x: auto; /* Show horizontal scrollbar ONLY if needed */
-    /* --- End key changes --- */
+    /* --- Multi-column Layout --- */
+    display: none; /* Initially hidden */
+    height: 300px; /* Adjust height as needed */
+    column-width: 180px; /* Define the width of each column */
+    column-gap: 10px; /* Space between columns */
+    overflow-x: auto; /* Allow horizontal scrolling */
+    overflow-y: hidden; /* Prevent vertical scrolling on container */
+    /* --- End Multi-column --- */
 
-    margin: 0;
     padding: 10px;
     box-sizing: border-box;
-}
-.suggestion-group,
-.suggestion-item {
-    break-inside: avoid;
-    page-break-inside: avoid;
 }
 
 .suggestion-item {
@@ -539,19 +533,18 @@ footer {
     font-size: 1rem;
     line-height: 1.5;
     color: #212529;
-    break-inside: avoid;
-    page-break-inside: avoid;
     white-space: normal;
     word-break: break-word;
+    background-color: #ffffff;
+    border: 1px solid #eee;
+    margin: 0 0 5px 0; /* Add some bottom margin instead of side margin */
+    box-sizing: border-box;
 
-    /* --- ADDED/MODIFIED --- */
-    width: 180px; /* Adjust width as desired */
-    flex-shrink: 0; /* Prevent items from shrinking to fit */
-    background-color: #ffffff; /* Default background for all items */
-    border: 1px solid #eee; /* Optional: add border for visual separation */
-    margin: 2px; /* Optional: add small margin */
-    box-sizing: border-box; /* Include padding/border in width */
-    /* --- END ADDED/MODIFIED --- */
+    /* --- Key properties for multi-column --- */
+    break-inside: avoid; /* Crucial to prevent items breaking across columns */
+    display: inline-block; /* Ensure items behave correctly in columns */
+    width: 100%; /* Make item take full width *of its column* */
+    /* --- End Key properties --- */
 }
 
 .suggestion-item:hover {

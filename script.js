@@ -1847,7 +1847,7 @@ $(document).ready(function() {
 
     // Fetch suggestions from Amazon API
     function getSuggestions(queryFirst, queryLast, marketplace, apiType = 'Generic') {
-        const departmentQuery = 'fashion'; // Hardcoded 'aps' (All Departments) like extension
+        const departmentQuery = 'aps'; // Hardcoded 'aps' (All Departments) like extension
         const params = new URLSearchParams({
             'site-variant': 'desktop',
             'mid': marketplace.market,

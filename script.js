@@ -2012,103 +2012,140 @@ function addKeywordItem(keyword, search, groupClass) {
 
 // Renders titles and items directly into the container
 function renderCategorizedSuggestions(search, results) {
-    // *** Add Logging Here To Debug Inputs ***
-        console.log("--- Rendering Suggestions ---");
-        console.log("Search Term:", search);
-        console.log("Raw Results Array Length:", results.length);
-        // Log the parsed content of the first few results arrays
-        if(results[0]) console.log("Parsed results[0] (Main):", parseResults(results[0]));
-        if(results[1]) console.log("Parsed results[1] (Before):", parseResults(results[1])); // <<<--- LOOK AT THIS ONE
-        if(results[2]) console.log("Parsed results[2] (After):", parseResults(results[2]));
-        // *************************************
-    
+    // Add Logging Here To Debug Inputs
+    console.log("--- Rendering Suggestions ---");
+    console.log("Search Term:", search); // This is the trimmed search term
+    console.log("Raw Results Array Length:", results.length);
+    const rawMainKeywordsData = results[0] || { suggestions: [] };
+    const rawBeforeKeywordsData = results[1] || { suggestions: [] };
+    const rawAfterKeywordsData = results[2] || { suggestions: [] };
+    const initialMainKeywordsParsed = parseResults(rawMainKeywordsData); // Parse once
+    if(initialMainKeywordsParsed.length > 0) console.log("Parsed results[0] (Main - Raw):", initialMainKeywordsParsed);
+    if(rawBeforeKeywordsData.suggestions.length > 0) console.log("Parsed results[1] (Before - Raw):", parseResults(rawBeforeKeywordsData));
+    if(rawAfterKeywordsData.suggestions.length > 0) console.log("Parsed results[2] (After - Raw):", parseResults(rawAfterKeywordsData));
+    // *************************************
+
     suggestionsContainer.empty(); // Clear previous
 
-    const mainKeywordsSet = new Set();
+    const mainKeywordsSet = new Set(); // Will store STRICT main keywords
     const allDisplayedKeywordsSet = new Set();
     let keywordCount = 0; // Total keywords added
-    const MAX_KEYWORDS_IN_SEARCH = 500;
     let otherTitleDisplayed = false;
 
-    // --- Pre-populate mainKeywordsSet ---
-    const initialMainKeywords = parseResults(results[0] || { suggestions: [] });
-    initialMainKeywords.forEach(kw => mainKeywordsSet.add(kw));
+    // --- Determine if it's a single word search ---
+    // Split by space and filter out empty strings that might result from multiple spaces
+    const searchWords = search.split(' ').filter(word => word.length > 0);
+    const isSingleWordSearch = searchWords.length === 1;
+    console.log(`Is single word search: ${isSingleWordSearch}`);
+    const searchLower = search.toLowerCase(); // Lowercase search term for comparison
 
-    // --- Loop through results (categories) ---
-    for (let i = 0; i < results.length; i++) {
+    // --- Create the "Strict" Main Keywords List ---
+    const strictMainKeywords = []; // This will hold the keywords that meet the stricter criteria
+
+    initialMainKeywordsParsed.forEach(kw => {
+        let keepKeyword = false;
+        if (isSingleWordSearch) {
+            // For single word search, only keep if it starts with the search term (case-insensitive)
+            if (kw.toLowerCase().startsWith(searchLower)) {
+                keepKeyword = true;
+            } else {
+                // Optional: Log keywords being filtered out only during single-word search
+                // console.log(`Filtering out non-prefix main keyword (single-word search): "${kw}"`);
+            }
+        } else {
+            // For multi-word search, keep all results from results[0] initially
+            keepKeyword = true;
+        }
+
+        // Add to strict list if it passes the check AND is not already added
+        // (Handles potential duplicates within the raw results[0] from API)
+        if (keepKeyword && !allDisplayedKeywordsSet.has(kw)) {
+             strictMainKeywords.push(kw);
+             mainKeywordsSet.add(kw); // Use this set for filtering other categories
+             allDisplayedKeywordsSet.add(kw); // Use this set for tracking display
+        }
+    });
+
+    console.log("Strict Main Keywords (Displayed under 'Amazon Suggestions'):", strictMainKeywords);
+    // console.log("MainKeywordsSet (Used for filtering Before/After/Other):", mainKeywordsSet); // For debugging filtering
+
+
+    // --- Render Category i = 0 (Amazon Suggestions) ---
+    // Render ONLY the strictMainKeywords under this heading
+    if (strictMainKeywords.length > 0) {
+        suggestionsContainer.append($('<h3></h3>').text("Amazon Suggestions"));
+        strictMainKeywords.forEach(keyword => {
+             if (keywordCount < MAX_KEYWORDS_IN_SEARCH) {
+                 addKeywordItem(keyword, search, "group-main"); // Pass the original search term for highlighting
+                 keywordCount++;
+             }
+        });
+    }
+
+
+    // --- Loop i=1 onwards for Before, After, Other etc. ---
+    for (let i = 1; i < results.length; i++) { // Start loop from 1
         if (keywordCount >= MAX_KEYWORDS_IN_SEARCH) break;
 
         const currentResultData = results[i] || { suggestions: [] };
         const keywordsRaw = parseResults(currentResultData);
-        // Use 'i' if your loop is a for loop, 'index' if it's forEach with index
-console.log(`[DEBUG] parseResults[${i}] returned:`, JSON.stringify(keywordsRaw)); // Changed index to i
-        let keywordsToAddInCategory = []; // Keywords to add for *this* category
+
+        let keywordsToAddInCategory = [];
         let suggestionType = "";
         let groupClass = "";
 
-        // --- Filter keywords for uniqueness ---
-        if (i === 0) { // Main Suggestions
-            suggestionType = "Amazon Suggestions";
-            groupClass = "group-main";
-            keywordsRaw.forEach(kw => {
-                if (!allDisplayedKeywordsSet.has(kw) && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
-                    keywordsToAddInCategory.push(kw);
-                    allDisplayedKeywordsSet.add(kw);
-                }
-            });
-        } else { // Other categories
-            keywordsRaw.forEach(kw => {
-                if (!mainKeywordsSet.has(kw) && !allDisplayedKeywordsSet.has(kw) && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
-                    keywordsToAddInCategory.push(kw);
-                    allDisplayedKeywordsSet.add(kw);
-                }
-            });
-            // Determine type/class
-            switch(i) { /* ... same switch logic as before ... */
-                case 1: suggestionType = "Keywords Before"; groupClass = "group-before"; break;
-                case 2: suggestionType = "Keywords After"; groupClass = "group-after"; break;
-                case 3:
-                    if (results[3] && results[3].suggestions && results[3].suggestions.length > 0 && keywordsToAddInCategory.length > 0) {
-                        suggestionType = "Keywords Between"; groupClass = "group-between";
-                    } else { suggestionType = ""; }
-                    break;
-                default: suggestionType = "Other"; groupClass = "group-other"; break;
+        // Filter keywords: Not in strict main list (mainKeywordsSet) AND not already displayed anywhere else
+        keywordsRaw.forEach(kw => {
+            if (!mainKeywordsSet.has(kw) && !allDisplayedKeywordsSet.has(kw) && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
+                keywordsToAddInCategory.push(kw);
+                allDisplayedKeywordsSet.add(kw); // Track it as displayed
             }
+        });
+
+        // Determine category type/class (switch starts from case 1)
+        switch(i) {
+            case 1: suggestionType = "Keywords Before"; groupClass = "group-before"; break;
+            case 2: suggestionType = "Keywords After"; groupClass = "group-after"; break;
+            case 3: // Between
+                if (results[3] && results[3].suggestions && results[3].suggestions.length > 0 && keywordsToAddInCategory.length > 0) {
+                    suggestionType = "Keywords Between"; groupClass = "group-between";
+                } else { suggestionType = ""; }
+                break;
+            default: // i >= 4 (Other)
+                suggestionType = "Other"; groupClass = "group-other"; break;
         }
 
-        // --- Append Title and Items directly to container if keywords exist ---
+        // Append Title and Items if any keywords passed the filter for this category
         if (keywordsToAddInCategory.length > 0 && suggestionType) {
             let shouldAddTitle = true;
             if (suggestionType === "Other") {
                 if (!otherTitleDisplayed) {
                     otherTitleDisplayed = true;
                 } else {
-                    shouldAddTitle = false; // Only add "Other" title once
+                    shouldAddTitle = false;
                 }
             }
 
-            // Append the title directly to the main container
             if (shouldAddTitle) {
                 suggestionsContainer.append($('<h3></h3>').text(suggestionType));
             }
 
-            // Append each item for this category directly to the main container
             keywordsToAddInCategory.forEach(keyword => {
                  if (keywordCount < MAX_KEYWORDS_IN_SEARCH) {
-                     addKeywordItem(keyword, search, groupClass); // Call modified function
+                     addKeywordItem(keyword, search, groupClass);
                      keywordCount++;
                  }
             });
         }
-    }
-    // End loop
+    } // End loop i=1 onwards
 
-    // --- Final Show/Hide ---
+    // Final Show/Hide
     if (keywordCount > 0) {
         suggestionsContainer.css('display', 'flex');
     } else {
         suggestionsContainer.css('display', 'none');
     }
+    console.log(`Rendered ${keywordCount} total suggestion items.`);
 }
 
 

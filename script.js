@@ -1829,14 +1829,14 @@ $(document).ready(function() {
         const selectedValue = marketplaceSelect.val() || "com"; // Default to com if null
         const domainConfig = {
              "com": { domain: "amazon.com", market: "ATVPDKIKX0DER" },
-             "ca": { domain: "amazon.ca", market: "A2EUQ1WTGCTBG2" },
+             /*"ca": { domain: "amazon.ca", market: "A2EUQ1WTGCTBG2" },*/
              "co.uk": { domain: "amazon.co.uk", market: "A1F83G8C2ARO7P" },
              "de": { domain: "amazon.de", market: "A1PA6795UKMFR9" },
              "fr": { domain: "amazon.fr", market: "A13V1IB3VIYZZH" },
              "it": { domain: "amazon.it", market: "APJ6JRA9NG5V4" },
              "es": { domain: "amazon.es", market: "A1RKKUPIHCS9HS" },
-             "com.mx": { domain: "amazon.com.mx", market: "A1AM78C64UM0Y8" },
-             "com.au": { domain: "amazon.com.au", market: "A39IBJ37TRP1C6" },
+             /*"com.mx": { domain: "amazon.com.mx", market: "A1AM78C64UM0Y8" },
+             "com.au": { domain: "amazon.com.au", market: "A39IBJ37TRP1C6" },*/
              "jp": { domain: "amazon.co.jp", market: "A1VC38TJH7YXB5" }
              // Add other marketplaces as needed
         };

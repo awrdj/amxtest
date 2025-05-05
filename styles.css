@@ -502,7 +502,7 @@ footer {
 
 /* --- NEW CSS for Floating Suggestions --- */
 #suggestionsContainer {
-    position: relative;
+    position: static;
     top: 100%;
     left: 0;
     width: 100%;
@@ -515,7 +515,7 @@ footer {
     box-shadow: var(--box-shadow);
     display: none; /* Initially hidden */
     /* Consider adjusting height if needed */
-    height: 371px; /* Keep your current height or change to ~300px like extension */
+    height: 370px; /* Keep your current height or change to ~300px like extension */
     flex-flow: column wrap;
     /*align-content: flex-start;*/
     overflow-y: hidden;

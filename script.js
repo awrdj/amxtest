@@ -1850,7 +1850,8 @@ $(document).ready(function() {
         const departmentQuery = 'aps'; // Hardcoded 'aps' (All Departments) like extension
         const params = new URLSearchParams({
             'site-variant': 'desktop',
-            'mid': marketplace.market,
+            'mkt': marketplace.market,
+            /*'mid': marketplace.market,*/
             'alias': departmentQuery,
             // The extension seems to send empty strings, let's replicate that
             'prefix': queryFirst || "",

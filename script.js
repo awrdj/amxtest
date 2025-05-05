@@ -1828,7 +1828,7 @@ $(document).ready(function() {
     function getMarketplace() {
         const selectedValue = marketplaceSelect.val() || "com"; // Default to com if null
         const domainConfig = {
-             "com": { domain: "amazon.com", market: "ATVPDKIKX0DER" },
+             "com": { domain: "amazon.com", market: "1" /*market: "ATVPDKIKX0DER"*/ },
              /*"ca": { domain: "amazon.ca", market: "A2EUQ1WTGCTBG2" },*/
              "co.uk": { domain: "amazon.co.uk", market: "A1F83G8C2ARO7P" },
              "de": { domain: "amazon.de", market: "A1PA6795UKMFR9" },
@@ -1847,7 +1847,7 @@ $(document).ready(function() {
 
     // Fetch suggestions from Amazon API
     function getSuggestions(queryFirst, queryLast, marketplace, apiType = 'Generic') {
-        const departmentQuery = ''; // Hardcoded 'aps' (All Departments) like extension
+        const departmentQuery = 'aps'; // Hardcoded 'aps' (All Departments) like extension
         const params = new URLSearchParams({
             'site-variant': 'desktop',
             'mid': marketplace.market,

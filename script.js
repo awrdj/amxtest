@@ -2045,6 +2045,7 @@ console.log(`[DEBUG] parseResults[${i}] returned:`, JSON.stringify(keywordsRaw))
         let keywordsToAddInCategory = []; // Keywords to add for *this* category
         let suggestionType = "";
         let groupClass = "";
+        let titleStyleString = "";
 
         // --- Filter keywords for uniqueness ---
         if (i === 0) { // Main Suggestions
@@ -2065,14 +2066,14 @@ console.log(`[DEBUG] parseResults[${i}] returned:`, JSON.stringify(keywordsRaw))
             });
             // Determine type/class
             switch(i) { /* ... same switch logic as before ... */
-                case 1: suggestionType = "Keywords Before"; groupClass = "group-before"; break;
-                case 2: suggestionType = "Keywords After"; groupClass = "group-after"; break;
+                case 1: suggestionType = "Keywords Before"; groupClass = "group-before"; titleStyleString = 'style="background-color: #ffe6e6;"'; break;
+                case 2: suggestionType = "Keywords After"; groupClass = "group-after"; titleStyleString = 'style="background-color: #ebfaeb;"'; break;
                 case 3:
                     if (results[3] && results[3].suggestions && results[3].suggestions.length > 0 && keywordsToAddInCategory.length > 0) {
-                        suggestionType = "Keywords Between"; groupClass = "group-between";
+                        suggestionType = "Keywords Between"; groupClass = "group-between"; titleStyleString = 'style="background-color: #e6ecff;"';
                     } else { suggestionType = ""; }
                     break;
-                default: suggestionType = "Other"; groupClass = "group-other"; break;
+                default: suggestionType = "Other"; groupClass = "group-other"; titleStyleString = 'style="background-color: #f2f2f2;"'; break;
             }
         }
 

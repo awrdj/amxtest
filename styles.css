@@ -520,7 +520,8 @@ footer {
     /*align-content: flex-start;*/
     overflow-y: hidden;
     overflow-x: auto;
-    padding: 0 15px;
+    /*padding: 0 15px;*/
+	padding:0;
     box-sizing: border-box;
 }
 

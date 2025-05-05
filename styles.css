@@ -593,7 +593,7 @@ line-height:1.4;
 }
 
 .suggestion-item span.s-heavy {
-     font-weight: normal; /* Make sure non-matched parts are normal */
+     font-weight: bold; /* Make sure non-matched parts are normal */
 }
 
 .suggestion-item.group-main { background-color: #ffffff; }

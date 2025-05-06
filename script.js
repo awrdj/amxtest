@@ -1917,52 +1917,6 @@ $(document).ready(function() {
         return keywords;
     }
 
-
-    /**
-     * Adds a single suggestion item with highlighting mimicking the extension.
-     * Wraps non-matching parts in <span class="s-heavy">.
-     */
-    /*function addKeywordItem(keyword, search, groupClass, groupDiv) {
-        const item = $('<div class="suggestion-item"></div>').addClass(groupClass);
-        const searchLower = search.toLowerCase();
-        const kwLower = keyword.toLowerCase();
-        // Find the first occurrence of the search term, case-insensitive
-        const matchIndex = kwLower.indexOf(searchLower);
-
-        let before = '', match = '', after = '';
-
-        // Only highlight if search term is found AND search term is not empty
-        if (search.length > 0 && matchIndex > -1) {
-            // Extract parts based on case-insensitive find, but use original casing from keyword
-            before = keyword.substring(0, matchIndex);
-            match = keyword.substring(matchIndex, matchIndex + search.length); // Original case match
-            after = keyword.substring(matchIndex + search.length);
-        } else {
-            // If search term not found or empty, display the whole keyword as 'before' (wrapped)
-             before = keyword;
-             match = ''; // No specific match part
-             after = '';
-        }
-
-        // Using escapeHtml for safety
-        item.html(`
-            <span class="s-heavy">${escapeHtml(before)}</span>${escapeHtml(match)}<span class="s-heavy">${escapeHtml(after)}</span>
-        `);
-        item.attr('data-keyword', keyword); // Add data attribute like the extension
-
-        item.on('click', () => {
-            searchInput.val(keyword); // Fill input with clicked keyword
-            suggestionsContainer.empty().hide(); // Hide suggestions
-            searchInput.focus(); // Optionally refocus input
-            // Optionally trigger a new search automatically after click:
-            // fetchAndDisplaySuggestions(keyword);
-        });
-
-        groupDiv.append(item); // Append item to its group
-    }*/
-    
-// PASTE THIS ENTIRE BLOCK TO REPLACE THE EXISTING addKeywordItem function
-
 // Ensure escapeHtml function exists before this one
 function escapeHtml(unsafe) {
     if (typeof unsafe !== 'string') { return ''; }

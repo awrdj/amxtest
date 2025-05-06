@@ -2136,16 +2136,6 @@ console.log(`[DEBUG] parseResults[${i}] returned:`, JSON.stringify(keywordsRaw))
     searchInput.on('input', function() {
         const query = $(this).val(); // Get raw value
         clearTimeout(suggestionTimeoutId); // Clear previous timer
-
-        /* OLD CODE if (query.trim()) { // Check trimmed value for showing button/triggering fetch
-            clearSearchBtn.show();
-            suggestionTimeoutId = setTimeout(() => {
-                fetchAndDisplaySuggestions(query); // Pass the raw query
-            }, SUGGESTION_DEBOUNCE_MS);
-        } else {
-            suggestionsContainer.empty().css('display', 'none'); // Hide immediately if effectively empty
-            clearSearchBtn.hide();
-        }*/
         
     // ***** START MODIFICATION *****
     // If KW suggestions are disabled, just manage the clear button and hide suggestions
@@ -2204,11 +2194,6 @@ console.log(`[DEBUG] parseResults[${i}] returned:`, JSON.stringify(keywordsRaw))
     });
 
      // Show suggestions when input is focused and has text + results exist
-     /* OLD CODE searchInput.on('focus', function() {
-         if ($(this).val().trim() && suggestionsContainer.children().length > 0) {
-             suggestionsContainer.css('display', 'flex');
-         }
-     });*/
     searchInput.on('focus', function() {
         // ***** START MODIFICATION *****
         // Only show on focus if checkbox is checked AND other conditions met

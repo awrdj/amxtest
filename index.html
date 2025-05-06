@@ -97,11 +97,19 @@
 
                 <div class="row mt-2" style="margin-top:0px!important;">
                     <div class="col-12">
-                        <div class="form-check" style="display: inline-block;">
-                            <input class="form-check-input" type="checkbox" id="kwsuggestions" value="kwsuggestionsYes">
-                            <label class="form-check-label" for="kwsuggestions">KW Suggestions</label>
+                        <div class="suggestion-controls" style="display: flex; align-items: center; gap: 15px; float: left; margin-bottom: 5px;">
+                            <div class="form-check" style="margin-bottom: 0;"> <input class="form-check-input" type="checkbox" id="kwsuggestions" value="kwsuggestionsYes" checked>
+                                <label class="form-check-label" for="kwsuggestions">KW Suggestions</label>
+                            </div>
+                            <select id="suggestionDepartmentSelect" class="form-control form-control-sm" style="width: auto; display: inline-block;">
+                                <option value="aps" selected>All Departments</option>
+                                <option value="stripbooks">Books</option>
+                                <option value="fashion">Clothing</option>
+                                <option value="fashion-novelty">Fashion Novelty</option>
+                                </select>
                         </div>
-                        <div class="plz_hinweis text-right" style="margin-top: 0;padding: 0;background-color: white;border: 0;">
+                
+                        <div class="plz_hinweis text-right" style="margin-top: 0; padding: 0; background-color: white; border: 0;">
                             <div id="copy_to_clipboard">
                                 <div class="copy_area" title="Copy ZIP to Clipboard">
                                     <span class="copied-message">Copied!&nbsp;</span> Valid ZIP for&nbsp;<span class="plz_helper">.COM: <span class="copy_me">90210</span> (Beverly Hills, CA)</span>
@@ -109,6 +117,7 @@
                                 </div>
                             </div>
                         </div>
+                        <div style="clear: both;"></div>
                     </div>
                 </div>
             </form>

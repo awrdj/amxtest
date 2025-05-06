@@ -1809,6 +1809,7 @@ $(document).ready(function() {
     const RENDER_DELAY_MS = 500; // Small delay before rendering, less than extension's 500ms
 
     const kwSuggestionsCheckbox = $("#kwsuggestions");
+    const suggestionDepartmentSelect = $("#suggestionDepartmentSelect");
 
     // --- State ---
     let currentMarketplace = getMarketplace();
@@ -1849,7 +1850,14 @@ $(document).ready(function() {
 
     // Fetch suggestions from Amazon API
     function getSuggestions(queryFirst, queryLast, marketplace, apiType = 'Generic') {
-        const departmentQuery = 'aps'; // Hardcoded 'aps' (All Departments) like extension
+        /*OLD CODE const departmentQuery = 'aps'; // Hardcoded 'aps' (All Departments) like extension*/
+        // Get the selected department alias from the new dropdown
+        let departmentQuery = suggestionDepartmentSelect.val();
+        // Default to 'aps' if the selection is somehow empty/invalid or specifically 'aps'
+        if (!departmentQuery || departmentQuery === "" || departmentQuery === "aps") {
+            departmentQuery = 'aps';
+        }
+        
         const params = new URLSearchParams({
             'site-variant': 'desktop',
             'mid': marketplace.market,
@@ -1860,12 +1868,13 @@ $(document).ready(function() {
         });
 
         const suggestUrl = `https://completion.${marketplace.domain}/api/2017/suggestions?${params.toString()}`;
-        // console.log(`Requesting [${apiType}]: ${suggestUrl}`); // Log the URL being requested
+        // console.log(`Requesting [${apiType} / ${departmentQuery}]: ${suggestUrl}`); // Log the URL being requested
 
         return fetch(suggestUrl)
             .then(response => {
                 if (!response.ok) {
-                    console.error(`API Error for ${apiType} (${response.status}): ${response.statusText}, URL: ${suggestUrl}`);
+                    // OLD CODE console.error(`API Error for ${apiType} (${response.status}): ${response.statusText}, URL: ${suggestUrl}`);
+                    console.error(`Network/Fetch Error for ${apiType} (${departmentQuery} / ${suggestUrl}):`, error); // updated log
                     // Return empty structure on error to match Promise.all expectations
                     return { suggestions: [] };
                 }
@@ -2132,6 +2141,35 @@ console.log(`[DEBUG] parseResults[${i}] returned:`, JSON.stringify(keywordsRaw))
 
     // --- Event Handlers ---
 
+        // --- Add a new event handler for the checkbox itself ---
+kwSuggestionsCheckbox.on('change', function() {
+        if (!$(this).is(':checked')) {
+            // If UNCHECKED:
+            clearTimeout(suggestionTimeoutId);
+            suggestionsContainer.empty().css('display', 'none');
+            suggestionDepartmentSelect.hide(); // <-- HIDE the dropdown
+        } else {
+            // If CHECKED:
+            suggestionDepartmentSelect.show(); // <-- SHOW the dropdown
+            // Optional: Re-trigger suggestions if needed
+            const currentQuery = searchInput.val();
+            if (currentQuery.trim()) {
+                fetchAndDisplaySuggestions(currentQuery);
+            }
+        }
+    });
+    
+    suggestionDepartmentSelect.on('change', function() {
+        // When the department changes, refresh suggestions if enabled and input has text
+        if (kwSuggestionsCheckbox.is(':checked')) {
+            const currentQuery = searchInput.val();
+            if (currentQuery.trim()) {
+                clearTimeout(suggestionTimeoutId); // Clear any pending fetch from typing
+                fetchAndDisplaySuggestions(currentQuery); // Fetch immediately with new department
+            }
+        }
+    });
+
     // Handle input changes with debounce
     searchInput.on('input', function() {
         const query = $(this).val(); // Get raw value
@@ -2192,7 +2230,7 @@ console.log(`[DEBUG] parseResults[${i}] returned:`, JSON.stringify(keywordsRaw))
             suggestionsContainer.css('display', 'none'); // Hide without clearing, allows reopening
         }
     });
-
+    
      // Show suggestions when input is focused and has text + results exist
     searchInput.on('focus', function() {
         // ***** START MODIFICATION *****
@@ -2203,29 +2241,14 @@ console.log(`[DEBUG] parseResults[${i}] returned:`, JSON.stringify(keywordsRaw))
         // ***** END MODIFICATION *****
     });
 
-    // --- Add a new event handler for the checkbox itself ---
-kwSuggestionsCheckbox.on('change', function() {
-    if (!$(this).is(':checked')) {
-        // If the checkbox is UNCHECKED:
-        clearTimeout(suggestionTimeoutId); // Cancel any pending suggestion fetch
-        suggestionsContainer.empty().css('display', 'none'); // Immediately hide and clear suggestions
-    } else {
-        // If the checkbox is CHECKED:
-        // Optional: You could re-trigger a suggestion fetch if the input isn't empty
-        const currentQuery = searchInput.val();
-        if (currentQuery.trim()) {
-            // Re-fetch suggestions immediately for the current text
-            fetchAndDisplaySuggestions(currentQuery);
-        }
-        // If you don't add the lines above, suggestions will simply appear the next time the user types.
-    }
-});
-
-    // Add this at the end of the $(document).ready() block to handle the initial checked state correctly
-if (!kwSuggestionsCheckbox.is(':checked')) {
-    suggestionsContainer.css('display', 'none');
-}
-
     // --- Initial Setup ---
      clearSearchBtn.hide(); // Initially hide clear button
+
+    // Set initial visibility for the dropdown based on the checkbox state
+    if (!kwSuggestionsCheckbox.is(':checked')) {
+        suggestionsContainer.css('display', 'none'); // Hide suggestions container too
+        suggestionDepartmentSelect.hide(); // Hide dropdown if checkbox starts unchecked
+    } else {
+        suggestionDepartmentSelect.show(); // Ensure dropdown is visible if checkbox starts checked
+    }
 });

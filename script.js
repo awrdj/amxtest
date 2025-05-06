@@ -2220,6 +2220,7 @@ kwSuggestionsCheckbox.on('change', function() {
         }
     });
 
+    /* OLD CODE
     // Hide suggestions when clicking outside
     $(document).on('click', (event) => {
         // Check if the click target is NOT the input or suggestion areas or clear button
@@ -2229,7 +2230,33 @@ kwSuggestionsCheckbox.on('change', function() {
         {
             suggestionsContainer.css('display', 'none'); // Hide without clearing, allows reopening
         }
-    });
+    });*/
+    // Hide suggestions when clicking outside ONLY IF the checkbox is unchecked
+    $(document).on('click', (event) => {
+        // Check if the click happened outside of all relevant suggestion controls:
+        // - Search Input
+        // - Suggestions Container
+        // - Clear Button
+        // - Suggestion Department Dropdown
+        // - KW Suggestions Checkbox
+        // - KW Suggestions Label
+        if (!$(event.target).closest(searchInput).length &&
+                !$(event.target).closest(suggestionsContainer).length &&
+                !$(event.target).closest(clearSearchBtn).length &&
+                !$(event.target).closest(suggestionDepartmentSelect).length && // Added dropdown check
+                !$(event.target).closest(kwSuggestionsCheckbox).length &&      // Added checkbox check
+                !$(event.target).closest('label[for="kwsuggestions"]').length) // Added label check
+            {
+                // --- MODIFICATION START ---
+                // Only hide the suggestions via outside click if the feature is actually disabled
+                if (!kwSuggestionsCheckbox.is(':checked')) {
+                     suggestionsContainer.css('display', 'none');
+                }
+                // If kwSuggestionsCheckbox IS checked, do nothing on outside click.
+                // The visibility will be handled by other events (clearing input, unchecking box).
+                // --- MODIFICATION END ---
+            }
+        });
     
      // Show suggestions when input is focused and has text + results exist
     searchInput.on('focus', function() {

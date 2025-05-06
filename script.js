@@ -1860,6 +1860,7 @@ $(document).ready(function() {
         
         const params = new URLSearchParams({
             'site-variant': 'desktop',
+            'client-info': 'amazon-search-ui',
             'mid': marketplace.market,
             'alias': departmentQuery,
             // The extension seems to send empty strings, let's replicate that

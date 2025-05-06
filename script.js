@@ -1808,6 +1808,8 @@ $(document).ready(function() {
     const SUGGESTION_DEBOUNCE_MS = 300; // Delay after typing stops
     const RENDER_DELAY_MS = 500; // Small delay before rendering, less than extension's 500ms
 
+    const kwSuggestionsCheckbox = $("#kwsuggestions");
+
     // --- State ---
     let currentMarketplace = getMarketplace();
     let suggestionTimeoutId;
@@ -2135,7 +2137,7 @@ console.log(`[DEBUG] parseResults[${i}] returned:`, JSON.stringify(keywordsRaw))
         const query = $(this).val(); // Get raw value
         clearTimeout(suggestionTimeoutId); // Clear previous timer
 
-        if (query.trim()) { // Check trimmed value for showing button/triggering fetch
+        /* OLD CODE if (query.trim()) { // Check trimmed value for showing button/triggering fetch
             clearSearchBtn.show();
             suggestionTimeoutId = setTimeout(() => {
                 fetchAndDisplaySuggestions(query); // Pass the raw query
@@ -2143,7 +2145,31 @@ console.log(`[DEBUG] parseResults[${i}] returned:`, JSON.stringify(keywordsRaw))
         } else {
             suggestionsContainer.empty().css('display', 'none'); // Hide immediately if effectively empty
             clearSearchBtn.hide();
+        }*/
+        
+    // ***** START MODIFICATION *****
+    // If KW suggestions are disabled, just manage the clear button and hide suggestions
+    if (!kwSuggestionsCheckbox.is(':checked')) {
+        if (query.trim()) {
+            clearSearchBtn.show();
+        } else {
+            clearSearchBtn.hide();
         }
+        suggestionsContainer.empty().css('display', 'none'); // Ensure suggestions are hidden
+        return; // Exit early, don't fetch suggestions
+    }
+    // ***** END MODIFICATION *****
+
+    // Original logic (runs only if checkbox is checked)
+    if (query.trim()) { // Check trimmed value for showing button/triggering fetch
+        clearSearchBtn.show();
+        suggestionTimeoutId = setTimeout(() => {
+            fetchAndDisplaySuggestions(query); // Pass the raw query
+        }, SUGGESTION_DEBOUNCE_MS);
+    } else {
+        suggestionsContainer.empty().css('display', 'none'); // Hide immediately if effectively empty
+        clearSearchBtn.hide();
+    }
     });
 
     // Handle clear button click
@@ -2178,11 +2204,42 @@ console.log(`[DEBUG] parseResults[${i}] returned:`, JSON.stringify(keywordsRaw))
     });
 
      // Show suggestions when input is focused and has text + results exist
-     searchInput.on('focus', function() {
+     /* OLD CODE searchInput.on('focus', function() {
          if ($(this).val().trim() && suggestionsContainer.children().length > 0) {
              suggestionsContainer.css('display', 'flex');
          }
-     });
+     });*/
+    searchInput.on('focus', function() {
+        // ***** START MODIFICATION *****
+        // Only show on focus if checkbox is checked AND other conditions met
+        if (kwSuggestionsCheckbox.is(':checked') && $(this).val().trim() && suggestionsContainer.children().length > 0) {
+            suggestionsContainer.css('display', 'flex');
+        }
+        // ***** END MODIFICATION *****
+    });
+
+    // --- Add a new event handler for the checkbox itself ---
+kwSuggestionsCheckbox.on('change', function() {
+    if (!$(this).is(':checked')) {
+        // If the checkbox is UNCHECKED:
+        clearTimeout(suggestionTimeoutId); // Cancel any pending suggestion fetch
+        suggestionsContainer.empty().css('display', 'none'); // Immediately hide and clear suggestions
+    } else {
+        // If the checkbox is CHECKED:
+        // Optional: You could re-trigger a suggestion fetch if the input isn't empty
+        const currentQuery = searchInput.val();
+        if (currentQuery.trim()) {
+            // Re-fetch suggestions immediately for the current text
+            fetchAndDisplaySuggestions(currentQuery);
+        }
+        // If you don't add the lines above, suggestions will simply appear the next time the user types.
+    }
+});
+
+    // Add this at the end of the $(document).ready() block to handle the initial checked state correctly
+if (!kwSuggestionsCheckbox.is(':checked')) {
+    suggestionsContainer.css('display', 'none');
+}
 
     // --- Initial Setup ---
      clearSearchBtn.hide(); // Initially hide clear button

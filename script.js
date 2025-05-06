@@ -1860,9 +1860,13 @@ $(document).ready(function() {
         
         const params = new URLSearchParams({
             //'session-id': '133-2190809-5709766', // random ones
-            'customer-id': 'A1CNYR04B8CZOZ', // random ones
-            'request-id': 'NTH41W0H5GYC8N00NVCS', // random ones
-            'page-type': 'Gateway',// random ones
+            //'customer-id': 'A1CNYR04B8CZOZ', // random ones
+            //'request-id': 'NTH41W0H5GYC8N00NVCS', // random ones
+            //'page-type': 'Gateway',// random ones
+            'lop': 'en_US', // random ones
+            'b2b': '1', // random ones seems to be value "1" if you are logged in with a bussines account and "0" with non business.
+            'fresh': '0', // random ones
+            'ks': '69', // random ones
             'client-info': 'amazon-search-ui', // random ones
             'site-variant': 'desktop',
             'mid': marketplace.market,

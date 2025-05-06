@@ -1859,19 +1859,10 @@ $(document).ready(function() {
         }
         
         const params = new URLSearchParams({
-            'session-id': '131-6229116-2226265', // random ones
-            //'customer-id': 'A1CNYR04B8CZOZ', // random ones
-            //'request-id': '35R5TZN3EY6RCFVHSMYT', // random ones
-            //'page-type': 'Gateway',// random ones
-            //'lop': 'en_US', // random ones
-            //'b2b': '1', // random ones seems to be value "1" if you are logged in with a bussines account and "0" with non business.
-            //'fresh': '0', // random ones
-            //'ks': '69', // random ones
-            //'client-info': 'search-ui', // random ones
+            /*'session-id': '131-6229116-2226265', // random ones 'customer-id': 'A1CNYR04B8CZOZ', // random ones 'request-id': '35R5TZN3EY6RCFVHSMYT', // random ones 'page-type': 'Gateway',// random ones 'lop': 'en_US', // random ones 'b2b': '1', // random ones seems to be value "1" if you are logged in with a bussines account and "0" with non business. 'fresh': '0', // random ones 'ks': '69', // random ones 'client-info': 'search-ui', // random ones*/
             'site-variant': 'desktop',
             'mid': marketplace.market,
             'alias': departmentQuery,
-            // The extension seems to send empty strings, let's replicate that
             'prefix': queryFirst || "",
             'suffix': queryLast || ""
         });

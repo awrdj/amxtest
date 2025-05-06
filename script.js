@@ -1859,7 +1859,7 @@ $(document).ready(function() {
         }
         
         const params = new URLSearchParams({
-            'session-id': '133-2190809-5709766', // random ones
+            //'session-id': '133-2190809-5709766', // random ones
             'customer-id': 'A1CNYR04B8CZOZ', // random ones
             'request-id': 'NTH41W0H5GYC8N00NVCS', // random ones
             'page-type': 'Gateway',// random ones

@@ -169,7 +169,9 @@ function populateProductTypes() {
             { value: 'the-trends-com', text: 'Trends Fashion Novelty', 
               settings: { sortOrder: 'date-desc-rank', department: 'fashion-novelty', productType: 'custom'} },
             { value: 'archive-view-com', text: 'Archive Fashion Novelty', 
-              settings: { sortOrder: 'date-desc-rank', department: 'fashion-novelty', productType: 'custom'} }
+              settings: { sortOrder: 'date-desc-rank', department: 'fashion-novelty', productType: 'custom'} },
+            { value: 'competition-view-com', text: 'Competition Checker', 
+              settings: { sortOrder: 'custom', department: 'fashion-novelty', productType: 'tshirt'} }
         ],
         'co.uk': [
             { value: 'last30-fashion-uk', text: 'Last 30 Days Fashion', 

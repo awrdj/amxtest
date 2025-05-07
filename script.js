@@ -170,7 +170,7 @@ function populateProductTypes() {
               settings: { sortOrder: 'date-desc-rank', department: 'fashion-novelty', productType: 'custom'} },
             { value: 'archive-view-com', text: 'Archive Fashion Novelty', 
               settings: { sortOrder: 'date-desc-rank', department: 'fashion-novelty', productType: 'custom'} },
-            { value: 'competition-view-com', text: 'Competition Checker', 
+            { value: 'competition-view-com', text: 'T-Shirt Competition Checker', 
               settings: { sortOrder: 'custom', department: 'fashion-novelty', productType: 'tshirt'} }
         ],
         'co.uk': [
@@ -478,7 +478,7 @@ function populateProductTypes() {
                         {value: '1731296031', text: 'Women\'s Clothing'},
                         {value: '1730756031', text: 'Boys\' Clothing'},
                         {value: '1730841031', text: 'Girls\' Clothing'},*/
-                        {value: '1731041031', text: 'Novelty & Special Use'}
+                        {value: '1731041031', text: 'Novelty & Special Use', catParamType: 'bbn'}
                     ]
                 },
                 'electronics': {

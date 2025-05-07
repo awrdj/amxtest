@@ -473,12 +473,12 @@ function populateProductTypes() {
                 'fashion': {
                     displayName: 'Fashion',
                     categories: [
-                        {value: '1731104031', text: 'Novelty', catParamType: 'bbn'},
+                        {value: '1731104031', text: 'Novelty' /*catParamType: 'bbn'*/},
                         /*{value: '1730929031', text: 'Men\'s Clothing'},
                         {value: '1731296031', text: 'Women\'s Clothing'},
                         {value: '1730756031', text: 'Boys\' Clothing'},
                         {value: '1730841031', text: 'Girls\' Clothing'},*/
-                        {value: '1731041031', text: 'Novelty & Special Use', catParamType: 'bbn'}
+                        {value: '1731041031', text: 'Novelty & Special Use' /*catParamType: 'bbn'*/}
                     ]
                 },
                 'electronics': {

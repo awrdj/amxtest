@@ -474,11 +474,13 @@ function populateProductTypes() {
                     displayName: 'Fashion',
                     categories: [
                         {value: '1731104031', text: 'Novelty' /*catParamType: 'bbn'*/},
+                        {value: '1731104031', text: 'Novelty bbn', catParamType: 'bbn'},
                         /*{value: '1730929031', text: 'Men\'s Clothing'},
                         {value: '1731296031', text: 'Women\'s Clothing'},
                         {value: '1730756031', text: 'Boys\' Clothing'},
                         {value: '1730841031', text: 'Girls\' Clothing'},*/
-                        {value: '1731041031', text: 'Novelty & Special Use' /*catParamType: 'bbn'*/}
+                        {value: '1731041031', text: 'Novelty & Special Use' /*catParamType: 'bbn'*/},
+                        {value: '1731041031', text: 'Novelty & Special Use bbn', catParamType: 'bbn'}
                     ]
                 },
                 'electronics': {
@@ -615,11 +617,13 @@ function populateProductTypes() {
                     displayName: 'Fashion',
                     categories: [
                         {value: '1981473031', text: 'Novelty'},
+                        {value: '1981473031', text: 'Novelty bbn', catParamType: 'bbn'},
                         /*{value: '1730929031', text: 'Men\'s Clothing'},
                         {value: '1731296031', text: 'Women\'s Clothing'},
                         {value: '1730756031', text: 'Boys\' Clothing'},
                         {value: '1730841031', text: 'Girls\' Clothing'},*/
-                        {value: '1981410031', text: 'Novelty & Special Use'}
+                        {value: '1981410031', text: 'Novelty & Special Use'},
+                        {value: '1981410031', text: 'Novelty & Special Use bbn', catParamType: 'bbn'}
                     ]
                 },
                 'electronics': {
@@ -690,22 +694,22 @@ function populateProductTypes() {
         },
         'fr': { // FR
             timeFilters: {
-                '30days': 'p_n_date_first_available_absolute%3A13827501031',
-                '90days': 'p_n_date_first_available_absolute%3A13827502031'
+                '30days': 'p_n_date_first_available_absolute%3A13827697031',
+                '90days': 'p_n_date_first_available_absolute%3A13827698031'
             },
-            sellerFilter: 'p_6%3AA3JWKAKR8XB7XF',
-            reviewsFilter: 'p_72%3A419117031',
+            sellerFilter: 'p_6%3AA1X6FK5RDHNB96',
+            reviewsFilter: 'p_72%3A437873031',
             // Product type keywords specific to FR
             productTypeKeywords: {
                 'tshirt': 'Léger,+Coupe+classique,+manche+à+double+couture+et+ourlet+la+base+-Longue+-Raglan+-ColenV+-Débardeur',
                 'tanktop': '"Débardeur"+Léger,+Coupe+classique,+manche+à+double+couture+et+ourlet+la+base+-Longue+-Raglan+-ColenV',
                 'longsleeve': '"Longue"+Léger,+Coupe+classique,+manche+à+double+couture+et+ourlet+la+base+-Raglan+-ColenV+-sweatshirt+-Débardeur',
                 'raglan': '"Raglan"+Léger,+Coupe+classique,+manche+à+double+couture+et+ourlet+la+base+-Longue+-ColenV+-Débardeur',
-                'sweatshirt': '"sweatshirt"+8.5 oz, classic cut+-Raglan+-Vneck+-Tanktop+-hoodie',
-                'hoodie': '"pullover+hoodie"+8.5 oz, Klassisch geschnitten, doppelt genähter Saum+-Raglan+-Vneck+-Tanktop+-zip',
-                'ziphoodie': '"Kapuzenjacke"+241gr leichter, klassischer Schnitt; verstärkter Nacken+-Raglan+-Vneck+-Tanktop',
-                'popsocket': '"Popsocket"+Printed+top+is+swappable+with+other+compatible+PopGrip+models.+Just+press+flat%2C+turn+90+degrees+until+you+hear+a+click+and+remove+to+swap.',
-                'case': '"case"+"The two-piece protective case made from a high quality scratch resistant polycarbonate shell and shock absorbing TPU liner protects against drops"+"Merch von Amazon"',
+                'sweatshirt': '"sweatshirt"+241 g, coupe classique, col tissé+-Raglan+-ColenV+-Débardeur+-Capuche',
+                'hoodie': '"SweatàCapuche"+"Capuche"+241 g, coupe classique, col tissé+-Raglan+-ColenV+-Débardeur+-zip',
+                'ziphoodie': '"SweatàCapuche"+"Capuche"+241 g, coupe classique, col tissé+-Raglan+-ColenV+-Débardeur',
+                'popsocket': '"Popsocket"+"PoignéePopSocket"+Le dessus imprimé est interchangeable avec d\'autres modèles de PopGrip compatibles. Il suffit d\'appuyer à plat, de tourner de 90 degrés jusqu\'à entendre un clic et de le retirer pour l\'échanger.',
+                'case': '"Coque"+"Coque de protection en deux parties composé d\'une coque en polycarbonate de première qualité résistant aux rayures et d\'une doublure en TPU absorbant les chocs et protégeant contre les chutes"+"Merch par Amazon"',
                 'KDP': '"independently+published"'
             },
             // Sort orders for FR
@@ -753,31 +757,33 @@ function populateProductTypes() {
             // Departments and categories for FR
             categories: {
                 'fashion': {
-                    displayName: 'Fashion',
+                    displayName: 'Mode',
                     categories: [
-                        {value: '1981473031', text: 'Novelty'},
-                        /*{value: '1730929031', text: 'Men\'s Clothing'},
-                        {value: '1731296031', text: 'Women\'s Clothing'},
-                        {value: '1730756031', text: 'Boys\' Clothing'},
-                        {value: '1730841031', text: 'Girls\' Clothing'},*/
-                        {value: '1981410031', text: 'Novelty & Special Use'}
+                        {value: '465090031', text: 'Fantaisie'},
+                        {value: '465090031', text: 'Fantaisie bbn', catParamType: 'bbn'},
+                        /*{value: '436560031', text: 'Homme'},
+                        {value: '436559031', text: 'Femme'},
+                        {value: '436562031', text: 'Garçon'},
+                        {value: '436561031', text: 'Fille'},*/
+                        {value: '436564031', text: 'Vêtements techniques et spéciaux'},
+                        {value: '436564031', text: 'Vêtements techniques et spéciaux bbn', catParamType: 'bbn'}
                     ]
                 },
                 'electronics': {
-                    displayName: 'Electronics & Photo',
+                    displayName: 'High-Tech',
                     categories: []
                 },
                 'kitchen': {
-                    displayName: 'Home & Kitchen',
+                    displayName: 'Cuisine & maison',
                     categories: []
                 },
                 // 'stripbooks-intl-ship' MRB uses this FR
                 'stripbooks': {
-                    displayName: 'Books (KDP)',
+                    displayName: 'Livres (KDP)',
                     categories: [
-                        {value: '507848', text: 'Calendars'},
-                        {value: '69', text: 'Children\'s Books'},
-                        {value: '64', text: 'Home & Garden'}
+                        {value: '8434456031', text: 'Calendriers et Agendas'},
+                        {value: '301137', text: 'Livres pour enfants'}, //76742011
+                        {value: '355635011', text: 'Loisirs créatifs, décoration et maison'} //81247011
                     ]
                 },
                 '': {
@@ -791,11 +797,11 @@ function populateProductTypes() {
             departmentSettings: {
               'stripbooks': {
                 timeFilters: {
-                  '30days': 'p_n_publication_date%3A1778535031',
-                  '90days': 'p_n_publication_date%3A1778536031'
+                  '30days': 'p_n_publication_date%3A183196031',
+                  '90days': 'p_n_publication_date%3A183197031'
                 },
                 sellerFilter: '',
-                reviewsFilter: 'p_72%3A184738031',
+                reviewsFilter: 'p_72%3A184904031',
                 sortOrders: [
                     {value: '', text: 'Default (None)'},
                     {value: 'featured', text: 'Featured'},
@@ -829,7 +835,7 @@ function populateProductTypes() {
                 'stripbooks': 'KDP'
             }*/
         },
-        'it': {
+        'it': { // IT
             timeFilters: {
                 '30days': 'p_n_date_first_available_absolute%3A15196852011',
                 '90days': 'p_n_date_first_available_absolute%3A15196853011'

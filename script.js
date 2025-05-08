@@ -251,7 +251,7 @@ function populateProductTypes() {
       }
     }
 
-    // Define marketplace-specific parameters
+    // Marketplace-specific parameters
     const marketplaceConfig = {
         'com': { // USA
             timeFilters: {
@@ -260,7 +260,7 @@ function populateProductTypes() {
             },
             sellerFilter: 'p_6%3AATVPDKIKX0DER',
             reviewsFilter: 'p_72%3A2661618011',
-            // Add product type keywords specific to USA
+            // Product type keywords specific to USA
             productTypeKeywords: {
                 'tshirt': 'Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-Vneck+-Tanktop',
                 'premtshirt': 'Fit%3A+Men’s+fit+runs+small%2C+size+up+for+a+looser+fit.+Women’s+fit+is+true+to+size%2C+order+usual+size.+is+made+of+lightweight+fine+jersey+fabric+-Longsleeve+-Raglan+-Vneck+-Tanktop',
@@ -277,7 +277,7 @@ function populateProductTypes() {
                 'tumbler': '"Tumbler"+"Merch+on+Demand"',
                 'KDP': '"independently+published"'
             },
-            // Add supported sort orders for USA
+            // Sort orders for USA
             sortOrders: [{
                     value: 'featured',
                     text: 'Featured'
@@ -345,7 +345,7 @@ function populateProductTypes() {
                     displayName: 'Home & Kitchen',
                     categories: []
                 },
-                // 'stripbooks-intl-ship' MRB uses this
+                // 'stripbooks-intl-ship' MRB uses this // US
                 'stripbooks': {
                     displayName: 'Books (KDP)',
                     categories: [
@@ -361,7 +361,7 @@ function populateProductTypes() {
             },
             // Brands to exclude for USA
             excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
-            // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters
+            // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for USA
             departmentSettings: {
               'stripbooks': {
                 timeFilters: {
@@ -382,6 +382,7 @@ function populateProductTypes() {
                 ]
               }
             },
+            // Department to Product mappings UK
             productTypeToDepartment: {
             'KDP': 'stripbooks',
             'tshirt': 'fashion-novelty',
@@ -400,11 +401,10 @@ function populateProductTypes() {
             },
             departmentToProductType: {
                 'stripbooks': 'KDP'
-            },
-            // Department to Product mappings
-            productTypeMappings: {
-                'stripbooks': 'KDP'
             }
+            /* OLD ONE productTypeMappings: {
+                'stripbooks': 'KDP'
+            }*/
         },
         'co.uk': // UK
             { timeFilters: {
@@ -413,7 +413,7 @@ function populateProductTypes() {
             },
             sellerFilter: 'p_6%3AA3P5ROKL5A1OLE',
             reviewsFilter: 'p_72%3A184324031',
-            // Add product type keywords specific to UK
+            // Product type keywords specific to UK
             productTypeKeywords: {
                 'tshirt': 'Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-Vneck+-Tanktop',
                 'tanktop': '"tank+top"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-V-neck',
@@ -426,7 +426,7 @@ function populateProductTypes() {
                 'case': '"case"+"Two-part+protective+case+made+from+a+premium+scratch-resistant+polycarbonate+shell+and+shock+absorbent+TPU+liner+protects+against+drops"',
                 'KDP': '"independently+published"'
             },
-            // Add supported sort orders for UK
+            // Sort orders for UK
             sortOrders: [{
                     value: 'featured',
                     text: 'Featured'
@@ -489,7 +489,7 @@ function populateProductTypes() {
                     displayName: 'Home & Kitchen',
                     categories: []
                 },
-                // 'stripbooks-intl-ship' MRB uses this UK
+                // 'stripbooks-intl-ship' MRB uses this // UK
                 'stripbooks': {
                     displayName: 'Books (KDP)',
                     categories: [
@@ -505,7 +505,7 @@ function populateProductTypes() {
             },
             // Brands to exclude for UK
             excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
-            // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters
+            // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for UK
             departmentSettings: {
               'stripbooks': {
                 timeFilters: {
@@ -526,6 +526,7 @@ function populateProductTypes() {
                 ]
               }
             },
+            // Department to Product mappings UK
             productTypeToDepartment: {
             'KDP': 'stripbooks',
             /*'tshirt': {department: 'fashion', category: '1731104031'},*/
@@ -541,20 +542,19 @@ function populateProductTypes() {
             },
             departmentToProductType: {
                 'stripbooks': 'KDP'
-            },
-            // Department to Product mappings
-            productTypeMappings: {
-                'stripbooks': 'KDP'
             }
+            /* OLD ONE productTypeMappings: {
+                'stripbooks': 'KDP'
+            }*/
         },
-        'de': {
+        'de': { // DE
             timeFilters: {
                 '30days': 'p_n_date_first_available_absolute%3A13827501031',
                 '90days': 'p_n_date_first_available_absolute%3A13827502031'
             },
             sellerFilter: 'p_6%3AA3JWKAKR8XB7XF',
             reviewsFilter: 'p_72%3A419117031',
-            // Add product type keywords specific to DE
+            // Product type keywords specific to DE
             productTypeKeywords: {
                 'tshirt': 'Classic+cut,+double+stitched+hem+-Longsleeve+-Raglan+-Vneck+-Tanktop',
                 'tanktop': '"tank+top"+Lightweight,+classic+cut+tank+top,+double+stitched+sleeves+and+hem+-Longsleeve+-Raglan+-V-neck',
@@ -567,7 +567,7 @@ function populateProductTypes() {
                 'case': '"case"+"The two-piece protective case made from a high quality scratch resistant polycarbonate shell and shock absorbing TPU liner protects against drops"+"Merch von Amazon"',
                 'KDP': '"independently+published"'
             },
-            // Add supported sort orders for DE
+            // Sort orders for DE
             sortOrders: [{
                     value: 'featured',
                     text: 'Featured'
@@ -646,7 +646,7 @@ function populateProductTypes() {
             },
             // Brands to exclude for DE
             excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
-            // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters
+            // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for DE
             departmentSettings: {
               'stripbooks': {
                 timeFilters: {
@@ -667,6 +667,7 @@ function populateProductTypes() {
                 ]
               }
             },
+            // Department to Product mappings for DE
             productTypeToDepartment: {
             'KDP': 'stripbooks',
             /*'tshirt': {department: 'fashion', category: '1731104031'},*/
@@ -682,11 +683,151 @@ function populateProductTypes() {
             },
             departmentToProductType: {
                 'stripbooks': 'KDP'
+            }
+            /* OLD ONE productTypeMappings: {
+                'stripbooks': 'KDP'
+            }*/
+        },
+        'fr': { // FR
+            timeFilters: {
+                '30days': 'p_n_date_first_available_absolute%3A13827501031',
+                '90days': 'p_n_date_first_available_absolute%3A13827502031'
             },
-            // Department to Product mappings
-            productTypeMappings: {
+            sellerFilter: 'p_6%3AA3JWKAKR8XB7XF',
+            reviewsFilter: 'p_72%3A419117031',
+            // Product type keywords specific to FR
+            productTypeKeywords: {
+                'tshirt': 'Classic+cut,+double+stitched+hem+-Longsleeve+-Raglan+-Vneck+-Tanktop',
+                'tanktop': '"tank+top"+Lightweight,+classic+cut+tank+top,+double+stitched+sleeves+and+hem+-Longsleeve+-Raglan+-V-neck',
+                'longsleeve': '"Long+sleeve"+Classic+cut,+double+stitched+hem+-Raglan+-Vneck+-sweatshirt+-tanktop',
+                'raglan': '"raglan"+leichter, klassischer Schnitt, doppelt genähte Ärmel und Saumabschluss+-Longsleeve+-Vneck+-Tanktop',
+                'sweatshirt': '"sweatshirt"+8.5 oz, classic cut+-Raglan+-Vneck+-Tanktop+-hoodie',
+                'hoodie': '"pullover+hoodie"+8.5 oz, Klassisch geschnitten, doppelt genähter Saum+-Raglan+-Vneck+-Tanktop+-zip',
+                'ziphoodie': '"Kapuzenjacke"+241gr leichter, klassischer Schnitt; verstärkter Nacken+-Raglan+-Vneck+-Tanktop',
+                'popsocket': '"Popsocket"+Printed+top+is+swappable+with+other+compatible+PopGrip+models.+Just+press+flat%2C+turn+90+degrees+until+you+hear+a+click+and+remove+to+swap.',
+                'case': '"case"+"The two-piece protective case made from a high quality scratch resistant polycarbonate shell and shock absorbing TPU liner protects against drops"+"Merch von Amazon"',
+                'KDP': '"independently+published"'
+            },
+            // Sort orders for FR
+            sortOrders: [{
+                    value: 'featured',
+                    text: 'Featured'
+                },
+                {
+                    value: 'date-desc-rank',
+                    text: 'Newest Arrivals'
+                },
+                {
+                    value: 'most-purchased-rank',
+                    text: 'Most Purchased Rank'
+                },
+                {
+                    value: 'exact-aware-popularity-rank',
+                    text: 'Best Sellers'
+                },
+                {
+                    value: 'review-rank',
+                    text: 'Top Rated (Avg Review Rank)'
+                },
+                {
+                    value: 'review-count-rank',
+                    text: 'Most Reviews Count Rank'
+                },
+                {
+                    value: 'date-asc-rank',
+                    text: 'Oldest First'
+                },
+                {
+                    value: 'featured-rank',
+                    text: 'Featured (featured-rank)'
+                },
+                {
+                    value: 'most-wished-for-rank',
+                    text: 'Most Wished For Rank'
+                },
+                {
+                    value: 'custom',
+                    text: 'NONE'
+                }
+            ],
+            // Departments and categories for FR
+            categories: {
+                'fashion': {
+                    displayName: 'Fashion',
+                    categories: [
+                        {value: '1981473031', text: 'Novelty'},
+                        /*{value: '1730929031', text: 'Men\'s Clothing'},
+                        {value: '1731296031', text: 'Women\'s Clothing'},
+                        {value: '1730756031', text: 'Boys\' Clothing'},
+                        {value: '1730841031', text: 'Girls\' Clothing'},*/
+                        {value: '1981410031', text: 'Novelty & Special Use'}
+                    ]
+                },
+                'electronics': {
+                    displayName: 'Electronics & Photo',
+                    categories: []
+                },
+                'kitchen': {
+                    displayName: 'Home & Kitchen',
+                    categories: []
+                },
+                // 'stripbooks-intl-ship' MRB uses this FR
+                'stripbooks': {
+                    displayName: 'Books (KDP)',
+                    categories: [
+                        {value: '507848', text: 'Calendars'},
+                        {value: '69', text: 'Children\'s Books'},
+                        {value: '64', text: 'Home & Garden'}
+                    ]
+                },
+                '': {
+                    displayName: 'All (No Department)',
+                    categories: []
+                }
+            },
+            // Brands to exclude for FR
+            excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
+            // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for FR
+            departmentSettings: {
+              'stripbooks': {
+                timeFilters: {
+                  '30days': 'p_n_publication_date%3A1778535031',
+                  '90days': 'p_n_publication_date%3A1778536031'
+                },
+                sellerFilter: '',
+                reviewsFilter: 'p_72%3A184738031',
+                sortOrders: [
+                    {value: '', text: 'Default (None)'},
+                    {value: 'featured', text: 'Featured'},
+                    {value: 'exact-aware-popularity-rank', text: 'Best Sellers'},
+                    {value: 'most-purchased-rank', text: 'Most Purchased Rank'},
+                    {value: 'review-rank', text: 'Avg Review Rank'},
+                    {value: 'review-count-rank', text: 'Most Reviews'},
+                    {value: 'date-desc-rank', text: 'Publication Date'},
+                    {value: 'salesrank', text: 'Sales Rank'}
+                ]
+              }
+            },
+            // Department to Product mappings for FR
+            productTypeToDepartment: {
+            'KDP': 'stripbooks',
+            /*'tshirt': {department: 'fashion', category: '1731104031'},*/
+            'tshirt': 'fashion',
+            'tanktop': 'fashion',
+            'longsleeve': 'fashion',
+            'raglan': 'fashion',
+            'sweatshirt': 'fashion',
+            'hoodie': 'fashion',
+            'ziphoodie': 'fashion',
+            'popsocket': 'electronics',
+            'case': 'electronics'
+            },
+            departmentToProductType: {
                 'stripbooks': 'KDP'
             }
+            /* OLD ONE productTypeMappings: {
+                'stripbooks': 'KDP'
+            }*/
         },
         'it': {
             timeFilters: {

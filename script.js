@@ -417,8 +417,8 @@ function populateProductTypes() {
             productTypeKeywords: {
                 'tshirt': 'Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-Vneck+-Tanktop',
                 'tanktop': '"tank+top"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-V-neck',
-                'longsleeve': '"Long+sleeve"+"unisex-adult"+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-premium+-Raglan+-Vneck+-sweatshirt+-tanktop',
-                'raglan': '"raglan"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Vneck+-Tanktop',
+                'longsleeve': '"Long+sleeve"+unisex-adult+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-premium+-Raglan+-Vneck+-sweatshirt+-tanktop',
+                'raglan': '"raglan"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Vneck+-Tanktop',
                 'sweatshirt': '"sweatshirt"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-hoodie',
                 'hoodie': '"pullover+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-zip',
                 'ziphoodie': '"zip+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop',
@@ -556,15 +556,15 @@ function populateProductTypes() {
             reviewsFilter: 'p_72%3A419117031',
             // Product type keywords specific to DE
             productTypeKeywords: {
-                'tshirt': 'Classic+cut,+double+stitched+hem+-Longsleeve+-Raglan+-Vneck+-Tanktop',
-                'tanktop': '"tank+top"+Lightweight,+classic+cut+tank+top,+double+stitched+sleeves+and+hem+-Longsleeve+-Raglan+-V-neck',
-                'longsleeve': '"Long+sleeve"+Classic+cut,+double+stitched+hem+-Raglan+-Vneck+-sweatshirt+-tanktop',
-                'raglan': '"raglan"+leichter, klassischer Schnitt, doppelt genähte Ärmel und Saumabschluss+-Longsleeve+-Vneck+-Tanktop',
+                'tshirt': 'Klassisch geschnitten, doppelt genähter Saum.+-Langarmshirt+-Raglan+-V-Ausschnitt+-Tanktop',
+                'tanktop': '"tank+top"+leichtes, klassisch geschnittenes Tank Top, doppelt genähte Ärmel und Saumabschluss+-Langarmshirt+-Raglan+-V-Ausschnitt',
+                'longsleeve': '"Langarmshirt"+Klassisch geschnitten, doppelt genähter Saum+-Raglan+-V-Ausschnitt+-Sweatshirt+-Tanktop',
+                'raglan': '"raglan"+leichter, klassischer Schnitt, doppelt genähte Ärmel und Saumabschluss+-Langarmshirt+-V-Ausschnitt+-Tanktop',
                 'sweatshirt': '"sweatshirt"+8.5 oz, Klassisch geschnitten+-Raglan+-Vneck+-Tanktop+-hoodie', // '"sweatshirt"+8.5 oz, classic cut+-Raglan+-Vneck+-Tanktop+-hoodie',
-                'hoodie': '"pullover+hoodie"+8.5 oz, Klassisch geschnitten, doppelt genähter Saum+-Raglan+-Vneck+-Tanktop+-zip',
-                'ziphoodie': '"Kapuzenjacke"+241gr leichter, klassischer Schnitt; verstärkter Nacken+-Raglan+-Vneck+-Tanktop',
-                'popsocket': '"Popsocket"+Advanced adhesive allows for easy removal and reapplication to a different position on most phones and phone cases.',
-                'case': 'case merch von amazon',// '"case"+Die zweiteilige Schutzhülle aus einer hochwertigen, kratzfesten Polycarbonatschale und einer stoßdämpfenden TPU-Auskleidung schützt vor Stürzen+"Merch von Amazon"', // '"case"+"The two-piece protective case made from a high quality scratch resistant polycarbonate shell and shock absorbing TPU liner protects against drops"+"Merch von Amazon"',
+                'hoodie': '"pullover+hoodie"+8.5 oz, Klassisch geschnitten, doppelt genähter Saum+-Raglan+-V-Ausschnitt+-Tanktop+-Zip',
+                'ziphoodie': '"Kapuzenjacke"+241gr leichter, klassischer Schnitt; verstärkter Nacken+-Raglan+-V-Ausschnitt+-Tanktop',
+                'popsocket': '"Popsocket"+Der klebende Rücken befestigt den PopGrip an Ihrem Gehäuse oder Gerät. Klebt nicht auf Silikon-, Leder-, wasserdichten oder stark strukturierten Gehäusen. Funktioniert am besten mit glatten, harten Plastikgehäusen.',
+                'case': '"case" Die zweiteilige Schutzhülle aus einer hochwertigen, kratzfesten Polycarbonatschale und einer stoßdämpfenden TPU-Auskleidung schützt vor Stürzen "merch von amazon"',// '"case"+Die zweiteilige Schutzhülle aus einer hochwertigen, kratzfesten Polycarbonatschale und einer stoßdämpfenden TPU-Auskleidung schützt vor Stürzen+"Merch von Amazon"', // '"case"+"The two-piece protective case made from a high quality scratch resistant polycarbonate shell and shock absorbing TPU liner protects against drops"+"Merch von Amazon"',
                 'KDP': '"independently+published"'
             },
             // Sort orders for DE
@@ -851,7 +851,7 @@ function populateProductTypes() {
                 'tanktop': '"Canotta"+Leggera, taglio classico, maniche con doppia cucitura e orlo inferiore+-lunga+-Raglan+-collo',
                 'longsleeve': '"lunga"+Leggera, taglio classico, maniche con doppia cucitura e orlo inferiore+-Raglan+-collo+-Felpa+-canotta',
                 'raglan': '"Raglan"+Leggera, taglio classico, maniche con doppia cucitura e orlo inferiore+-collo+-canotta',
-                'sweatshirt': '"Felpa"+241 g, taglio classico, collo rinforzato con nastro in twill+-Raglan+-canotta+-Capuche',
+                'sweatshirt': '"Felpa"+241 g, taglio classico, collo rinforzato con nastro in twill+-Raglan+-canotta+-Cappuccio',
                 'hoodie': '"Cappuccio"+241 g, taglio classico, collo rinforzato con nastro in twill+-Raglan+-canotta+-zip',
                 'ziphoodie': '"Cappuccio"+"zip"+241 g, taglio classico, collo rinforzato con nastro in twill+-Raglan+-canotta',
                 'popsocket': '"Popsocket"+Il coperchio stampato è intercambiabile con altri modelli di PopGrip compatibili. Basta premere piatto, ruotare di 90 gradi fino a sentire uno scatto e rimuoverlo per sostituirlo.',
@@ -997,7 +997,7 @@ function populateProductTypes() {
                 'hoodie': '"Capucha"+241 gr, Encaje clasico, Cinta de sarga en el cuello+-Raglan+-Mangas+-cremallera',
                 'ziphoodie': '"Capucha"+"cremallera"+241 gr, Encaje clasico, Cinta de sarga en el cuello+-Raglan+-Mangas',
                 'popsocket': '"Popsocket"+El respaldo adhesivo fija el PopGrip a tu funda o dispositivo. No se adhiere a fundas de silicona, cuero, impermeables o con mucha textura. Funciona mejor con fundas lisas, duras y de plástico.',
-                'case': 'Carcasa Merch por Amazon',// '"case"+Die zweiteilige Schutzhülle aus einer hochwertigen, kratzfesten Polycarbonatschale und einer stoßdämpfenden TPU-Auskleidung schützt vor Stürzen+"Merch von Amazon"', // '"case"+"The two-piece protective case made from a high quality scratch resistant polycarbonate shell and shock absorbing TPU liner protects against drops"+"Merch von Amazon"',
+                'case': '"Carcasa"+Funda+protectora+de+dos+piezas+fabricada+con+una+carcasa+de+policarbonato+de+primera+calidad+resistente+a+los+arañazos+y+un+revestimiento+de+TPU+amortiguador+que+protege+contra+las+caídas+"Merch+por+Amazon"',
                 'KDP': '"independently+published"'
             },
             // Sort orders for ES

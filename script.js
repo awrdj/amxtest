@@ -1885,7 +1885,7 @@ function updateProductTypeFromDepartment() {
     }
 */
 
-        let hiddenKeywords = [];
+        /* OLD HIDDEN KEYWORDS CODE let hiddenKeywords = [];
         const customKeywords = document.getElementById('customHiddenKeywords').value.trim();
     if (customKeywords) {
         // Split by spaces and encode each keyword individually
@@ -1910,7 +1910,47 @@ if (filterExcludeBrands && config.excludeBrands) {
         // Add hidden-keywords parameter if we have any
         if (hiddenKeywords.length > 0) {
             paramParts.push(`hidden-keywords=${hiddenKeywords.join('+')}`);
+        }*/
+
+            let hiddenKeywordsArray = []; // Store parts that will be joined by '+'
+
+    // Handle custom hidden keywords
+    const customKeywords = document.getElementById('customHiddenKeywords').value.trim();
+    if (customKeywords) {
+        // Split by space, encode each part, then this string will be added to hiddenKeywordsArray.
+        // The final join of hiddenKeywordsArray will handle the '+' between this group and others.
+        // If customKeywords itself contains '+' that should be literal, they would need to be %2B here
+        // but typically users expect space to become '+'.
+        const customKeywordsProcessed = customKeywords.split(/\s+/) // split by one or more spaces
+            .filter(k => k.length > 0)
+            .map(k => encodeURIComponent(k)) // Encode individual words/parts
+            .join('+'); // Join these encoded parts with '+'
+        if (customKeywordsProcessed) {
+            hiddenKeywordsArray.push(customKeywordsProcessed);
         }
+    }
+
+    // Handle product type keywords
+    const productType = productTypeSelect.value;
+    if (productType !== 'custom' && config.productTypeKeywords && config.productTypeKeywords[productType]) {
+        // These are assumed to be already correctly formatted (e.g., 'keyword1+keyword2%2Cspecial')
+        // We don't want to re-encode the '+' or '%' in these predefined strings.
+        hiddenKeywordsArray.push(config.productTypeKeywords[productType]);
+    }
+
+    // Handle exclude brands filter
+    const filterExcludeBrands = document.getElementById('filterExcludeBrands').checked;
+    if (filterExcludeBrands && config.excludeBrands) {
+        // This is also assumed to be correctly pre-formatted (e.g., '-brand+one+-brand+two')
+        hiddenKeywordsArray.push(config.excludeBrands);
+    }
+
+    // Add hidden-keywords parameter if we have any segments
+    if (hiddenKeywordsArray.length > 0) {
+        // Join the different segments (custom, productType, excludeBrands) with '+'.
+        // This '+' will be the literal plus sign in the URL parameter value.
+        paramParts.push(`hidden-keywords=${hiddenKeywordsArray.join('+')}`);
+    }
 
         // Add sort order
         const sortOrder = document.getElementById('sortOrder').value;

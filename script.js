@@ -54,7 +54,7 @@ const productTypeAvailability = {
         'tshirt', 'tanktop', 'longsleeve', 'raglan', 'sweatshirt', 
         'hoodie', 'ziphoodie', 'popsocket', 'case', 'KDP', 'custom'
     ],
-    'jp': [
+    'co.jp': [
         'tshirt', 'longsleeve', 'sweatshirt', 'hoodie', 'ziphoodie', 'case', 'KDP', 'custom'
     ]
 };
@@ -151,7 +151,7 @@ function populateProductTypes() {
             zip: '28001',
             location: 'Madrid'
         },
-        'jp': {
+        'co.jp': {
             zip: '100-0001',
             location: 'Tokyo'
         }
@@ -215,7 +215,7 @@ function populateProductTypes() {
             { value: 'popular-basic-es', text: 'ES - Más populares', 
               settings: { sortOrder: 'popularity-rank', excludeBrands: true } }
         ],
-        'jp': [
+        'co.jp': [
             { value: 'last90-review-jp', text: 'JP - Last 90 Days Review', 
               settings: { timeFilter: 'timeFilter90Days', sortOrder: 'review-rank', reviewsFilter: true } },
             { value: 'popular-basic-jp', text: 'JP - 人気順', 
@@ -1120,31 +1120,29 @@ function populateProductTypes() {
                 'stripbooks': 'KDP'
             }*/
         },
-        'jp': {
+        'co.jp': { // JP
             timeFilters: {
-                '30days': 'p_n_date_first_available_absolute%3A15196852011',
-                '90days': 'p_n_date_first_available_absolute%3A15196853011'
+                //'7days': 'p_n_date_first_available_absolute%3A2228610051',
+                '30days': 'p_n_date_first_available_absolute%3A5340692051',
+                //'60days': 'p_n_date_first_available_absolute%3A5340693051',
+                '90days': 'p_n_date_first_available_absolute%3A5340693051'
             },
-            sellerFilter: 'p_6%3AATVPDKIKX0DER',
-            reviewsFilter: 'p_72%3A2661618011',
-            // Add product type keywords specific to JP
+            sellerFilter: 'p_6%3AAN1VRQENFRJN5',
+            reviewsFilter: 'p_72%3A2250897051',
+            // Product type keywords specific to JP
             productTypeKeywords: {
-                'tshirt': 'Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-Vneck+-Tanktop',
-                'premtshirt': 'Fit%3A+Men’s+fit+runs+small%2C+size+up+for+a+looser+fit.+Women’s+fit+is+true+to+size%2C+order+usual+size.+is+made+of+lightweight+fine+jersey+fabric+-Longsleeve+-Raglan+-Vneck+-Tanktop',
-                'tanktop': '"tank+top"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-V-neck',
-                'longsleeve': '"Long+sleeve"+"unisex-adult"+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-premium+-Raglan+-Vneck+-sweatshirt+-tanktop',
-                'raglan': '"raglan"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Vneck+-Tanktop',
-                'sweatshirt': '"sweatshirt"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-hoodie',
-                'hoodie': '"pullover+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-zip',
-                'ziphoodie': '"zip+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop',
-                'popsocket': '"Popsocket"+Printed+top+is+swappable+with+other+compatible+PopGrip+models.+Just+press+flat%2C+turn+90+degrees+until+you+hear+a+click+and+remove+to+swap.',
-                'case': '"case"+"Two-part+protective+case+made+from+a+premium+scratch-resistant+polycarbonate+shell+and+shock+absorbent+TPU+liner+protects+against+drops"',
-                'totebag': '"Tote+Bag"+Made+of+a+lightweight%2C+spun+polyester+canvas-like+fabric.+All+seams+and+stress+points+are+double-stitched+for+durability%2C+and+the+reinforced+bottom+flattens+to+fit+more+items+and+hold+larger+objects.',
-                'throwpillow': '"Throw+Pillow"+Filled+with+100%25+polyester+and+sewn+closed',
-                'tumbler': '"Tumbler"+"Merch+on+Demand"',
+                'tshirt': 'Tシャツ+-Longsleeve+-Raglan+-Vneck+-Tanktop',
+                'tanktop': '"tank+top"+Lightweight,+classic+cut+tank+top,+double+stitched+sleeves+and+hem+-Longsleeve+-Raglan+-V-neck',
+                'longsleeve': '"Long+sleeve"+Classic+cut,+double+stitched+hem+-Raglan+-Vneck+-sweatshirt+-tanktop',
+                'raglan': '"raglan"+leichter, klassischer Schnitt, doppelt genähte Ärmel und Saumabschluss+-Longsleeve+-Vneck+-Tanktop',
+                'sweatshirt': '"sweatshirt"+8.5 oz, Klassisch geschnitten+-Raglan+-Vneck+-Tanktop+-hoodie', // '"sweatshirt"+8.5 oz, classic cut+-Raglan+-Vneck+-Tanktop+-hoodie',
+                'hoodie': '"pullover+hoodie"+8.5 oz, Klassisch geschnitten, doppelt genähter Saum+-Raglan+-Vneck+-Tanktop+-zip',
+                'ziphoodie': '"Kapuzenjacke"+241gr leichter, klassischer Schnitt; verstärkter Nacken+-Raglan+-Vneck+-Tanktop',
+                'popsocket': '"Popsocket"+Advanced adhesive allows for easy removal and reapplication to a different position on most phones and phone cases.',
+                'case': 'case merch von amazon',// '"case"+Die zweiteilige Schutzhülle aus einer hochwertigen, kratzfesten Polycarbonatschale und einer stoßdämpfenden TPU-Auskleidung schützt vor Stürzen+"Merch von Amazon"', // '"case"+"The two-piece protective case made from a high quality scratch resistant polycarbonate shell and shock absorbing TPU liner protects against drops"+"Merch von Amazon"',
                 'KDP': '"independently+published"'
             },
-            // Add supported sort orders for JP
+            // Sort orders for JP
             sortOrders: [{
                     value: 'featured',
                     text: 'Featured'
@@ -1188,37 +1186,32 @@ function populateProductTypes() {
             ],
             // Departments and categories for JP
             categories: {
-                'fashion-novelty': {
-                    displayName: 'Fashion Novelty & More',
-                    categories: [{value: '12035955011', text: 'Clothing'}]
-                },
                 'fashion': {
                     displayName: 'Fashion',
                     categories: [
-                        {value: '7141123011', text: 'Fashion'},
-                        {value: '7147441011', text: 'Men\'s Clothing'},
-                        {value: '7147440011', text: 'Women\'s Clothing'},
-                        {value: '9056921011', text: 'Women\'s Novelty Tops & Tees'},
-                        {value: '9056985011', text: 'Men\'s Novelty T-Shirts'},
-                        {value: '1040666', text: 'Boys\' Clothing'},
-                        {value: '1040664', text: 'Girls\' Clothing'}
+                        {value: '1981473031', text: 'Novelty'},
+                        /*{value: '1730929031', text: 'Men\'s Clothing'},
+                        {value: '1731296031', text: 'Women\'s Clothing'},
+                        {value: '1730756031', text: 'Boys\' Clothing'},
+                        {value: '1730841031', text: 'Girls\' Clothing'},*/
+                        {value: '1981410031', text: 'Novelty & Special Use'}
                     ]
                 },
-                'mobile': {
-                    displayName: 'Cell Phones & Accessories',
+                'electronics': {
+                    displayName: 'Electronics & Photo',
                     categories: []
                 },
-                'garden': {
+                'kitchen': {
                     displayName: 'Home & Kitchen',
                     categories: []
                 },
-                // 'stripbooks-intl-ship' MRB uses this
+                // 'stripbooks-intl-ship' MRB uses this JP
                 'stripbooks': {
                     displayName: 'Books (KDP)',
                     categories: [
-                        {value: '3248857011', text: 'Calendars'},
-                        {value: '4', text: 'Children\'s Books'},
-                        {value: '48', text: 'Crafts, Home & Hobbies'}
+                        {value: '507848', text: 'Calendars'},
+                        {value: '69', text: 'Children\'s Books'},
+                        {value: '64', text: 'Home & Garden'}
                     ]
                 },
                 '': {
@@ -1228,15 +1221,15 @@ function populateProductTypes() {
             },
             // Brands to exclude for JP
             excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
-            // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters
+            // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for JP
             departmentSettings: {
               'stripbooks': {
                 timeFilters: {
-                  '30days': 'p_n_publication_date%3A1250226011',
-                  '90days': 'p_n_publication_date%3A1250227011'
+                  '30days': 'p_n_publication_date%3A1778535031',
+                  '90days': 'p_n_publication_date%3A1778536031'
                 },
-                sellerFilter: '',
-                reviewsFilter: 'p_72%3A1250221011',
+                sellerFilter: ' ',
+                reviewsFilter: 'p_72%3A184738031',
                 sortOrders: [
                     {value: '', text: 'Default (None)'},
                     {value: 'featured', text: 'Featured'},
@@ -1249,29 +1242,26 @@ function populateProductTypes() {
                 ]
               }
             },
+            // Department to Product mappings for JP
             productTypeToDepartment: {
             'KDP': 'stripbooks',
-            'tshirt': 'fashion-novelty',
-            'premtshirt': 'fashion-novelty',
-            'tanktop': 'fashion-novelty',
-            'longsleeve': 'fashion-novelty',
-            'raglan': 'fashion-novelty',
-            'sweatshirt': 'fashion-novelty',
-            'hoodie': 'fashion-novelty',
-            'ziphoodie': 'fashion-novelty',
-            'popsocket': 'mobile',
-            'case': 'mobile',
-            'totebag': 'fashion',
-            'throwpillow': 'garden',
-            'tumbler': 'garden'
+            /*'tshirt': {department: 'fashion', category: '1731104031'},*/
+            'tshirt': 'fashion',
+            'tanktop': 'fashion',
+            'longsleeve': 'fashion',
+            'raglan': 'fashion',
+            'sweatshirt': 'fashion',
+            'hoodie': 'fashion',
+            'ziphoodie': 'fashion',
+            'popsocket': 'electronics',
+            'case': 'electronics'
             },
             departmentToProductType: {
                 'stripbooks': 'KDP'
-            },
-            // Department to Product mappings
-            productTypeMappings: {
-                'stripbooks': 'KDP'
             }
+            /* OLD ONE productTypeMappings: {
+                'stripbooks': 'KDP'
+            }*/
         }
 };
 
@@ -1968,7 +1958,7 @@ $(document).ready(function() {
              "es": { domain: "amazon.es", market: "A1RKKUPIHCS9HS" },
              /*"com.mx": { domain: "amazon.com.mx", market: "A1AM78C64UM0Y8" },
              "com.au": { domain: "amazon.com.au", market: "A39IBJ37TRP1C6" },*/
-             "jp": { domain: "amazon.co.jp", market: "A1VC38TJH7YXB5" }
+             "co.jp": { domain: "amazon.co.jp", market: "A1VC38TJH7YXB5" }
              // Add other marketplaces as needed
         };
         return domainConfig[selectedValue];

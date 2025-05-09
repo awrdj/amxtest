@@ -1189,7 +1189,7 @@ function populateProductTypes() {
                 'fashion': {
                     displayName: 'Fashion',
                     categories: [
-                        {value: '2229202051%2Cn%3A2230005051%2Cn%3A2131417051%2Cn%3A5347828051%2Cn%3A2131436051', text: 'T-shirts'
+                        {value: '2229202051%2Cn%3A2230005051%2Cn%3A2131417051%2Cn%3A5347828051%2Cn%3A2131436051', text: 'T-shirts',
                         {value: '1981473031', text: 'Novelty'},
                         /*{value: '1730929031', text: 'Men\'s Clothing'},
                         {value: '1731296031', text: 'Women\'s Clothing'},

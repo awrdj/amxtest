@@ -989,13 +989,13 @@ function populateProductTypes() {
             reviewsFilter: 'p_72%3A831280031',
             // Product type keywords specific to ES
             productTypeKeywords: {
-                'tshirt': 'Ligero, Encaje clasico, Manga de doble puntada y bastilla baja+-Larga+-Raglan+-CuelloV+-Mangas',
-                'tanktop': '"Mangas"+Ligero, Encaje clasico, Manga de doble puntada y bastilla baja+-Larga+-Raglan+-Cuello',
-                'longsleeve': '"Larga"+Ligero, Encaje clasico, Manga de doble puntada y bastilla baja+-Raglan+-Cuello+-Sudadera+-Mangas',
-                'raglan': '"raglan"+Ligero, Encaje clasico, manga de doble puntada y bastilla baja+-Larga+-Cuello+-Mangas',
-                'sweatshirt': '"Sudadera"+241 gr, Encaje clasico, Cinta de sarga en el cuello+-Raglan+-Mangas+-hoodie', // '"sweatshirt"+8.5 oz, classic cut+-Raglan+-Vneck+-Tanktop+-hoodie',
-                'hoodie': '"Capucha"+241 gr, Encaje clasico, Cinta de sarga en el cuello+-Raglan+-Mangas+-zip',
-                'ziphoodie': '"Capucha"+"zip"+241 gr, Encaje clasico, Cinta de sarga en el cuello+-Raglan+-Mangas',
+                'tshirt': 'Ligero, Encaje clasico, Manga de doble puntada y bastilla baja+-Larga+-Raglan+-Cuello-V+-sin',
+                'tanktop': '"sin Mangas"+Ligero, Encaje clasico, Manga de doble puntada y bastilla baja+-Larga+-Raglan+-Cuello-V',
+                'longsleeve': '"Manga Larga"+Ligero, Encaje clasico, Manga de doble puntada y bastilla baja+-Raglan+-Cuello+-Sudadera+-sin',
+                'raglan': '"raglan"+Ligero, Encaje clasico, manga de doble puntada y bastilla baja+-Cuello+-sin',
+                'sweatshirt': '"Sudadera"+241 gr, Encaje clasico, Cinta de sarga en el cuello+-Raglan+-Mangas+-Capucha', // '"sweatshirt"+8.5 oz, classic cut+-Raglan+-Vneck+-Tanktop+-hoodie',
+                'hoodie': '"Capucha"+241 gr, Encaje clasico, Cinta de sarga en el cuello+-Raglan+-Mangas+-cremallera',
+                'ziphoodie': '"Capucha"+"cremallera"+241 gr, Encaje clasico, Cinta de sarga en el cuello+-Raglan+-Mangas',
                 'popsocket': '"Popsocket"+El respaldo adhesivo fija el PopGrip a tu funda o dispositivo. No se adhiere a fundas de silicona, cuero, impermeables o con mucha textura. Funciona mejor con fundas lisas, duras y de plástico.',
                 'case': 'Carcasa Merch por Amazon',// '"case"+Die zweiteilige Schutzhülle aus einer hochwertigen, kratzfesten Polycarbonatschale und einer stoßdämpfenden TPU-Auskleidung schützt vor Stürzen+"Merch von Amazon"', // '"case"+"The two-piece protective case made from a high quality scratch resistant polycarbonate shell and shock absorbing TPU liner protects against drops"+"Merch von Amazon"',
                 'KDP': '"independently+published"'
@@ -1066,9 +1066,9 @@ function populateProductTypes() {
                 'stripbooks': {
                     displayName: 'Books (KDP)',
                     categories: [
-                        {value: '507848', text: 'Calendars'},
-                        {value: '69', text: 'Children\'s Books'},
-                        {value: '64', text: 'Home & Garden'}
+                        {value: '902502031', text: 'Calendars'},
+                        {value: '902621031', text: 'Children\'s Books'},
+                        {value: '902610031', text: 'Home & Garden'}
                     ]
                 },
                 '': {

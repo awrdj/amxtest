@@ -53,10 +53,10 @@ const productTypeAvailability = {
     'es': [
         'tshirt', 'tanktop', 'longsleeve', 'raglan', 'sweatshirt', 
         'hoodie', 'ziphoodie', 'popsocket', 'case', 'KDP', 'custom'
-    ],
-    'co.jp': [
-        'tshirt', 'longsleeve', 'sweatshirt', 'hoodie', 'ziphoodie', 'case', 'KDP', 'custom'
     ]
+    /*'co.jp': [
+        'tshirt', 'longsleeve', 'sweatshirt', 'hoodie', 'ziphoodie', 'case', 'KDP', 'custom'
+    ]*/
 };
 
 // Product type display names
@@ -150,11 +150,11 @@ function populateProductTypes() {
         'es': {
             zip: '28001',
             location: 'Madrid'
-        },
-        'co.jp': {
+        }
+        /*'co.jp': {
             zip: '100-0001',
             location: 'Tokyo'
-        }
+        }*/
     };
 
     // Presets Config
@@ -214,13 +214,13 @@ function populateProductTypes() {
               settings: { timeFilter: 'timeFilter90Days', sortOrder: 'review-rank', reviewsFilter: true } },
             { value: 'popular-basic-es', text: 'ES - Más populares', 
               settings: { sortOrder: 'popularity-rank', excludeBrands: true } }
-        ],
-        'co.jp': [
+        ]
+        /*'co.jp': [
             { value: 'last90-review-jp', text: 'JP - Last 90 Days Review', 
               settings: { timeFilter: 'timeFilter90Days', sortOrder: 'review-rank', reviewsFilter: true } },
             { value: 'popular-basic-jp', text: 'JP - 人気順', 
               settings: { sortOrder: 'popularity-rank', excludeBrands: true } }
-        ]
+        ]*/
     };
     
     // Update the presets dropdown based on marketplace
@@ -1119,8 +1119,8 @@ function populateProductTypes() {
             /* OLD ONE productTypeMappings: {
                 'stripbooks': 'KDP'
             }*/
-        },
-        'co.jp': { // JP
+        }
+        /*'co.jp': { // JP
             timeFilters: {
                 //'7days': 'p_n_date_first_available_absolute%3A2228610051',
                 '30days': 'p_n_date_first_available_absolute%3A5340692051',
@@ -1191,10 +1191,10 @@ function populateProductTypes() {
                     categories: [
                         {value: '2229202051%2Cn%3A2230005051%2Cn%3A2131417051%2Cn%3A5347828051%2Cn%3A2131436051', text: 'T-shirts'},
                         {value: '1981473031', text: 'Novelty'},
-                        /*{value: '1730929031', text: 'Men\'s Clothing'},
-                        {value: '1731296031', text: 'Women\'s Clothing'},
-                        {value: '1730756031', text: 'Boys\' Clothing'},
-                        {value: '1730841031', text: 'Girls\' Clothing'},*/
+                        //{value: '1730929031', text: 'Men\'s Clothing'},
+                        //{value: '1731296031', text: 'Women\'s Clothing'},
+                        //{value: '1730756031', text: 'Boys\' Clothing'},
+                        //{value: '1730841031', text: 'Girls\' Clothing'},
                         {value: '1981410031', text: 'Novelty & Special Use'}
                     ]
                 },
@@ -1246,7 +1246,7 @@ function populateProductTypes() {
             // Department to Product mappings for JP
             productTypeToDepartment: {
             'KDP': 'stripbooks',
-            /*'tshirt': {department: 'fashion', category: '1731104031'},*/
+            //'tshirt': {department: 'fashion', category: '1731104031'},
             'tshirt': {department: 'fashion', category: '2229202051%2Cn%3A2230005051%2Cn%3A2131417051%2Cn%3A5347828051%2Cn%3A2131436051'},
             'tanktop': 'fashion',
             'longsleeve': 'fashion',
@@ -1260,10 +1260,10 @@ function populateProductTypes() {
             departmentToProductType: {
                 'stripbooks': 'KDP'
             }
-            /* OLD ONE productTypeMappings: {
-                'stripbooks': 'KDP'
-            }*/
-        }
+            // OLD ONE productTypeMappings: {
+            //    'stripbooks': 'KDP'
+            // }
+        }*/
 };
 
     // Update time filter radio values based on marketplace
@@ -1956,11 +1956,10 @@ $(document).ready(function() {
              "de": { domain: "amazon.de", market: "A1PA6795UKMFR9" },
              "fr": { domain: "amazon.fr", market: "A13V1IB3VIYZZH" },
              "it": { domain: "amazon.it", market: "APJ6JRA9NG5V4" },
-             "es": { domain: "amazon.es", market: "A1RKKUPIHCS9HS" },
-             /*"com.mx": { domain: "amazon.com.mx", market: "A1AM78C64UM0Y8" },
-             "com.au": { domain: "amazon.com.au", market: "A39IBJ37TRP1C6" },*/
-             "co.jp": { domain: "amazon.co.jp", market: "A1VC38TJH7YXB5" }
-             // Add other marketplaces as needed
+             "es": { domain: "amazon.es", market: "A1RKKUPIHCS9HS" }
+             //"com.mx": { domain: "amazon.com.mx", market: "A1AM78C64UM0Y8" },
+             //"com.au": { domain: "amazon.com.au", market: "A39IBJ37TRP1C6" },
+             //"co.jp": { domain: "amazon.co.jp", market: "A1VC38TJH7YXB5" }
         };
         return domainConfig[selectedValue];
     }

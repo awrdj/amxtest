@@ -1247,7 +1247,7 @@ function populateProductTypes() {
             productTypeToDepartment: {
             'KDP': 'stripbooks',
             /*'tshirt': {department: 'fashion', category: '1731104031'},*/
-            'tshirt': {'fashion', category: '2229202051%2Cn%3A2230005051%2Cn%3A2131417051%2Cn%3A5347828051%2Cn%3A2131436051'},
+            'tshirt': {department: 'fashion', category: '2229202051%2Cn%3A2230005051%2Cn%3A2131417051%2Cn%3A5347828051%2Cn%3A2131436051'},
             'tanktop': 'fashion',
             'longsleeve': 'fashion',
             'raglan': 'fashion',

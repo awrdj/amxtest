@@ -797,8 +797,8 @@ function populateProductTypes() {
             departmentSettings: {
                 'electronics': {
                 timeFilters: {
-                  '30days': 'p_n_date%3A838880031',
-                  '90days': 'p_n_date%3A838881031'
+                  '30days': 'p_n_date_first_available_absolute%3A437884031',
+                  '90days': 'p_n_date_first_available_absolute%3A437885031'
                 },
                 reviewsFilter: 'p_72%3A437873031'
               },

@@ -845,30 +845,28 @@ function populateProductTypes() {
         },
         'it': { // IT
             timeFilters: {
-                '30days': 'p_n_date_first_available_absolute%3A15196852011',
-                '90days': 'p_n_date_first_available_absolute%3A15196853011'
+                // 'last7days': 'p_n_date_first_available_absolute%3A13827471031',
+                '30days': 'p_n_date_first_available_absolute%3A13827472031',
+                '90days': 'p_n_date_first_available_absolute%3A13827473031'
             },
-            sellerFilter: 'p_6%3AATVPDKIKX0DER',
-            reviewsFilter: 'p_72%3A2661618011',
-            // Add product type keywords specific to IT
+            sellerFilter: 'p_6%3AA11IL2PNWYJU7H',
+            reviewsFilter: 'p_72%3A490205031',
+            // Product type keywords specific to IT
             productTypeKeywords: {
-                'tshirt': 'Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-Vneck+-Tanktop',
-                'premtshirt': 'Fit%3A+Men’s+fit+runs+small%2C+size+up+for+a+looser+fit.+Women’s+fit+is+true+to+size%2C+order+usual+size.+is+made+of+lightweight+fine+jersey+fabric+-Longsleeve+-Raglan+-Vneck+-Tanktop',
-                'tanktop': '"tank+top"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-V-neck',
-                'longsleeve': '"Long+sleeve"+"unisex-adult"+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-premium+-Raglan+-Vneck+-sweatshirt+-tanktop',
-                'raglan': '"raglan"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Vneck+-Tanktop',
-                'sweatshirt': '"sweatshirt"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-hoodie',
-                'hoodie': '"pullover+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-zip',
-                'ziphoodie': '"zip+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop',
-                'popsocket': '"Popsocket"+Printed+top+is+swappable+with+other+compatible+PopGrip+models.+Just+press+flat%2C+turn+90+degrees+until+you+hear+a+click+and+remove+to+swap.',
-                'case': '"case"+"Two-part+protective+case+made+from+a+premium+scratch-resistant+polycarbonate+shell+and+shock+absorbent+TPU+liner+protects+against+drops"',
-                'totebag': '"Tote+Bag"+Made+of+a+lightweight%2C+spun+polyester+canvas-like+fabric.+All+seams+and+stress+points+are+double-stitched+for+durability%2C+and+the+reinforced+bottom+flattens+to+fit+more+items+and+hold+larger+objects.',
-                'throwpillow': '"Throw+Pillow"+Filled+with+100%25+polyester+and+sewn+closed',
-                'tumbler': '"Tumbler"+"Merch+on+Demand"',
+                'tshirt': 'Leggera, taglio classico, maniche con doppia cucitura e orlo inferiore+-lunga+-Raglan+-Collo+-Canotta',
+                'tanktop': '"Canotta"+Leggera, taglio classico, maniche con doppia cucitura e orlo inferiore+-lunga+-Raglan+-collo',
+                'longsleeve': '"lunga"+Leggera, taglio classico, maniche con doppia cucitura e orlo inferiore+-Raglan+-collo+-Felpa+-canotta',
+                'raglan': '"Raglan"+Leggera, taglio classico, maniche con doppia cucitura e orlo inferiore+-collo+-canotta',
+                'sweatshirt': '"Felpa"+241 g, taglio classico, collo rinforzato con nastro in twill+-Raglan+-collo+-canotta+-Capuche',
+                'hoodie': '"Cappuccio"+241 g, taglio classico, collo rinforzato con nastro in twill+-Raglan+-collo+-canotta+-zip',
+                'ziphoodie': '"Cappuccio"+"zip"+241 g, taglio classico, collo rinforzato con nastro in twill+-Raglan+-collo+-canotta',
+                'popsocket': '"Popsocket"+Il coperchio stampato è intercambiabile con altri modelli di PopGrip compatibili. Basta premere piatto, ruotare di 90 gradi fino a sentire uno scatto e rimuoverlo per sostituirlo.',
+                'case': '"custodia"+Custodia protettiva pieghevole, in stile portafoglio, fatta da policarbonato antigraffio di alta qualità ed un rivestimento in TPU assorbente agli urti. Attutisce i colpi e protegge da cadute accidentali+"Merch di Amazon"',
                 'KDP': '"independently+published"'
             },
-            // Add supported sort orders for IT
-            sortOrders: [{
+            // Sort orders for IT
+            sortOrders: 
+                [{
                     value: 'featured',
                     text: 'Featured'
                 },
@@ -911,37 +909,32 @@ function populateProductTypes() {
             ],
             // Departments and categories for IT
             categories: {
-                'fashion-novelty': {
-                    displayName: 'Fashion Novelty & More',
-                    categories: [{value: '12035955011', text: 'Clothing'}]
-                },
                 'fashion': {
                     displayName: 'Fashion',
                     categories: [
-                        {value: '7141123011', text: 'Fashion'},
-                        {value: '7147441011', text: 'Men\'s Clothing'},
-                        {value: '7147440011', text: 'Women\'s Clothing'},
-                        {value: '9056921011', text: 'Women\'s Novelty Tops & Tees'},
-                        {value: '9056985011', text: 'Men\'s Novelty T-Shirts'},
-                        {value: '1040666', text: 'Boys\' Clothing'},
-                        {value: '1040664', text: 'Girls\' Clothing'}
+                        {value: '2892860031', text: 'Specefic clothing'},
+                        {value: '2892860031', text: 'Specefic clothing', catParamType: 'bbn'}
+                        /*{value: '2892862031', text: 'Men'},
+                        {value: '2892859031', text: 'Women'},
+                        {value: '2892858031', text: 'Boys'},
+                        {value: '2892857031', text: 'Girls'},*/
                     ]
                 },
-                'mobile': {
-                    displayName: 'Cell Phones & Accessories',
+                'electronics': {
+                    displayName: 'Electronics',
                     categories: []
                 },
-                'garden': {
+                'kitchen': {
                     displayName: 'Home & Kitchen',
                     categories: []
                 },
-                // 'stripbooks-intl-ship' MRB uses this
+                // 'stripbooks-intl-ship' MRB uses this IT
                 'stripbooks': {
                     displayName: 'Books (KDP)',
                     categories: [
-                        {value: '3248857011', text: 'Calendars'},
-                        {value: '4', text: 'Children\'s Books'},
-                        {value: '48', text: 'Crafts, Home & Hobbies'}
+                        {value: '508791031', text: 'Calendars & Agendas'},
+                        {value: '508715031', text: 'Children Books'},
+                        {value: '508821031', text: 'Hobbies & free time'}
                     ]
                 },
                 '': {
@@ -951,15 +944,15 @@ function populateProductTypes() {
             },
             // Brands to exclude for IT
             excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
-            // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters
+            // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for IT
             departmentSettings: {
               'stripbooks': {
                 timeFilters: {
-                  '30days': 'p_n_publication_date%3A1250226011',
-                  '90days': 'p_n_publication_date%3A1250227011'
+                  '30days': 'p_n_date%3A510380031',
+                  '90days': 'p_n_date%3A510381031'
                 },
-                sellerFilter: '',
-                reviewsFilter: 'p_72%3A1250221011',
+                sellerFilter: 'p_6%3AA11IL2PNWYJU7H',
+                reviewsFilter: 'p_72%3A490205031',
                 sortOrders: [
                     {value: '', text: 'Default (None)'},
                     {value: 'featured', text: 'Featured'},
@@ -972,29 +965,26 @@ function populateProductTypes() {
                 ]
               }
             },
+            // Department to Product mappings for FR
             productTypeToDepartment: {
             'KDP': 'stripbooks',
-            'tshirt': 'fashion-novelty',
-            'premtshirt': 'fashion-novelty',
-            'tanktop': 'fashion-novelty',
-            'longsleeve': 'fashion-novelty',
-            'raglan': 'fashion-novelty',
-            'sweatshirt': 'fashion-novelty',
-            'hoodie': 'fashion-novelty',
-            'ziphoodie': 'fashion-novelty',
-            'popsocket': 'mobile',
-            'case': 'mobile',
-            'totebag': 'fashion',
-            'throwpillow': 'garden',
-            'tumbler': 'garden'
+            /*'tshirt': {department: 'fashion', category: '1731104031'},*/
+            'tshirt': 'fashion',
+            'tanktop': 'fashion',
+            'longsleeve': 'fashion',
+            'raglan': 'fashion',
+            'sweatshirt': 'fashion',
+            'hoodie': 'fashion',
+            'ziphoodie': 'fashion',
+            'popsocket': 'electronics',
+            'case': 'electronics'
             },
             departmentToProductType: {
                 'stripbooks': 'KDP'
-            },
-            // Department to Product mappings
-            productTypeMappings: {
-                'stripbooks': 'KDP'
             }
+            /* OLD ONE productTypeMappings: {
+                'stripbooks': 'KDP'
+            }*/
         },
         'es': {
             timeFilters: {

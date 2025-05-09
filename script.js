@@ -368,7 +368,7 @@ function populateProductTypes() {
                   '30days': 'p_n_publication_date%3A1250226011',
                   '90days': 'p_n_publication_date%3A1250227011'
                 },
-                sellerFilter: '',
+                sellerFilter: ' ',
                 reviewsFilter: 'p_72%3A1250221011',
                 sortOrders: [
                     {value: '', text: 'Default (None)'},
@@ -514,7 +514,7 @@ function populateProductTypes() {
                   '30days': 'p_n_publication_date%3A182241031',
                   '90days': 'p_n_publication_date%3A182242031'
                 },
-                sellerFilter: '',
+                sellerFilter: ' ',
                 reviewsFilter: 'p_72%3A184315031',
                 sortOrders: [
                     {value: '', text: 'Default (None)'},
@@ -657,7 +657,7 @@ function populateProductTypes() {
                   '30days': 'p_n_publication_date%3A1778535031',
                   '90days': 'p_n_publication_date%3A1778536031'
                 },
-                sellerFilter: '',
+                sellerFilter: ' ',
                 reviewsFilter: 'p_72%3A184738031',
                 sortOrders: [
                     {value: '', text: 'Default (None)'},
@@ -807,7 +807,7 @@ function populateProductTypes() {
                   '30days': 'p_n_publication_date%3A183196031',
                   '90days': 'p_n_publication_date%3A183197031'
                 },
-                sellerFilter: '',
+                sellerFilter: ' ',
                 reviewsFilter: 'p_72%3A184904031',
                 sortOrders: [
                     {value: '', text: 'Default (None)'},

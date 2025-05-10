@@ -188,24 +188,32 @@ function populateProductTypes() {
               settings: { sortOrder: 'custom', department: 'fashion', productType: 'tshirt'} }
         ],
         'de': [
-            { value: 'last30-fashion-uk', text: 'Last 30 Days Fashion', 
+            { value: 'last30-fashion-de', text: 'Last 30 Days Fashion', 
               settings: { timeFilter: 'timeFilter30Days', sortOrder: 'custom', department: 'fashion', productType: 'custom'} },
-            { value: 'last90-fashion-uk', text: 'Last 90 Days Fashion', 
+            { value: 'last90-fashion-de', text: 'Last 90 Days Fashion', 
               settings: { timeFilter: 'timeFilter90Days', sortOrder: 'custom', department: 'fashion', productType: 'custom'} },
-            { value: 'most-purchased-uk', text: 'Most Purchased Fashion Novelty', 
-              settings: { sortOrder: 'most-purchased-rank', department: 'fashion', category: '1731104031', productType: 'custom'} },
-            { value: 'the-trends-uk', text: 'Trends Fashion', 
-              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'custom'} },
-            { value: 'archive-view-uk', text: 'Archive Fashion', 
+            { value: 'most-purchased-de', text: 'Most Purchased Fashion', 
+              settings: { sortOrder: 'most-purchased-rank', department: 'fashion', productType: 'custom'} },
+            { value: 'the-trends-de', text: 'Trends Fashion', 
               settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt'} },
-            { value: 'competition-view-uk', text: 'T-Shirt Competition Checker', 
-              settings: { sortOrder: 'custom', department: 'fashion', productType: 'tshirt'} }
+            { value: 'archive-view-de', text: 'Archive Fashion', 
+              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt'} },
+            { value: 'competition-view-de', text: 'T-Shirt Competition Checker', 
+              settings: { sortOrder: 'custom', department: 'fashion', productType: 'custom'} }
         ],
         'fr': [
-            { value: 'last90-review-fr', text: 'FR - Last 90 Days Review', 
-              settings: { timeFilter: 'timeFilter90Days', sortOrder: 'review-rank', reviewsFilter: true } },
-            { value: 'popular-basic-fr', text: 'FR - Popularité', 
-              settings: { sortOrder: 'popularity-rank', excludeBrands: true } }
+            { value: 'last30-fashion-fr', text: 'Last 30 Days Fashion Fantaisie', 
+              settings: { timeFilter: 'timeFilter30Days', sortOrder: 'custom', department: 'fashion', category: '465090031', productType: 'custom'} },
+            { value: 'last90-fashion-fr', text: 'Last 90 Days Fashion Fantaisie', 
+              settings: { timeFilter: 'timeFilter90Days', sortOrder: 'custom', department: 'fashion', category: '465090031', productType: 'custom'} },
+            { value: 'most-purchased-fr', text: 'Most Purchased Fashion', 
+              settings: { sortOrder: 'most-purchased-rank', department: 'fashion', productType: 'custom'} },
+            { value: 'the-trends-fr', text: 'Trends Fashion', 
+              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt'} },
+            { value: 'archive-view-fr', text: 'Archive Fashion', 
+              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt'} },
+            { value: 'competition-view-fr', text: 'T-Shirt Competition Checker', 
+              settings: { sortOrder: 'custom', department: 'fashion', productType: 'custom'} }
         ],
         'it': [
             { value: 'last90-review-it', text: 'IT - Last 90 Days Review', 

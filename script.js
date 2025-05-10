@@ -264,9 +264,9 @@ function populateProductTypes() {
             productTypeKeywords: {
                 'tshirt': 'Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-Vneck+-Tanktop',
                 'premtshirt': 'Fit%3A+Men’s+fit+runs+small%2C+size+up+for+a+looser+fit.+Women’s+fit+is+true+to+size%2C+order+usual+size.+is+made+of+lightweight+fine+jersey+fabric+-Longsleeve+-Raglan+-Vneck+-Tanktop',
-                'tanktop': '"tank+top"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-V-neck',
-                'longsleeve': '"Long+sleeve"+"unisex-adult"+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-premium+-Raglan+-Vneck+-sweatshirt+-tanktop',
-                'raglan': '"raglan"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Vneck+-Tanktop',
+                'tanktop': '"tanktop"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-Vneck',
+                'longsleeve': '"Long+sleeve"+unisex-adult+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Raglan+-Vneck+-sweatshirt+-tanktop',
+                'raglan': '"raglan"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Vneck+-Tanktop',
                 'sweatshirt': '"sweatshirt"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-hoodie',
                 'hoodie': '"pullover+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-zip',
                 'ziphoodie': '"zip+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop',
@@ -416,13 +416,13 @@ function populateProductTypes() {
             // Product type keywords specific to UK
             productTypeKeywords: {
                 'tshirt': 'Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-Vneck+-Tanktop',
-                'tanktop': '"tank+top"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-V-neck',
-                'longsleeve': '"Long+sleeve"+unisex-adult+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-premium+-Raglan+-Vneck+-sweatshirt+-tanktop',
+                'tanktop': '"tanktop"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-Vneck',
+                'longsleeve': '"Long+sleeve"+unisex-adult+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-premium+-Raglan+-Vneck+-Sweatshirt+-Tanktop',
                 'raglan': '"raglan"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Vneck+-Tanktop',
                 'sweatshirt': '"sweatshirt"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-hoodie',
                 'hoodie': '"pullover+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-zip',
                 'ziphoodie': '"zip+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop',
-                'popsocket': '"Popsocket"+Printed+top+is+swappable+with+other+compatible+PopGrip+models.+Just+press+flat%2C+turn+90+degrees+until+you+hear+a+click+and+remove+to+swap.',
+                'popsocket': '"Popsocket"+Adhesive backing attaches the PopGrip to your case or device. Will not stick to silicone, leather, waterproof, or highly textured cases. Works best with smooth, hard, plastic cases.',
                 'case': '"case"+"Two-part+protective+case+made+from+a+premium+scratch-resistant+polycarbonate+shell+and+shock+absorbent+TPU+liner+protects+against+drops"',
                 'KDP': '"independently+published"'
             },
@@ -634,9 +634,9 @@ function populateProductTypes() {
                 'stripbooks': {
                     displayName: 'Books (KDP)',
                     categories: [
-                        {value: '507848', text: 'Calendars'},
-                        {value: '69', text: 'Children\'s Books'},
-                        {value: '64', text: 'Home & Garden'}
+                        {value: '118310011', text: 'Calendars'},
+                        {value: '5452736031', text: 'Children\'s Books'},
+                        {value: '122', text: 'Home & Garden'}
                     ]
                 },
                 '': {
@@ -849,13 +849,13 @@ function populateProductTypes() {
             productTypeKeywords: {
                 'tshirt': 'Leggera, taglio classico, maniche con doppia cucitura e orlo inferiore+-lunga+-Raglan+-Collo+-Canotta',
                 'tanktop': '"Canotta"+Leggera, taglio classico, maniche con doppia cucitura e orlo inferiore+-lunga+-Raglan+-collo',
-                'longsleeve': '"lunga"+Leggera, taglio classico, maniche con doppia cucitura e orlo inferiore+-Raglan+-collo+-Felpa+-canotta',
+                'longsleeve': '"lunga"+Leggera, taglio classico, maniche con doppia cucitura e orlo inferiore+-Raglan+-collo+-Felpa+-canotta+maglietta',
                 'raglan': '"Raglan"+Leggera, taglio classico, maniche con doppia cucitura e orlo inferiore+-collo+-canotta',
                 'sweatshirt': '"Felpa"+241 g, taglio classico, collo rinforzato con nastro in twill+-Raglan+-canotta+-Cappuccio',
                 'hoodie': '"Cappuccio"+241 g, taglio classico, collo rinforzato con nastro in twill+-Raglan+-canotta+-zip',
                 'ziphoodie': '"Cappuccio"+"zip"+241 g, taglio classico, collo rinforzato con nastro in twill+-Raglan+-canotta',
                 'popsocket': '"Popsocket"+Il coperchio stampato è intercambiabile con altri modelli di PopGrip compatibili. Basta premere piatto, ruotare di 90 gradi fino a sentire uno scatto e rimuoverlo per sostituirlo.',
-                'case': '"custodia"+Custodia protettiva pieghevole, in stile portafoglio, fatta da policarbonato antigraffio di alta qualità ed un rivestimento in TPU assorbente agli urti. Attutisce i colpi e protegge da cadute accidentali+"Merch di Amazon"',
+                'case': '"custodia"+"Custodia protettiva pieghevole, in stile portafoglio, fatta da policarbonato antigraffio di alta qualità ed un rivestimento in TPU assorbente agli urti. Attutisce i colpi e protegge da cadute accidentali"', //"Merch di Amazon"
                 'KDP': '"independently+published"'
             },
             // Sort orders for IT

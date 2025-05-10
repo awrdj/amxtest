@@ -363,6 +363,16 @@ function populateProductTypes() {
             excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
             // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for USA
             departmentSettings: {
+                'mobile': {
+                reviewsFilter: 'p_72%3A2491149011'
+              },
+                'garden': {
+                timeFilters: {
+                  '30days': 'p_n_date_first_available_absolute%3A1249052011',
+                  '90days': 'p_n_date_first_available_absolute%3A1249053011'
+                },
+                reviewsFilter: 'p_72%3A1248915011'
+              },
               'stripbooks': {
                 timeFilters: {
                   '30days': 'p_n_publication_date%3A1250226011',
@@ -507,6 +517,22 @@ function populateProductTypes() {
             excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
             // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for UK
             departmentSettings: {
+                'electronics': {
+                timeFilters: {
+                  '30days': 'p_n_date_first_available_absolute%3A419164031',
+                  '90days': 'p_n_date_first_available_absolute%3A419165031'
+                },
+                sellerFilter: 'p_6%3AA3P5ROKL5A1OLE',
+                reviewsFilter: 'p_72%3A419153031'
+              },
+                'kitchen': {
+                timeFilters: {
+                  '30days': 'p_n_date_first_available_absolute%3A419164031',
+                  '90days': 'p_n_date_first_available_absolute%3A419165031'
+                },
+                sellerFilter: 'p_6%3AA3P5ROKL5A1OLE',
+                reviewsFilter: 'p_72%3A419153031'
+              },
               'stripbooks': {
                 timeFilters: {
                   '30days': 'p_n_publication_date%3A182241031',
@@ -648,6 +674,22 @@ function populateProductTypes() {
             excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
             // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for DE
             departmentSettings: {
+                'electronics': {
+                timeFilters: {
+                  '30days': 'p_n_date_first_available_absolute%3A419128031',
+                  '90days': 'p_n_date_first_available_absolute%3A419129031'
+                },
+                sellerFilter: 'p_6%3AA3JWKAKR8XB7XF',
+                reviewsFilter: 'p_72%3A419117031'
+              },
+                'kitchen': {
+                timeFilters: {
+                  '30days': 'p_n_date_first_available_absolute%3A419128031',
+                  '90days': 'p_n_date_first_available_absolute%3A419129031'
+                },
+                sellerFilter: 'p_6%3AA3JWKAKR8XB7XF',
+                reviewsFilter: 'p_72%3A419117031'
+              },
               'stripbooks': {
                 timeFilters: {
                   '30days': 'p_n_publication_date%3A1778535031',
@@ -797,6 +839,13 @@ function populateProductTypes() {
                 },
                 reviewsFilter: 'p_72%3A437873031'
               },
+                'kitchen': {
+                timeFilters: {
+                  '30days': 'p_n_date_first_available_absolute%3A437884031',
+                  '90days': 'p_n_date_first_available_absolute%3A437885031'
+                },
+                reviewsFilter: 'p_72%3A437873031'
+              },
               'stripbooks': {
                 timeFilters: {
                   '30days': 'p_n_publication_date%3A183196031',
@@ -939,6 +988,20 @@ function populateProductTypes() {
             excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
             // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for IT
             departmentSettings: {
+                'electronics': {
+                timeFilters: {
+                  '30days': 'p_n_date_first_available_absolute%3A490216031',
+                  '90days': 'p_n_date_first_available_absolute%3A490217031'
+                },
+                reviewsFilter: 'p_72%3A490205031'
+              },
+                'kitchen': {
+                timeFilters: {
+                  '30days': 'p_n_date_first_available_absolute%3A490216031',
+                  '90days': 'p_n_date_first_available_absolute%3A490217031'
+                },
+                reviewsFilter: 'p_72%3A490205031'
+              },
               'stripbooks': {
                 timeFilters: {
                   '30days': 'p_n_date%3A510380031',
@@ -1080,6 +1143,20 @@ function populateProductTypes() {
             excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
             // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for ES
             departmentSettings: {
+                'electronics': {
+                timeFilters: {
+                  '30days': 'p_n_date_first_available_absolute%3A831288031',
+                  '90days': 'p_n_date_first_available_absolute%3A831289031'
+                },
+                reviewsFilter: 'p_72%3A831280031'
+              },
+                'kitchen': {
+                timeFilters: {
+                  '30days': 'p_n_date_first_available_absolute%3A831288031',
+                  '90days': 'p_n_date_first_available_absolute%3A831289031'
+                },
+                reviewsFilter: 'p_72%3A831280031'
+              },
               'stripbooks': {
                 timeFilters: {
                   '30days': 'p_n_date_first_available_absolute%3A831288031',

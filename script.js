@@ -185,6 +185,21 @@ document.addEventListener('DOMContentLoaded', function() {
               settings: { timeFilter: 'timeFilter30Days', sortOrder: 'custom', department: 'fashion', category: '465090031', productType: 'custom'} },
             { value: 'last90-fashion-fr', text: 'Last 90 Days Fashion Fantaisie', 
               settings: { timeFilter: 'timeFilter90Days', sortOrder: 'custom', department: 'fashion', category: '465090031', productType: 'custom'} },
+            { value: 'most-purchased-fr', text: 'Most Purchased Fashion Fantaisie', 
+              settings: { sortOrder: 'most-purchased-rank', department: 'fashion', category: '465090031', productType: 'custom'} },
+            { value: 'the-trends-fr', text: 'Trends Fashion', 
+              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt'} },
+            { value: 'archive-view-fr', text: 'Archive Fashion', 
+              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt'} },
+            { value: 'competition-view-fr', text: 'T-Shirt Competition Checker', 
+              settings: { sortOrder: 'custom', department: 'fashion', category: '465090031', productType: 'tshirt'} }
+        ],
+        // Presets config IT
+        'it': [
+            { value: 'last30-fashion-fr', text: 'Last 30 Days Fashion Specific Clothing', 
+              settings: { timeFilter: 'timeFilter30Days', sortOrder: 'custom', department: 'fashion', category: '2892860031', productType: 'custom'} },
+            { value: 'last90-fashion-fr', text: 'Last 90 Days Fashion Specific Clothing', 
+              settings: { timeFilter: 'timeFilter90Days', sortOrder: 'custom', department: 'fashion', category: '2892860031', productType: 'custom'} },
             { value: 'most-purchased-fr', text: 'Most Purchased Fashion', 
               settings: { sortOrder: 'most-purchased-rank', department: 'fashion', productType: 'custom'} },
             { value: 'the-trends-fr', text: 'Trends Fashion', 
@@ -192,21 +207,22 @@ document.addEventListener('DOMContentLoaded', function() {
             { value: 'archive-view-fr', text: 'Archive Fashion', 
               settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt'} },
             { value: 'competition-view-fr', text: 'T-Shirt Competition Checker', 
-              settings: { sortOrder: 'custom', department: 'fashion', productType: 'custom'} }
-        ],
-        // Presets config IT
-        'it': [
-            { value: 'last90-review-it', text: 'IT - Last 90 Days Review', 
-              settings: { timeFilter: 'timeFilter90Days', sortOrder: 'review-rank', reviewsFilter: true } },
-            { value: 'popular-basic-it', text: 'IT - Più popolari', 
-              settings: { sortOrder: 'popularity-rank', excludeBrands: true } }
+              settings: { sortOrder: 'custom', department: 'fashion', category: '2892860031', productType: 'tshirt'} }
         ],
         // Presets config ES
         'es': [
-            { value: 'last90-review-es', text: 'ES - Last 90 Days Review', 
-              settings: { timeFilter: 'timeFilter90Days', sortOrder: 'review-rank', reviewsFilter: true } },
-            { value: 'popular-basic-es', text: 'ES - Más populares', 
-              settings: { sortOrder: 'popularity-rank', excludeBrands: true } }
+            { value: 'last30-fashion-es', text: 'Last 30 Days Fashion Specialized Clothing', 
+              settings: { timeFilter: 'timeFilter30Days', sortOrder: 'custom', department: 'fashion', category: '3074031031', productType: 'custom'} },
+            { value: 'last90-fashion-es', text: 'Last 90 Days Fashion Specialized Clothing', 
+              settings: { timeFilter: 'timeFilter90Days', sortOrder: 'custom', department: 'fashion', category: '3074031031', productType: 'custom'} },
+            { value: 'most-purchased-es', text: 'Most Purchased Fashion Specialized Clothing', 
+              settings: { sortOrder: 'most-purchased-rank', department: 'fashion', category: '3074031031', productType: 'custom'} },
+            { value: 'the-trends-es', text: 'Trends Fashion', 
+              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt'} },
+            { value: 'archive-view-es', text: 'Archive Fashion', 
+              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt'} },
+            { value: 'competition-view-es', text: 'T-Shirt Competition Checker', 
+              settings: { sortOrder: 'custom', department: 'custom', productType: 'custom'} }
         ]
         /*'co.jp': [
             { value: 'last90-review-jp', text: 'JP - Last 90 Days Review', 
@@ -1091,7 +1107,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     'fashion': {
                         displayName: 'Fashion',
                         categories: [
-                            {value: '3074031031', text: 'Specialzed Clothing'}
+                            {value: '3074031031', text: 'Specialized Clothing'}
                             /*{value: '3074027031', text: 'Men\'s Clothing'},
                             {value: '3074028031', text: 'Women\'s Clothing'},
                             {value: '3074030031', text: 'Boys\' Clothing'},

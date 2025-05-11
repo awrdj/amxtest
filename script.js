@@ -323,6 +323,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         value: 'most-wished-for-rank',
                         text: 'Most Wished For Rank'
                     },
+                    // { value: 'price-desc-rank', text: 'High to Low Price' }, { value: 'price-asc-rank', text: 'Low to High Price' }, { value: 'relevancerank', text: 'Relevance Rank' }, { value: 'relevanceblender', text: 'Relevance Blender' }, { value: 'popularity-rank', text: 'Popularity Rank' }, { value: 'sale-rank', text: 'Sale Rank' }, { value: 'discount-rank', text: 'Discount Rank' }, { value: 'daterank', text: 'Date (Oldest) Rank' }, { value: 'daterank', text: 'Date (Oldest) Rank' },
                     {
                         value: 'custom',
                         text: 'NONE'

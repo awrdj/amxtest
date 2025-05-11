@@ -1988,9 +1988,9 @@ $(document).ready(function() {
     const clearSearchBtn = $("#clearSearchBtn");
 
     // --- Configuration ---
-    const MAX_KEYWORDS_IN_SEARCH = 1000; // From extension
+    const MAX_KEYWORDS_IN_SEARCH = 1000; // Max Keywords, recommended 500
     const SUGGESTION_DEBOUNCE_MS = 300; // Delay after typing stops
-    const RENDER_DELAY_MS = 500; // Small delay before rendering, less than extension's 500ms
+    const RENDER_DELAY_MS = 500; // Small delay before rendering, recommended 500ms
 
     const kwSuggestionsCheckbox = $("#kwsuggestions");
     const suggestionDepartmentSelect = $("#suggestionDepartmentSelect");
@@ -2000,7 +2000,6 @@ $(document).ready(function() {
     let suggestionTimeoutId;
 
     // --- Utility Functions ---
-
     // Debug helper (optional)
     function debugResponse(apiType, queryFirst, queryLast, response) {
         // console.groupCollapsed(`Suggestions Debug [${apiType}]: "${queryFirst}|${queryLast}"`);
@@ -2030,10 +2029,8 @@ $(document).ready(function() {
     }
 
     // --- Core Suggestion Logic ---
-
     // Fetch suggestions from Amazon API
     function getSuggestions(queryFirst, queryLast, marketplace, apiType = 'Generic') {
-        /*OLD CODE const departmentQuery = 'aps'; // Hardcoded 'aps' (All Departments) like extension*/
         // Get the selected department alias from the new dropdown
         let departmentQuery = suggestionDepartmentSelect.val();
         // Default to 'aps' if the selection is somehow empty/invalid or specifically 'aps'
@@ -2056,15 +2053,14 @@ $(document).ready(function() {
         return fetch(suggestUrl)
             .then(response => {
                 if (!response.ok) {
-                    // OLD CODE console.error(`API Error for ${apiType} (${response.status}): ${response.statusText}, URL: ${suggestUrl}`);
-                    console.error(`Network/Fetch Error for ${apiType} (${departmentQuery} / ${suggestUrl}):`, error); // updated log
+                    // console.error(`Network/Fetch Error for ${apiType} (${departmentQuery} / ${suggestUrl}):`, error); // updated log
                     // Return empty structure on error to match Promise.all expectations
                     return { suggestions: [] };
                 }
                 // Return the parsed JSON directly if OK
                 return response.json().catch(e => {
                     // Handle potential JSON parse errors even on OK responses (though rare)
-                     console.error(`JSON Parse Error on OK response for ${apiType}:`, e, "URL:", suggestUrl);
+                     // console.error(`JSON Parse Error on OK response for ${apiType}:`, e, "URL:", suggestUrl);
                      return { suggestions: [] };
                 });
             })
@@ -2079,13 +2075,13 @@ $(document).ready(function() {
                  return debugResponse(apiType, queryFirst, queryLast, jsonData);
             })
             .catch(error => {
-                console.error(`Network/Fetch Error for ${apiType} (${suggestUrl}):`, error);
+                // console.error(`Network/Fetch Error for ${apiType} (${suggestUrl}):`, error);
                  // Return empty structure on fetch error
                  return { suggestions: [] };
             });
     }
 
-    // Parse keywords from API response object (Matches extension logic)
+    // Parse keywords from API response object (Matches recommended logic)
     function parseResults(data) {
         let keywords = [];
         // Check if data is valid object and has suggestions array
@@ -2093,7 +2089,7 @@ $(document).ready(function() {
             keywords = data.suggestions
                 .filter(value => value.type === "KEYWORD")
                 .map(value => {
-                    // Prefer concatenated highlightFragments if available (like extension)
+                    // Prefer concatenated highlightFragments if available (like recommended)
                     if (value.highlightFragments && value.highlightFragments.length > 0) {
                         return value.highlightFragments.map(fragment => fragment.text).join('');
                     }
@@ -2160,15 +2156,15 @@ function addKeywordItem(keyword, search, groupClass) {
 
 // Renders titles and items directly into the container
 function renderCategorizedSuggestions(search, results) {
-    // *** Add Logging Here To Debug Inputs ***
-        console.log("--- Rendering Suggestions ---");
-        console.log("Search Term:", search);
-        console.log("Raw Results Array Length:", results.length);
+    
+        // *** To Debug Inputs ***
+        // console.log("--- Rendering Suggestions ---");
+        // console.log("Search Term:", search);
+        // console.log("Raw Results Array Length:", results.length);
         // Log the parsed content of the first few results arrays
-        if(results[0]) console.log("Parsed results[0] (Main):", parseResults(results[0]));
-        if(results[1]) console.log("Parsed results[1] (Before):", parseResults(results[1])); // <<<--- LOOK AT THIS ONE
-        if(results[2]) console.log("Parsed results[2] (After):", parseResults(results[2]));
-        // *************************************
+        // if(results[0]) console.log("Parsed results[0] (Main):", parseResults(results[0]));
+        // if(results[1]) console.log("Parsed results[1] (Before):", parseResults(results[1])); // <<<--- LOOK AT THIS ONE
+        // if(results[2]) console.log("Parsed results[2] (After):", parseResults(results[2]));
     
     suggestionsContainer.empty(); // Clear previous
 
@@ -2189,7 +2185,7 @@ function renderCategorizedSuggestions(search, results) {
         const currentResultData = results[i] || { suggestions: [] };
         const keywordsRaw = parseResults(currentResultData);
         // Use 'i' if your loop is a for loop, 'index' if it's forEach with index
-console.log(`[DEBUG] parseResults[${i}] returned:`, JSON.stringify(keywordsRaw)); // Changed index to i
+// console.log(`[DEBUG] parseResults[${i}] returned:`, JSON.stringify(keywordsRaw)); // Changed index to i
         let keywordsToAddInCategory = []; // Keywords to add for *this* category
         let suggestionType = "";
         let groupClass = "";
@@ -2270,31 +2266,31 @@ console.log(`[DEBUG] parseResults[${i}] returned:`, JSON.stringify(keywordsRaw))
         }
         clearSearchBtn.show();
 
-        // Use the potentially un-trimmed search for API calls where the extension did
+        // Use the potentially un-trimmed search for API calls where the recommended did
         const rawSearch = searchInput.val(); // Get the exact current value for accuracy
         const words = trimmedSearch.split(" ").filter(w => w !== ""); // Clean empty words from trimmed version
         const marketplace = currentMarketplace; // Use the currently selected marketplace
 
-        console.log(`Workspaceing suggestions for: "${rawSearch}" (trimmed: "${trimmedSearch}")`); // Debug log
+        // console.log(`Workspaceing suggestions for: "${rawSearch}" (trimmed: "${trimmedSearch}")`); // Debug log
 
-        // Define all API calls as per extension logic (indices 0-6)
+        // Define all API calls as per recommended logic (indices 0-6)
         let promises = [
-            // 0. Main/Default (uses raw search like extension)
+            // 0. Main/Default (uses raw search like recommended)
             getSuggestions(rawSearch, "", marketplace, 'Main'),
-            // 1. Before (uses space prefix, trimmed search suffix like extension)
+            // 1. Before (uses space prefix, trimmed search suffix like recommended)
             getSuggestions(" ", trimmedSearch, marketplace, 'Before'),
-            // 2. After (uses trimmed search + space prefix like extension)
+            // 2. After (uses trimmed search + space prefix like recommended)
             getSuggestions(trimmedSearch + " ", "", marketplace, 'After'),
-            // 3. Between (uses split words like extension, conditional)
+            // 3. Between (uses split words like recommended, conditional)
             (words.length >= 2
                 ? getSuggestions(words[0] + " ", " " + words.slice(1).join(" "), marketplace, 'Between')
                 : Promise.resolve({ suggestions: [] }) // Resolve empty if not applicable
             ),
-            // 4. Expansion: for (uses raw search like extension)
+            // 4. Expansion: for (uses raw search like recommended)
             getSuggestions(rawSearch + " for ", "", marketplace, 'Exp: for'),
-            // 5. Expansion: and (uses raw search like extension)
+            // 5. Expansion: and (uses raw search like recommended)
             getSuggestions(rawSearch + " and ", "", marketplace, 'Exp: and'),
-            // 6. Expansion: with (uses raw search like extension)
+            // 6. Expansion: with (uses raw search like recommended)
             getSuggestions(rawSearch + " with ", "", marketplace, 'Exp: with')
         ];
 
@@ -2306,17 +2302,17 @@ console.log(`[DEBUG] parseResults[${i}] returned:`, JSON.stringify(keywordsRaw))
         if (searchInput.val() === rawSearch) {
              renderCategorizedSuggestions(trimmedSearch, results);
         } else {
-             console.log("Search input changed during render delay. Ignoring old results.");
+             // console.log("Search input changed during render delay. Ignoring old results.");
              suggestionsContainer.css('display', 'none'); // CHANGE HERE
         }
     }, RENDER_DELAY_MS);
 } else {
-    console.log("Search input changed before suggestions arrived. Ignoring old results.");
+    // console.log("Search input changed before suggestions arrived. Ignoring old results.");
     suggestionsContainer.css('display', 'none'); // CHANGE HERE
 }
             })
             .catch(error => {
-                console.error('Error fetching one or more suggestions:', error);
+                // console.error('Error fetching one or more suggestions:', error);
                 suggestionsContainer.empty().hide(); // Hide on error
             });
     }

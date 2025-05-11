@@ -19,96 +19,92 @@ document.addEventListener('DOMContentLoaded', function() {
     const minPriceInput = document.getElementById('minPrice');
     const maxPriceInput = document.getElementById('maxPrice');
 
-    //Search Clear
+    // Clear Search Button
     const searchInput = document.getElementById('searchInput');
     const clearSearchBtn = document.getElementById('clearSearchBtn');
-    
     if (searchInput.value.length > 0) {
         clearSearchBtn.style.display = 'block';
     }
 
-    // Define product type availability for each marketplace
-const productTypeAvailability = {
-    'com': [
-        'tshirt', 'premtshirt', 'tanktop', 'longsleeve', 'raglan', 'sweatshirt', 
-        'hoodie', 'ziphoodie', 'popsocket', 'case', 'totebag', 'throwpillow', 
-        'tumbler', 'KDP', 'custom'
-    ],
-    'co.uk': [
-        'tshirt', 'tanktop', 'longsleeve', 'raglan', 'sweatshirt', 
-        'hoodie', 'ziphoodie', 'popsocket', 'case', 'KDP', 'custom'
-    ],
-    'de': [
-        'tshirt', 'tanktop', 'longsleeve', 'raglan', 'sweatshirt', 
-        'hoodie', 'ziphoodie', 'popsocket', 'case', 'KDP', 'custom'
-    ],
-    'fr': [
-        'tshirt', 'tanktop', 'longsleeve', 'raglan', 'sweatshirt', 
-        'hoodie', 'ziphoodie', 'popsocket', 'case', 'KDP', 'custom'
-    ],
-    'it': [
-        'tshirt', 'tanktop', 'longsleeve', 'raglan', 'sweatshirt', 
-        'hoodie', 'ziphoodie', 'popsocket', 'case', 'KDP', 'custom'
-    ],
-    'es': [
-        'tshirt', 'tanktop', 'longsleeve', 'raglan', 'sweatshirt', 
-        'hoodie', 'ziphoodie', 'popsocket', 'case', 'KDP', 'custom'
-    ]
-    /*'co.jp': [
-        'tshirt', 'longsleeve', 'sweatshirt', 'hoodie', 'ziphoodie', 'case', 'KDP', 'custom'
-    ]*/
-};
+    // Product type availability for each marketplace
+    const productTypeAvailability = {
+        'com': [
+            'tshirt', 'premtshirt', 'tanktop', 'longsleeve', 'raglan', 'sweatshirt', 
+            'hoodie', 'ziphoodie', 'popsocket', 'case', 'totebag', 'throwpillow', 
+            'tumbler', 'KDP', 'custom'
+        ],
+        'co.uk': [
+            'tshirt', 'tanktop', 'longsleeve', 'raglan', 'sweatshirt', 
+            'hoodie', 'ziphoodie', 'popsocket', 'case', 'KDP', 'custom'
+        ],
+        'de': [
+            'tshirt', 'tanktop', 'longsleeve', 'raglan', 'sweatshirt', 
+            'hoodie', 'ziphoodie', 'popsocket', 'case', 'KDP', 'custom'
+        ],
+        'fr': [
+            'tshirt', 'tanktop', 'longsleeve', 'raglan', 'sweatshirt', 
+            'hoodie', 'ziphoodie', 'popsocket', 'case', 'KDP', 'custom'
+        ],
+        'it': [
+            'tshirt', 'tanktop', 'longsleeve', 'raglan', 'sweatshirt', 
+            'hoodie', 'ziphoodie', 'popsocket', 'case', 'KDP', 'custom'
+        ],
+        'es': [
+            'tshirt', 'tanktop', 'longsleeve', 'raglan', 'sweatshirt', 
+            'hoodie', 'ziphoodie', 'popsocket', 'case', 'KDP', 'custom'
+        ]
+        /*'co.jp': [
+            'tshirt', 'longsleeve', 'sweatshirt', 'hoodie', 'ziphoodie', 'case', 'KDP', 'custom'
+        ]*/
+    };
 
-// Product type display names
-const productTypeDisplayNames = {
-    'tshirt': 'Standard t-shirt',
-    'premtshirt': 'Premium t-shirt',
-    'tanktop': 'Tank top',
-    'longsleeve': 'Long sleeve t-shirt',
-    'raglan': 'Raglan',
-    'sweatshirt': 'Sweatshirt',
-    'hoodie': 'Pullover hoodie',
-    'ziphoodie': 'Zip hoodie',
-    'popsocket': 'PopSockets',
-    'case': 'Phone case',
-    'totebag': 'Tote bag',
-    'throwpillow': 'Throw pillows',
-    'tumbler': 'Tumbler',
-    'KDP': 'KDP',
-    'custom': 'None'
-};
+    // Product type display names
+    const productTypeDisplayNames = {
+        'tshirt': 'Standard t-shirt',
+        'premtshirt': 'Premium t-shirt',
+        'tanktop': 'Tank top',
+        'longsleeve': 'Long sleeve t-shirt',
+        'raglan': 'Raglan',
+        'sweatshirt': 'Sweatshirt',
+        'hoodie': 'Pullover hoodie',
+        'ziphoodie': 'Zip hoodie',
+        'popsocket': 'PopSockets',
+        'case': 'Phone case',
+        'totebag': 'Tote bag',
+        'throwpillow': 'Throw pillows',
+        'tumbler': 'Tumbler',
+        'KDP': 'KDP',
+        'custom': 'None'
+    };
 
-// Function to populate product types based on marketplace
-function populateProductTypes() {
-    const marketplace = marketplaceSelect.value;
-    const availableTypes = productTypeAvailability[marketplace] || productTypeAvailability.com;
-    
-    // Store current selection if any
-    const currentValue = productTypeSelect.value;
-    
-    // Clear existing options
-    productTypeSelect.innerHTML = '';
-    
-    // Add available options
-    availableTypes.forEach(type => {
-        const option = document.createElement('option');
-        option.value = type;
-        option.textContent = productTypeDisplayNames[type] || type;
-        productTypeSelect.appendChild(option);
-    });
-    
-    // Try to restore previous selection if it exists in new options
-    if (availableTypes.includes(currentValue)) {
-        productTypeSelect.value = currentValue;
-    } else {
-        // Default to first option
-        productTypeSelect.value = availableTypes[0];
-        // Update any dependent selections
-        updateProductTypeSettings();
-        updateDepartmentFromProductType();
+    // Function to populate product types based on marketplace
+    function populateProductTypes() {
+        const marketplace = marketplaceSelect.value;
+        const availableTypes = productTypeAvailability[marketplace] || productTypeAvailability.com;
+        // Store current selection if any
+        const currentValue = productTypeSelect.value;
+        // Clear existing options
+        productTypeSelect.innerHTML = '';
+        // Add available options
+        availableTypes.forEach(type => {
+            const option = document.createElement('option');
+            option.value = type;
+            option.textContent = productTypeDisplayNames[type] || type;
+            productTypeSelect.appendChild(option);
+        });
+        // Try to restore previous selection if it exists in new options
+        if (availableTypes.includes(currentValue)) {
+            productTypeSelect.value = currentValue;
+        } else {
+            // Default to first option
+            productTypeSelect.value = availableTypes[0];
+            // Update any dependent selections
+            updateProductTypeSettings();
+            updateDepartmentFromProductType();
+        }
     }
-}
 
+    // Function to populate departments
     function populateDepartments() {
         const marketplace = marketplaceSelect.value;
         const config = marketplaceConfig[marketplace] || marketplaceConfig.com;
@@ -125,40 +121,20 @@ function populateProductTypes() {
         updateCategoryOptions();
     }
 
-    // ZIP codes for different marketplaces
+    // ZIP codes for each marketplaces
     const zipCodes = {
-        'com': {
-            zip: '90210',
-            location: 'Beverly Hills, CA'
-        },
-        'co.uk': {
-            zip: 'E1 6AN',
-            location: 'London'
-        },
-        'de': {
-            zip: '10115',
-            location: 'Berlin'
-        },
-        'fr': {
-            zip: '75001',
-            location: 'Paris'
-        },
-        'it': {
-            zip: '00100',
-            location: 'Rome'
-        },
-        'es': {
-            zip: '28001',
-            location: 'Madrid'
-        }
-        /*'co.jp': {
-            zip: '100-0001',
-            location: 'Tokyo'
-        }*/
+        'com': { zip: '90210', location: 'Beverly Hills, CA' },
+        'co.uk': { zip: 'E1 6AN', location: 'London' },
+        'de': { zip: '10115', location: 'Berlin' },
+        'fr': { zip: '75001', location: 'Paris' },
+        'it': { zip: '00100', location: 'Rome' },
+        'es': { zip: '28001', location: 'Madrid' }
+        // 'co.jp': { zip: '100-0001', location: 'Tokyo' }
     };
 
     // Presets Config
     const presetConfigs = {
+        // Presets config US
         'com': [
             { value: 'last30-fashion-com', text: 'Last 30 Days Fashion', 
               settings: { timeFilter: 'timeFilter30Days', sortOrder: 'custom', department: 'fashion', category: '7141123011', productType: 'custom'} },
@@ -173,6 +149,7 @@ function populateProductTypes() {
             { value: 'competition-view-com', text: 'T-Shirt Competition Checker', 
               settings: { sortOrder: 'custom', department: 'fashion-novelty', productType: 'tshirt'} }
         ],
+        // Presets config UK
         'co.uk': [
             { value: 'last30-fashion-uk', text: 'Last 30 Days Fashion', 
               settings: { timeFilter: 'timeFilter30Days', sortOrder: 'custom', department: 'fashion', productType: 'custom'} },
@@ -187,6 +164,7 @@ function populateProductTypes() {
             { value: 'competition-view-uk', text: 'T-Shirt Competition Checker', 
               settings: { sortOrder: 'custom', department: 'fashion', productType: 'tshirt'} }
         ],
+        // Presets config DE
         'de': [
             { value: 'last30-fashion-de', text: 'Last 30 Days Fashion', 
               settings: { timeFilter: 'timeFilter30Days', sortOrder: 'custom', department: 'fashion', productType: 'custom'} },
@@ -201,6 +179,7 @@ function populateProductTypes() {
             { value: 'competition-view-de', text: 'T-Shirt Competition Checker', 
               settings: { sortOrder: 'custom', department: 'fashion', productType: 'custom'} }
         ],
+        // Presets config FR
         'fr': [
             { value: 'last30-fashion-fr', text: 'Last 30 Days Fashion Fantaisie', 
               settings: { timeFilter: 'timeFilter30Days', sortOrder: 'custom', department: 'fashion', category: '465090031', productType: 'custom'} },
@@ -215,12 +194,14 @@ function populateProductTypes() {
             { value: 'competition-view-fr', text: 'T-Shirt Competition Checker', 
               settings: { sortOrder: 'custom', department: 'fashion', productType: 'custom'} }
         ],
+        // Presets config IT
         'it': [
             { value: 'last90-review-it', text: 'IT - Last 90 Days Review', 
               settings: { timeFilter: 'timeFilter90Days', sortOrder: 'review-rank', reviewsFilter: true } },
             { value: 'popular-basic-it', text: 'IT - Più popolari', 
               settings: { sortOrder: 'popularity-rank', excludeBrands: true } }
         ],
+        // Presets config ES
         'es': [
             { value: 'last90-review-es', text: 'ES - Last 90 Days Review', 
               settings: { timeFilter: 'timeFilter90Days', sortOrder: 'review-rank', reviewsFilter: true } },
@@ -265,1226 +246,1211 @@ function populateProductTypes() {
 
     // Marketplace-specific parameters
     const marketplaceConfig = {
-        'com': { // USA
-            timeFilters: {
-                '30days': 'p_n_date_first_available_absolute%3A15196852011',
-                '90days': 'p_n_date_first_available_absolute%3A15196853011'
-            },
-            sellerFilter: 'p_6%3AATVPDKIKX0DER',
-            reviewsFilter: 'p_72%3A2661618011',
-            // Product type keywords specific to USA
-            productTypeKeywords: {
-                'tshirt': 'Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-Vneck+-Tanktop',
-                'premtshirt': 'Fit%3A+Men’s+fit+runs+small%2C+size+up+for+a+looser+fit.+Women’s+fit+is+true+to+size%2C+order+usual+size.+is+made+of+lightweight+fine+jersey+fabric+-Longsleeve+-Raglan+-Vneck+-Tanktop',
-                'tanktop': '"tanktop"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-Vneck',
-                'longsleeve': '"Long+sleeve"+unisex-adult+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Raglan+-Vneck+-sweatshirt+-tanktop',
-                'raglan': '"raglan"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Vneck+-Tanktop',
-                'sweatshirt': '"sweatshirt"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-hoodie',
-                'hoodie': '"pullover+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-zip',
-                'ziphoodie': '"zip+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop',
-                'popsocket': '"Popsocket"+Printed+top+is+swappable+with+other+compatible+PopGrip+models.+Just+press+flat%2C+turn+90+degrees+until+you+hear+a+click+and+remove+to+swap.',
-                'case': '"case"+"Two-part+protective+case+made+from+a+premium+scratch-resistant+polycarbonate+shell+and+shock+absorbent+TPU+liner+protects+against+drops"',
-                'totebag': '"Tote+Bag"+Made+of+a+lightweight%2C+spun+polyester+canvas-like+fabric.+All+seams+and+stress+points+are+double-stitched+for+durability%2C+and+the+reinforced+bottom+flattens+to+fit+more+items+and+hold+larger+objects.',
-                'throwpillow': '"Throw+Pillow"+Filled+with+100%25+polyester+and+sewn+closed',
-                'tumbler': '"Tumbler"+"Merch+on+Demand"',
-                'KDP': '"independently+published"'
-            },
-            // Sort orders for USA
-            sortOrders: [{
-                    value: 'featured',
-                    text: 'Featured'
-                },
-                {
-                    value: 'date-desc-rank',
-                    text: 'Newest Arrivals'
-                },
-                {
-                    value: 'most-purchased-rank',
-                    text: 'Most Purchased Rank'
-                },
-                {
-                    value: 'exact-aware-popularity-rank',
-                    text: 'Best Sellers'
-                },
-                {
-                    value: 'review-rank',
-                    text: 'Top Rated (Avg Review Rank)'
-                },
-                {
-                    value: 'review-count-rank',
-                    text: 'Most Reviews Count Rank'
-                },
-                {
-                    value: 'date-asc-rank',
-                    text: 'Oldest First'
-                },
-                {
-                    value: 'featured-rank',
-                    text: 'Featured (featured-rank)'
-                },
-                {
-                    value: 'most-wished-for-rank',
-                    text: 'Most Wished For Rank'
-                },
-                {
-                    value: 'custom',
-                    text: 'NONE'
-                }
-            ],
-            // Departments and categories for USA
-            categories: {
-                'fashion-novelty': {
-                    displayName: 'Fashion Novelty & More',
-                    categories: [{value: '12035955011', text: 'Clothing'}]
-                },
-                'fashion': {
-                    displayName: 'Fashion',
-                    categories: [
-                        {value: '7141123011', text: 'Fashion'},
-                        {value: '7147441011', text: 'Men\'s Clothing'},
-                        {value: '7147440011', text: 'Women\'s Clothing'},
-                        {value: '9056921011', text: 'Women\'s Novelty Tops & Tees'},
-                        {value: '9056985011', text: 'Men\'s Novelty T-Shirts'},
-                        {value: '1040666', text: 'Boys\' Clothing'},
-                        {value: '1040664', text: 'Girls\' Clothing'}
-                    ]
-                },
-                'mobile': {
-                    displayName: 'Cell Phones & Accessories',
-                    categories: []
-                },
-                'garden': {
-                    displayName: 'Home & Kitchen',
-                    categories: []
-                },
-                // 'stripbooks-intl-ship' MRB uses this // US
-                'stripbooks': {
-                    displayName: 'Books (KDP)',
-                    categories: [
-                        {value: '3248857011', text: 'Calendars'},
-                        {value: '4', text: 'Children\'s Books'},
-                        {value: '48', text: 'Crafts, Home & Hobbies'}
-                    ]
-                },
-                '': {
-                    displayName: 'All (No Department)',
-                    categories: []
-                }
-            },
-            // Brands to exclude for USA
-            excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
-            // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for USA
-            departmentSettings: {
-                'mobile': {
-                reviewsFilter: 'p_72%3A2491149011'
-              },
-                'garden': {
+            'com': { // USA
                 timeFilters: {
-                  '30days': 'p_n_date_first_available_absolute%3A1249052011',
-                  '90days': 'p_n_date_first_available_absolute%3A1249053011'
+                    '30days': 'p_n_date_first_available_absolute%3A15196852011',
+                    '90days': 'p_n_date_first_available_absolute%3A15196853011'
                 },
-                reviewsFilter: 'p_72%3A1248915011'
-              },
-              'stripbooks': {
-                timeFilters: {
-                  '30days': 'p_n_publication_date%3A1250226011',
-                  '90days': 'p_n_publication_date%3A1250227011'
+                sellerFilter: 'p_6%3AATVPDKIKX0DER',
+                reviewsFilter: 'p_72%3A2661618011',
+                // Product type keywords specific to USA
+                productTypeKeywords: {
+                    'tshirt': 'Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-Vneck+-Tanktop',
+                    'premtshirt': 'Fit%3A+Men’s+fit+runs+small%2C+size+up+for+a+looser+fit.+Women’s+fit+is+true+to+size%2C+order+usual+size.+is+made+of+lightweight+fine+jersey+fabric+-Longsleeve+-Raglan+-Vneck+-Tanktop',
+                    'tanktop': '"tanktop"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-Vneck',
+                    'longsleeve': '"Long+sleeve"+unisex-adult+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Raglan+-Vneck+-sweatshirt+-tanktop',
+                    'raglan': '"raglan"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Vneck+-Tanktop',
+                    'sweatshirt': '"sweatshirt"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-hoodie',
+                    'hoodie': '"pullover+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-zip',
+                    'ziphoodie': '"zip+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop',
+                    'popsocket': '"Popsocket"+Printed+top+is+swappable+with+other+compatible+PopGrip+models.+Just+press+flat%2C+turn+90+degrees+until+you+hear+a+click+and+remove+to+swap.',
+                    'case': '"case"+"Two-part+protective+case+made+from+a+premium+scratch-resistant+polycarbonate+shell+and+shock+absorbent+TPU+liner+protects+against+drops"',
+                    'totebag': '"Tote+Bag"+Made+of+a+lightweight%2C+spun+polyester+canvas-like+fabric.+All+seams+and+stress+points+are+double-stitched+for+durability%2C+and+the+reinforced+bottom+flattens+to+fit+more+items+and+hold+larger+objects.',
+                    'throwpillow': '"Throw+Pillow"+Filled+with+100%25+polyester+and+sewn+closed',
+                    'tumbler': '"Tumbler"+"Merch+on+Demand"',
+                    'KDP': '"independently+published"'
                 },
-                sellerFilter: ' ',
-                reviewsFilter: 'p_72%3A1250221011',
-                sortOrders: [
-                    {value: '', text: 'Default (None)'},
-                    {value: 'featured', text: 'Featured'},
-                    {value: 'exact-aware-popularity-rank', text: 'Best Sellers'},
-                    {value: 'most-purchased-rank', text: 'Most Purchased Rank'},
-                    {value: 'review-rank', text: 'Avg Review Rank'},
-                    {value: 'review-count-rank', text: 'Most Reviews'},
-                    {value: 'date-desc-rank', text: 'Publication Date'},
-                    {value: 'salesrank', text: 'Sales Rank'}
-                ]
-              }
-            },
-            // Department to Product mappings UK
-            productTypeToDepartment: {
-            'KDP': 'stripbooks',
-            'tshirt': 'fashion-novelty',
-            'premtshirt': 'fashion-novelty',
-            'tanktop': 'fashion-novelty',
-            'longsleeve': 'fashion-novelty',
-            'raglan': 'fashion-novelty',
-            'sweatshirt': 'fashion-novelty',
-            'hoodie': 'fashion-novelty',
-            'ziphoodie': 'fashion-novelty',
-            'popsocket': 'mobile',
-            'case': 'mobile',
-            'totebag': 'fashion',
-            'throwpillow': 'garden',
-            'tumbler': 'garden'
-            },
-            departmentToProductType: {
-                'stripbooks': 'KDP'
-            }
-            /* OLD ONE productTypeMappings: {
-                'stripbooks': 'KDP'
-            }*/
-        },
-        'co.uk': // UK
-            { timeFilters: {
-                '30days': 'p_n_date_first_available_absolute%3A13827689031',
-                '90days': 'p_n_date_first_available_absolute%3A13827690031'
-            },
-            sellerFilter: 'p_6%3AA3P5ROKL5A1OLE',
-            reviewsFilter: 'p_72%3A184324031',
-            // Product type keywords specific to UK
-            productTypeKeywords: {
-                'tshirt': 'Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-Vneck+-Tanktop',
-                'tanktop': '"tanktop"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-Vneck',
-                'longsleeve': '"Long+sleeve"+unisex-adult+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-premium+-Raglan+-Vneck+-Sweatshirt+-Tanktop',
-                'raglan': '"raglan"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Vneck+-Tanktop',
-                'sweatshirt': '"sweatshirt"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-hoodie',
-                'hoodie': '"pullover+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-zip',
-                'ziphoodie': '"zip+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop',
-                'popsocket': '"Popsocket"+Adhesive backing attaches the PopGrip to your case or device. Will not stick to silicone, leather, waterproof, or highly textured cases. Works best with smooth, hard, plastic cases.',
-                'case': '"case"+"Two-part+protective+case+made+from+a+premium+scratch-resistant+polycarbonate+shell+and+shock+absorbent+TPU+liner+protects+against+drops"',
-                'KDP': '"independently+published"'
-            },
-            // Sort orders for UK
-            sortOrders: [{
-                    value: 'featured',
-                    text: 'Featured'
+                // Sort orders for USA
+                sortOrders: [{
+                        value: 'featured',
+                        text: 'Featured'
+                    },
+                    {
+                        value: 'date-desc-rank',
+                        text: 'Newest Arrivals'
+                    },
+                    {
+                        value: 'most-purchased-rank',
+                        text: 'Most Purchased Rank'
+                    },
+                    {
+                        value: 'exact-aware-popularity-rank',
+                        text: 'Best Sellers'
+                    },
+                    {
+                        value: 'review-rank',
+                        text: 'Top Rated (Avg Review Rank)'
+                    },
+                    {
+                        value: 'review-count-rank',
+                        text: 'Most Reviews Count Rank'
+                    },
+                    {
+                        value: 'date-asc-rank',
+                        text: 'Oldest First'
+                    },
+                    {
+                        value: 'featured-rank',
+                        text: 'Featured (featured-rank)'
+                    },
+                    {
+                        value: 'most-wished-for-rank',
+                        text: 'Most Wished For Rank'
+                    },
+                    {
+                        value: 'custom',
+                        text: 'NONE'
+                    }
+                ],
+                // Departments and categories for USA
+                categories: {
+                    'fashion-novelty': {
+                        displayName: 'Fashion Novelty & More',
+                        categories: [{value: '12035955011', text: 'Clothing'}]
+                    },
+                    'fashion': {
+                        displayName: 'Fashion',
+                        categories: [
+                            {value: '7141123011', text: 'Fashion'},
+                            {value: '7147441011', text: 'Men\'s Clothing'},
+                            {value: '7147440011', text: 'Women\'s Clothing'},
+                            {value: '9056921011', text: 'Women\'s Novelty Tops & Tees'},
+                            {value: '9056985011', text: 'Men\'s Novelty T-Shirts'},
+                            {value: '1040666', text: 'Boys\' Clothing'},
+                            {value: '1040664', text: 'Girls\' Clothing'}
+                        ]
+                    },
+                    'mobile': {
+                        displayName: 'Cell Phones & Accessories',
+                        categories: []
+                    },
+                    'garden': {
+                        displayName: 'Home & Kitchen',
+                        categories: []
+                    },
+                    // 'stripbooks-intl-ship' MRB uses this // US
+                    'stripbooks': {
+                        displayName: 'Books (KDP)',
+                        categories: [
+                            {value: '3248857011', text: 'Calendars'},
+                            {value: '4', text: 'Children\'s Books'},
+                            {value: '48', text: 'Crafts, Home & Hobbies'}
+                        ]
+                    },
+                    '': {
+                        displayName: 'All (No Department)',
+                        categories: []
+                    }
                 },
-                {
-                    value: 'date-desc-rank',
-                    text: 'Newest Arrivals'
-                },
-                {
-                    value: 'most-purchased-rank',
-                    text: 'Most Purchased Rank'
-                },
-                {
-                    value: 'exact-aware-popularity-rank',
-                    text: 'Best Sellers'
-                },
-                {
-                    value: 'review-rank',
-                    text: 'Top Rated (Avg Review Rank)'
-                },
-                {
-                    value: 'review-count-rank',
-                    text: 'Most Reviews Count Rank'
-                },
-                {
-                    value: 'date-asc-rank',
-                    text: 'Oldest First'
-                },
-                {
-                    value: 'featured-rank',
-                    text: 'Featured (featured-rank)'
-                },
-                {
-                    value: 'most-wished-for-rank',
-                    text: 'Most Wished For Rank'
-                },
-                {
-                    value: 'custom',
-                    text: 'NONE'
-                }
-            ],
-            // Departments and categories for UK
-            categories: {
-                'fashion': {
-                    displayName: 'Fashion',
-                    categories: [
-                        {value: '1731104031', text: 'Novelty' /*catParamType: 'bbn'*/},
-                        /*{value: '1730929031', text: 'Men\'s Clothing'},
-                        {value: '1731296031', text: 'Women\'s Clothing'},
-                        {value: '1730756031', text: 'Boys\' Clothing'},
-                        {value: '1730841031', text: 'Girls\' Clothing'},*/
-                        {value: '1731041031', text: 'Novelty & Special Use' /*catParamType: 'bbn'*/}
+                // Brands to exclude for USA
+                excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
+                // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for USA
+                departmentSettings: {
+                    'mobile': {
+                    reviewsFilter: 'p_72%3A2491149011'
+                  },
+                    'garden': {
+                    timeFilters: {
+                      '30days': 'p_n_date_first_available_absolute%3A1249052011',
+                      '90days': 'p_n_date_first_available_absolute%3A1249053011'
+                    },
+                    reviewsFilter: 'p_72%3A1248915011'
+                  },
+                  'stripbooks': {
+                    timeFilters: {
+                      '30days': 'p_n_publication_date%3A1250226011',
+                      '90days': 'p_n_publication_date%3A1250227011'
+                    },
+                    sellerFilter: ' ',
+                    reviewsFilter: 'p_72%3A1250221011',
+                    sortOrders: [
+                        {value: '', text: 'Default (None)'},
+                        {value: 'featured', text: 'Featured'},
+                        {value: 'exact-aware-popularity-rank', text: 'Best Sellers'},
+                        {value: 'most-purchased-rank', text: 'Most Purchased Rank'},
+                        {value: 'review-rank', text: 'Avg Review Rank'},
+                        {value: 'review-count-rank', text: 'Most Reviews'},
+                        {value: 'date-desc-rank', text: 'Publication Date'},
+                        {value: 'salesrank', text: 'Sales Rank'}
                     ]
+                  }
                 },
-                'electronics': {
-                    displayName: 'Electronics & Photo',
-                    categories: []
+                // Department to Product mappings UK
+                productTypeToDepartment: {
+                'KDP': 'stripbooks',
+                'tshirt': 'fashion-novelty',
+                'premtshirt': 'fashion-novelty',
+                'tanktop': 'fashion-novelty',
+                'longsleeve': 'fashion-novelty',
+                'raglan': 'fashion-novelty',
+                'sweatshirt': 'fashion-novelty',
+                'hoodie': 'fashion-novelty',
+                'ziphoodie': 'fashion-novelty',
+                'popsocket': 'mobile',
+                'case': 'mobile',
+                'totebag': 'fashion',
+                'throwpillow': 'garden',
+                'tumbler': 'garden'
                 },
-                'kitchen': {
-                    displayName: 'Home & Kitchen',
-                    categories: []
-                },
-                // 'stripbooks-intl-ship' MRB uses this // UK
-                'stripbooks': {
-                    displayName: 'Books (KDP)',
-                    categories: [
-                        {value: '507848', text: 'Calendars'},
-                        {value: '69', text: 'Children\'s Books'},
-                        {value: '64', text: 'Home & Garden'}
-                    ]
-                },
-                '': {
-                    displayName: 'All (No Department)',
-                    categories: []
+                departmentToProductType: {
+                    'stripbooks': 'KDP'
                 }
+                // OLD ONE productTypeMappings: {
+                //    'stripbooks': 'KDP'
+                // }
             },
-            // Brands to exclude for UK
-            excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
-            // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for UK
-            departmentSettings: {
-                'electronics': {
-                timeFilters: {
-                  '30days': 'p_n_date_first_available_absolute%3A419164031',
-                  '90days': 'p_n_date_first_available_absolute%3A419165031'
+            'co.uk': // UK
+                { timeFilters: {
+                    '30days': 'p_n_date_first_available_absolute%3A13827689031',
+                    '90days': 'p_n_date_first_available_absolute%3A13827690031'
                 },
                 sellerFilter: 'p_6%3AA3P5ROKL5A1OLE',
-                reviewsFilter: 'p_72%3A419153031'
-              },
-                'kitchen': {
-                timeFilters: {
-                  '30days': 'p_n_date_first_available_absolute%3A419164031',
-                  '90days': 'p_n_date_first_available_absolute%3A419165031'
+                reviewsFilter: 'p_72%3A184324031',
+                // Product type keywords specific to UK
+                productTypeKeywords: {
+                    'tshirt': 'Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-Vneck+-Tanktop',
+                    'tanktop': '"tanktop"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-Vneck',
+                    'longsleeve': '"Long+sleeve"+unisex-adult+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-premium+-Raglan+-Vneck+-Sweatshirt+-Tanktop',
+                    'raglan': '"raglan"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Vneck+-Tanktop',
+                    'sweatshirt': '"sweatshirt"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-hoodie',
+                    'hoodie': '"pullover+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-zip',
+                    'ziphoodie': '"zip+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop',
+                    'popsocket': '"Popsocket"+Adhesive backing attaches the PopGrip to your case or device. Will not stick to silicone, leather, waterproof, or highly textured cases. Works best with smooth, hard, plastic cases.',
+                    'case': '"case"+"Two-part+protective+case+made+from+a+premium+scratch-resistant+polycarbonate+shell+and+shock+absorbent+TPU+liner+protects+against+drops"',
+                    'KDP': '"independently+published"'
                 },
-                sellerFilter: 'p_6%3AA3P5ROKL5A1OLE',
-                reviewsFilter: 'p_72%3A419153031'
-              },
-              'stripbooks': {
-                timeFilters: {
-                  '30days': 'p_n_publication_date%3A182241031',
-                  '90days': 'p_n_publication_date%3A182242031'
+                // Sort orders for UK
+                sortOrders: [{
+                        value: 'featured',
+                        text: 'Featured'
+                    },
+                    {
+                        value: 'date-desc-rank',
+                        text: 'Newest Arrivals'
+                    },
+                    {
+                        value: 'most-purchased-rank',
+                        text: 'Most Purchased Rank'
+                    },
+                    {
+                        value: 'exact-aware-popularity-rank',
+                        text: 'Best Sellers'
+                    },
+                    {
+                        value: 'review-rank',
+                        text: 'Top Rated (Avg Review Rank)'
+                    },
+                    {
+                        value: 'review-count-rank',
+                        text: 'Most Reviews Count Rank'
+                    },
+                    {
+                        value: 'date-asc-rank',
+                        text: 'Oldest First'
+                    },
+                    {
+                        value: 'featured-rank',
+                        text: 'Featured (featured-rank)'
+                    },
+                    {
+                        value: 'most-wished-for-rank',
+                        text: 'Most Wished For Rank'
+                    },
+                    {
+                        value: 'custom',
+                        text: 'NONE'
+                    }
+                ],
+                // Departments and categories for UK
+                categories: {
+                    'fashion': {
+                        displayName: 'Fashion',
+                        categories: [
+                            {value: '1731104031', text: 'Novelty' /*catParamType: 'bbn'*/},
+                            /*{value: '1730929031', text: 'Men\'s Clothing'},
+                            {value: '1731296031', text: 'Women\'s Clothing'},
+                            {value: '1730756031', text: 'Boys\' Clothing'},
+                            {value: '1730841031', text: 'Girls\' Clothing'},*/
+                            {value: '1731041031', text: 'Novelty & Special Use' /*catParamType: 'bbn'*/}
+                        ]
+                    },
+                    'electronics': {
+                        displayName: 'Electronics & Photo',
+                        categories: []
+                    },
+                    'kitchen': {
+                        displayName: 'Home & Kitchen',
+                        categories: []
+                    },
+                    // 'stripbooks-intl-ship' MRB uses this // UK
+                    'stripbooks': {
+                        displayName: 'Books (KDP)',
+                        categories: [
+                            {value: '507848', text: 'Calendars'},
+                            {value: '69', text: 'Children\'s Books'},
+                            {value: '64', text: 'Home & Garden'}
+                        ]
+                    },
+                    '': {
+                        displayName: 'All (No Department)',
+                        categories: []
+                    }
                 },
-                sellerFilter: ' ',
-                reviewsFilter: 'p_72%3A184315031',
-                sortOrders: [
-                    {value: '', text: 'Default (None)'},
-                    {value: 'featured', text: 'Featured'},
-                    {value: 'exact-aware-popularity-rank', text: 'Best Sellers'},
-                    {value: 'most-purchased-rank', text: 'Most Purchased Rank'},
-                    {value: 'review-rank', text: 'Avg Review Rank'},
-                    {value: 'review-count-rank', text: 'Most Reviews'},
-                    {value: 'date-desc-rank', text: 'Publication Date'},
-                    {value: 'salesrank', text: 'Sales Rank'}
-                ]
-              }
-            },
-            // Department to Product mappings UK
-            productTypeToDepartment: {
-            'KDP': 'stripbooks',
-            /*'tshirt': {department: 'fashion', category: '1731104031'},*/
-            'tshirt': 'fashion',
-            'tanktop': 'fashion',
-            'longsleeve': 'fashion',
-            'raglan': 'fashion',
-            'sweatshirt': 'fashion',
-            'hoodie': 'fashion',
-            'ziphoodie': 'fashion',
-            'popsocket': 'electronics',
-            'case': 'electronics'
-            },
-            departmentToProductType: {
-                'stripbooks': 'KDP'
-            }
-            /* OLD ONE productTypeMappings: {
-                'stripbooks': 'KDP'
-            }*/
-        },
-        'de': { // DE
-            timeFilters: {
-                '30days': 'p_n_date_first_available_absolute%3A13827501031',
-                '90days': 'p_n_date_first_available_absolute%3A13827502031'
-            },
-            sellerFilter: 'p_6%3AA3JWKAKR8XB7XF',
-            reviewsFilter: 'p_72%3A419117031',
-            // Product type keywords specific to DE
-            productTypeKeywords: {
-                'tshirt': 'Klassisch geschnitten, doppelt genähter Saum.+-Langarmshirt+-Raglan+-V-Ausschnitt+-Tanktop',
-                'tanktop': '"tank+top"+leichtes, klassisch geschnittenes Tank Top, doppelt genähte Ärmel und Saumabschluss+-Langarmshirt+-Raglan+-V-Ausschnitt',
-                'longsleeve': '"Langarmshirt"+Klassisch geschnitten, doppelt genähter Saum+-Raglan+-V-Ausschnitt+-Sweatshirt+-Tanktop',
-                'raglan': '"raglan"+leichter, klassischer Schnitt, doppelt genähte Ärmel und Saumabschluss+-Langarmshirt+-V-Ausschnitt+-Tanktop',
-                'sweatshirt': '"sweatshirt"+8.5 oz, Klassisch geschnitten+-Raglan+-Vneck+-Tanktop+-hoodie', // '"sweatshirt"+8.5 oz, classic cut+-Raglan+-Vneck+-Tanktop+-hoodie',
-                'hoodie': '"pullover+hoodie"+8.5 oz, Klassisch geschnitten, doppelt genähter Saum+-Raglan+-V-Ausschnitt+-Tanktop+-Zip',
-                'ziphoodie': '"Kapuzenjacke"+241gr leichter, klassischer Schnitt; verstärkter Nacken+-Raglan+-V-Ausschnitt+-Tanktop',
-                'popsocket': '"Popsocket"+Der klebende Rücken befestigt den PopGrip an Ihrem Gehäuse oder Gerät. Klebt nicht auf Silikon-, Leder-, wasserdichten oder stark strukturierten Gehäusen. Funktioniert am besten mit glatten, harten Plastikgehäusen.',
-                'case': '"case" Die zweiteilige Schutzhülle aus einer hochwertigen, kratzfesten Polycarbonatschale und einer stoßdämpfenden TPU-Auskleidung schützt vor Stürzen "merch von amazon"',// '"case"+Die zweiteilige Schutzhülle aus einer hochwertigen, kratzfesten Polycarbonatschale und einer stoßdämpfenden TPU-Auskleidung schützt vor Stürzen+"Merch von Amazon"', // '"case"+"The two-piece protective case made from a high quality scratch resistant polycarbonate shell and shock absorbing TPU liner protects against drops"+"Merch von Amazon"',
-                'KDP': '"independently+published"'
-            },
-            // Sort orders for DE
-            sortOrders: [{
-                    value: 'featured',
-                    text: 'Featured'
-                },
-                {
-                    value: 'date-desc-rank',
-                    text: 'Newest Arrivals'
-                },
-                {
-                    value: 'most-purchased-rank',
-                    text: 'Most Purchased Rank'
-                },
-                {
-                    value: 'exact-aware-popularity-rank',
-                    text: 'Best Sellers'
-                },
-                {
-                    value: 'review-rank',
-                    text: 'Top Rated (Avg Review Rank)'
-                },
-                {
-                    value: 'review-count-rank',
-                    text: 'Most Reviews Count Rank'
-                },
-                {
-                    value: 'date-asc-rank',
-                    text: 'Oldest First'
-                },
-                {
-                    value: 'featured-rank',
-                    text: 'Featured (featured-rank)'
-                },
-                {
-                    value: 'most-wished-for-rank',
-                    text: 'Most Wished For Rank'
-                },
-                {
-                    value: 'custom',
-                    text: 'NONE'
-                }
-            ],
-            // Departments and categories for DE
-            categories: {
-                'fashion': {
-                    displayName: 'Fashion',
-                    categories: [
-                        {value: '1981473031', text: 'Novelty'},
-                        /*{value: '1730929031', text: 'Men\'s Clothing'},
-                        {value: '1731296031', text: 'Women\'s Clothing'},
-                        {value: '1730756031', text: 'Boys\' Clothing'},
-                        {value: '1730841031', text: 'Girls\' Clothing'},*/
-                        {value: '1981410031', text: 'Novelty & Special Use'}
+                // Brands to exclude for UK
+                excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
+                // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for UK
+                departmentSettings: {
+                    'electronics': {
+                    timeFilters: {
+                      '30days': 'p_n_date_first_available_absolute%3A419164031',
+                      '90days': 'p_n_date_first_available_absolute%3A419165031'
+                    },
+                    sellerFilter: 'p_6%3AA3P5ROKL5A1OLE',
+                    reviewsFilter: 'p_72%3A419153031'
+                  },
+                    'kitchen': {
+                    timeFilters: {
+                      '30days': 'p_n_date_first_available_absolute%3A419164031',
+                      '90days': 'p_n_date_first_available_absolute%3A419165031'
+                    },
+                    sellerFilter: 'p_6%3AA3P5ROKL5A1OLE',
+                    reviewsFilter: 'p_72%3A419153031'
+                  },
+                  'stripbooks': {
+                    timeFilters: {
+                      '30days': 'p_n_publication_date%3A182241031',
+                      '90days': 'p_n_publication_date%3A182242031'
+                    },
+                    sellerFilter: ' ',
+                    reviewsFilter: 'p_72%3A184315031',
+                    sortOrders: [
+                        {value: '', text: 'Default (None)'},
+                        {value: 'featured', text: 'Featured'},
+                        {value: 'exact-aware-popularity-rank', text: 'Best Sellers'},
+                        {value: 'most-purchased-rank', text: 'Most Purchased Rank'},
+                        {value: 'review-rank', text: 'Avg Review Rank'},
+                        {value: 'review-count-rank', text: 'Most Reviews'},
+                        {value: 'date-desc-rank', text: 'Publication Date'},
+                        {value: 'salesrank', text: 'Sales Rank'}
                     ]
+                  }
                 },
-                'electronics': {
-                    displayName: 'Electronics & Photo',
-                    categories: []
+                // Department to Product mappings UK
+                productTypeToDepartment: {
+                'KDP': 'stripbooks',
+                /*'tshirt': {department: 'fashion', category: '1731104031'},*/
+                'tshirt': 'fashion',
+                'tanktop': 'fashion',
+                'longsleeve': 'fashion',
+                'raglan': 'fashion',
+                'sweatshirt': 'fashion',
+                'hoodie': 'fashion',
+                'ziphoodie': 'fashion',
+                'popsocket': 'electronics',
+                'case': 'electronics'
                 },
-                'kitchen': {
-                    displayName: 'Home & Kitchen',
-                    categories: []
-                },
-                // 'stripbooks-intl-ship' MRB uses this DE
-                'stripbooks': {
-                    displayName: 'Books (KDP)',
-                    categories: [
-                        {value: '118310011', text: 'Calendars'},
-                        {value: '5452736031', text: 'Children\'s Books'},
-                        {value: '122', text: 'Home & Garden'}
-                    ]
-                },
-                '': {
-                    displayName: 'All (No Department)',
-                    categories: []
+                departmentToProductType: {
+                    'stripbooks': 'KDP'
                 }
             },
-            // Brands to exclude for DE
-            excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
-            // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for DE
-            departmentSettings: {
-                'electronics': {
+            'de': { // DE
                 timeFilters: {
-                  '30days': 'p_n_date_first_available_absolute%3A419128031',
-                  '90days': 'p_n_date_first_available_absolute%3A419129031'
+                    '30days': 'p_n_date_first_available_absolute%3A13827501031',
+                    '90days': 'p_n_date_first_available_absolute%3A13827502031'
                 },
                 sellerFilter: 'p_6%3AA3JWKAKR8XB7XF',
-                reviewsFilter: 'p_72%3A419117031'
-              },
-                'kitchen': {
-                timeFilters: {
-                  '30days': 'p_n_date_first_available_absolute%3A419128031',
-                  '90days': 'p_n_date_first_available_absolute%3A419129031'
+                reviewsFilter: 'p_72%3A419117031',
+                // Product type keywords specific to DE
+                productTypeKeywords: {
+                    'tshirt': 'Klassisch geschnitten, doppelt genähter Saum.+-Langarmshirt+-Raglan+-V-Ausschnitt+-Tanktop',
+                    'tanktop': '"tank+top"+leichtes, klassisch geschnittenes Tank Top, doppelt genähte Ärmel und Saumabschluss+-Langarmshirt+-Raglan+-V-Ausschnitt',
+                    'longsleeve': '"Langarmshirt"+Klassisch geschnitten, doppelt genähter Saum+-Raglan+-V-Ausschnitt+-Sweatshirt+-Tanktop',
+                    'raglan': '"raglan"+leichter, klassischer Schnitt, doppelt genähte Ärmel und Saumabschluss+-Langarmshirt+-V-Ausschnitt+-Tanktop',
+                    'sweatshirt': '"sweatshirt"+8.5 oz, Klassisch geschnitten+-Raglan+-Vneck+-Tanktop+-hoodie', // '"sweatshirt"+8.5 oz, classic cut+-Raglan+-Vneck+-Tanktop+-hoodie',
+                    'hoodie': '"pullover+hoodie"+8.5 oz, Klassisch geschnitten, doppelt genähter Saum+-Raglan+-V-Ausschnitt+-Tanktop+-Zip',
+                    'ziphoodie': '"Kapuzenjacke"+241gr leichter, klassischer Schnitt; verstärkter Nacken+-Raglan+-V-Ausschnitt+-Tanktop',
+                    'popsocket': '"Popsocket"+Der klebende Rücken befestigt den PopGrip an Ihrem Gehäuse oder Gerät. Klebt nicht auf Silikon-, Leder-, wasserdichten oder stark strukturierten Gehäusen. Funktioniert am besten mit glatten, harten Plastikgehäusen.',
+                    'case': '"case" Die zweiteilige Schutzhülle aus einer hochwertigen, kratzfesten Polycarbonatschale und einer stoßdämpfenden TPU-Auskleidung schützt vor Stürzen "merch von amazon"',// '"case"+Die zweiteilige Schutzhülle aus einer hochwertigen, kratzfesten Polycarbonatschale und einer stoßdämpfenden TPU-Auskleidung schützt vor Stürzen+"Merch von Amazon"', // '"case"+"The two-piece protective case made from a high quality scratch resistant polycarbonate shell and shock absorbing TPU liner protects against drops"+"Merch von Amazon"',
+                    'KDP': '"independently+published"'
                 },
-                sellerFilter: 'p_6%3AA3JWKAKR8XB7XF',
-                reviewsFilter: 'p_72%3A419117031'
-              },
-              'stripbooks': {
-                timeFilters: {
-                  '30days': 'p_n_publication_date%3A1778535031',
-                  '90days': 'p_n_publication_date%3A1778536031'
+                // Sort orders for DE
+                sortOrders: [{
+                        value: 'featured',
+                        text: 'Featured'
+                    },
+                    {
+                        value: 'date-desc-rank',
+                        text: 'Newest Arrivals'
+                    },
+                    {
+                        value: 'most-purchased-rank',
+                        text: 'Most Purchased Rank'
+                    },
+                    {
+                        value: 'exact-aware-popularity-rank',
+                        text: 'Best Sellers'
+                    },
+                    {
+                        value: 'review-rank',
+                        text: 'Top Rated (Avg Review Rank)'
+                    },
+                    {
+                        value: 'review-count-rank',
+                        text: 'Most Reviews Count Rank'
+                    },
+                    {
+                        value: 'date-asc-rank',
+                        text: 'Oldest First'
+                    },
+                    {
+                        value: 'featured-rank',
+                        text: 'Featured (featured-rank)'
+                    },
+                    {
+                        value: 'most-wished-for-rank',
+                        text: 'Most Wished For Rank'
+                    },
+                    {
+                        value: 'custom',
+                        text: 'NONE'
+                    }
+                ],
+                // Departments and categories for DE
+                categories: {
+                    'fashion': {
+                        displayName: 'Fashion',
+                        categories: [
+                            {value: '1981473031', text: 'Novelty'},
+                            /*{value: '1730929031', text: 'Men\'s Clothing'},
+                            {value: '1731296031', text: 'Women\'s Clothing'},
+                            {value: '1730756031', text: 'Boys\' Clothing'},
+                            {value: '1730841031', text: 'Girls\' Clothing'},*/
+                            {value: '1981410031', text: 'Novelty & Special Use'}
+                        ]
+                    },
+                    'electronics': {
+                        displayName: 'Electronics & Photo',
+                        categories: []
+                    },
+                    'kitchen': {
+                        displayName: 'Home & Kitchen',
+                        categories: []
+                    },
+                    // 'stripbooks-intl-ship' MRB uses this DE
+                    'stripbooks': {
+                        displayName: 'Books (KDP)',
+                        categories: [
+                            {value: '118310011', text: 'Calendars'},
+                            {value: '5452736031', text: 'Children\'s Books'},
+                            {value: '122', text: 'Home & Garden'}
+                        ]
+                    },
+                    '': {
+                        displayName: 'All (No Department)',
+                        categories: []
+                    }
                 },
-                sellerFilter: ' ',
-                reviewsFilter: 'p_72%3A184738031',
-                sortOrders: [
-                    {value: '', text: 'Default (None)'},
-                    {value: 'featured', text: 'Featured'},
-                    {value: 'exact-aware-popularity-rank', text: 'Best Sellers'},
-                    {value: 'most-purchased-rank', text: 'Most Purchased Rank'},
-                    {value: 'review-rank', text: 'Avg Review Rank'},
-                    {value: 'review-count-rank', text: 'Most Reviews'},
-                    {value: 'date-desc-rank', text: 'Publication Date'},
-                    {value: 'salesrank', text: 'Sales Rank'}
-                ]
-              }
-            },
-            // Department to Product mappings for DE
-            productTypeToDepartment: {
-            'KDP': 'stripbooks',
-            /*'tshirt': {department: 'fashion', category: '1731104031'},*/
-            'tshirt': 'fashion',
-            'tanktop': 'fashion',
-            'longsleeve': 'fashion',
-            'raglan': 'fashion',
-            'sweatshirt': 'fashion',
-            'hoodie': 'fashion',
-            'ziphoodie': 'fashion',
-            'popsocket': 'electronics',
-            'case': 'electronics'
-            },
-            departmentToProductType: {
-                'stripbooks': 'KDP'
-            }
-            /* OLD ONE productTypeMappings: {
-                'stripbooks': 'KDP'
-            }*/
-        },
-        'fr': { // FR
-            timeFilters: {
-                '30days': 'p_n_date_first_available_absolute%3A13827697031',
-                '90days': 'p_n_date_first_available_absolute%3A13827698031'
-            },
-            sellerFilter: 'p_6%3AA1X6FK5RDHNB96',
-            reviewsFilter: 'p_72%3A437873031',
-            // Product type keywords specific to FR
-            productTypeKeywords: {
-                'tshirt': 'Léger,+Coupe+classique,+manche+à+double+couture+et+ourlet+la+base+-Longue+-Raglan+-ColenV+-Débardeur',
-                'tanktop': '"Débardeur"+Léger,+Coupe+classique,+manche+à+double+couture+et+ourlet+la+base+-Longue+-Raglan+-ColenV',
-                'longsleeve': '"Longue"+Léger,+Coupe+classique,+manche+à+double+couture+et+ourlet+la+base+-Raglan+-ColenV+-sweatshirt+-Débardeur',
-                'raglan': '"Raglan"+Léger,+Coupe+classique,+manche+à+double+couture+et+ourlet+la+base+-ColenV+-Débardeur',
-                'sweatshirt': '"sweatshirt"+241 g, coupe classique, col tissé+-Raglan+-ColenV+-Débardeur+-Capuche',
-                'hoodie': '"Capuche"+241 g, coupe classique, col tissé+-Raglan+-ColenV+-Débardeur+-zip',
-                'ziphoodie': '"Capuche"+"zip"+241 g, coupe classique, col tissé+-Raglan+-ColenV+-Débardeur',
-                'popsocket': '"Popsocket"+Le dessus imprimé est interchangeable avec d\'autres modèles de PopGrip compatibles. Il suffit d\'appuyer à plat, de tourner de 90 degrés jusqu\'à entendre un clic et de le retirer pour l\'échanger.',
-                'case': '"Coque"+Coque de protection en deux parties composé d\'une coque en polycarbonate de première qualité résistant aux rayures et d\'une doublure en TPU absorbant les chocs et protégeant contre les chutes+"Merch par Amazon"',
-                'KDP': '"independently+published"'
-            },
-            // Sort orders for FR
-            sortOrders: 
-                [{
-                    value: 'featured',
-                    text: 'Featured'
-                },
-                {
-                    value: 'date-desc-rank',
-                    text: 'Newest Arrivals'
-                },
-                {
-                    value: 'most-purchased-rank',
-                    text: 'Most Purchased Rank'
-                },
-                {
-                    value: 'exact-aware-popularity-rank',
-                    text: 'Best Sellers'
-                },
-                {
-                    value: 'review-rank',
-                    text: 'Top Rated (Avg Review Rank)'
-                },
-                {
-                    value: 'review-count-rank',
-                    text: 'Most Reviews Count Rank'
-                },
-                {
-                    value: 'date-asc-rank',
-                    text: 'Oldest First'
-                },
-                {
-                    value: 'featured-rank',
-                    text: 'Featured (featured-rank)'
-                },
-                {
-                    value: 'most-wished-for-rank',
-                    text: 'Most Wished For Rank'
-                },
-                {
-                    value: 'custom',
-                    text: 'NONE'
-                }
-            ],
-            // Departments and categories for FR
-            categories: {
-                'fashion': {
-                    displayName: 'Mode',
-                    categories: [
-                        {value: '465090031', text: 'Fantaisie'},
-                        /*{value: '436560031', text: 'Homme'},
-                        {value: '436559031', text: 'Femme'},
-                        {value: '436562031', text: 'Garçon'},
-                        {value: '436561031', text: 'Fille'},*/
-                        {value: '436564031', text: 'Vêtements techniques et spéciaux'}
+                // Brands to exclude for DE
+                excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
+                // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for DE
+                departmentSettings: {
+                    'electronics': {
+                    timeFilters: {
+                      '30days': 'p_n_date_first_available_absolute%3A419128031',
+                      '90days': 'p_n_date_first_available_absolute%3A419129031'
+                    },
+                    sellerFilter: 'p_6%3AA3JWKAKR8XB7XF',
+                    reviewsFilter: 'p_72%3A419117031'
+                  },
+                    'kitchen': {
+                    timeFilters: {
+                      '30days': 'p_n_date_first_available_absolute%3A419128031',
+                      '90days': 'p_n_date_first_available_absolute%3A419129031'
+                    },
+                    sellerFilter: 'p_6%3AA3JWKAKR8XB7XF',
+                    reviewsFilter: 'p_72%3A419117031'
+                  },
+                  'stripbooks': {
+                    timeFilters: {
+                      '30days': 'p_n_publication_date%3A1778535031',
+                      '90days': 'p_n_publication_date%3A1778536031'
+                    },
+                    sellerFilter: ' ',
+                    reviewsFilter: 'p_72%3A184738031',
+                    sortOrders: [
+                        {value: '', text: 'Default (None)'},
+                        {value: 'featured', text: 'Featured'},
+                        {value: 'exact-aware-popularity-rank', text: 'Best Sellers'},
+                        {value: 'most-purchased-rank', text: 'Most Purchased Rank'},
+                        {value: 'review-rank', text: 'Avg Review Rank'},
+                        {value: 'review-count-rank', text: 'Most Reviews'},
+                        {value: 'date-desc-rank', text: 'Publication Date'},
+                        {value: 'salesrank', text: 'Sales Rank'}
                     ]
+                  }
                 },
-                'electronics': {
-                    displayName: 'High-Tech',
-                    categories: []
+                // Department to Product mappings for DE
+                productTypeToDepartment: {
+                'KDP': 'stripbooks',
+                /*'tshirt': {department: 'fashion', category: '1731104031'},*/
+                'tshirt': 'fashion',
+                'tanktop': 'fashion',
+                'longsleeve': 'fashion',
+                'raglan': 'fashion',
+                'sweatshirt': 'fashion',
+                'hoodie': 'fashion',
+                'ziphoodie': 'fashion',
+                'popsocket': 'electronics',
+                'case': 'electronics'
                 },
-                'kitchen': {
-                    displayName: 'Cuisine & maison',
-                    categories: []
-                },
-                // 'stripbooks-intl-ship' MRB uses this FR
-                'stripbooks': {
-                    displayName: 'Livres (KDP)',
-                    categories: [
-                        {value: '8434456031', text: 'Calendriers et Agendas'},
-                        {value: '301137', text: 'Livres pour enfants'}, //76742011
-                        {value: '355635011', text: 'Loisirs créatifs, décoration et maison'} //81247011
-                    ]
-                },
-                '': {
-                    displayName: 'All (No Department)',
-                    categories: []
-                }
-            },
-            // Brands to exclude for FR
-            excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
-            // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for FR
-            departmentSettings: {
-                'electronics': {
-                timeFilters: {
-                  '30days': 'p_n_date_first_available_absolute%3A437884031',
-                  '90days': 'p_n_date_first_available_absolute%3A437885031'
-                },
-                reviewsFilter: 'p_72%3A437873031'
-              },
-                'kitchen': {
-                timeFilters: {
-                  '30days': 'p_n_date_first_available_absolute%3A437884031',
-                  '90days': 'p_n_date_first_available_absolute%3A437885031'
-                },
-                reviewsFilter: 'p_72%3A437873031'
-              },
-              'stripbooks': {
-                timeFilters: {
-                  '30days': 'p_n_publication_date%3A183196031',
-                  '90days': 'p_n_publication_date%3A183197031'
-                },
-                sellerFilter: ' ',
-                reviewsFilter: 'p_72%3A184904031',
-                sortOrders: [
-                    {value: '', text: 'Default (None)'},
-                    {value: 'featured', text: 'Featured'},
-                    {value: 'exact-aware-popularity-rank', text: 'Best Sellers'},
-                    {value: 'most-purchased-rank', text: 'Most Purchased Rank'},
-                    {value: 'review-rank', text: 'Avg Review Rank'},
-                    {value: 'review-count-rank', text: 'Most Reviews'},
-                    {value: 'date-desc-rank', text: 'Publication Date'},
-                    {value: 'salesrank', text: 'Sales Rank'}
-                ]
-              }
-            },
-            // Department to Product mappings for FR
-            productTypeToDepartment: {
-            'KDP': 'stripbooks',
-            /*'tshirt': {department: 'fashion', category: '1731104031'},*/
-            'tshirt': 'fashion',
-            'tanktop': 'fashion',
-            'longsleeve': 'fashion',
-            'raglan': 'fashion',
-            'sweatshirt': 'fashion',
-            'hoodie': 'fashion',
-            'ziphoodie': 'fashion',
-            'popsocket': 'electronics',
-            'case': 'electronics'
-            },
-            departmentToProductType: {
-                'stripbooks': 'KDP'
-            }
-            /* OLD ONE productTypeMappings: {
-                'stripbooks': 'KDP'
-            }*/
-        },
-        'it': { // IT
-            timeFilters: {
-                // 'last7days': 'p_n_date_first_available_absolute%3A13827471031',
-                '30days': 'p_n_date_first_available_absolute%3A13827472031',
-                '90days': 'p_n_date_first_available_absolute%3A13827473031'
-            },
-            sellerFilter: 'p_6%3AA11IL2PNWYJU7H',
-            reviewsFilter: 'p_72%3A490205031',
-            // Product type keywords specific to IT
-            productTypeKeywords: {
-                'tshirt': 'Leggera, taglio classico, maniche con doppia cucitura e orlo inferiore+-lunga+-Raglan+-Collo+-Canotta',
-                'tanktop': '"Canotta"+Leggera, taglio classico, maniche con doppia cucitura e orlo inferiore+-lunga+-Raglan+-collo',
-                'longsleeve': '"lunga"+Leggera, taglio classico, maniche con doppia cucitura e orlo inferiore+-Raglan+-collo+-Felpa+-canotta+maglietta',
-                'raglan': '"Raglan"+Leggera, taglio classico, maniche con doppia cucitura e orlo inferiore+-collo+-canotta',
-                'sweatshirt': '"Felpa"+241 g, taglio classico, collo rinforzato con nastro in twill+-Raglan+-canotta+-Cappuccio',
-                'hoodie': '"Cappuccio"+241 g, taglio classico, collo rinforzato con nastro in twill+-Raglan+-canotta+-zip',
-                'ziphoodie': '"Cappuccio"+"zip"+241 g, taglio classico, collo rinforzato con nastro in twill+-Raglan+-canotta',
-                'popsocket': '"Popsocket"+Il coperchio stampato è intercambiabile con altri modelli di PopGrip compatibili. Basta premere piatto, ruotare di 90 gradi fino a sentire uno scatto e rimuoverlo per sostituirlo.',
-                'case': '"custodia"+"Custodia protettiva pieghevole, in stile portafoglio, fatta da policarbonato antigraffio di alta qualità ed un rivestimento in TPU assorbente agli urti. Attutisce i colpi e protegge da cadute accidentali"', //"Merch di Amazon"
-                'KDP': '"independently+published"'
-            },
-            // Sort orders for IT
-            sortOrders: 
-                [{
-                    value: 'featured',
-                    text: 'Featured'
-                },
-                {
-                    value: 'date-desc-rank',
-                    text: 'Newest Arrivals'
-                },
-                {
-                    value: 'most-purchased-rank',
-                    text: 'Most Purchased Rank'
-                },
-                {
-                    value: 'exact-aware-popularity-rank',
-                    text: 'Best Sellers'
-                },
-                {
-                    value: 'review-rank',
-                    text: 'Top Rated (Avg Review Rank)'
-                },
-                {
-                    value: 'review-count-rank',
-                    text: 'Most Reviews Count Rank'
-                },
-                {
-                    value: 'date-asc-rank',
-                    text: 'Oldest First'
-                },
-                {
-                    value: 'featured-rank',
-                    text: 'Featured (featured-rank)'
-                },
-                {
-                    value: 'most-wished-for-rank',
-                    text: 'Most Wished For Rank'
-                },
-                {
-                    value: 'custom',
-                    text: 'NONE'
-                }
-            ],
-            // Departments and categories for IT
-            categories: {
-                'fashion': {
-                    displayName: 'Fashion',
-                    categories: [
-                        {value: '2892860031', text: 'Specific clothing'}
-                        /*{value: '2892862031', text: 'Men'},
-                        {value: '2892859031', text: 'Women'},
-                        {value: '2892858031', text: 'Boys'},
-                        {value: '2892857031', text: 'Girls'},*/
-                    ]
-                },
-                'electronics': {
-                    displayName: 'Electronics',
-                    categories: []
-                },
-                'kitchen': {
-                    displayName: 'Home & Kitchen',
-                    categories: []
-                },
-                // 'stripbooks-intl-ship' MRB uses this IT
-                'stripbooks': {
-                    displayName: 'Books (KDP)',
-                    categories: [
-                        {value: '508791031', text: 'Calendars & Agendas'},
-                        {value: '508715031', text: 'Children Books'},
-                        {value: '508821031', text: 'Hobbies & free time'}
-                    ]
-                },
-                '': {
-                    displayName: 'All (No Department)',
-                    categories: []
+                departmentToProductType: {
+                    'stripbooks': 'KDP'
                 }
             },
-            // Brands to exclude for IT
-            excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
-            // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for IT
-            departmentSettings: {
-                'electronics': {
+            'fr': { // FR
                 timeFilters: {
-                  '30days': 'p_n_date_first_available_absolute%3A490216031',
-                  '90days': 'p_n_date_first_available_absolute%3A490217031'
+                    '30days': 'p_n_date_first_available_absolute%3A13827697031',
+                    '90days': 'p_n_date_first_available_absolute%3A13827698031'
                 },
-                reviewsFilter: 'p_72%3A490205031'
-              },
-                'kitchen': {
-                timeFilters: {
-                  '30days': 'p_n_date_first_available_absolute%3A490216031',
-                  '90days': 'p_n_date_first_available_absolute%3A490217031'
+                sellerFilter: 'p_6%3AA1X6FK5RDHNB96',
+                reviewsFilter: 'p_72%3A437873031',
+                // Product type keywords specific to FR
+                productTypeKeywords: {
+                    'tshirt': 'Léger,+Coupe+classique,+manche+à+double+couture+et+ourlet+la+base+-Longue+-Raglan+-ColenV+-Débardeur',
+                    'tanktop': '"Débardeur"+Léger,+Coupe+classique,+manche+à+double+couture+et+ourlet+la+base+-Longue+-Raglan+-ColenV',
+                    'longsleeve': '"Longue"+Léger,+Coupe+classique,+manche+à+double+couture+et+ourlet+la+base+-Raglan+-ColenV+-sweatshirt+-Débardeur',
+                    'raglan': '"Raglan"+Léger,+Coupe+classique,+manche+à+double+couture+et+ourlet+la+base+-ColenV+-Débardeur',
+                    'sweatshirt': '"sweatshirt"+241 g, coupe classique, col tissé+-Raglan+-ColenV+-Débardeur+-Capuche',
+                    'hoodie': '"Capuche"+241 g, coupe classique, col tissé+-Raglan+-ColenV+-Débardeur+-zip',
+                    'ziphoodie': '"Capuche"+"zip"+241 g, coupe classique, col tissé+-Raglan+-ColenV+-Débardeur',
+                    'popsocket': '"Popsocket"+Le dessus imprimé est interchangeable avec d\'autres modèles de PopGrip compatibles. Il suffit d\'appuyer à plat, de tourner de 90 degrés jusqu\'à entendre un clic et de le retirer pour l\'échanger.',
+                    'case': '"Coque"+Coque de protection en deux parties composé d\'une coque en polycarbonate de première qualité résistant aux rayures et d\'une doublure en TPU absorbant les chocs et protégeant contre les chutes+"Merch par Amazon"',
+                    'KDP': '"independently+published"'
                 },
-                reviewsFilter: 'p_72%3A490205031'
-              },
-              'stripbooks': {
+                // Sort orders for FR
+                sortOrders: 
+                    [{
+                        value: 'featured',
+                        text: 'Featured'
+                    },
+                    {
+                        value: 'date-desc-rank',
+                        text: 'Newest Arrivals'
+                    },
+                    {
+                        value: 'most-purchased-rank',
+                        text: 'Most Purchased Rank'
+                    },
+                    {
+                        value: 'exact-aware-popularity-rank',
+                        text: 'Best Sellers'
+                    },
+                    {
+                        value: 'review-rank',
+                        text: 'Top Rated (Avg Review Rank)'
+                    },
+                    {
+                        value: 'review-count-rank',
+                        text: 'Most Reviews Count Rank'
+                    },
+                    {
+                        value: 'date-asc-rank',
+                        text: 'Oldest First'
+                    },
+                    {
+                        value: 'featured-rank',
+                        text: 'Featured (featured-rank)'
+                    },
+                    {
+                        value: 'most-wished-for-rank',
+                        text: 'Most Wished For Rank'
+                    },
+                    {
+                        value: 'custom',
+                        text: 'NONE'
+                    }
+                ],
+                // Departments and categories for FR
+                categories: {
+                    'fashion': {
+                        displayName: 'Mode',
+                        categories: [
+                            {value: '465090031', text: 'Fantaisie'},
+                            /*{value: '436560031', text: 'Homme'},
+                            {value: '436559031', text: 'Femme'},
+                            {value: '436562031', text: 'Garçon'},
+                            {value: '436561031', text: 'Fille'},*/
+                            {value: '436564031', text: 'Vêtements techniques et spéciaux'}
+                        ]
+                    },
+                    'electronics': {
+                        displayName: 'High-Tech',
+                        categories: []
+                    },
+                    'kitchen': {
+                        displayName: 'Cuisine & maison',
+                        categories: []
+                    },
+                    // 'stripbooks-intl-ship' MRB uses this FR
+                    'stripbooks': {
+                        displayName: 'Livres (KDP)',
+                        categories: [
+                            {value: '8434456031', text: 'Calendriers et Agendas'},
+                            {value: '301137', text: 'Livres pour enfants'}, //76742011
+                            {value: '355635011', text: 'Loisirs créatifs, décoration et maison'} //81247011
+                        ]
+                    },
+                    '': {
+                        displayName: 'All (No Department)',
+                        categories: []
+                    }
+                },
+                // Brands to exclude for FR
+                excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
+                // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for FR
+                departmentSettings: {
+                    'electronics': {
+                    timeFilters: {
+                      '30days': 'p_n_date_first_available_absolute%3A437884031',
+                      '90days': 'p_n_date_first_available_absolute%3A437885031'
+                    },
+                    reviewsFilter: 'p_72%3A437873031'
+                  },
+                    'kitchen': {
+                    timeFilters: {
+                      '30days': 'p_n_date_first_available_absolute%3A437884031',
+                      '90days': 'p_n_date_first_available_absolute%3A437885031'
+                    },
+                    reviewsFilter: 'p_72%3A437873031'
+                  },
+                  'stripbooks': {
+                    timeFilters: {
+                      '30days': 'p_n_publication_date%3A183196031',
+                      '90days': 'p_n_publication_date%3A183197031'
+                    },
+                    sellerFilter: ' ',
+                    reviewsFilter: 'p_72%3A184904031',
+                    sortOrders: [
+                        {value: '', text: 'Default (None)'},
+                        {value: 'featured', text: 'Featured'},
+                        {value: 'exact-aware-popularity-rank', text: 'Best Sellers'},
+                        {value: 'most-purchased-rank', text: 'Most Purchased Rank'},
+                        {value: 'review-rank', text: 'Avg Review Rank'},
+                        {value: 'review-count-rank', text: 'Most Reviews'},
+                        {value: 'date-desc-rank', text: 'Publication Date'},
+                        {value: 'salesrank', text: 'Sales Rank'}
+                    ]
+                  }
+                },
+                // Department to Product mappings for FR
+                productTypeToDepartment: {
+                'KDP': 'stripbooks',
+                /*'tshirt': {department: 'fashion', category: '1731104031'},*/
+                'tshirt': 'fashion',
+                'tanktop': 'fashion',
+                'longsleeve': 'fashion',
+                'raglan': 'fashion',
+                'sweatshirt': 'fashion',
+                'hoodie': 'fashion',
+                'ziphoodie': 'fashion',
+                'popsocket': 'electronics',
+                'case': 'electronics'
+                },
+                departmentToProductType: {
+                    'stripbooks': 'KDP'
+                }
+            },
+            'it': { // IT
                 timeFilters: {
-                  '30days': 'p_n_date%3A510380031',
-                  '90days': 'p_n_date%3A510381031'
+                    // 'last7days': 'p_n_date_first_available_absolute%3A13827471031',
+                    '30days': 'p_n_date_first_available_absolute%3A13827472031',
+                    '90days': 'p_n_date_first_available_absolute%3A13827473031'
                 },
                 sellerFilter: 'p_6%3AA11IL2PNWYJU7H',
                 reviewsFilter: 'p_72%3A490205031',
-                sortOrders: [
-                    {value: '', text: 'Default (None)'},
-                    {value: 'featured', text: 'Featured'},
-                    {value: 'exact-aware-popularity-rank', text: 'Best Sellers'},
-                    {value: 'most-purchased-rank', text: 'Most Purchased Rank'},
-                    {value: 'review-rank', text: 'Avg Review Rank'},
-                    {value: 'review-count-rank', text: 'Most Reviews'},
-                    {value: 'date-desc-rank', text: 'Publication Date'},
-                    {value: 'salesrank', text: 'Sales Rank'}
-                ]
-              }
-            },
-            // Department to Product mappings for IT
-            productTypeToDepartment: {
-            'KDP': 'stripbooks',
-            /*'tshirt': {department: 'fashion', category: '1731104031'},*/
-            'tshirt': 'fashion',
-            'tanktop': 'fashion',
-            'longsleeve': 'fashion',
-            'raglan': 'fashion',
-            'sweatshirt': 'fashion',
-            'hoodie': 'fashion',
-            'ziphoodie': 'fashion',
-            'popsocket': 'electronics',
-            'case': 'electronics'
-            },
-            departmentToProductType: {
-                'stripbooks': 'KDP'
-            }
-            /* OLD ONE productTypeMappings: {
-                'stripbooks': 'KDP'
-            }*/
-        },
-        'es': { // ES
-            timeFilters: {
-                //'7days': 'p_n_date_first_available_absolute%3A13827712031',
-                '30days': 'p_n_date_first_available_absolute%3A13827713031',
-                '90days': 'p_n_date_first_available_absolute%3A13827714031'
-            },
-            sellerFilter: 'p_6%3AA1AT7YVPFBWXBL',
-            reviewsFilter: 'p_72%3A831280031',
-            // Product type keywords specific to ES
-            productTypeKeywords: {
-                'tshirt': 'Ligero, Encaje clasico, Manga de doble puntada y bastilla baja+-Larga+-Raglan+-Cuello-V+-sin',
-                'tanktop': '"sin Mangas"+Ligero, Encaje clasico, Manga de doble puntada y bastilla baja+-Larga+-Raglan+-Cuello-V',
-                'longsleeve': '"Manga Larga"+Ligero, Encaje clasico, Manga de doble puntada y bastilla baja+-Raglan+-Cuello+-Sudadera+-sin',
-                'raglan': '"raglan"+Ligero, Encaje clasico, manga de doble puntada y bastilla baja+-Cuello+-sin',
-                'sweatshirt': '"Sudadera"+241 gr, Encaje clasico, Cinta de sarga en el cuello+-Raglan+-Mangas+-Capucha', // '"sweatshirt"+8.5 oz, classic cut+-Raglan+-Vneck+-Tanktop+-hoodie',
-                'hoodie': '"Capucha"+241 gr, Encaje clasico, Cinta de sarga en el cuello+-Raglan+-Mangas+-cremallera',
-                'ziphoodie': '"Capucha"+"cremallera"+241 gr, Encaje clasico, Cinta de sarga en el cuello+-Raglan+-Mangas',
-                'popsocket': '"Popsocket"+El respaldo adhesivo fija el PopGrip a tu funda o dispositivo. No se adhiere a fundas de silicona, cuero, impermeables o con mucha textura. Funciona mejor con fundas lisas, duras y de plástico.',
-                'case': '"Carcasa"+Funda+protectora+de+dos+piezas+fabricada+con+una+carcasa+de+policarbonato+de+primera+calidad+resistente+a+los+arañazos+y+un+revestimiento+de+TPU+amortiguador+que+protege+contra+las+caídas+"Merch+por+Amazon"',
-                'KDP': '"independently+published"'
-            },
-            // Sort orders for ES
-            sortOrders: [{
-                    value: 'featured',
-                    text: 'Featured'
+                // Product type keywords specific to IT
+                productTypeKeywords: {
+                    'tshirt': 'Leggera, taglio classico, maniche con doppia cucitura e orlo inferiore+-lunga+-Raglan+-Collo+-Canotta',
+                    'tanktop': '"Canotta"+Leggera, taglio classico, maniche con doppia cucitura e orlo inferiore+-lunga+-Raglan+-collo',
+                    'longsleeve': '"lunga"+Leggera, taglio classico, maniche con doppia cucitura e orlo inferiore+-Raglan+-collo+-Felpa+-canotta+maglietta',
+                    'raglan': '"Raglan"+Leggera, taglio classico, maniche con doppia cucitura e orlo inferiore+-collo+-canotta',
+                    'sweatshirt': '"Felpa"+241 g, taglio classico, collo rinforzato con nastro in twill+-Raglan+-canotta+-Cappuccio',
+                    'hoodie': '"Cappuccio"+241 g, taglio classico, collo rinforzato con nastro in twill+-Raglan+-canotta+-zip',
+                    'ziphoodie': '"Cappuccio"+"zip"+241 g, taglio classico, collo rinforzato con nastro in twill+-Raglan+-canotta',
+                    'popsocket': '"Popsocket"+Il coperchio stampato è intercambiabile con altri modelli di PopGrip compatibili. Basta premere piatto, ruotare di 90 gradi fino a sentire uno scatto e rimuoverlo per sostituirlo.',
+                    'case': '"custodia"+"Custodia protettiva pieghevole, in stile portafoglio, fatta da policarbonato antigraffio di alta qualità ed un rivestimento in TPU assorbente agli urti. Attutisce i colpi e protegge da cadute accidentali"', //"Merch di Amazon"
+                    'KDP': '"independently+published"'
                 },
-                {
-                    value: 'date-desc-rank',
-                    text: 'Newest Arrivals'
+                // Sort orders for IT
+                sortOrders: 
+                    [{
+                        value: 'featured',
+                        text: 'Featured'
+                    },
+                    {
+                        value: 'date-desc-rank',
+                        text: 'Newest Arrivals'
+                    },
+                    {
+                        value: 'most-purchased-rank',
+                        text: 'Most Purchased Rank'
+                    },
+                    {
+                        value: 'exact-aware-popularity-rank',
+                        text: 'Best Sellers'
+                    },
+                    {
+                        value: 'review-rank',
+                        text: 'Top Rated (Avg Review Rank)'
+                    },
+                    {
+                        value: 'review-count-rank',
+                        text: 'Most Reviews Count Rank'
+                    },
+                    {
+                        value: 'date-asc-rank',
+                        text: 'Oldest First'
+                    },
+                    {
+                        value: 'featured-rank',
+                        text: 'Featured (featured-rank)'
+                    },
+                    {
+                        value: 'most-wished-for-rank',
+                        text: 'Most Wished For Rank'
+                    },
+                    {
+                        value: 'custom',
+                        text: 'NONE'
+                    }
+                ],
+                // Departments and categories for IT
+                categories: {
+                    'fashion': {
+                        displayName: 'Fashion',
+                        categories: [
+                            {value: '2892860031', text: 'Specific clothing'}
+                            /*{value: '2892862031', text: 'Men'},
+                            {value: '2892859031', text: 'Women'},
+                            {value: '2892858031', text: 'Boys'},
+                            {value: '2892857031', text: 'Girls'},*/
+                        ]
+                    },
+                    'electronics': {
+                        displayName: 'Electronics',
+                        categories: []
+                    },
+                    'kitchen': {
+                        displayName: 'Home & Kitchen',
+                        categories: []
+                    },
+                    // 'stripbooks-intl-ship' MRB uses this IT
+                    'stripbooks': {
+                        displayName: 'Books (KDP)',
+                        categories: [
+                            {value: '508791031', text: 'Calendars & Agendas'},
+                            {value: '508715031', text: 'Children Books'},
+                            {value: '508821031', text: 'Hobbies & free time'}
+                        ]
+                    },
+                    '': {
+                        displayName: 'All (No Department)',
+                        categories: []
+                    }
                 },
-                {
-                    value: 'most-purchased-rank',
-                    text: 'Most Purchased Rank'
-                },
-                {
-                    value: 'exact-aware-popularity-rank',
-                    text: 'Best Sellers'
-                },
-                {
-                    value: 'review-rank',
-                    text: 'Top Rated (Avg Review Rank)'
-                },
-                {
-                    value: 'review-count-rank',
-                    text: 'Most Reviews Count Rank'
-                },
-                {
-                    value: 'date-asc-rank',
-                    text: 'Oldest First'
-                },
-                {
-                    value: 'featured-rank',
-                    text: 'Featured (featured-rank)'
-                },
-                {
-                    value: 'most-wished-for-rank',
-                    text: 'Most Wished For Rank'
-                },
-                {
-                    value: 'custom',
-                    text: 'NONE'
-                }
-            ],
-            // Departments and categories for ES
-            categories: {
-                'fashion': {
-                    displayName: 'Fashion',
-                    categories: [
-                        {value: '3074031031', text: 'Specialzed Clothing'}
-                        /*{value: '3074027031', text: 'Men\'s Clothing'},
-                        {value: '3074028031', text: 'Women\'s Clothing'},
-                        {value: '3074030031', text: 'Boys\' Clothing'},
-                        {value: '3074029031', text: 'Girls\' Clothing'},*/
+                // Brands to exclude for IT
+                excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
+                // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for IT
+                departmentSettings: {
+                    'electronics': {
+                    timeFilters: {
+                      '30days': 'p_n_date_first_available_absolute%3A490216031',
+                      '90days': 'p_n_date_first_available_absolute%3A490217031'
+                    },
+                    reviewsFilter: 'p_72%3A490205031'
+                  },
+                    'kitchen': {
+                    timeFilters: {
+                      '30days': 'p_n_date_first_available_absolute%3A490216031',
+                      '90days': 'p_n_date_first_available_absolute%3A490217031'
+                    },
+                    reviewsFilter: 'p_72%3A490205031'
+                  },
+                  'stripbooks': {
+                    timeFilters: {
+                      '30days': 'p_n_date%3A510380031',
+                      '90days': 'p_n_date%3A510381031'
+                    },
+                    sellerFilter: 'p_6%3AA11IL2PNWYJU7H',
+                    reviewsFilter: 'p_72%3A490205031',
+                    sortOrders: [
+                        {value: '', text: 'Default (None)'},
+                        {value: 'featured', text: 'Featured'},
+                        {value: 'exact-aware-popularity-rank', text: 'Best Sellers'},
+                        {value: 'most-purchased-rank', text: 'Most Purchased Rank'},
+                        {value: 'review-rank', text: 'Avg Review Rank'},
+                        {value: 'review-count-rank', text: 'Most Reviews'},
+                        {value: 'date-desc-rank', text: 'Publication Date'},
+                        {value: 'salesrank', text: 'Sales Rank'}
                     ]
+                  }
                 },
-                'electronics': {
-                    displayName: 'Electronics & Photo',
-                    categories: []
+                // Department to Product mappings for IT
+                productTypeToDepartment: {
+                'KDP': 'stripbooks',
+                /*'tshirt': {department: 'fashion', category: '1731104031'},*/
+                'tshirt': 'fashion',
+                'tanktop': 'fashion',
+                'longsleeve': 'fashion',
+                'raglan': 'fashion',
+                'sweatshirt': 'fashion',
+                'hoodie': 'fashion',
+                'ziphoodie': 'fashion',
+                'popsocket': 'electronics',
+                'case': 'electronics'
                 },
-                'kitchen': {
-                    displayName: 'Home & Kitchen',
-                    categories: []
-                },
-                // 'stripbooks-intl-ship' MRB uses this ES
-                'stripbooks': {
-                    displayName: 'Books (KDP)',
-                    categories: [
-                        {value: '902502031', text: 'Calendars'},
-                        {value: '902621031', text: 'Children\'s Books'},
-                        {value: '902610031', text: 'Home & Garden'}
-                    ]
-                },
-                '': {
-                    displayName: 'All (No Department)',
-                    categories: []
+                departmentToProductType: {
+                    'stripbooks': 'KDP'
                 }
             },
-            // Brands to exclude for ES
-            excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
-            // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for ES
-            departmentSettings: {
-                'electronics': {
+            'es': { // ES
                 timeFilters: {
-                  '30days': 'p_n_date_first_available_absolute%3A831288031',
-                  '90days': 'p_n_date_first_available_absolute%3A831289031'
-                },
-                reviewsFilter: 'p_72%3A831280031'
-              },
-                'kitchen': {
-                timeFilters: {
-                  '30days': 'p_n_date_first_available_absolute%3A831288031',
-                  '90days': 'p_n_date_first_available_absolute%3A831289031'
-                },
-                reviewsFilter: 'p_72%3A831280031'
-              },
-              'stripbooks': {
-                timeFilters: {
-                  '30days': 'p_n_date_first_available_absolute%3A831288031',
-                  '90days': 'p_n_date_first_available_absolute%3A831289031'
+                    //'7days': 'p_n_date_first_available_absolute%3A13827712031',
+                    '30days': 'p_n_date_first_available_absolute%3A13827713031',
+                    '90days': 'p_n_date_first_available_absolute%3A13827714031'
                 },
                 sellerFilter: 'p_6%3AA1AT7YVPFBWXBL',
                 reviewsFilter: 'p_72%3A831280031',
-                sortOrders: [
-                    {value: '', text: 'Default (None)'},
-                    {value: 'featured', text: 'Featured'},
-                    {value: 'exact-aware-popularity-rank', text: 'Best Sellers'},
-                    {value: 'most-purchased-rank', text: 'Most Purchased Rank'},
-                    {value: 'review-rank', text: 'Avg Review Rank'},
-                    {value: 'review-count-rank', text: 'Most Reviews'},
-                    {value: 'date-desc-rank', text: 'Publication Date'},
-                    {value: 'salesrank', text: 'Sales Rank'}
-                ]
-              }
-            },
-            // Department to Product mappings for ES
-            productTypeToDepartment: {
-            'KDP': 'stripbooks',
-            /*'tshirt': {department: 'fashion', category: '1731104031'},*/
-            'tshirt': 'fashion',
-            'tanktop': 'fashion',
-            'longsleeve': 'fashion',
-            'raglan': 'fashion',
-            'sweatshirt': 'fashion',
-            'hoodie': 'fashion',
-            'ziphoodie': 'fashion',
-            'popsocket': 'electronics',
-            'case': 'electronics'
-            },
-            departmentToProductType: {
-                'stripbooks': 'KDP'
+                // Product type keywords specific to ES
+                productTypeKeywords: {
+                    'tshirt': 'Ligero, Encaje clasico, Manga de doble puntada y bastilla baja+-Larga+-Raglan+-Cuello-V+-sin',
+                    'tanktop': '"sin Mangas"+Ligero, Encaje clasico, Manga de doble puntada y bastilla baja+-Larga+-Raglan+-Cuello-V',
+                    'longsleeve': '"Manga Larga"+Ligero, Encaje clasico, Manga de doble puntada y bastilla baja+-Raglan+-Cuello+-Sudadera+-sin',
+                    'raglan': '"raglan"+Ligero, Encaje clasico, manga de doble puntada y bastilla baja+-Cuello+-sin',
+                    'sweatshirt': '"Sudadera"+241 gr, Encaje clasico, Cinta de sarga en el cuello+-Raglan+-Mangas+-Capucha', // '"sweatshirt"+8.5 oz, classic cut+-Raglan+-Vneck+-Tanktop+-hoodie',
+                    'hoodie': '"Capucha"+241 gr, Encaje clasico, Cinta de sarga en el cuello+-Raglan+-Mangas+-cremallera',
+                    'ziphoodie': '"Capucha"+"cremallera"+241 gr, Encaje clasico, Cinta de sarga en el cuello+-Raglan+-Mangas',
+                    'popsocket': '"Popsocket"+El respaldo adhesivo fija el PopGrip a tu funda o dispositivo. No se adhiere a fundas de silicona, cuero, impermeables o con mucha textura. Funciona mejor con fundas lisas, duras y de plástico.',
+                    'case': '"Carcasa"+Funda+protectora+de+dos+piezas+fabricada+con+una+carcasa+de+policarbonato+de+primera+calidad+resistente+a+los+arañazos+y+un+revestimiento+de+TPU+amortiguador+que+protege+contra+las+caídas+"Merch+por+Amazon"',
+                    'KDP': '"independently+published"'
+                },
+                // Sort orders for ES
+                sortOrders: [{
+                        value: 'featured',
+                        text: 'Featured'
+                    },
+                    {
+                        value: 'date-desc-rank',
+                        text: 'Newest Arrivals'
+                    },
+                    {
+                        value: 'most-purchased-rank',
+                        text: 'Most Purchased Rank'
+                    },
+                    {
+                        value: 'exact-aware-popularity-rank',
+                        text: 'Best Sellers'
+                    },
+                    {
+                        value: 'review-rank',
+                        text: 'Top Rated (Avg Review Rank)'
+                    },
+                    {
+                        value: 'review-count-rank',
+                        text: 'Most Reviews Count Rank'
+                    },
+                    {
+                        value: 'date-asc-rank',
+                        text: 'Oldest First'
+                    },
+                    {
+                        value: 'featured-rank',
+                        text: 'Featured (featured-rank)'
+                    },
+                    {
+                        value: 'most-wished-for-rank',
+                        text: 'Most Wished For Rank'
+                    },
+                    {
+                        value: 'custom',
+                        text: 'NONE'
+                    }
+                ],
+                // Departments and categories for ES
+                categories: {
+                    'fashion': {
+                        displayName: 'Fashion',
+                        categories: [
+                            {value: '3074031031', text: 'Specialzed Clothing'}
+                            /*{value: '3074027031', text: 'Men\'s Clothing'},
+                            {value: '3074028031', text: 'Women\'s Clothing'},
+                            {value: '3074030031', text: 'Boys\' Clothing'},
+                            {value: '3074029031', text: 'Girls\' Clothing'},*/
+                        ]
+                    },
+                    'electronics': {
+                        displayName: 'Electronics & Photo',
+                        categories: []
+                    },
+                    'kitchen': {
+                        displayName: 'Home & Kitchen',
+                        categories: []
+                    },
+                    // 'stripbooks-intl-ship' MRB uses this ES
+                    'stripbooks': {
+                        displayName: 'Books (KDP)',
+                        categories: [
+                            {value: '902502031', text: 'Calendars'},
+                            {value: '902621031', text: 'Children\'s Books'},
+                            {value: '902610031', text: 'Home & Garden'}
+                        ]
+                    },
+                    '': {
+                        displayName: 'All (No Department)',
+                        categories: []
+                    }
+                },
+                // Brands to exclude for ES
+                excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
+                // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for ES
+                departmentSettings: {
+                    'electronics': {
+                    timeFilters: {
+                      '30days': 'p_n_date_first_available_absolute%3A831288031',
+                      '90days': 'p_n_date_first_available_absolute%3A831289031'
+                    },
+                    reviewsFilter: 'p_72%3A831280031'
+                  },
+                    'kitchen': {
+                    timeFilters: {
+                      '30days': 'p_n_date_first_available_absolute%3A831288031',
+                      '90days': 'p_n_date_first_available_absolute%3A831289031'
+                    },
+                    reviewsFilter: 'p_72%3A831280031'
+                  },
+                  'stripbooks': {
+                    timeFilters: {
+                      '30days': 'p_n_date_first_available_absolute%3A831288031',
+                      '90days': 'p_n_date_first_available_absolute%3A831289031'
+                    },
+                    sellerFilter: 'p_6%3AA1AT7YVPFBWXBL',
+                    reviewsFilter: 'p_72%3A831280031',
+                    sortOrders: [
+                        {value: '', text: 'Default (None)'},
+                        {value: 'featured', text: 'Featured'},
+                        {value: 'exact-aware-popularity-rank', text: 'Best Sellers'},
+                        {value: 'most-purchased-rank', text: 'Most Purchased Rank'},
+                        {value: 'review-rank', text: 'Avg Review Rank'},
+                        {value: 'review-count-rank', text: 'Most Reviews'},
+                        {value: 'date-desc-rank', text: 'Publication Date'},
+                        {value: 'salesrank', text: 'Sales Rank'}
+                    ]
+                  }
+                },
+                // Department to Product mappings for ES
+                productTypeToDepartment: {
+                'KDP': 'stripbooks',
+                /*'tshirt': {department: 'fashion', category: '1731104031'},*/
+                'tshirt': 'fashion',
+                'tanktop': 'fashion',
+                'longsleeve': 'fashion',
+                'raglan': 'fashion',
+                'sweatshirt': 'fashion',
+                'hoodie': 'fashion',
+                'ziphoodie': 'fashion',
+                'popsocket': 'electronics',
+                'case': 'electronics'
+                },
+                departmentToProductType: {
+                    'stripbooks': 'KDP'
+                }
             }
-            /* OLD ONE productTypeMappings: {
-                'stripbooks': 'KDP'
-            }*/
-        }
-        /*'co.jp': { // JP
-            timeFilters: {
-                //'7days': 'p_n_date_first_available_absolute%3A2228610051',
-                '30days': 'p_n_date_first_available_absolute%3A5340692051',
-                //'60days': 'p_n_date_first_available_absolute%3A5340693051',
-                '90days': 'p_n_date_first_available_absolute%3A5340693051'
-            },
-            sellerFilter: 'p_6%3AAN1VRQENFRJN5',
-            reviewsFilter: 'p_72%3A2250897051',
-            // Product type keywords specific to JP
-            productTypeKeywords: {
-                'tshirt': 'Tシャツ+-Longsleeve+-Raglan+-Vneck+-Tanktop',
-                'tanktop': '"tank+top"+Lightweight,+classic+cut+tank+top,+double+stitched+sleeves+and+hem+-Longsleeve+-Raglan+-V-neck',
-                'longsleeve': '"Long+sleeve"+Classic+cut,+double+stitched+hem+-Raglan+-Vneck+-sweatshirt+-tanktop',
-                'raglan': '"raglan"+leichter, klassischer Schnitt, doppelt genähte Ärmel und Saumabschluss+-Longsleeve+-Vneck+-Tanktop',
-                'sweatshirt': '"sweatshirt"+8.5 oz, Klassisch geschnitten+-Raglan+-Vneck+-Tanktop+-hoodie', // '"sweatshirt"+8.5 oz, classic cut+-Raglan+-Vneck+-Tanktop+-hoodie',
-                'hoodie': '"pullover+hoodie"+8.5 oz, Klassisch geschnitten, doppelt genähter Saum+-Raglan+-Vneck+-Tanktop+-zip',
-                'ziphoodie': '"Kapuzenjacke"+241gr leichter, klassischer Schnitt; verstärkter Nacken+-Raglan+-Vneck+-Tanktop',
-                'popsocket': '"Popsocket"+Advanced adhesive allows for easy removal and reapplication to a different position on most phones and phone cases.',
-                'case': 'case merch von amazon',// '"case"+Die zweiteilige Schutzhülle aus einer hochwertigen, kratzfesten Polycarbonatschale und einer stoßdämpfenden TPU-Auskleidung schützt vor Stürzen+"Merch von Amazon"', // '"case"+"The two-piece protective case made from a high quality scratch resistant polycarbonate shell and shock absorbing TPU liner protects against drops"+"Merch von Amazon"',
-                'KDP': '"independently+published"'
-            },
-            // Sort orders for JP
-            sortOrders: [{
-                    value: 'featured',
-                    text: 'Featured'
-                },
-                {
-                    value: 'date-desc-rank',
-                    text: 'Newest Arrivals'
-                },
-                {
-                    value: 'most-purchased-rank',
-                    text: 'Most Purchased Rank'
-                },
-                {
-                    value: 'exact-aware-popularity-rank',
-                    text: 'Best Sellers'
-                },
-                {
-                    value: 'review-rank',
-                    text: 'Top Rated (Avg Review Rank)'
-                },
-                {
-                    value: 'review-count-rank',
-                    text: 'Most Reviews Count Rank'
-                },
-                {
-                    value: 'date-asc-rank',
-                    text: 'Oldest First'
-                },
-                {
-                    value: 'featured-rank',
-                    text: 'Featured (featured-rank)'
-                },
-                {
-                    value: 'most-wished-for-rank',
-                    text: 'Most Wished For Rank'
-                },
-                {
-                    value: 'custom',
-                    text: 'NONE'
-                }
-            ],
-            // Departments and categories for JP
-            categories: {
-                'fashion': {
-                    displayName: 'Fashion',
-                    categories: [
-                        {value: '2229202051%2Cn%3A2230005051%2Cn%3A2131417051%2Cn%3A5347828051%2Cn%3A2131436051', text: 'T-shirts'},
-                        {value: '1981473031', text: 'Novelty'},
-                        //{value: '1730929031', text: 'Men\'s Clothing'},
-                        //{value: '1731296031', text: 'Women\'s Clothing'},
-                        //{value: '1730756031', text: 'Boys\' Clothing'},
-                        //{value: '1730841031', text: 'Girls\' Clothing'},
-                        {value: '1981410031', text: 'Novelty & Special Use'}
-                    ]
-                },
-                'electronics': {
-                    displayName: 'Electronics & Photo',
-                    categories: []
-                },
-                'kitchen': {
-                    displayName: 'Home & Kitchen',
-                    categories: []
-                },
-                // 'stripbooks-intl-ship' MRB uses this JP
-                'stripbooks': {
-                    displayName: 'Books (KDP)',
-                    categories: [
-                        {value: '507848', text: 'Calendars'},
-                        {value: '69', text: 'Children\'s Books'},
-                        {value: '64', text: 'Home & Garden'}
-                    ]
-                },
-                '': {
-                    displayName: 'All (No Department)',
-                    categories: []
-                }
-            },
-            // Brands to exclude for JP
-            excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
-            // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for JP
-            departmentSettings: {
-              'stripbooks': {
+            /*'co.jp': { // JP
                 timeFilters: {
-                  '30days': 'p_n_publication_date%3A1778535031',
-                  '90days': 'p_n_publication_date%3A1778536031'
+                    //'7days': 'p_n_date_first_available_absolute%3A2228610051',
+                    '30days': 'p_n_date_first_available_absolute%3A5340692051',
+                    //'60days': 'p_n_date_first_available_absolute%3A5340693051',
+                    '90days': 'p_n_date_first_available_absolute%3A5340693051'
                 },
-                sellerFilter: ' ',
-                reviewsFilter: 'p_72%3A184738031',
-                sortOrders: [
-                    {value: '', text: 'Default (None)'},
-                    {value: 'featured', text: 'Featured'},
-                    {value: 'exact-aware-popularity-rank', text: 'Best Sellers'},
-                    {value: 'most-purchased-rank', text: 'Most Purchased Rank'},
-                    {value: 'review-rank', text: 'Avg Review Rank'},
-                    {value: 'review-count-rank', text: 'Most Reviews'},
-                    {value: 'date-desc-rank', text: 'Publication Date'},
-                    {value: 'salesrank', text: 'Sales Rank'}
-                ]
-              }
-            },
-            // Department to Product mappings for JP
-            productTypeToDepartment: {
-            'KDP': 'stripbooks',
-            //'tshirt': {department: 'fashion', category: '1731104031'},
-            'tshirt': {department: 'fashion', category: '2229202051%2Cn%3A2230005051%2Cn%3A2131417051%2Cn%3A5347828051%2Cn%3A2131436051'},
-            'tanktop': 'fashion',
-            'longsleeve': 'fashion',
-            'raglan': 'fashion',
-            'sweatshirt': 'fashion',
-            'hoodie': 'fashion',
-            'ziphoodie': 'fashion',
-            'popsocket': 'electronics',
-            'case': 'electronics'
-            },
-            departmentToProductType: {
-                'stripbooks': 'KDP'
-            }
-            // OLD ONE productTypeMappings: {
-            //    'stripbooks': 'KDP'
-            // }
-        }*/
-};
+                sellerFilter: 'p_6%3AAN1VRQENFRJN5',
+                reviewsFilter: 'p_72%3A2250897051',
+                // Product type keywords specific to JP
+                productTypeKeywords: {
+                    'tshirt': 'Tシャツ+-Longsleeve+-Raglan+-Vneck+-Tanktop',
+                    'tanktop': '"tank+top"+Lightweight,+classic+cut+tank+top,+double+stitched+sleeves+and+hem+-Longsleeve+-Raglan+-V-neck',
+                    'longsleeve': '"Long+sleeve"+Classic+cut,+double+stitched+hem+-Raglan+-Vneck+-sweatshirt+-tanktop',
+                    'raglan': '"raglan"+leichter, klassischer Schnitt, doppelt genähte Ärmel und Saumabschluss+-Longsleeve+-Vneck+-Tanktop',
+                    'sweatshirt': '"sweatshirt"+8.5 oz, Klassisch geschnitten+-Raglan+-Vneck+-Tanktop+-hoodie', // '"sweatshirt"+8.5 oz, classic cut+-Raglan+-Vneck+-Tanktop+-hoodie',
+                    'hoodie': '"pullover+hoodie"+8.5 oz, Klassisch geschnitten, doppelt genähter Saum+-Raglan+-Vneck+-Tanktop+-zip',
+                    'ziphoodie': '"Kapuzenjacke"+241gr leichter, klassischer Schnitt; verstärkter Nacken+-Raglan+-Vneck+-Tanktop',
+                    'popsocket': '"Popsocket"+Advanced adhesive allows for easy removal and reapplication to a different position on most phones and phone cases.',
+                    'case': 'case merch von amazon',// '"case"+Die zweiteilige Schutzhülle aus einer hochwertigen, kratzfesten Polycarbonatschale und einer stoßdämpfenden TPU-Auskleidung schützt vor Stürzen+"Merch von Amazon"', // '"case"+"The two-piece protective case made from a high quality scratch resistant polycarbonate shell and shock absorbing TPU liner protects against drops"+"Merch von Amazon"',
+                    'KDP': '"independently+published"'
+                },
+                // Sort orders for JP
+                sortOrders: [{
+                        value: 'featured',
+                        text: 'Featured'
+                    },
+                    {
+                        value: 'date-desc-rank',
+                        text: 'Newest Arrivals'
+                    },
+                    {
+                        value: 'most-purchased-rank',
+                        text: 'Most Purchased Rank'
+                    },
+                    {
+                        value: 'exact-aware-popularity-rank',
+                        text: 'Best Sellers'
+                    },
+                    {
+                        value: 'review-rank',
+                        text: 'Top Rated (Avg Review Rank)'
+                    },
+                    {
+                        value: 'review-count-rank',
+                        text: 'Most Reviews Count Rank'
+                    },
+                    {
+                        value: 'date-asc-rank',
+                        text: 'Oldest First'
+                    },
+                    {
+                        value: 'featured-rank',
+                        text: 'Featured (featured-rank)'
+                    },
+                    {
+                        value: 'most-wished-for-rank',
+                        text: 'Most Wished For Rank'
+                    },
+                    {
+                        value: 'custom',
+                        text: 'NONE'
+                    }
+                ],
+                // Departments and categories for JP
+                categories: {
+                    'fashion': {
+                        displayName: 'Fashion',
+                        categories: [
+                            {value: '2229202051%2Cn%3A2230005051%2Cn%3A2131417051%2Cn%3A5347828051%2Cn%3A2131436051', text: 'T-shirts'},
+                            {value: '1981473031', text: 'Novelty'},
+                            //{value: '1730929031', text: 'Men\'s Clothing'},
+                            //{value: '1731296031', text: 'Women\'s Clothing'},
+                            //{value: '1730756031', text: 'Boys\' Clothing'},
+                            //{value: '1730841031', text: 'Girls\' Clothing'},
+                            {value: '1981410031', text: 'Novelty & Special Use'}
+                        ]
+                    },
+                    'electronics': {
+                        displayName: 'Electronics & Photo',
+                        categories: []
+                    },
+                    'kitchen': {
+                        displayName: 'Home & Kitchen',
+                        categories: []
+                    },
+                    // 'stripbooks-intl-ship' MRB uses this JP
+                    'stripbooks': {
+                        displayName: 'Books (KDP)',
+                        categories: [
+                            {value: '507848', text: 'Calendars'},
+                            {value: '69', text: 'Children\'s Books'},
+                            {value: '64', text: 'Home & Garden'}
+                        ]
+                    },
+                    '': {
+                        displayName: 'All (No Department)',
+                        categories: []
+                    }
+                },
+                // Brands to exclude for JP
+                excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha',
+                // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for JP
+                departmentSettings: {
+                  'stripbooks': {
+                    timeFilters: {
+                      '30days': 'p_n_publication_date%3A1778535031',
+                      '90days': 'p_n_publication_date%3A1778536031'
+                    },
+                    sellerFilter: ' ',
+                    reviewsFilter: 'p_72%3A184738031',
+                    sortOrders: [
+                        {value: '', text: 'Default (None)'},
+                        {value: 'featured', text: 'Featured'},
+                        {value: 'exact-aware-popularity-rank', text: 'Best Sellers'},
+                        {value: 'most-purchased-rank', text: 'Most Purchased Rank'},
+                        {value: 'review-rank', text: 'Avg Review Rank'},
+                        {value: 'review-count-rank', text: 'Most Reviews'},
+                        {value: 'date-desc-rank', text: 'Publication Date'},
+                        {value: 'salesrank', text: 'Sales Rank'}
+                    ]
+                  }
+                },
+                // Department to Product mappings for JP
+                productTypeToDepartment: {
+                'KDP': 'stripbooks',
+                //'tshirt': {department: 'fashion', category: '1731104031'},
+                'tshirt': {department: 'fashion', category: '2229202051%2Cn%3A2230005051%2Cn%3A2131417051%2Cn%3A5347828051%2Cn%3A2131436051'},
+                'tanktop': 'fashion',
+                'longsleeve': 'fashion',
+                'raglan': 'fashion',
+                'sweatshirt': 'fashion',
+                'hoodie': 'fashion',
+                'ziphoodie': 'fashion',
+                'popsocket': 'electronics',
+                'case': 'electronics'
+                },
+                departmentToProductType: {
+                    'stripbooks': 'KDP'
+                }
+                // OLD ONE productTypeMappings: {
+                //    'stripbooks': 'KDP'
+                // }
+            }*/
+    };
 
     // Update time filter radio values based on marketplace
-function updateMarketplaceFilters() {
-  const marketplace = marketplaceSelect.value;
-  const department = departmentSelect.value;
-  const config = marketplaceConfig[marketplace] || marketplaceConfig.com;
-  // Get department-specific config if available
-  const deptConfig = (department && config.departmentSettings && config.departmentSettings[department]) 
-    ? config.departmentSettings[department] 
-    : null;
-  // Update time filters
-  document.getElementById('timeFilter30Days').value = deptConfig?.timeFilters?.['30days'] || config.timeFilters['30days'];
-  document.getElementById('timeFilter90Days').value = deptConfig?.timeFilters?.['90days'] || config.timeFilters['90days'];
-  // Update seller filter
-  document.getElementById('sellerAmazon').value = deptConfig?.sellerFilter || config.sellerFilter;
-  // Update reviews filter
-  document.getElementById('reviewsFilter').value = deptConfig?.reviewsFilter || config.reviewsFilter;
-  // Update sort options, category and excluding brand options
-  updateExcludeBrandsFilter();
-  updateSortOrderOptions();
-  updateCategoryOptions();
-}
+    function updateMarketplaceFilters() {
+      const marketplace = marketplaceSelect.value;
+      const department = departmentSelect.value;
+      const config = marketplaceConfig[marketplace] || marketplaceConfig.com;
+      // Get department-specific config if available
+      const deptConfig = (department && config.departmentSettings && config.departmentSettings[department]) 
+        ? config.departmentSettings[department] 
+        : null;
+      // Update time filters
+      document.getElementById('timeFilter30Days').value = deptConfig?.timeFilters?.['30days'] || config.timeFilters['30days'];
+      document.getElementById('timeFilter90Days').value = deptConfig?.timeFilters?.['90days'] || config.timeFilters['90days'];
+      // Update seller filter
+      document.getElementById('sellerAmazon').value = deptConfig?.sellerFilter || config.sellerFilter;
+      // Update reviews filter
+      document.getElementById('reviewsFilter').value = deptConfig?.reviewsFilter || config.reviewsFilter;
+      // Update sort options, category and excluding brand options
+      updateExcludeBrandsFilter();
+      updateSortOrderOptions();
+      updateCategoryOptions();
+    }
 
     // Modified updateSortOrderOptions
-function updateSortOrderOptions() {
-  const marketplace = marketplaceSelect.value;
-  const department = departmentSelect.value;
-  const config = marketplaceConfig[marketplace] || marketplaceConfig.com;
-  
-  // Get department-specific sort options if available
-  const sortOptions = (department && config.departmentSettings?.[department]?.sortOrders)
-    ? config.departmentSettings[department].sortOrders
-    : config.sortOrders;
-
-  const sortOrderSelect = document.getElementById('sortOrder');
-  sortOrderSelect.innerHTML = '';
-  
-  sortOptions.forEach(option => {
-    const optionEl = document.createElement('option');
-    optionEl.value = option.value;
-    optionEl.textContent = option.text;
-    sortOrderSelect.appendChild(optionEl);
-  });
-}
+    function updateSortOrderOptions() {
+      const marketplace = marketplaceSelect.value;
+      const department = departmentSelect.value;
+      const config = marketplaceConfig[marketplace] || marketplaceConfig.com;
+      
+      // Get department-specific sort options if available
+      const sortOptions = (department && config.departmentSettings?.[department]?.sortOrders)
+        ? config.departmentSettings[department].sortOrders
+        : config.sortOrders;
+    
+      const sortOrderSelect = document.getElementById('sortOrder');
+      sortOrderSelect.innerHTML = '';
+      
+      sortOptions.forEach(option => {
+        const optionEl = document.createElement('option');
+        optionEl.value = option.value;
+        optionEl.textContent = option.text;
+        sortOrderSelect.appendChild(optionEl);
+      });
+    }
 
     function updateDepartmentFromProductType() {
-    const productType = productTypeSelect.value;
-    const marketplace = marketplaceSelect.value;
-    const config = marketplaceConfig[marketplace] || marketplaceConfig.com;
-    
-    if (config.productTypeToDepartment && config.productTypeToDepartment[productType]) {
-        const mapping = config.productTypeToDepartment[productType];
+        const productType = productTypeSelect.value;
+        const marketplace = marketplaceSelect.value;
+        const config = marketplaceConfig[marketplace] || marketplaceConfig.com;
         
-        if (typeof mapping === 'string') {
-            // Old format - just the department
-            if (config.categories && config.categories[mapping]) {
-                departmentSelect.value = mapping;
-                updateCategoryOptions();
-                updateGeneratedUrl();
-                updateMarketplaceFilters();
-            }
-        } else if (typeof mapping === 'object' && mapping.department) {
-            // New format - object with department and category
-            if (config.categories && config.categories[mapping.department]) {
-                departmentSelect.value = mapping.department;
-                updateCategoryOptions();
-                
-                // Wait for category options to be populated before setting the category
-                setTimeout(() => {
-                    if (mapping.category && categorySelect.querySelector(`option[value="${mapping.category}"]`)) {
-                        categorySelect.value = mapping.category;
-                    }
+        if (config.productTypeToDepartment && config.productTypeToDepartment[productType]) {
+            const mapping = config.productTypeToDepartment[productType];
+            
+            if (typeof mapping === 'string') {
+                // Old format - just the department
+                if (config.categories && config.categories[mapping]) {
+                    departmentSelect.value = mapping;
+                    updateCategoryOptions();
                     updateGeneratedUrl();
-                }, 50);
-                
-                updateMarketplaceFilters();
+                    updateMarketplaceFilters();
+                }
+            } else if (typeof mapping === 'object' && mapping.department) {
+                // New format - object with department and category
+                if (config.categories && config.categories[mapping.department]) {
+                    departmentSelect.value = mapping.department;
+                    updateCategoryOptions();
+                    
+                    // Wait for category options to be populated before setting the category
+                    setTimeout(() => {
+                        if (mapping.category && categorySelect.querySelector(`option[value="${mapping.category}"]`)) {
+                            categorySelect.value = mapping.category;
+                        }
+                        updateGeneratedUrl();
+                    }, 50);
+                    
+                    updateMarketplaceFilters();
+                }
             }
         }
     }
-}
 
 
-// Replace departmentToProductType with marketplace-based handling
-function updateProductTypeFromDepartment() {
-    const department = departmentSelect.value;
-    const marketplace = marketplaceSelect.value;
-    const config = marketplaceConfig[marketplace] || marketplaceConfig.com;
-    
-    // First try to use the product type mappings defined in the marketplace config
-    if (config.productTypeMappings && department in config.productTypeMappings) {
-        const suggestedProductType = config.productTypeMappings[department];
-        if (productTypeSelect.querySelector(`option[value="${suggestedProductType}"]`)) {
-            productTypeSelect.value = suggestedProductType;
-            updateProductTypeSettings();
-            updateGeneratedUrl();
-            return;
+    // Replace departmentToProductType with marketplace-based handling
+    function updateProductTypeFromDepartment() {
+        const department = departmentSelect.value;
+        const marketplace = marketplaceSelect.value;
+        const config = marketplaceConfig[marketplace] || marketplaceConfig.com;
+        
+        // First try to use the product type mappings defined in the marketplace config
+        if (config.productTypeMappings && department in config.productTypeMappings) {
+            const suggestedProductType = config.productTypeMappings[department];
+            if (productTypeSelect.querySelector(`option[value="${suggestedProductType}"]`)) {
+                productTypeSelect.value = suggestedProductType;
+                updateProductTypeSettings();
+                updateGeneratedUrl();
+                return;
+            }
+        }
+        
+        // Then try the marketplace-specific department to product type mapping
+        if (config.departmentToProductType && config.departmentToProductType[department]) {
+            const fallbackType = config.departmentToProductType[department];
+            if (productTypeSelect.querySelector(`option[value="${fallbackType}"]`)) {
+                productTypeSelect.value = fallbackType;
+                updateProductTypeSettings();
+                updateGeneratedUrl();
+            }
         }
     }
-    
-    // Then try the marketplace-specific department to product type mapping
-    if (config.departmentToProductType && config.departmentToProductType[department]) {
-        const fallbackType = config.departmentToProductType[department];
-        if (productTypeSelect.querySelector(`option[value="${fallbackType}"]`)) {
-            productTypeSelect.value = fallbackType;
-            updateProductTypeSettings();
-            updateGeneratedUrl();
-        }
-    }
-}
 
     function setupClearSearchButton() {
-    const searchInput = document.getElementById('searchInput');
-    const clearSearchBtn = document.getElementById('clearSearchBtn');
-    
-    // Show/hide clear button based on input content
-    searchInput.addEventListener('input', function() {
-                if (this.value.length > 0) {
-                    clearSearchBtn.style.display = 'block';
-                } else {
-                    clearSearchBtn.style.display = 'none';
-                }
-            });
-            
-            // Clear the input when X is clicked
-            clearSearchBtn.addEventListener('click', function() {
-                searchInput.value = '';
-                this.style.display = 'none';
-                searchInput.focus();
-                updateGeneratedUrl(); // Update the generated URL after clearing
-            });
-        }
+        const searchInput = document.getElementById('searchInput');
+        const clearSearchBtn = document.getElementById('clearSearchBtn');
+        
+        // Show/hide clear button based on input content
+        searchInput.addEventListener('input', function() {
+            if (this.value.length > 0) {
+                clearSearchBtn.style.display = 'block';
+            } else {
+                clearSearchBtn.style.display = 'none';
+            }
+        });
+                
+        // Clear the input when X is clicked
+        clearSearchBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            this.style.display = 'none';
+            searchInput.focus();
+            updateGeneratedUrl(); // Update the generated URL after clearing
+        });
+    }   
 
     // Ensure the result URL container is visible
     resultUrlContainer.style.display = 'block';
@@ -1499,6 +1465,7 @@ function updateProductTypeFromDepartment() {
         // Populate departments first
         populateDepartments();
 
+        // Populate Product Types
         populateProductTypes();
 
         // Update ZIP code display
@@ -1531,6 +1498,7 @@ function updateProductTypeFromDepartment() {
         // Make sure the URL container is visible by default
         resultUrlContainer.style.display = 'block';
     }
+    
     // Function to update the generated URL display
     function updateGeneratedUrl() {
         const amazonUrl = generateAmazonUrl();
@@ -1539,172 +1507,170 @@ function updateProductTypeFromDepartment() {
 
     // Completely revised event listener setup
     function setupEventListeners() {
-  searchForm.addEventListener('submit', handleFormSubmit);
-  searchForm.addEventListener('reset', function() {
-    document.getElementById('clearSearchBtn').style.display = 'none';
-    updateGeneratedUrl();
-  });
-  copyUrlBtn.addEventListener('click', handleCopyUrl);
-  copyZipBtn.addEventListener('click', handleCopyZip);
-  document.getElementById('searchInput').addEventListener('input', updateGeneratedUrl);
-  document.getElementById('customHiddenKeywords').addEventListener('input', updateGeneratedUrl);
-  document.getElementById('minPrice').addEventListener('input', updateGeneratedUrl);
-  document.getElementById('maxPrice').addEventListener('input', updateGeneratedUrl);
+        searchForm.addEventListener('submit', handleFormSubmit);
+        searchForm.addEventListener('reset', function() {
+        document.getElementById('clearSearchBtn').style.display = 'none';
+        updateGeneratedUrl();
+        });
+        copyUrlBtn.addEventListener('click', handleCopyUrl);
+        copyZipBtn.addEventListener('click', handleCopyZip);
+        document.getElementById('searchInput').addEventListener('input', updateGeneratedUrl);
+        document.getElementById('customHiddenKeywords').addEventListener('input', updateGeneratedUrl);
+        document.getElementById('minPrice').addEventListener('input', updateGeneratedUrl);
+        document.getElementById('maxPrice').addEventListener('input', updateGeneratedUrl);
 
-  marketplaceSelect.addEventListener('change', function() {
-    updateZipCode();
-    updateMarketplaceFilters();
-    populateDepartments();
-    populateProductTypes();
-    updateSortOrderOptions();
-    updatePresetsDropdown();
-    updateGeneratedUrl();
-  });
+        marketplaceSelect.addEventListener('change', function() {
+            updateZipCode();
+            updateMarketplaceFilters();
+            populateDepartments();
+            populateProductTypes();
+            updateSortOrderOptions();
+            updatePresetsDropdown();
+            updateGeneratedUrl();
+        });
 
-  productTypeSelect.addEventListener('change', function() {
-    updateProductTypeSettings();
-    updateDepartmentFromProductType();
-    updateDepartmentCategoryState();
-    updateGeneratedUrl();
-  });
+        productTypeSelect.addEventListener('change', function() {
+            updateProductTypeSettings();
+            updateDepartmentFromProductType();
+            updateDepartmentCategoryState();
+            updateGeneratedUrl();
+        });
 
-  departmentSelect.addEventListener('change', function() {
-      updateCategoryOptions();
-      updateMarketplaceFilters(); 
-      updateProductTypeFromDepartment();
-      updateGeneratedUrl();
-    });
+        departmentSelect.addEventListener('change', function() {
+            updateCategoryOptions();
+            updateMarketplaceFilters(); 
+            updateProductTypeFromDepartment();
+            updateGeneratedUrl();
+        });
 
-  categorySelect.addEventListener('change', updateGeneratedUrl);
-  document.getElementById('sortOrder').addEventListener('change', updateGeneratedUrl);
+        categorySelect.addEventListener('change', updateGeneratedUrl);
+        document.getElementById('sortOrder').addEventListener('change', updateGeneratedUrl);
+        
+        const timeFilters = document.querySelectorAll('input[name="timeFilter"]');
+        timeFilters.forEach(radio => {
+            radio.addEventListener('click', updateGeneratedUrl);
+        });
 
-  const timeFilters = document.querySelectorAll('input[name="timeFilter"]');
-  timeFilters.forEach(radio => {
-    radio.addEventListener('click', updateGeneratedUrl);
-  });
-
-  document.getElementById('presetsSelect').addEventListener('change', applyPreset);
-    // this function to handle preset selection
-    function applyPreset() {
-    const selectedPreset = document.getElementById('presetsSelect').value;
-    const marketplace = marketplaceSelect.value;
-    const presets = presetConfigs[marketplace] || presetConfigs.com;
-    const config = marketplaceConfig[marketplace] || marketplaceConfig.com;  // Add this line
-    // if (!selectedPreset) return; // No preset selected OLD
-    if (!selectedPreset) {
-        // Reset to marketplace defaults
-        const firstProductType = productTypeAvailability[marketplace][0];
-        const firstDepartment = Object.keys(config.categories)[0];
-
-        // Core reset operations
-        productTypeSelect.value = firstProductType;
-        departmentSelect.value = firstDepartment;
-        categorySelect.value = '';
+        document.getElementById('presetsSelect').addEventListener('change', applyPreset);
+        // this function to handle preset selection
+        function applyPreset() {
+        const selectedPreset = document.getElementById('presetsSelect').value;
+        const marketplace = marketplaceSelect.value;
+        const presets = presetConfigs[marketplace] || presetConfigs.com;
+        const config = marketplaceConfig[marketplace] || marketplaceConfig.com;  // Add this line
+        // if (!selectedPreset) return; // No preset selected OLD
+        if (!selectedPreset) {
+            // Reset to marketplace defaults
+            const firstProductType = productTypeAvailability[marketplace][0];
+            const firstDepartment = Object.keys(config.categories)[0];
+    
+            // Core reset operations
+            productTypeSelect.value = firstProductType;
+            departmentSelect.value = firstDepartment;
+            categorySelect.value = '';
+            document.getElementById('timeFilterNone').checked = true;
+            document.getElementById('sellerAmazon').checked = true;
+            document.getElementById('reviewsFilter').checked = false;
+            document.getElementById('filterExcludeBrands').checked = config.excludeBrands ? true : false;
+            document.getElementById('sortOrder').value = config.sortOrders[0].value;
+    
+            // MUST trigger these events IN ORDER
+            productTypeSelect.dispatchEvent(new Event('change'));
+            setTimeout(() => {
+                departmentSelect.dispatchEvent(new Event('change'));
+                updateMarketplaceFilters();
+                updateGeneratedUrl();
+            }, 100);
+            return;// EXIT FUNCTION EARLY
+        }
+            
+        // Reset filters to default first
         document.getElementById('timeFilterNone').checked = true;
         document.getElementById('sellerAmazon').checked = true;
         document.getElementById('reviewsFilter').checked = false;
-        document.getElementById('filterExcludeBrands').checked = config.excludeBrands ? true : false;
-        document.getElementById('sortOrder').value = config.sortOrders[0].value;
-
-        // MUST trigger these events IN ORDER
-        productTypeSelect.dispatchEvent(new Event('change'));
-        setTimeout(() => {
-            departmentSelect.dispatchEvent(new Event('change'));
-            updateMarketplaceFilters();
-            updateGeneratedUrl();
-        }, 100);
-        return;// EXIT FUNCTION EARLY
-    }
-        
-    // Reset filters to default first
-    document.getElementById('timeFilterNone').checked = true;
-    document.getElementById('sellerAmazon').checked = true;
-    document.getElementById('reviewsFilter').checked = false;
-    document.getElementById('filterExcludeBrands').checked = false;
-    document.getElementById('minPrice').value = '';
-    document.getElementById('maxPrice').value = '';
-    document.getElementById('sortOrder').value = 'custom';
-    productTypeSelect.value = 'custom'; // Reset product type to "None"
-    departmentSelect.value = ''; // Reset department
-    categorySelect.value = ''; // Reset category
-        
-    // Find the selected preset configuration
-        
-    const preset = presets.find(p => p.value === selectedPreset);
-    if (preset) {
-        const settings = preset.settings;
-
-        // Apply product type - 'custom' or empty string for "None"
-        if (settings.productType !== undefined) {
-            productTypeSelect.value = settings.productType;
-            // Trigger change event to update UI based on product type
-            productTypeSelect.dispatchEvent(new Event('change'));
-        }
-        
-        // Changed the order of operations - apply department FIRST
-        // This is crucial because department changes will update the sort options
-        if (settings.department !== undefined) {
-            departmentSelect.value = settings.department;
-            departmentSelect.dispatchEvent(new Event('change'));
+        document.getElementById('filterExcludeBrands').checked = false;
+        document.getElementById('minPrice').value = '';
+        document.getElementById('maxPrice').value = '';
+        document.getElementById('sortOrder').value = 'custom';
+        productTypeSelect.value = 'custom'; // Reset product type to "None"
+        departmentSelect.value = ''; // Reset department
+        categorySelect.value = ''; // Reset category
             
-            if (settings.category !== undefined) {
-                setTimeout(() => {
-                    categorySelect.value = settings.category;
-                    categorySelect.dispatchEvent(new Event('change'));
-                }, 50);
+        // Find the selected preset configuration
+            
+        const preset = presets.find(p => p.value === selectedPreset);
+        if (preset) {
+            const settings = preset.settings;
+    
+            // Apply product type - 'custom' or empty string for "None"
+            if (settings.productType !== undefined) {
+                productTypeSelect.value = settings.productType;
+                // Trigger change event to update UI based on product type
+                productTypeSelect.dispatchEvent(new Event('change'));
             }
-        }
-        
-        // Then apply time filter and other settings as before
-        if (settings.timeFilter) {
-            document.getElementById(settings.timeFilter).checked = true;
-        }
-        
-        // Add a small delay before setting sort order to ensure options are updated
-        setTimeout(() => {
-            if (settings.sortOrder !== undefined) {
-                document.getElementById('sortOrder').value = settings.sortOrder;
-                document.getElementById('sortOrder').dispatchEvent(new Event('change'));
+            
+            // Changed the order of operations - apply department FIRST
+            // This is crucial because department changes will update the sort options
+            if (settings.department !== undefined) {
+                departmentSelect.value = settings.department;
+                departmentSelect.dispatchEvent(new Event('change'));
+                
+                if (settings.category !== undefined) {
+                    setTimeout(() => {
+                        categorySelect.value = settings.category;
+                        categorySelect.dispatchEvent(new Event('change'));
+                    }, 50);
+                }
             }
-        }, 100);
-        
-        // Apply review filter
-        if (settings.reviewsFilter !== undefined) {
-            document.getElementById('reviewsFilter').checked = !!settings.reviewsFilter;
+            
+            // Then apply time filter and other settings as before
+            if (settings.timeFilter) {
+                document.getElementById(settings.timeFilter).checked = true;
+            }
+            
+            // Add a small delay before setting sort order to ensure options are updated
+            setTimeout(() => {
+                if (settings.sortOrder !== undefined) {
+                    document.getElementById('sortOrder').value = settings.sortOrder;
+                    document.getElementById('sortOrder').dispatchEvent(new Event('change'));
+                }
+            }, 100);
+            
+            // Apply review filter
+            if (settings.reviewsFilter !== undefined) {
+                document.getElementById('reviewsFilter').checked = !!settings.reviewsFilter;
+            }
+            
+            // Apply exclude brands
+            if (settings.excludeBrands !== undefined) {
+                document.getElementById('filterExcludeBrands').checked = !!settings.excludeBrands;
+            }
+            
+            // Apply price range
+            if (settings.minPrice !== undefined) {
+                document.getElementById('minPrice').value = settings.minPrice;
+            }
+            if (settings.maxPrice !== undefined) {
+                document.getElementById('maxPrice').value = settings.maxPrice;
+            }
+            
+            // Update the generated URL with new settings
+            updateGeneratedUrl();
         }
-        
-        // Apply exclude brands
-        if (settings.excludeBrands !== undefined) {
-            document.getElementById('filterExcludeBrands').checked = !!settings.excludeBrands;
-        }
-        
-        // Apply price range
-        if (settings.minPrice !== undefined) {
-            document.getElementById('minPrice').value = settings.minPrice;
-        }
-        if (settings.maxPrice !== undefined) {
-            document.getElementById('maxPrice').value = settings.maxPrice;
-        }
-        
-        // Update the generated URL with new settings
-        updateGeneratedUrl();
     }
-}
         
 
-  document.getElementById('sellerAmazon').addEventListener('click', updateGeneratedUrl);
-  document.getElementById('reviewsFilter').addEventListener('click', updateGeneratedUrl);
-  document.getElementById('filterExcludeBrands').addEventListener('click', updateGeneratedUrl);
-}
+        document.getElementById('sellerAmazon').addEventListener('click', updateGeneratedUrl);
+        document.getElementById('reviewsFilter').addEventListener('click', updateGeneratedUrl);
+        document.getElementById('filterExcludeBrands').addEventListener('click', updateGeneratedUrl);
+    }
 
     function setupPriceInputs() {
-        // Add input constraints for price fields
         [minPriceInput, maxPriceInput].forEach(input => {
             // Only allow digits and limit to 2 characters
             input.addEventListener('input', function(e) {
                 // Remove any non-digit characters
                 this.value = this.value.replace(/\D/g, '');
-
                 // Limit to 2 digits
                 if (this.value.length > 6) {
                     this.value = this.value.slice(0, 6);
@@ -1724,55 +1690,51 @@ function updateProductTypeFromDepartment() {
     }
 
     function handleCopyZip() {
-    const zipCode = document.querySelector('.copy_me').textContent;
-    navigator.clipboard.writeText(zipCode)
-        .then(function() {
-            copyMessage.style.display = 'inline';
-            setTimeout(() => {
-                copyMessage.style.display = 'none';
-            }, 2000);
-        })
-        .catch(function(err) {
-            console.error('Could not copy ZIP code: ', err);
-            copyMessage.textContent = 'Copy failed';
-            copyMessage.style.display = 'inline';
-            setTimeout(() => {
-                copyMessage.textContent = 'Copied!';
-                copyMessage.style.display = 'none';
-            }, 2000);
-        });
-}
+        const zipCode = document.querySelector('.copy_me').textContent;
+        navigator.clipboard.writeText(zipCode)
+            .then(function() {
+                copyMessage.style.display = 'inline';
+                setTimeout(() => {
+                    copyMessage.style.display = 'none';
+                }, 2000);
+            })
+            .catch(function(err) {
+                console.error('Could not copy ZIP code: ', err);
+                copyMessage.textContent = 'Copy failed';
+                copyMessage.style.display = 'inline';
+                setTimeout(() => {
+                    copyMessage.textContent = 'Copied!';
+                    copyMessage.style.display = 'none';
+                }, 2000);
+            });
+    }
 
-    // Update the form submit handler to only open the URL
+    // Form submit handler opens the URL in a new tab
     function handleFormSubmit(e) {
         e.preventDefault();
-
         // Generate the URL
         const amazonUrl = generateAmazonUrl();
-
         // Open the URL in a new tab
         window.open(amazonUrl, '_blank');
     }
 
     function handleCopyUrl() {
-    const urlText = generatedUrlEl.textContent;
-    navigator.clipboard.writeText(urlText)
-        .then(function() {
-            // Visual feedback
-            copyUrlBtn.classList.add('copy-success');
-            setTimeout(function() {
-                copyUrlBtn.classList.remove('copy-success');
-            }, 1500);
-        })
-        .catch(function(err) {
-            console.error('Could not copy text: ', err);
-            // Visual feedback for error
-            copyUrlBtn.classList.add('copy-error');
-            setTimeout(function() {
-                copyUrlBtn.classList.remove('copy-error');
-            }, 1500);
-        });
-}
+        const urlText = generatedUrlEl.textContent;
+        navigator.clipboard.writeText(urlText)
+            .then(function() {
+                copyUrlBtn.classList.add('copy-success');
+                setTimeout(function() {
+                    copyUrlBtn.classList.remove('copy-success');
+                }, 1500);
+            })
+            .catch(function(err) {
+                console.error('Could not copy text: ', err);
+                copyUrlBtn.classList.add('copy-error');
+                setTimeout(function() {
+                    copyUrlBtn.classList.remove('copy-error');
+                }, 1500);
+            });
+    }
 
     function updateUrlIfVisible() {
         // Always update the URL if the result container is visible
@@ -1837,12 +1799,10 @@ function updateProductTypeFromDepartment() {
         updateGeneratedUrl();
     }
 
+    // Function to handle product type specific UI updates
     function updateProductTypeSettings() {
-  // This function should handle product type specific UI updates
-  // For now we can implement a basic version
-  const productType = productTypeSelect.value;
-  // Additional functionality can be added based on requirements
-}
+      const productType = productTypeSelect.value;
+    }
 
     function generateAmazonUrl() {
         // Get base marketplace
@@ -1919,45 +1879,44 @@ function updateProductTypeFromDepartment() {
             
         }
 
-/* Function to add category selection based on rh or bbn input FRONTEND SELECTION
-    <select id="categoryParamType" class="form-control mt-2">
-    <option value="rh">rh=n:</option>
-    <option value="bbn">bbn=</option>
-    </select>
-    // Get category parameter type
-    const categoryParamType = document.getElementById('categoryParamType').value;
-    // Add category filter based on selected parameter type
-    const category = document.getElementById('category').value;
-    if (category) {
-        if (categoryParamType === 'bbn') {
-            paramParts.push(`bbn=${category}`);
-        } else {
-            rhParams.push(`n%3A${category}`);
-        }
-    }
-*/
+        // Function to add category selection based on rh or bbn input FRONTEND SELECTION
+        /*    <select id="categoryParamType" class="form-control mt-2">
+            <option value="rh">rh=n:</option>
+            <option value="bbn">bbn=</option>
+            </select>
+            // Get category parameter type
+            const categoryParamType = document.getElementById('categoryParamType').value;
+            // Add category filter based on selected parameter type
+            const category = document.getElementById('category').value;
+            if (category) {
+                if (categoryParamType === 'bbn') {
+                    paramParts.push(`bbn=${category}`);
+                } else {
+                    rhParams.push(`n%3A${category}`);
+                }
+            } */
 
         let hiddenKeywords = [];
         const customKeywords = document.getElementById('customHiddenKeywords').value.trim();
-    if (customKeywords) {
-        // Split by spaces and encode each keyword individually
-        const customKeywordsParts = customKeywords.split(' ').filter(k => k.length > 0);
-        const encodedKeywords = customKeywordsParts.map(k => encodeURIComponent(k));
-        if (encodedKeywords.length > 0) {
-            hiddenKeywords.push(encodedKeywords.join('+'));
+        if (customKeywords) {
+            // Split by spaces and encode each keyword individually
+            const customKeywordsParts = customKeywords.split(' ').filter(k => k.length > 0);
+            const encodedKeywords = customKeywordsParts.map(k => encodeURIComponent(k));
+            if (encodedKeywords.length > 0) {
+                hiddenKeywords.push(encodedKeywords.join('+'));
+            }
         }
-    }
-    
-    const productType = productTypeSelect.value;
-    if (productType !== 'custom' && config.productTypeKeywords && config.productTypeKeywords[productType]) {
-        hiddenKeywords.push(config.productTypeKeywords[productType]);
-    }
+        
+        const productType = productTypeSelect.value;
+        if (productType !== 'custom' && config.productTypeKeywords && config.productTypeKeywords[productType]) {
+            hiddenKeywords.push(config.productTypeKeywords[productType]);
+        }
 
         // Add exclude brands filter - always add this at the end if selected
-const filterExcludeBrands = document.getElementById('filterExcludeBrands').checked;
-if (filterExcludeBrands && config.excludeBrands) {
-  hiddenKeywords.push(config.excludeBrands);
-}
+        const filterExcludeBrands = document.getElementById('filterExcludeBrands').checked;
+        if (filterExcludeBrands && config.excludeBrands) {
+          hiddenKeywords.push(config.excludeBrands);
+        }
 
         // Add hidden-keywords parameter if we have any
         if (hiddenKeywords.length > 0) {
@@ -2004,7 +1963,7 @@ if (filterExcludeBrands && config.excludeBrands) {
     }
 });
 
-// AMZ
+// Suggestions Expander
 $(document).ready(function() {
     const searchInput = $("#searchInput");
     const suggestionsContainer = $("#suggestionsContainer");

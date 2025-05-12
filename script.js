@@ -2436,7 +2436,7 @@ $(document).ready(function() {
         }
 
         // Prepare CSV content (Header + Data rows)
-        let csvContent = "Keyword\n";
+        let csvContent = "Keyword Suggestions\n";
         currentDisplayedKeywords.forEach(keyword => {
             // Basic CSV escaping: double quotes within field, quote field if it contains comma or quote
             let escapedKeyword = keyword.replace(/"/g, '""');
@@ -2452,7 +2452,7 @@ $(document).ready(function() {
         const url = URL.createObjectURL(blob);
 
         link.setAttribute("href", url);
-        link.setAttribute("download", "merchscope_suggestions.csv");
+        link.setAttribute("download", "merchscope_Suggestions.csv");
         link.style.visibility = 'hidden';
         document.body.appendChild(link);
         link.click(); // Simulate click to download

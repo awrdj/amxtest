@@ -2403,6 +2403,10 @@ $(document).ready(function() {
 
     // Document Click Handler (Modified to ignore Action Buttons)
     $(document).on('click', (event) => {
+        if (isDownloadingCsv) {
+            // If check for the download flag is true, ignore this click event entirely
+            return;
+        }
         // Check if the click happened outside all relevant suggestion controls
         if (!$(event.target).closest(searchInput).length &&
             !$(event.target).closest(suggestionsContainer).length &&
@@ -2429,16 +2433,16 @@ $(document).ready(function() {
     });
 
     // --- Add Handlers for New CSV/Copy Buttons ---
-
     downloadCsvBtn.on('click', function() {
         if ($(this).prop('disabled') || currentDisplayedKeywords.length === 0) {
-            return; // Extra safety check
+            return;
         }
 
+        isDownloadingCsv = true; // <-- Set the flag before starting download
+
         // Prepare CSV content (Header + Data rows)
-        let csvContent = "Keyword Suggestions\n";
+        let csvContent = "Keyword\n";
         currentDisplayedKeywords.forEach(keyword => {
-            // Basic CSV escaping: double quotes within field, quote field if it contains comma or quote
             let escapedKeyword = keyword.replace(/"/g, '""');
             if (escapedKeyword.includes(',') || escapedKeyword.includes('"')) {
                 escapedKeyword = `"${escapedKeyword}"`;
@@ -2452,12 +2456,19 @@ $(document).ready(function() {
         const url = URL.createObjectURL(blob);
 
         link.setAttribute("href", url);
-        link.setAttribute("download", "merchscope_Suggestions.csv");
+        link.setAttribute("download", "merchscope_suggestions.csv");
         link.style.visibility = 'hidden';
         document.body.appendChild(link);
-        link.click(); // Simulate click to download
-        document.body.removeChild(link); // Clean up link element
-        URL.revokeObjectURL(url); // Clean up Blob URL
+        link.click(); // Simulate click
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        // --- Reset the flag shortly after the click simulation ---
+        // Use setTimeout to ensure it runs after the click event finishes processing
+        setTimeout(() => {
+            isDownloadingCsv = false;
+        }, 0);
+        // --- End Reset flag ---
     });
 
     copySuggestionsBtn.on('click', function() {

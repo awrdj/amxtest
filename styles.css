@@ -607,3 +607,44 @@ line-height:1.4;
 .suggestion-item.group-between { background-color: #e6ecff; }
 .suggestion-item.group-other { background-color: #f2f2f2; }
 
+/* --- Styles for Suggestion Action Buttons --- */
+#suggestionActions {
+    display: flex; /* Use flex for inline layout */
+    align-items: center;
+}
+
+#suggestionActions .btn-sm {
+    padding: 2px 8px; /* Smaller padding for compact buttons */
+    font-size: 11px; /* Smaller font size */
+    line-height: 1.5;
+    height: 25px; /* Match height of the select dropdown */
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+#suggestionActions .btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+/* Optional: Add slight spacing if needed, though 'gap' handles it */
+#suggestionActions .btn + .btn {
+    /* margin-left: 5px; */ /* Already handled by gap in the container div */
+}
+
+/* Style for copy feedback */
+#copySuggestionsBtn.copy-success-feedback {
+    background-color: #d4edda !important; /* Light green */
+    border-color: #c3e6cb !important;
+    color: #155724 !important;
+}
+#copySuggestionsBtn.copy-error-feedback {
+    background-color: #f8d7da !important; /* Light red */
+    border-color: #f5c6cb !important;
+    color: #721c24 !important;
+}
+
+/* Adjust alignment within the main controls container */
+.suggestion-controls {
+    align-items: center; /* Vertically center items */
+    flex-wrap: wrap; /* Allow wrapping on small screens if needed */
+}

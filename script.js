@@ -2441,7 +2441,7 @@ $(document).ready(function() {
         isDownloadingCsv = true; // <-- Set the flag before starting download
 
         // Prepare CSV content (Header + Data rows)
-        let csvContent = "Keyword\n";
+        let csvContent = "Keyword Suggestions\n";
         currentDisplayedKeywords.forEach(keyword => {
             let escapedKeyword = keyword.replace(/"/g, '""');
             if (escapedKeyword.includes(',') || escapedKeyword.includes('"')) {
@@ -2456,7 +2456,7 @@ $(document).ready(function() {
         const url = URL.createObjectURL(blob);
 
         link.setAttribute("href", url);
-        link.setAttribute("download", "merchscope_suggestions.csv");
+        link.setAttribute("download", "merchscope_Suggestions.csv");
         link.style.visibility = 'hidden';
         document.body.appendChild(link);
         link.click(); // Simulate click

@@ -1980,8 +1980,533 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Suggestions Expander
+// Suggestions Expander (jQuery section)
 $(document).ready(function() {
+    // --- Cache DOM elements ---
+    const searchInput = $("#searchInput");
+    const suggestionsContainer = $("#suggestionsContainer");
+    const marketplaceSelect = $("#marketplaceSelect");
+    const clearSearchBtn = $("#clearSearchBtn");
+    const kwSuggestionsCheckbox = $("#kwsuggestions");
+    const suggestionDepartmentSelect = $("#suggestionDepartmentSelect");
+    // --- Cache NEW elements ---
+    const suggestionActionsContainer = $("#suggestionActions");
+    const downloadCsvBtn = $("#downloadCsvBtn");
+    const copySuggestionsBtn = $("#copySuggestionsBtn");
+    // --- End Cache ---
+
+    // --- Configuration ---
+    const MAX_KEYWORDS_IN_SEARCH = 1000; // Max Keywords, recommended 500
+    const SUGGESTION_DEBOUNCE_MS = 300; // Delay after typing stops
+    const RENDER_DELAY_MS = 500; // Small delay before rendering, recommended 500ms
+
+    // --- State ---
+    let currentMarketplace = getMarketplace();
+    let suggestionTimeoutId;
+    let currentDisplayedKeywords = []; // Variable to hold the final list of displayed keywords
+
+    // --- Utility Functions ---
+    function debugResponse(apiType, queryFirst, queryLast, response) {
+        // console.groupCollapsed(`Suggestions Debug [${apiType}]: "${queryFirst}|${queryLast}"`);
+        // console.log('Prefix:', queryFirst);
+        // console.log('Suffix:', queryLast);
+        // console.log('API Response:', response);
+        // console.groupEnd();
+        return response; // Pass through
+    }
+
+    function getMarketplace() {
+        const selectedValue = marketplaceSelect.val() || "com"; // Default to com if null
+        const domainConfig = {
+            "com": { domain: "amazon.com", market: "ATVPDKIKX0DER" },
+            "co.uk": { domain: "amazon.co.uk", market: "A1F83G8C2ARO7P" },
+            "de": { domain: "amazon.de", market: "A1PA6795UKMFR9" },
+            "fr": { domain: "amazon.fr", market: "A13V1IB3VIYZZH" },
+            "it": { domain: "amazon.it", market: "APJ6JRA9NG5V4" },
+            "es": { domain: "amazon.es", market: "A1RKKUPIHCS9HS" }
+            //"co.jp": { domain: "amazon.co.jp", market: "A1VC38TJH7YXB5" } // Example if JP was added
+        };
+        return domainConfig[selectedValue];
+    }
+
+    function escapeHtml(unsafe) {
+        if (typeof unsafe !== 'string') { return ''; }
+        return unsafe
+             .replace(/&/g, "&amp;")
+             .replace(/</g, "&lt;")
+             .replace(/>/g, "&gt;")
+             .replace(/"/g, "&quot;")
+             .replace(/'/g, "&#039;");
+    }
+
+    // --- NEW Helper Function to Update Button States ---
+    function updateActionButtonsState() {
+        const hasKeywords = currentDisplayedKeywords.length > 0;
+        downloadCsvBtn.prop('disabled', !hasKeywords);
+        copySuggestionsBtn.prop('disabled', !hasKeywords);
+
+        // Reset copy button feedback style if it was previously shown
+        if (!hasKeywords && copySuggestionsBtn.hasClass('copy-success-feedback copy-error-feedback')) {
+             copySuggestionsBtn.removeClass('copy-success-feedback copy-error-feedback').text('COPY');
+        } else if (hasKeywords && copySuggestionsBtn.text() !== 'COPY') {
+             // If buttons enabled but text is wrong (e.g. page reload state issue), reset it
+             copySuggestionsBtn.removeClass('copy-success-feedback copy-error-feedback').text('COPY');
+        }
+    }
+    // --- End NEW Helper Function ---
+
+    // --- Core Suggestion Logic ---
+    function getSuggestions(queryFirst, queryLast, marketplace, apiType = 'Generic') {
+        let departmentQuery = suggestionDepartmentSelect.val();
+        if (!departmentQuery || departmentQuery === "" || departmentQuery === "aps") {
+            departmentQuery = 'aps';
+        }
+
+        const params = new URLSearchParams({
+            'site-variant': 'desktop',
+            'mid': marketplace.market,
+            'alias': departmentQuery,
+            'prefix': queryFirst || "",
+            'suffix': queryLast || ""
+        });
+
+        const suggestUrl = `https://completion.${marketplace.domain}/api/2017/suggestions?${params.toString()}`;
+
+        return fetch(suggestUrl)
+            .then(response => {
+                if (!response.ok) {
+                    // console.error(`Network/Fetch Error for ${apiType} (${suggestUrl}):`, response.statusText);
+                    return { suggestions: [] }; // Return empty on HTTP error
+                }
+                return response.json().catch(e => {
+                    // console.error(`JSON Parse Error on OK response for ${apiType}:`, e, "URL:", suggestUrl);
+                    return { suggestions: [] }; // Return empty on JSON parse error
+                });
+            })
+            .then(jsonData => {
+                if (typeof jsonData !== 'object' || jsonData === null) {
+                     return debugResponse(apiType, queryFirst, queryLast, { suggestions: [] });
+                }
+                if (!Array.isArray(jsonData.suggestions)) {
+                    jsonData.suggestions = [];
+                }
+                return debugResponse(apiType, queryFirst, queryLast, jsonData);
+            })
+            .catch(error => {
+                // console.error(`Network/Fetch Error for ${apiType} (${suggestUrl}):`, error);
+                return { suggestions: [] }; // Return empty on network error
+            });
+    }
+
+    function parseResults(data) {
+        let keywords = [];
+        if (data && typeof data === 'object' && Array.isArray(data.suggestions)) {
+            keywords = data.suggestions
+                .filter(value => value.type === "KEYWORD")
+                .map(value => {
+                    if (value.highlightFragments && value.highlightFragments.length > 0) {
+                        return value.highlightFragments.map(fragment => fragment.text).join('');
+                    }
+                    return value.value || '';
+                })
+                .filter(kw => typeof kw === 'string' && kw.trim() !== '');
+        } else if (data && typeof data === 'object' && !Array.isArray(data.suggestions)) {
+            // console.warn("parseResults received object without suggestions array:", data);
+            return [];
+        } else if (!data || typeof data !== 'object') {
+            // console.warn("parseResults received invalid data:", data);
+            return [];
+        }
+        return keywords;
+    }
+
+    // Modify addKeywordItem: No changes needed here specifically for CSV/Copy
+    function addKeywordItem(keyword, search, groupClass) {
+         const item = $('<div class="suggestion-item"></div>').addClass(groupClass);
+         const matchIndex = keyword.toLowerCase().indexOf(search.toLowerCase()); // Case-insensitive match index
+         let before = '', match = '', after = '';
+
+         if (search.length > 0 && matchIndex > -1) {
+             before = keyword.substring(0, matchIndex);
+             match = keyword.substring(matchIndex, matchIndex + search.length); // Use original case for match
+             after = keyword.substring(matchIndex + search.length);
+         } else {
+             before = keyword; // If no match, show whole keyword as 'before'
+         }
+
+         // Use original case keyword in the data attribute
+         item.attr('data-keyword', keyword);
+
+         // Use escaped parts for HTML rendering
+         item.html(
+             `<span class="s-heavy">${escapeHtml(before)}</span>${escapeHtml(match)}<span class="s-heavy">${escapeHtml(after)}</span>`
+         );
+
+         item.on('click', () => {
+             searchInput.val(keyword); // Use original case keyword when clicked
+             suggestionsContainer.empty().css('display', 'none');
+             searchInput.focus();
+             currentDisplayedKeywords = []; // Clear list as suggestion is chosen
+             updateActionButtonsState(); // Update buttons
+         });
+
+         suggestionsContainer.append(item);
+     }
+
+
+    // Modify renderCategorizedSuggestions to store keywords and update buttons
+    function renderCategorizedSuggestions(search, results) {
+        suggestionsContainer.empty(); // Clear previous UI
+        currentDisplayedKeywords = []; // Clear internal keyword list
+
+        const mainKeywordsSet = new Set();
+        const allDisplayedKeywordsSet = new Set();
+        let keywordCount = 0;
+        let otherTitleDisplayed = false;
+
+        // Pre-populate mainKeywordsSet for de-duplication logic
+        const initialMainKeywords = parseResults(results[0] || { suggestions: [] });
+        initialMainKeywords.forEach(kw => mainKeywordsSet.add(kw));
+
+        // --- Loop through API result categories (results[0] = Main, results[1] = Before, etc.) ---
+        for (let i = 0; i < results.length; i++) {
+            if (keywordCount >= MAX_KEYWORDS_IN_SEARCH) break; // Stop if max is reached
+
+            const currentResultData = results[i] || { suggestions: [] };
+            const keywordsRaw = parseResults(currentResultData);
+            let keywordsToAddInCategory = [];
+            let suggestionType = "";
+            let groupClass = "";
+
+            // --- Filter keywords based on category index and uniqueness ---
+            if (i === 0) { // Main Suggestions (index 0)
+                suggestionType = "Amazon Suggestions";
+                groupClass = "group-main";
+                keywordsRaw.forEach(kw => {
+                    // Add if not already displayed anywhere and under the limit
+                    if (!allDisplayedKeywordsSet.has(kw) && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
+                        keywordsToAddInCategory.push(kw);
+                        allDisplayedKeywordsSet.add(kw); // Track all displayed keywords
+                    }
+                });
+            } else { // Other suggestion types (Before, After, Between, Other)
+                keywordsRaw.forEach(kw => {
+                    // Add if NOT in main suggestions, NOT already displayed, and under the limit
+                    if (!mainKeywordsSet.has(kw) && !allDisplayedKeywordsSet.has(kw) && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
+                        keywordsToAddInCategory.push(kw);
+                        allDisplayedKeywordsSet.add(kw); // Track all displayed keywords
+                    }
+                });
+
+                // Determine title and class based on index 'i'
+                switch (i) {
+                    case 1: suggestionType = "Keywords Before"; groupClass = "group-before"; break;
+                    case 2: suggestionType = "Keywords After"; groupClass = "group-after"; break;
+                    case 3: // Between (only show title if keywords exist for this specific type)
+                        if (results[3] && results[3].suggestions && results[3].suggestions.length > 0 && keywordsToAddInCategory.length > 0) {
+                             suggestionType = "Keywords Between"; groupClass = "group-between";
+                        } else { suggestionType = ""; } // No title if no specific 'between' keywords
+                        break;
+                    default: suggestionType = "Other"; groupClass = "group-other"; break; // Indices 4, 5, 6+ fall here
+                }
+            }
+
+            // --- Append Title and Items if keywords exist for this category ---
+            if (keywordsToAddInCategory.length > 0 && suggestionType) {
+                let shouldAddTitle = true;
+                // Special handling for "Other" title - only show it once
+                if (suggestionType === "Other") {
+                    if (!otherTitleDisplayed) {
+                        otherTitleDisplayed = true; // Mark as displayed
+                    } else {
+                        shouldAddTitle = false; // Don't add "Other" title again
+                    }
+                }
+
+                // Append the title directly to the main container if needed
+                if (shouldAddTitle) {
+                    suggestionsContainer.append($('<h3></h3>').text(suggestionType));
+                }
+
+                // Append each item and STORE the keyword internally
+                keywordsToAddInCategory.forEach(keyword => {
+                    if (keywordCount < MAX_KEYWORDS_IN_SEARCH) {
+                        addKeywordItem(keyword, search, groupClass); // Add item to UI
+                        currentDisplayedKeywords.push(keyword);    // Store the added keyword
+                        keywordCount++;
+                    }
+                });
+            }
+        } // --- End Loop ---
+
+        // --- Final Show/Hide and Button Update ---
+        if (keywordCount > 0) {
+            suggestionsContainer.css('display', 'flex'); // Show container if keywords were added
+        } else {
+            suggestionsContainer.css('display', 'none'); // Hide if empty
+            currentDisplayedKeywords = []; // Ensure list is empty if nothing is shown
+        }
+        updateActionButtonsState(); // Update CSV/Copy button state
+    }
+
+
+    // Modify fetchAndDisplaySuggestions to handle clearing state
+    function fetchAndDisplaySuggestions(search) {
+        const trimmedSearch = search.trim();
+        const rawSearch = searchInput.val(); // Use raw value for API calls consistency
+        const words = trimmedSearch.split(" ").filter(w => w !== "");
+        const marketplace = currentMarketplace;
+
+        if (!trimmedSearch) {
+            suggestionsContainer.empty().hide();
+            clearSearchBtn.hide();
+            currentDisplayedKeywords = []; // Clear list
+            updateActionButtonsState(); // Update buttons
+            return;
+        }
+        clearSearchBtn.show();
+
+        let promises = [
+            getSuggestions(rawSearch, "", marketplace, 'Main'),             // 0
+            getSuggestions(" ", trimmedSearch, marketplace, 'Before'),      // 1
+            getSuggestions(trimmedSearch + " ", "", marketplace, 'After'), // 2
+            (words.length >= 2
+                ? getSuggestions(words[0] + " ", " " + words.slice(1).join(" "), marketplace, 'Between')
+                : Promise.resolve({ suggestions: [] }) // Empty if not applicable
+            ),                                                              // 3
+            getSuggestions(rawSearch + " for ", "", marketplace, 'Exp: for'), // 4
+            getSuggestions(rawSearch + " and ", "", marketplace, 'Exp: and'), // 5
+            getSuggestions(rawSearch + " with ", "", marketplace, 'Exp: with') // 6
+        ];
+
+        Promise.all(promises)
+            .then((results) => {
+                // Check if search input still matches the request after delay
+                if (searchInput.val() === rawSearch) {
+                     setTimeout(() => {
+                        if (searchInput.val() === rawSearch) {
+                            renderCategorizedSuggestions(trimmedSearch, results);
+                        } else { // Input changed during the small render delay
+                            suggestionsContainer.css('display', 'none');
+                            currentDisplayedKeywords = []; // Clear list
+                            updateActionButtonsState(); // Update buttons
+                        }
+                     }, RENDER_DELAY_MS);
+                } else { // Input changed before suggestions even arrived
+                    suggestionsContainer.css('display', 'none');
+                    currentDisplayedKeywords = []; // Clear list
+                    updateActionButtonsState(); // Update buttons
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching one or more suggestions:', error);
+                suggestionsContainer.empty().hide(); // Hide on error
+                currentDisplayedKeywords = []; // Clear list
+                updateActionButtonsState(); // Update buttons
+            });
+    }
+
+    // --- Event Handlers ---
+
+    // Checkbox Handler (Modified for Action Buttons)
+    kwSuggestionsCheckbox.on('change', function() {
+        const isChecked = $(this).is(':checked');
+        suggestionDepartmentSelect.toggle(isChecked);
+        suggestionActionsContainer.toggle(isChecked); // Toggle action buttons visibility
+
+        if (!isChecked) {
+            clearTimeout(suggestionTimeoutId);
+            suggestionsContainer.empty().css('display', 'none');
+            currentDisplayedKeywords = []; // Clear keyword list
+        } else {
+            // If checking the box, re-trigger suggestions if input has text
+            const currentQuery = searchInput.val();
+            if (currentQuery.trim()) {
+                fetchAndDisplaySuggestions(currentQuery);
+            }
+        }
+        // Always update button state after toggling visibility or potentially clearing list
+        updateActionButtonsState();
+    });
+
+    // Department Select Handler
+    suggestionDepartmentSelect.on('change', function() {
+        // Re-fetch suggestions only if the feature is enabled
+        if (kwSuggestionsCheckbox.is(':checked')) {
+            const currentQuery = searchInput.val();
+            if (currentQuery.trim()) {
+                clearTimeout(suggestionTimeoutId); // Clear pending fetch from typing
+                fetchAndDisplaySuggestions(currentQuery); // Fetch immediately
+            }
+        }
+    });
+
+    // Search Input Handler (Modified for Action Buttons state)
+    searchInput.on('input', function() {
+        const query = $(this).val();
+        clearTimeout(suggestionTimeoutId); // Clear previous debounce timer
+
+        // Always manage clear button visibility
+        if (query.trim()) {
+            clearSearchBtn.show();
+        } else {
+            clearSearchBtn.hide();
+        }
+
+        // If suggestions disabled, just hide container and clear state
+        if (!kwSuggestionsCheckbox.is(':checked')) {
+            suggestionsContainer.empty().css('display', 'none');
+            currentDisplayedKeywords = [];
+            updateActionButtonsState();
+            return; // Exit
+        }
+
+        // If suggestions enabled:
+        if (query.trim()) {
+            // Set timeout to fetch suggestions after debounce period
+            suggestionTimeoutId = setTimeout(() => {
+                fetchAndDisplaySuggestions(query);
+            }, SUGGESTION_DEBOUNCE_MS);
+        } else {
+            // If input cleared, hide container and clear state immediately
+            suggestionsContainer.empty().css('display', 'none');
+            currentDisplayedKeywords = [];
+            updateActionButtonsState();
+        }
+    });
+
+    // Clear Button Handler (Modified for Action Buttons state)
+    clearSearchBtn.on('click', function() {
+        searchInput.val('');
+        suggestionsContainer.empty().css('display', 'none');
+        $(this).hide();
+        searchInput.focus();
+        currentDisplayedKeywords = []; // Clear list
+        updateActionButtonsState(); // Update buttons
+    });
+
+    // Marketplace Select Handler (Modified for Action Buttons state)
+    marketplaceSelect.on('change', function() {
+        currentMarketplace = getMarketplace();
+        const currentQuery = searchInput.val();
+        // Only refetch if suggestions are enabled and input has value
+        if (kwSuggestionsCheckbox.is(':checked') && currentQuery.trim()) {
+            clearTimeout(suggestionTimeoutId);
+            fetchAndDisplaySuggestions(currentQuery);
+        } else {
+            // If suggestions disabled or input empty, clear state and update buttons
+            suggestionsContainer.empty().css('display', 'none'); // Ensure hidden
+            currentDisplayedKeywords = [];
+            updateActionButtonsState();
+        }
+    });
+
+    // Document Click Handler (Modified to ignore Action Buttons)
+    $(document).on('click', (event) => {
+        // Check if the click happened outside all relevant suggestion controls
+        if (!$(event.target).closest(searchInput).length &&
+            !$(event.target).closest(suggestionsContainer).length &&
+            !$(event.target).closest(clearSearchBtn).length &&
+            !$(event.target).closest(suggestionDepartmentSelect).length &&
+            !$(event.target).closest(kwSuggestionsCheckbox).length &&
+            !$(event.target).closest('label[for="kwsuggestions"]').length &&
+            !$(event.target).closest(suggestionActionsContainer).length) // Ignore clicks on new buttons
+        {
+            // Hide suggestions container if it's currently visible
+            // Doesn't clear the list or disable buttons, allows reopening on focus
+             if (suggestionsContainer.is(':visible')) {
+                 suggestionsContainer.css('display', 'none');
+             }
+        }
+    });
+
+    // Search Input Focus Handler
+    searchInput.on('focus', function() {
+        // Show suggestions on focus only if enabled, input has text, AND results exist
+        if (kwSuggestionsCheckbox.is(':checked') && $(this).val().trim() && currentDisplayedKeywords.length > 0) {
+            suggestionsContainer.css('display', 'flex');
+        }
+    });
+
+    // --- Add Handlers for New CSV/Copy Buttons ---
+
+    downloadCsvBtn.on('click', function() {
+        if ($(this).prop('disabled') || currentDisplayedKeywords.length === 0) {
+            return; // Extra safety check
+        }
+
+        // Prepare CSV content (Header + Data rows)
+        let csvContent = "Keyword\n";
+        currentDisplayedKeywords.forEach(keyword => {
+            // Basic CSV escaping: double quotes within field, quote field if it contains comma or quote
+            let escapedKeyword = keyword.replace(/"/g, '""');
+            if (escapedKeyword.includes(',') || escapedKeyword.includes('"')) {
+                escapedKeyword = `"${escapedKeyword}"`;
+            }
+            csvContent += escapedKeyword + "\n";
+        });
+
+        // Create Blob and trigger download
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+
+        link.setAttribute("href", url);
+        link.setAttribute("download", "merchscope_suggestions.csv");
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click(); // Simulate click to download
+        document.body.removeChild(link); // Clean up link element
+        URL.revokeObjectURL(url); // Clean up Blob URL
+    });
+
+    copySuggestionsBtn.on('click', function() {
+        if ($(this).prop('disabled') || currentDisplayedKeywords.length === 0) {
+            return; // Extra safety check
+        }
+
+        const textToCopy = currentDisplayedKeywords.join("\n"); // Newline separated
+        const button = $(this);
+        const originalText = button.text(); // Store original text ("COPY")
+
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            // Success feedback
+            button.addClass('copy-success-feedback').text('COPIED!');
+            setTimeout(() => {
+                // Reset after timeout only if text is still 'COPIED!' (prevents race condition)
+                 if(button.text() === 'COPIED!') {
+                      button.removeClass('copy-success-feedback').text(originalText);
+                 }
+            }, 1500);
+        }).catch(err => {
+            // Error feedback
+            console.error('Failed to copy suggestions:', err);
+            button.addClass('copy-error-feedback').text('FAIL!');
+            setTimeout(() => {
+                 // Reset after timeout only if text is still 'FAIL!'
+                 if(button.text() === 'FAIL!') {
+                      button.removeClass('copy-error-feedback').text(originalText);
+                 }
+            }, 1500);
+        });
+    });
+    // --- End Add Handlers ---
+
+    // --- Initial Setup ---
+    clearSearchBtn.hide(); // Initially hide clear button
+
+    // Set initial visibility for suggestion controls based on checkbox state
+    const initialCheckboxState = kwSuggestionsCheckbox.is(':checked');
+    suggestionDepartmentSelect.toggle(initialCheckboxState);
+    suggestionActionsContainer.toggle(initialCheckboxState);
+
+    // Ensure buttons start in the correct enabled/disabled state (always disabled initially)
+    updateActionButtonsState();
+
+}); // --- End $(document).ready ---
+
+// Suggestions Expander
+/*$(document).ready(function() {
     const searchInput = $("#searchInput");
     const suggestionsContainer = $("#suggestionsContainer");
     const marketplaceSelect = $("#marketplaceSelect");
@@ -2015,7 +2540,7 @@ $(document).ready(function() {
         const selectedValue = marketplaceSelect.val() || "com"; // Default to com if null
         const domainConfig = {
              "com": { domain: "amazon.com", market: "ATVPDKIKX0DER" },
-             /*"ca": { domain: "amazon.ca", market: "A2EUQ1WTGCTBG2" },*/
+             // "ca": { domain: "amazon.ca", market: "A2EUQ1WTGCTBG2" },
              "co.uk": { domain: "amazon.co.uk", market: "A1F83G8C2ARO7P" },
              "de": { domain: "amazon.de", market: "A1PA6795UKMFR9" },
              "fr": { domain: "amazon.fr", market: "A13V1IB3VIYZZH" },
@@ -2039,7 +2564,7 @@ $(document).ready(function() {
         }
         
         const params = new URLSearchParams({
-            /*'session-id': '131-6229116-2226265', // random ones 'customer-id': 'A1CNYR04B8CZOZ', // random ones 'request-id': '35R5TZN3EY6RCFVHSMYT', // random ones 'page-type': 'Gateway',// random ones 'lop': 'en_US', // random ones 'b2b': '1', // random ones seems to be value "1" if you are logged in with a bussines account and "0" with non business. 'fresh': '0', // random ones 'ks': '69', // random ones 'client-info': 'search-ui', // random ones*/
+            //'session-id': '131-6229116-2226265', // random ones 'customer-id': 'A1CNYR04B8CZOZ', // random ones 'request-id': '35R5TZN3EY6RCFVHSMYT', // random ones 'page-type': 'Gateway',// random ones 'lop': 'en_US', // random ones 'b2b': '1', // random ones seems to be value "1" if you are logged in with a bussines account and "0" with non business. 'fresh': '0', // random ones 'ks': '69', // random ones 'client-info': 'search-ui', // random ones
             'site-variant': 'desktop',
             'mid': marketplace.market,
             'alias': departmentQuery,
@@ -2208,7 +2733,7 @@ function renderCategorizedSuggestions(search, results) {
                 }
             });
             // Determine type/class
-            switch(i) { /* ... same switch logic as before ... */
+            switch(i) { // ... same switch logic as before ... 
                 case 1: suggestionType = "Keywords Before"; groupClass = "group-before"; break;
                 case 2: suggestionType = "Keywords After"; groupClass = "group-after"; break;
                 case 3:
@@ -2399,17 +2924,17 @@ kwSuggestionsCheckbox.on('change', function() {
         }
     });
 
-    /* OLD CODE
+    // OLD CODE
     // Hide suggestions when clicking outside
-    $(document).on('click', (event) => {
+    // $(document).on('click', (event) => {
         // Check if the click target is NOT the input or suggestion areas or clear button
-        if (!$(event.target).closest(searchInput).length &&
-            !$(event.target).closest(suggestionsContainer).length &&
-            !$(event.target).closest(clearSearchBtn).length)
-        {
-            suggestionsContainer.css('display', 'none'); // Hide without clearing, allows reopening
-        }
-    });*/
+    //    if (!$(event.target).closest(searchInput).length &&
+    //        !$(event.target).closest(suggestionsContainer).length &&
+    //        !$(event.target).closest(clearSearchBtn).length)
+    //    {
+    //        suggestionsContainer.css('display', 'none'); // Hide without clearing, allows reopening
+    //    }
+    // });
     // Hide suggestions when clicking outside ONLY IF the checkbox is unchecked
     $(document).on('click', (event) => {
         // Check if the click happened outside of all relevant suggestion controls:
@@ -2458,3 +2983,4 @@ kwSuggestionsCheckbox.on('change', function() {
         suggestionDepartmentSelect.show(); // Ensure dropdown is visible if checkbox starts checked
     }
 });
+*/

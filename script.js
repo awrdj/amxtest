@@ -1547,6 +1547,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         productTypeSelect.addEventListener('change', function() {
+            // --- Add this logic at the beginning of the handler ---
+            const activePresetValue = document.getElementById('presetsSelect').value;
+            if (activePresetValue) { // Check if a preset is active
+                const currentMarketplace = marketplaceSelect.value; // Get current marketplace
+                const currentPresets = presetConfigs[currentMarketplace] || presetConfigs.com;
+                const activePreset = currentPresets.find(p => p.value === activePresetValue);
+                if (activePreset && activePreset.settings) {
+                    // A preset is active, apply keyword overrides for the NEW product type
+                    applyPresetKeywordOverrides(activePreset.settings, this.value); // 'this.value' is the newly selected product type
+                }
+            }
+            // --- End Add override check ---
+            
             updateProductTypeSettings();
             updateDepartmentFromProductType();
             updateDepartmentCategoryState();
@@ -1570,7 +1583,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         document.getElementById('presetsSelect').addEventListener('change', applyPreset);
         // this function to handle preset selection
-        /*function applyPreset() {
+        /* OOOLD ONE function applyPreset() {
         const selectedPreset = document.getElementById('presetsSelect').value;
         const marketplace = marketplaceSelect.value;
         const presets = presetConfigs[marketplace] || presetConfigs.com;
@@ -1674,9 +1687,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Update the generated URL with new settings
             updateGeneratedUrl();
         }
-    } */
+    } 
 
-        function applyPreset() {
+       NEW ONE MAY 13 1:30 function applyPreset() {
             const selectedPreset = document.getElementById('presetsSelect').value;
             const marketplace = marketplaceSelect.value;
             const presets = presetConfigs[marketplace] || presetConfigs.com;
@@ -1793,8 +1806,113 @@ document.addEventListener('DOMContentLoaded', function() {
                  // Fallback if preset definition not found (shouldn't happen normally)
                  updateGeneratedUrl();
             }
-        }
-        
+        }*/
+
+        // Modify this function inside setupEventListeners
+        function applyPreset() {
+            const selectedPreset = document.getElementById('presetsSelect').value;
+            const marketplace = marketplaceSelect.value;
+            const presets = presetConfigs[marketplace] || presetConfigs.com;
+            const config = marketplaceConfig[marketplace] || marketplaceConfig.com;
+            const searchInput = document.getElementById('searchInput');
+            const customHiddenInput = document.getElementById('customHiddenKeywords');
+
+            // --- Reset filters to default first ---
+            document.getElementById('timeFilterNone').checked = true;
+            document.getElementById('sellerAmazon').checked = true;
+            document.getElementById('reviewsFilter').checked = false;
+            document.getElementById('filterExcludeBrands').checked = false;
+            document.getElementById('minPrice').value = '';
+            document.getElementById('maxPrice').value = '';
+            document.getElementById('sortOrder').value = config.sortOrders[0]?.value || 'custom';
+            // Set product type carefully, ensure it exists for the marketplace
+            const availableProductTypes = productTypeAvailability[marketplace] || productTypeAvailability.com;
+            productTypeSelect.value = availableProductTypes[0] || 'custom'; // Default to first available
+            departmentSelect.value = '';
+            categorySelect.value = '';
+            searchInput.value = '';       // Clear search input
+            customHiddenInput.value = ''; // Clear custom hidden keywords
+            searchInput.dispatchEvent(new Event('input')); // Update clear button
+
+            // --- Handle "No Preset" selection ---
+            if (!selectedPreset) {
+                productTypeSelect.dispatchEvent(new Event('change')); // Trigger updates if product type changed during reset
+                setTimeout(() => {
+                    departmentSelect.dispatchEvent(new Event('change'));
+                    updateMarketplaceFilters();
+                    updateGeneratedUrl(); // Update URL for reset state
+                }, 100);
+                return; // EXIT EARLY
+            }
+
+            // Find the selected preset configuration
+            const preset = presets.find(p => p.value === selectedPreset);
+
+            if (preset) {
+                const settings = preset.settings; // Get the settings object for the preset
+
+                // --- Apply non-keyword settings first ---
+                let presetProductType = availableProductTypes[0] || 'custom'; // Start with a safe default
+                if (settings.productType !== undefined && availableProductTypes.includes(settings.productType)) {
+                     presetProductType = settings.productType; // Use preset's type if valid
+                }
+                productTypeSelect.value = presetProductType;
+                // We'll dispatch the change event later after other fields potentially relevant are set
+
+
+                // Apply other filters (these don't have complex dependencies on product type/dept yet)
+                if (settings.timeFilter) {
+                    document.getElementById(settings.timeFilter).checked = true;
+                } // else 'None' is already checked
+                document.getElementById('reviewsFilter').checked = !!settings.reviewsFilter;
+                document.getElementById('filterExcludeBrands').checked = !!settings.excludeBrands;
+                document.getElementById('minPrice').value = settings.minPrice || '';
+                document.getElementById('maxPrice').value = settings.maxPrice || '';
+
+                // Apply department (triggers category/filter updates)
+                // Needs to happen before category and sort order
+                if (settings.department !== undefined) {
+                     departmentSelect.value = settings.department;
+                     departmentSelect.dispatchEvent(new Event('change'));
+                } else {
+                     // If preset doesn't specify department, ensure it's reset and updated
+                     departmentSelect.value = '';
+                     departmentSelect.dispatchEvent(new Event('change'));
+                }
+
+                 // Apply category and sort order with delays AFTER department change has processed
+                 setTimeout(() => {
+                      if (settings.category !== undefined) {
+                           categorySelect.value = settings.category;
+                           // Maybe trigger change event if category affects URL directly? Assuming yes for now.
+                           categorySelect.dispatchEvent(new Event('change'));
+                      } // else category remains reset
+
+                      if (settings.sortOrder !== undefined) {
+                           document.getElementById('sortOrder').value = settings.sortOrder;
+                      } // else sort order remains reset
+
+                       // --- NOW, apply the keywords using the helper function ---
+                       // Use the product type that was actually set for the preset
+                       applyPresetKeywordOverrides(settings, productTypeSelect.value);
+
+                       // --- Finally, trigger product type change AFTER all other fields are set ---
+                       // This ensures department mapping runs correctly based on final product type
+                       productTypeSelect.dispatchEvent(new Event('change'));
+
+
+                       // Final URL update after all changes and potential overrides
+                       // Give slightly more time for all events to settle
+                       setTimeout(updateGeneratedUrl, 250);
+
+                 }, 150); // Delay for category/sort/keywords/final update
+
+
+            } else {
+                 // Fallback if preset definition not found
+                 updateGeneratedUrl();
+            }
+        } // End applyPreset function
 
         document.getElementById('sellerAmazon').addEventListener('click', updateGeneratedUrl);
         document.getElementById('reviewsFilter').addEventListener('click', updateGeneratedUrl);
@@ -2171,6 +2289,41 @@ $(document).ready(function() {
              // If buttons enabled but text is wrong (e.g. page reload state issue), reset it
              copySuggestionsBtn.removeClass('copy-success-feedback copy-error-feedback').text('COPY');
         }
+    }
+    // --- End NEW Helper Function ---
+
+    // --- NEW Helper Function to Apply Keyword Overrides ---
+    function applyPresetKeywordOverrides(presetSettings, selectedProductType) {
+        const searchInput = document.getElementById('searchInput');
+        const customHiddenInput = document.getElementById('customHiddenKeywords');
+
+        // Define base keywords from the main preset settings
+        const baseSearchKeywords = presetSettings.searchKeywords || '';
+        const baseCustomHiddenKeywords = presetSettings.customHiddenKeywords || '';
+
+        let finalSearchKeywords = baseSearchKeywords;
+        let finalCustomHiddenKeywords = baseCustomHiddenKeywords;
+
+        // Check for overrides
+        const overrides = presetSettings.productTypeOverrides;
+        if (overrides && overrides[selectedProductType]) {
+            const typeOverride = overrides[selectedProductType];
+            // Use override value if it exists, otherwise fall back to base
+            finalSearchKeywords = typeOverride.searchKeywords !== undefined ? typeOverride.searchKeywords : baseSearchKeywords;
+            finalCustomHiddenKeywords = typeOverride.customHiddenKeywords !== undefined ? typeOverride.customHiddenKeywords : baseCustomHiddenKeywords;
+        }
+        // If no override object or no entry for the product type, the base values remain
+
+        // Apply the final determined keywords
+        searchInput.value = finalSearchKeywords;
+        customHiddenInput.value = finalCustomHiddenKeywords;
+
+        // Trigger input event on searchInput for UI consistency (clear button)
+        // Use setTimeout to ensure it runs after value is set and doesn't interfere immediately
+        setTimeout(() => {
+             searchInput.dispatchEvent(new Event('input'));
+             // Note: We don't call updateGeneratedUrl here; the calling context will handle it.
+        }, 0);
     }
     // --- End NEW Helper Function ---
 

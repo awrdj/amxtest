@@ -138,17 +138,17 @@ document.addEventListener('DOMContentLoaded', function() {
         // Presets config US
         'com': [
             { value: 'last30-fashion-com', text: 'Last 30 Days Fashion', 
-              settings: { timeFilter: 'timeFilter30Days', sortOrder: 'custom', department: 'fashion', category: '7141123011', productType: 'custom'} },
+              settings: { timeFilter: 'timeFilter30Days', sortOrder: 'custom', department: 'fashion', category: '7141123011', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'last90-fashion-com', text: 'Last 90 Days Fashion', 
-              settings: { timeFilter: 'timeFilter90Days', sortOrder: 'custom', department: 'fashion', category: '7141123011', productType: 'custom'} },
+              settings: { timeFilter: 'timeFilter90Days', sortOrder: 'custom', department: 'fashion', category: '7141123011', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'most-purchased-com', text: 'Most Purchased Fashion Novelty', 
-              settings: { sortOrder: 'most-purchased-rank', department: 'fashion-novelty', productType: 'custom'} },
+              settings: { sortOrder: 'most-purchased-rank', department: 'fashion-novelty', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'the-trends-com', text: 'Trends Fashion Novelty', 
-              settings: { sortOrder: 'date-desc-rank', department: 'fashion-novelty', productType: 'custom'} },
+              settings: { sortOrder: 'date-desc-rank', department: 'fashion-novelty', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'archive-view-com', text: 'Archive Fashion Novelty', 
-              settings: { sortOrder: 'date-desc-rank', department: 'fashion-novelty', productType: 'custom'} },
+              settings: { sortOrder: 'date-desc-rank', department: 'fashion-novelty', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'competition-view-com', text: 'T-Shirt Competition Checker', 
-              settings: { sortOrder: 'custom', department: 'fashion-novelty', productType: 'tshirt', searchKeywords: 'funny graphic tee', customHiddenKeywords: '-vintage'} },
+              settings: { sortOrder: 'custom', department: 'fashion-novelty', productType: 'tshirt', suppressDefaultProductTypeKeywords: false} },
             {
             value: 'competition-checker-com', // Renamed example
             text: 'Competition Checker',      // Renamed example
@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 productType: 'custom',              // Default product type for this preset
                 searchKeywords: 'funny graphic',    // Base search keyword(s)
                 customHiddenKeywords: '-vintage',   // Base custom hidden keyword(s)
-        
+                suppressDefaultProductTypeKeywords: true,
                 // --- NEW: Product Type Specific Overrides ---
                 productTypeOverrides: {
                     'tshirt': { // Optional: Override even for the default type
@@ -184,77 +184,77 @@ document.addEventListener('DOMContentLoaded', function() {
         // Presets config UK
         'co.uk': [
             { value: 'last30-fashion-uk', text: 'Last 30 Days Fashion - UK', 
-              settings: { timeFilter: 'timeFilter30Days', sortOrder: 'custom', department: 'fashion', productType: 'custom'} },
+              settings: { timeFilter: 'timeFilter30Days', sortOrder: 'custom', department: 'fashion', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'last90-fashion-uk', text: 'Last 90 Days Fashion - UK', 
-              settings: { timeFilter: 'timeFilter90Days', sortOrder: 'custom', department: 'fashion', productType: 'custom'} },
+              settings: { timeFilter: 'timeFilter90Days', sortOrder: 'custom', department: 'fashion', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'most-purchased-uk', text: 'Most Purchased Fashion Novelty - UK', 
-              settings: { sortOrder: 'most-purchased-rank', department: 'fashion', category: '1731104031', productType: 'custom'} },
+              settings: { sortOrder: 'most-purchased-rank', department: 'fashion', category: '1731104031', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'the-trends-uk', text: 'Trends Fashion - UK', 
-              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'custom'} },
+              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'archive-view-uk', text: 'Archive Fashion - UK', 
-              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt'} },
+              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt', suppressDefaultProductTypeKeywords: false} },
             { value: 'competition-view-uk', text: 'T-Shirt Competition Checker - UK', 
-              settings: { sortOrder: 'custom', department: 'fashion', productType: 'tshirt'} }
+              settings: { sortOrder: 'custom', department: 'fashion', productType: 'tshirt', suppressDefaultProductTypeKeywords: false} }
         ],
         // Presets config DE
         'de': [
             { value: 'last30-fashion-de', text: 'Last 30 Days Fashion - DE', 
-              settings: { timeFilter: 'timeFilter30Days', sortOrder: 'custom', department: 'fashion', productType: 'custom'} },
+              settings: { timeFilter: 'timeFilter30Days', sortOrder: 'custom', department: 'fashion', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'last90-fashion-de', text: 'Last 90 Days Fashion- DE', 
-              settings: { timeFilter: 'timeFilter90Days', sortOrder: 'custom', department: 'fashion', productType: 'custom'} },
+              settings: { timeFilter: 'timeFilter90Days', sortOrder: 'custom', department: 'fashion', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'most-purchased-de', text: 'Most Purchased Fashion - DE', 
-              settings: { sortOrder: 'most-purchased-rank', department: 'fashion', productType: 'custom'} },
+              settings: { sortOrder: 'most-purchased-rank', department: 'fashion', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'the-trends-de', text: 'Trends Fashion - DE', 
-              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt'} },
+              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt', suppressDefaultProductTypeKeywords: false} },
             { value: 'archive-view-de', text: 'Archive Fashio - DEn', 
-              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt'} },
+              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt', suppressDefaultProductTypeKeywords: false} },
             { value: 'competition-view-de', text: 'T-Shirt Competition Checker - DE', 
-              settings: { sortOrder: 'custom', department: 'fashion', productType: 'custom'} }
+              settings: { sortOrder: 'custom', department: 'fashion', productType: 'custom', suppressDefaultProductTypeKeywords: false} }
         ],
         // Presets config FR
         'fr': [
             { value: 'last30-fashion-fr', text: 'Last 30 Days Fashion Fantaisie - FR', 
-              settings: { timeFilter: 'timeFilter30Days', sortOrder: 'custom', department: 'fashion', category: '465090031', productType: 'custom'} },
+              settings: { timeFilter: 'timeFilter30Days', sortOrder: 'custom', department: 'fashion', category: '465090031', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'last90-fashion-fr', text: 'Last 90 Days Fashion Fantaisie - FR', 
-              settings: { timeFilter: 'timeFilter90Days', sortOrder: 'custom', department: 'fashion', category: '465090031', productType: 'custom'} },
+              settings: { timeFilter: 'timeFilter90Days', sortOrder: 'custom', department: 'fashion', category: '465090031', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'most-purchased-fr', text: 'Most Purchased Fashion Fantaisie - FR', 
-              settings: { sortOrder: 'most-purchased-rank', department: 'fashion', category: '465090031', productType: 'custom'} },
+              settings: { sortOrder: 'most-purchased-rank', department: 'fashion', category: '465090031', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'the-trends-fr', text: 'Trends Fashion - FR', 
-              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt'} },
+              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt', suppressDefaultProductTypeKeywords: false} },
             { value: 'archive-view-fr', text: 'Archive Fashion - FR', 
-              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt'} },
+              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt', suppressDefaultProductTypeKeywords: false} },
             { value: 'competition-view-fr', text: 'T-Shirt Competition Checker - FR', 
-              settings: { sortOrder: 'custom', department: 'fashion', category: '465090031', productType: 'tshirt'} }
+              settings: { sortOrder: 'custom', department: 'fashion', category: '465090031', productType: 'tshirt', suppressDefaultProductTypeKeywords: false} }
         ],
         // Presets config IT
         'it': [
             { value: 'last30-fashion-fr', text: 'Last 30 Days Fashion Specific Clothing - IT', 
-              settings: { timeFilter: 'timeFilter30Days', sortOrder: 'custom', department: 'fashion', category: '2892860031', productType: 'custom'} },
+              settings: { timeFilter: 'timeFilter30Days', sortOrder: 'custom', department: 'fashion', category: '2892860031', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'last90-fashion-fr', text: 'Last 90 Days Fashion Specific Clothing - IT', 
-              settings: { timeFilter: 'timeFilter90Days', sortOrder: 'custom', department: 'fashion', category: '2892860031', productType: 'custom'} },
+              settings: { timeFilter: 'timeFilter90Days', sortOrder: 'custom', department: 'fashion', category: '2892860031', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'most-purchased-fr', text: 'Most Purchased Fashion - IT', 
-              settings: { sortOrder: 'most-purchased-rank', department: 'fashion', productType: 'custom'} },
+              settings: { sortOrder: 'most-purchased-rank', department: 'fashion', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'the-trends-fr', text: 'Trends Fashion - IT', 
-              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt'} },
+              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt', suppressDefaultProductTypeKeywords: false} },
             { value: 'archive-view-fr', text: 'Archive Fashion - IT', 
-              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt'} },
+              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt', suppressDefaultProductTypeKeywords: false} },
             { value: 'competition-view-fr', text: 'T-Shirt Competition Checker - IT', 
-              settings: { sortOrder: 'custom', department: 'fashion', category: '2892860031', productType: 'tshirt'} }
+              settings: { sortOrder: 'custom', department: 'fashion', category: '2892860031', productType: 'tshirt', suppressDefaultProductTypeKeywords: false} }
         ],
         // Presets config ES
         'es': [
             { value: 'last30-fashion-es', text: 'Last 30 Days Fashion Specialized Clothing - ES', 
-              settings: { timeFilter: 'timeFilter30Days', sortOrder: 'custom', department: 'fashion', category: '3074031031', productType: 'custom'} },
+              settings: { timeFilter: 'timeFilter30Days', sortOrder: 'custom', department: 'fashion', category: '3074031031', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'last90-fashion-es', text: 'Last 90 Days Fashion Specialized Clothing - ES', 
-              settings: { timeFilter: 'timeFilter90Days', sortOrder: 'custom', department: 'fashion', category: '3074031031', productType: 'custom'} },
+              settings: { timeFilter: 'timeFilter90Days', sortOrder: 'custom', department: 'fashion', category: '3074031031', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'most-purchased-es', text: 'Most Purchased Fashion Specialized Clothing - ES', 
-              settings: { sortOrder: 'most-purchased-rank', department: 'fashion', category: '3074031031', productType: 'custom'} },
+              settings: { sortOrder: 'most-purchased-rank', department: 'fashion', category: '3074031031', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'the-trends-es', text: 'Trends Fashion - ES', 
-              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt'} },
+              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt', suppressDefaultProductTypeKeywords: false} },
             { value: 'archive-view-es', text: 'Archive Fashion - ES', 
-              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt'} },
+              settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt', suppressDefaultProductTypeKeywords: false} },
             { value: 'competition-view-es', text: 'T-Shirt Competition Checker - ES', 
-              settings: { sortOrder: 'custom', department: 'custom', productType: 'custom'} }
+              settings: { sortOrder: 'custom', department: 'custom', productType: 'custom', suppressDefaultProductTypeKeywords: false} }
         ]
         /*'co.jp': [
             { value: 'last90-review-jp', text: 'JP - Last 90 Days Review', 
@@ -1463,28 +1463,7 @@ document.addEventListener('DOMContentLoaded', function() {
       updateSortOrderOptions();
       updateCategoryOptions();
     }
-
-    // Modified updateSortOrderOptions
-    /*function updateSortOrderOptions() {
-      const marketplace = marketplaceSelect.value;
-      const department = departmentSelect.value;
-      const config = marketplaceConfig[marketplace] || marketplaceConfig.com;
-      
-      // Get department-specific sort options if available
-      const sortOptions = (department && config.departmentSettings?.[department]?.sortOrders)
-        ? config.departmentSettings[department].sortOrders
-        : config.sortOrders;
     
-      const sortOrderSelect = document.getElementById('sortOrder');
-      sortOrderSelect.innerHTML = '';
-      
-      sortOptions.forEach(option => {
-        const optionEl = document.createElement('option');
-        optionEl.value = option.value;
-        optionEl.textContent = option.text;
-        sortOrderSelect.appendChild(optionEl);
-      });
-    }*/
     function updateSortOrderOptions() {
         const marketplace = marketplaceSelect.value;
         const department = departmentSelect.value;
@@ -1714,29 +1693,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("[Marketplace Change] Calling applyPreset() to establish default state for new marketplace.");
             applyPreset();
         });
-        /*marketplaceSelect.addEventListener('change', function() {
-            updateZipCode();
-            updateMarketplaceFilters();
-            populateDepartments();
-            populateProductTypes();
-            updateSortOrderOptions();
-            updatePresetsDropdown();
-            const activePresetValue = document.getElementById('presetsSelect').value;
-            if (activePresetValue) {
-                const currentMarketplace = marketplaceSelect.value;
-                const currentPresets = presetConfigs[currentMarketplace] || presetConfigs.com;
-                const activePreset = currentPresets.find(p => p.value === activePresetValue);
-                if (activePreset && activePreset.settings) {
-                    // Apply the whole preset logic again for the new marketplace context
-                    // This is a bit heavy, but ensures all settings are re-evaluated
-                    // including product type dropdown being repopulated
-                    applyPreset(); // This will re-apply the preset in the context of new marketplace
-                    return; // applyPreset will handle the final updateGeneratedUrl
-                }
-            }
-            updateGeneratedUrl();
-        });*/
-
+        
         productTypeSelect.addEventListener('change', function() {
             const activePresetValue = document.getElementById('presetsSelect').value;
             if (activePresetValue) {
@@ -2061,7 +2018,120 @@ document.addEventListener('DOMContentLoaded', function() {
       const productType = productTypeSelect.value;
     }
 
+    // --- Replace your existing generateAmazonUrl function with this ---
     function generateAmazonUrl() {
+        const marketplace = marketplaceSelect.value;
+        let baseUrl = `https://www.amazon.${marketplace}`;
+        const config = marketplaceConfig[marketplace] || marketplaceConfig['com'];
+        const searchQuery = document.getElementById('searchInput').value.trim();
+        let paramParts = [];
+
+        if (searchQuery) {
+            paramParts.push(`k=${encodeURIComponent(searchQuery)}`);
+        }
+
+        let rhParams = [];
+        const timeFilter = document.querySelector('input[name="timeFilter"]:checked').value;
+        if (timeFilter) {
+            rhParams.push(timeFilter);
+        }
+
+        const sellerAmazonChecked = document.getElementById('sellerAmazon').checked;
+        if (sellerAmazonChecked) {
+            rhParams.push(document.getElementById('sellerAmazon').value);
+        }
+
+        const reviewsFilterChecked = document.getElementById('reviewsFilter').checked;
+        if (reviewsFilterChecked) {
+            rhParams.push(document.getElementById('reviewsFilter').value);
+        }
+
+        const minPrice = document.getElementById('minPrice').value;
+        const maxPrice = document.getElementById('maxPrice').value;
+        if (minPrice && maxPrice) {
+            rhParams.push(`p_36%3A${minPrice}00-${maxPrice}00`);
+        }
+
+        const department = departmentSelect.value;
+        if (department) {
+            paramParts.push(`i=${department}`);
+            const category = categorySelect.value;
+            const categoryOption = categorySelect.options[categorySelect.selectedIndex];
+            if (category) {
+                const paramType = categoryOption.dataset.catParamType || 'rh';
+                if (paramType === 'bbn') {
+                    paramParts.push(`bbn=${category}`);
+                } else {
+                    rhParams.push(`n%3A${category}`);
+                }
+            }
+        }
+
+        let hiddenKeywordsArray = []; // Use an array to build the parts
+        const customKeywordsFromInput = document.getElementById('customHiddenKeywords').value.trim();
+
+        // --- Logic for suppressDefaultProductTypeKeywords ---
+        const activePresetValue = document.getElementById('presetsSelect').value;
+        let shouldAddDefaultProductTypeKeywords = true; // Default to including them
+
+        if (activePresetValue) {
+            const presets = presetConfigs[marketplace] || presetConfigs.com;
+            const activePreset = presets.find(p => p.value === activePresetValue);
+            if (activePreset && activePreset.settings) {
+                if (activePreset.settings.suppressDefaultProductTypeKeywords === true) {
+                    shouldAddDefaultProductTypeKeywords = false;
+                    console.log("[generateAmazonUrl] Suppressing default product type keywords due to preset setting.");
+                }
+            }
+        }
+        // --- End of new logic block ---
+
+        if (customKeywordsFromInput) {
+            const customKeywordsParts = customKeywordsFromInput.split(' ').filter(k => k.length > 0);
+            const encodedCustomKeywords = customKeywordsParts.map(k => encodeURIComponent(k));
+            if (encodedCustomKeywords.length > 0) {
+                hiddenKeywordsArray.push(encodedCustomKeywords.join('+'));
+            }
+        }
+
+        const productType = productTypeSelect.value;
+        if (shouldAddDefaultProductTypeKeywords) { // Check the flag here
+            if (productType !== 'custom' && config.productTypeKeywords && config.productTypeKeywords[productType]) {
+                hiddenKeywordsArray.push(config.productTypeKeywords[productType]);
+                console.log("[generateAmazonUrl] Adding default product type keywords for:", productType);
+            }
+        } else {
+             console.log("[generateAmazonUrl] SKIPPED adding default product type keywords for:", productType);
+        }
+
+
+        const filterExcludeBrandsChecked = document.getElementById('filterExcludeBrands').checked;
+        if (filterExcludeBrandsChecked && config.excludeBrands) {
+            hiddenKeywordsArray.push(config.excludeBrands);
+        }
+
+        if (hiddenKeywordsArray.length > 0) {
+            paramParts.push(`hidden-keywords=${hiddenKeywordsArray.join('+')}`);
+        }
+
+        const sortOrder = document.getElementById('sortOrder').value;
+        if (sortOrder && sortOrder !== 'custom') { // Ensure sortOrder has a value and is not 'custom'
+            paramParts.push(`s=${sortOrder}`);
+        }
+
+        if (rhParams.length > 0) {
+            paramParts.push(`rh=${rhParams.join('%2C')}`);
+        }
+
+        let url = `${baseUrl}/s`;
+        if (paramParts.length > 0) {
+            url += '?' + paramParts.join('&');
+        }
+        return url;
+    }
+    // --- End of modified generateAmazonUrl function ---
+
+    /*function generateAmazonUrl() {
         // Get base marketplace
         const marketplace = marketplaceSelect.value;
         let baseUrl = `https://www.amazon.${marketplace}`;
@@ -2114,10 +2184,10 @@ document.addEventListener('DOMContentLoaded', function() {
             paramParts.push(`i=${department}`);
 
             // Add category filter if department and category are both selected - OLD ONE ALWAYS DOES RH
-            /*const category = document.getElementById('category').value;
-            if (category) {
-                rhParams.push(`n%3A${category}`);
-            }*/
+            //const category = document.getElementById('category').value;
+            //if (category) {
+            //    rhParams.push(`n%3A${category}`);
+            //}
 
             // Get selected category and its configuration NEW ONE
             const category = document.getElementById('category').value;
@@ -2137,21 +2207,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Function to add category selection based on rh or bbn input FRONTEND SELECTION
-        /*    <select id="categoryParamType" class="form-control mt-2">
-            <option value="rh">rh=n:</option>
-            <option value="bbn">bbn=</option>
-            </select>
+        //    <select id="categoryParamType" class="form-control mt-2">
+        //    <option value="rh">rh=n:</option>
+        //    <option value="bbn">bbn=</option>
+        //    </select>
             // Get category parameter type
-            const categoryParamType = document.getElementById('categoryParamType').value;
+        //    const categoryParamType = document.getElementById('categoryParamType').value;
             // Add category filter based on selected parameter type
-            const category = document.getElementById('category').value;
-            if (category) {
-                if (categoryParamType === 'bbn') {
-                    paramParts.push(`bbn=${category}`);
-                } else {
-                    rhParams.push(`n%3A${category}`);
-                }
-            } */
+        //    const category = document.getElementById('category').value;
+        //    if (category) {
+        //        if (categoryParamType === 'bbn') {
+        //            paramParts.push(`bbn=${category}`);
+        //        } else {
+        //            rhParams.push(`n%3A${category}`);
+        //        }
+        //    }
 
         let hiddenKeywords = [];
         const customKeywords = document.getElementById('customHiddenKeywords').value.trim();
@@ -2192,18 +2262,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Add language parameter for non-US/UK marketplaces
-        /*if (marketplace !== 'com' && marketplace !== 'co.uk') {
+        //if (marketplace !== 'com' && marketplace !== 'co.uk') {
             // Map marketplace to language code
-            const languageMap = {
-                'de': 'de',
-                'fr': 'fr',
-                'it': 'it',
-                'es': 'es',
-                'jp': 'ja'
-            };
-            const langCode = languageMap[marketplace] || marketplace;
-            paramParts.push(`language=${langCode}`);
-        }*/
+        //    const languageMap = {
+        //        'de': 'de',
+        //        'fr': 'fr',
+        //        'it': 'it',
+        //        'es': 'es',
+        //        'jp': 'ja'
+        //    };
+        //    const langCode = languageMap[marketplace] || marketplace;
+        //    paramParts.push(`language=${langCode}`);
+        // }
 
         // Build the final URL
         let url = baseUrl;
@@ -2217,7 +2287,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         return url;
-    }
+    }*/
 });
 
 // Suggestions Expander (jQuery section)
@@ -2754,484 +2824,4 @@ $(document).ready(function() {
     // Ensure buttons start in the correct enabled/disabled state (always disabled initially)
     updateActionButtonsState();
 
-}); // --- End $(document).ready ---
-
-// Suggestions Expander
-/*$(document).ready(function() {
-    const searchInput = $("#searchInput");
-    const suggestionsContainer = $("#suggestionsContainer");
-    const marketplaceSelect = $("#marketplaceSelect");
-    const clearSearchBtn = $("#clearSearchBtn");
-
-    // --- Configuration ---
-    const MAX_KEYWORDS_IN_SEARCH = 1000; // Max Keywords, recommended 500
-    const SUGGESTION_DEBOUNCE_MS = 300; // Delay after typing stops
-    const RENDER_DELAY_MS = 500; // Small delay before rendering, recommended 500ms
-
-    const kwSuggestionsCheckbox = $("#kwsuggestions");
-    const suggestionDepartmentSelect = $("#suggestionDepartmentSelect");
-
-    // --- State ---
-    let currentMarketplace = getMarketplace();
-    let suggestionTimeoutId;
-
-    // --- Utility Functions ---
-    // Debug helper (optional)
-    function debugResponse(apiType, queryFirst, queryLast, response) {
-        // console.groupCollapsed(`Suggestions Debug [${apiType}]: "${queryFirst}|${queryLast}"`);
-        // console.log('Prefix:', queryFirst);
-        // console.log('Suffix:', queryLast);
-        // console.log('API Response:', response);
-        // console.groupEnd();
-        return response; // Pass through
-    }
-
-    // Get marketplace details from dropdown
-    function getMarketplace() {
-        const selectedValue = marketplaceSelect.val() || "com"; // Default to com if null
-        const domainConfig = {
-             "com": { domain: "amazon.com", market: "ATVPDKIKX0DER" },
-             // "ca": { domain: "amazon.ca", market: "A2EUQ1WTGCTBG2" },
-             "co.uk": { domain: "amazon.co.uk", market: "A1F83G8C2ARO7P" },
-             "de": { domain: "amazon.de", market: "A1PA6795UKMFR9" },
-             "fr": { domain: "amazon.fr", market: "A13V1IB3VIYZZH" },
-             "it": { domain: "amazon.it", market: "APJ6JRA9NG5V4" },
-             "es": { domain: "amazon.es", market: "A1RKKUPIHCS9HS" }
-             //"com.mx": { domain: "amazon.com.mx", market: "A1AM78C64UM0Y8" },
-             //"com.au": { domain: "amazon.com.au", market: "A39IBJ37TRP1C6" },
-             //"co.jp": { domain: "amazon.co.jp", market: "A1VC38TJH7YXB5" }
-        };
-        return domainConfig[selectedValue];
-    }
-
-    // --- Core Suggestion Logic ---
-    // Fetch suggestions from Amazon API
-    function getSuggestions(queryFirst, queryLast, marketplace, apiType = 'Generic') {
-        // Get the selected department alias from the new dropdown
-        let departmentQuery = suggestionDepartmentSelect.val();
-        // Default to 'aps' if the selection is somehow empty/invalid or specifically 'aps'
-        if (!departmentQuery || departmentQuery === "" || departmentQuery === "aps") {
-            departmentQuery = 'aps';
-        }
-        
-        const params = new URLSearchParams({
-            //'session-id': '131-6229116-2226265', // random ones 'customer-id': 'A1CNYR04B8CZOZ', // random ones 'request-id': '35R5TZN3EY6RCFVHSMYT', // random ones 'page-type': 'Gateway',// random ones 'lop': 'en_US', // random ones 'b2b': '1', // random ones seems to be value "1" if you are logged in with a bussines account and "0" with non business. 'fresh': '0', // random ones 'ks': '69', // random ones 'client-info': 'search-ui', // random ones
-            'site-variant': 'desktop',
-            'mid': marketplace.market,
-            'alias': departmentQuery,
-            'prefix': queryFirst || "",
-            'suffix': queryLast || ""
-        });
-
-        const suggestUrl = `https://completion.${marketplace.domain}/api/2017/suggestions?${params.toString()}`;
-        // console.log(`Requesting [${apiType} / ${departmentQuery}]: ${suggestUrl}`); // Log the URL being requested
-
-        return fetch(suggestUrl)
-            .then(response => {
-                if (!response.ok) {
-                    // console.error(`Network/Fetch Error for ${apiType} (${departmentQuery} / ${suggestUrl}):`, error); // updated log
-                    // Return empty structure on error to match Promise.all expectations
-                    return { suggestions: [] };
-                }
-                // Return the parsed JSON directly if OK
-                return response.json().catch(e => {
-                    // Handle potential JSON parse errors even on OK responses (though rare)
-                     // console.error(`JSON Parse Error on OK response for ${apiType}:`, e, "URL:", suggestUrl);
-                     return { suggestions: [] };
-                });
-            })
-            .then(jsonData => {
-                 // Ensure jsonData is an object with at least suggestions array
-                 if (typeof jsonData !== 'object' || jsonData === null) {
-                    return debugResponse(apiType, queryFirst, queryLast, { suggestions: [] });
-                 }
-                 if (!Array.isArray(jsonData.suggestions)) {
-                    jsonData.suggestions = [];
-                 }
-                 return debugResponse(apiType, queryFirst, queryLast, jsonData);
-            })
-            .catch(error => {
-                // console.error(`Network/Fetch Error for ${apiType} (${suggestUrl}):`, error);
-                 // Return empty structure on fetch error
-                 return { suggestions: [] };
-            });
-    }
-
-    // Parse keywords from API response object (Matches recommended logic)
-    function parseResults(data) {
-        let keywords = [];
-        // Check if data is valid object and has suggestions array
-        if (data && typeof data === 'object' && Array.isArray(data.suggestions)) {
-            keywords = data.suggestions
-                .filter(value => value.type === "KEYWORD")
-                .map(value => {
-                    // Prefer concatenated highlightFragments if available (like recommended)
-                    if (value.highlightFragments && value.highlightFragments.length > 0) {
-                        return value.highlightFragments.map(fragment => fragment.text).join('');
-                    }
-                    return value.value || ''; // Fallback to value, ensure string
-                })
-                .filter(kw => typeof kw === 'string' && kw.trim() !== ''); // Ensure non-empty strings
-        } else if (data && typeof data === 'object' && !Array.isArray(data.suggestions)) {
-            // console.warn("parseResults received object without suggestions array:", data);
-             return []; // Return empty array if suggestions isn't an array
-        } else if (!data || typeof data !== 'object') {
-            // console.warn("parseResults received invalid data:", data);
-            return []; // Return empty array if data is not a valid object
-        }
-        // console.debug("Parsed Keywords:", keywords);
-        return keywords;
-    }
-
-// Ensure escapeHtml function exists before this one
-function escapeHtml(unsafe) {
-    if (typeof unsafe !== 'string') { return ''; }
-    return unsafe
-         .replace(/&/g, "&amp;")
-         .replace(/</g, "&lt;")
-         .replace(/>/g, "&gt;")
-         .replace(/"/g, "&quot;")
-         .replace(/'/g, "&#039;");
-}
-
-function addKeywordItem(keyword, search, groupClass) {
-    const item = $('<div class="suggestion-item"></div>').addClass(groupClass);
-
-    const matchIndex = keyword.indexOf(search);
-    let before = '', match = '', after = '';
-
-    if (search.length > 0 && matchIndex > -1) {
-        before = keyword.substring(0, matchIndex);
-        match = keyword.substring(matchIndex, matchIndex + search.length);
-        after = keyword.substring(matchIndex + search.length);
-    } else {
-        before = keyword;
-        match = '';
-        after = '';
-    }
-
-    // --- This is the corrected HTML creation line using BACKTICKS ` ` ---
-    item.html(
-        `<span class="s-heavy">${escapeHtml(before)}</span>${escapeHtml(match)}<span class="s-heavy">${escapeHtml(after)}</span>`
-    );
-    // --- End Corrected HTML ---
-
-    item.attr('data-keyword', keyword);
-
-    item.on('click', () => {
-        searchInput.val(keyword);
-        suggestionsContainer.empty().css('display', 'none');
-        searchInput.focus();
-    });
-
-    // Append item directly to the main suggestionsContainer
-    // (This matches the logic in your current renderCategorizedSuggestions)
-    suggestionsContainer.append(item);
-}
-// END PASTE
-
-// Renders titles and items directly into the container
-function renderCategorizedSuggestions(search, results) {
-    
-        // *** To Debug Inputs ***
-        // console.log("--- Rendering Suggestions ---");
-        // console.log("Search Term:", search);
-        // console.log("Raw Results Array Length:", results.length);
-        // Log the parsed content of the first few results arrays
-        // if(results[0]) console.log("Parsed results[0] (Main):", parseResults(results[0]));
-        // if(results[1]) console.log("Parsed results[1] (Before):", parseResults(results[1])); // <<<--- LOOK AT THIS ONE
-        // if(results[2]) console.log("Parsed results[2] (After):", parseResults(results[2]));
-    
-    suggestionsContainer.empty(); // Clear previous
-
-    const mainKeywordsSet = new Set();
-    const allDisplayedKeywordsSet = new Set();
-    let keywordCount = 0; // Total keywords added
-    const MAX_KEYWORDS_IN_SEARCH = 500;
-    let otherTitleDisplayed = false;
-
-    // --- Pre-populate mainKeywordsSet ---
-    const initialMainKeywords = parseResults(results[0] || { suggestions: [] });
-    initialMainKeywords.forEach(kw => mainKeywordsSet.add(kw));
-
-    // --- Loop through results (categories) ---
-    for (let i = 0; i < results.length; i++) {
-        if (keywordCount >= MAX_KEYWORDS_IN_SEARCH) break;
-
-        const currentResultData = results[i] || { suggestions: [] };
-        const keywordsRaw = parseResults(currentResultData);
-        // Use 'i' if your loop is a for loop, 'index' if it's forEach with index
-// console.log(`[DEBUG] parseResults[${i}] returned:`, JSON.stringify(keywordsRaw)); // Changed index to i
-        let keywordsToAddInCategory = []; // Keywords to add for *this* category
-        let suggestionType = "";
-        let groupClass = "";
-
-        // --- Filter keywords for uniqueness ---
-        if (i === 0) { // Main Suggestions
-            suggestionType = "Amazon Suggestions";
-            groupClass = "group-main";
-            keywordsRaw.forEach(kw => {
-                if (!allDisplayedKeywordsSet.has(kw) && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
-                    keywordsToAddInCategory.push(kw);
-                    allDisplayedKeywordsSet.add(kw);
-                }
-            });
-        } else { // Other categories
-            keywordsRaw.forEach(kw => {
-                if (!mainKeywordsSet.has(kw) && !allDisplayedKeywordsSet.has(kw) && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
-                    keywordsToAddInCategory.push(kw);
-                    allDisplayedKeywordsSet.add(kw);
-                }
-            });
-            // Determine type/class
-            switch(i) { // ... same switch logic as before ... 
-                case 1: suggestionType = "Keywords Before"; groupClass = "group-before"; break;
-                case 2: suggestionType = "Keywords After"; groupClass = "group-after"; break;
-                case 3:
-                    if (results[3] && results[3].suggestions && results[3].suggestions.length > 0 && keywordsToAddInCategory.length > 0) {
-                        suggestionType = "Keywords Between"; groupClass = "group-between";
-                    } else { suggestionType = ""; }
-                    break;
-                default: suggestionType = "Other"; groupClass = "group-other"; break;
-            }
-        }
-
-        // --- Append Title and Items directly to container if keywords exist ---
-        if (keywordsToAddInCategory.length > 0 && suggestionType) {
-            let shouldAddTitle = true;
-            if (suggestionType === "Other") {
-                if (!otherTitleDisplayed) {
-                    otherTitleDisplayed = true;
-                } else {
-                    shouldAddTitle = false; // Only add "Other" title once
-                }
-            }
-
-            // Append the title directly to the main container
-            if (shouldAddTitle) {
-                suggestionsContainer.append($('<h3></h3>').text(suggestionType));
-            }
-
-            // Append each item for this category directly to the main container
-            keywordsToAddInCategory.forEach(keyword => {
-                 if (keywordCount < MAX_KEYWORDS_IN_SEARCH) {
-                     addKeywordItem(keyword, search, groupClass); // Call modified function
-                     keywordCount++;
-                 }
-            });
-        }
-    }
-    // End loop
-
-    // --- Final Show/Hide ---
-    if (keywordCount > 0) {
-        suggestionsContainer.css('display', 'flex');
-    } else {
-        suggestionsContainer.css('display', 'none');
-    }
-}
-
-
-    // Fetches all suggestion types and triggers rendering
-    function fetchAndDisplaySuggestions(search) {
-        const trimmedSearch = search.trim(); // Use trimmed for logic/highlighting
-        if (!trimmedSearch) {
-            suggestionsContainer.empty().hide();
-            clearSearchBtn.hide();
-            return;
-        }
-        clearSearchBtn.show();
-
-        // Use the potentially un-trimmed search for API calls where the recommended did
-        const rawSearch = searchInput.val(); // Get the exact current value for accuracy
-        const words = trimmedSearch.split(" ").filter(w => w !== ""); // Clean empty words from trimmed version
-        const marketplace = currentMarketplace; // Use the currently selected marketplace
-
-        // console.log(`Workspaceing suggestions for: "${rawSearch}" (trimmed: "${trimmedSearch}")`); // Debug log
-
-        // Define all API calls as per recommended logic (indices 0-6)
-        let promises = [
-            // 0. Main/Default (uses raw search like recommended)
-            getSuggestions(rawSearch, "", marketplace, 'Main'),
-            // 1. Before (uses space prefix, trimmed search suffix like recommended)
-            getSuggestions(" ", trimmedSearch, marketplace, 'Before'),
-            // 2. After (uses trimmed search + space prefix like recommended)
-            getSuggestions(trimmedSearch + " ", "", marketplace, 'After'),
-            // 3. Between (uses split words like recommended, conditional)
-            (words.length >= 2
-                ? getSuggestions(words[0] + " ", " " + words.slice(1).join(" "), marketplace, 'Between')
-                : Promise.resolve({ suggestions: [] }) // Resolve empty if not applicable
-            ),
-            // 4. Expansion: for (uses raw search like recommended)
-            getSuggestions(rawSearch + " for ", "", marketplace, 'Exp: for'),
-            // 5. Expansion: and (uses raw search like recommended)
-            getSuggestions(rawSearch + " and ", "", marketplace, 'Exp: and'),
-            // 6. Expansion: with (uses raw search like recommended)
-            getSuggestions(rawSearch + " with ", "", marketplace, 'Exp: with')
-        ];
-
-        Promise.all(promises)
-            .then((results) => {
-                // Check if the search input value hasn't changed while waiting
-                if (searchInput.val() === rawSearch) {
-    setTimeout(() => {
-        if (searchInput.val() === rawSearch) {
-             renderCategorizedSuggestions(trimmedSearch, results);
-        } else {
-             // console.log("Search input changed during render delay. Ignoring old results.");
-             suggestionsContainer.css('display', 'none'); // CHANGE HERE
-        }
-    }, RENDER_DELAY_MS);
-} else {
-    // console.log("Search input changed before suggestions arrived. Ignoring old results.");
-    suggestionsContainer.css('display', 'none'); // CHANGE HERE
-}
-            })
-            .catch(error => {
-                // console.error('Error fetching one or more suggestions:', error);
-                suggestionsContainer.empty().hide(); // Hide on error
-            });
-    }
-
-
-    // --- Event Handlers ---
-
-        // --- Add a new event handler for the checkbox itself ---
-kwSuggestionsCheckbox.on('change', function() {
-        if (!$(this).is(':checked')) {
-            // If UNCHECKED:
-            clearTimeout(suggestionTimeoutId);
-            suggestionsContainer.empty().css('display', 'none');
-            suggestionDepartmentSelect.hide(); // <-- HIDE the dropdown
-        } else {
-            // If CHECKED:
-            suggestionDepartmentSelect.show(); // <-- SHOW the dropdown
-            // Optional: Re-trigger suggestions if needed
-            const currentQuery = searchInput.val();
-            if (currentQuery.trim()) {
-                fetchAndDisplaySuggestions(currentQuery);
-            }
-        }
-    });
-    
-    suggestionDepartmentSelect.on('change', function() {
-        // When the department changes, refresh suggestions if enabled and input has text
-        if (kwSuggestionsCheckbox.is(':checked')) {
-            const currentQuery = searchInput.val();
-            if (currentQuery.trim()) {
-                clearTimeout(suggestionTimeoutId); // Clear any pending fetch from typing
-                fetchAndDisplaySuggestions(currentQuery); // Fetch immediately with new department
-            }
-        }
-    });
-
-    // Handle input changes with debounce
-    searchInput.on('input', function() {
-        const query = $(this).val(); // Get raw value
-        clearTimeout(suggestionTimeoutId); // Clear previous timer
-        
-    // ***** START MODIFICATION *****
-    // If KW suggestions are disabled, just manage the clear button and hide suggestions
-    if (!kwSuggestionsCheckbox.is(':checked')) {
-        if (query.trim()) {
-            clearSearchBtn.show();
-        } else {
-            clearSearchBtn.hide();
-        }
-        suggestionsContainer.empty().css('display', 'none'); // Ensure suggestions are hidden
-        return; // Exit early, don't fetch suggestions
-    }
-    // ***** END MODIFICATION *****
-
-    // Original logic (runs only if checkbox is checked)
-    if (query.trim()) { // Check trimmed value for showing button/triggering fetch
-        clearSearchBtn.show();
-        suggestionTimeoutId = setTimeout(() => {
-            fetchAndDisplaySuggestions(query); // Pass the raw query
-        }, SUGGESTION_DEBOUNCE_MS);
-    } else {
-        suggestionsContainer.empty().css('display', 'none'); // Hide immediately if effectively empty
-        clearSearchBtn.hide();
-    }
-    });
-
-    // Handle clear button click
-     clearSearchBtn.on('click', function() {
-         searchInput.val(''); // Clear the input
-         suggestionsContainer.empty().css('display', 'none'); // Hide suggestions
-         $(this).hide(); // Hide the clear button itself
-         searchInput.focus(); // Focus the input
-     });
-
-    // Update marketplace and potentially trigger new suggestions if input has value
-    marketplaceSelect.on('change', function() {
-        currentMarketplace = getMarketplace();
-        const currentQuery = searchInput.val(); // Get raw value
-        if (currentQuery.trim()) {
-            // Immediately refresh suggestions for the new marketplace
-             clearTimeout(suggestionTimeoutId); // Clear any pending suggestion fetch
-             fetchAndDisplaySuggestions(currentQuery); // Use raw query
-            // console.log(`Refetching suggestions for "${currentQuery}" in ${currentMarketplace.domain}`);
-        }
-    });
-
-    // OLD CODE
-    // Hide suggestions when clicking outside
-    // $(document).on('click', (event) => {
-        // Check if the click target is NOT the input or suggestion areas or clear button
-    //    if (!$(event.target).closest(searchInput).length &&
-    //        !$(event.target).closest(suggestionsContainer).length &&
-    //        !$(event.target).closest(clearSearchBtn).length)
-    //    {
-    //        suggestionsContainer.css('display', 'none'); // Hide without clearing, allows reopening
-    //    }
-    // });
-    // Hide suggestions when clicking outside ONLY IF the checkbox is unchecked
-    $(document).on('click', (event) => {
-        // Check if the click happened outside of all relevant suggestion controls:
-        // - Search Input
-        // - Suggestions Container
-        // - Clear Button
-        // - Suggestion Department Dropdown
-        // - KW Suggestions Checkbox
-        // - KW Suggestions Label
-        if (!$(event.target).closest(searchInput).length &&
-                !$(event.target).closest(suggestionsContainer).length &&
-                !$(event.target).closest(clearSearchBtn).length &&
-                !$(event.target).closest(suggestionDepartmentSelect).length && // Added dropdown check
-                !$(event.target).closest(kwSuggestionsCheckbox).length &&      // Added checkbox check
-                !$(event.target).closest('label[for="kwsuggestions"]').length) // Added label check
-            {
-                // --- MODIFICATION START ---
-                // Only hide the suggestions via outside click if the feature is actually disabled
-                if (!kwSuggestionsCheckbox.is(':checked')) {
-                     suggestionsContainer.css('display', 'none');
-                }
-                // If kwSuggestionsCheckbox IS checked, do nothing on outside click.
-                // The visibility will be handled by other events (clearing input, unchecking box).
-                // --- MODIFICATION END ---
-            }
-        });
-    
-     // Show suggestions when input is focused and has text + results exist
-    searchInput.on('focus', function() {
-        // ***** START MODIFICATION *****
-        // Only show on focus if checkbox is checked AND other conditions met
-        if (kwSuggestionsCheckbox.is(':checked') && $(this).val().trim() && suggestionsContainer.children().length > 0) {
-            suggestionsContainer.css('display', 'flex');
-        }
-        // ***** END MODIFICATION *****
-    });
-
-    // --- Initial Setup ---
-     clearSearchBtn.hide(); // Initially hide clear button
-
-    // Set initial visibility for the dropdown based on the checkbox state
-    if (!kwSuggestionsCheckbox.is(':checked')) {
-        suggestionsContainer.css('display', 'none'); // Hide suggestions container too
-        suggestionDepartmentSelect.hide(); // Hide dropdown if checkbox starts unchecked
-    } else {
-        suggestionDepartmentSelect.show(); // Ensure dropdown is visible if checkbox starts checked
-    }
 });
-*/

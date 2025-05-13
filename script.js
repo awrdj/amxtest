@@ -1370,6 +1370,36 @@ document.addEventListener('DOMContentLoaded', function() {
             }*/
     };
 
+    // --- THIS IS THE CORRECT SCOPE FOR THE HELPER ---
+    function applyPresetKeywordOverrides(presetSettings, selectedProductType) {
+        const searchInputElem = document.getElementById('searchInput');
+        const customHiddenInputElem = document.getElementById('customHiddenKeywords');
+
+        // Define base keywords from the main preset settings
+        const baseSearchKeywords = presetSettings.searchKeywords || '';
+        const baseCustomHiddenKeywords = presetSettings.customHiddenKeywords || '';
+
+        let finalSearchKeywords = baseSearchKeywords;
+        let finalCustomHiddenKeywords = baseCustomHiddenKeywords;
+
+        // Check for overrides
+        const overrides = presetSettings.productTypeOverrides;
+        if (overrides && overrides[selectedProductType]) {
+            const typeOverride = overrides[selectedProductType];
+            // Use override value if it exists, otherwise fall back to base
+            finalSearchKeywords = typeOverride.searchKeywords !== undefined ? typeOverride.searchKeywords : baseSearchKeywords;
+            finalCustomHiddenKeywords = typeOverride.customHiddenKeywords !== undefined ? typeOverride.customHiddenKeywords : baseCustomHiddenKeywords;
+        }
+
+        searchInputElem.value = finalSearchKeywords;
+        customHiddenInputElem.value = finalCustomHiddenKeywords;
+
+        setTimeout(() => {
+            searchInputElem.dispatchEvent(new Event('input'));
+        }, 0);
+    }
+    // --- END HELPER FUNCTION ---
+
     // Update time filter radio values based on marketplace
     function updateMarketplaceFilters() {
       const marketplace = marketplaceSelect.value;

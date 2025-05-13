@@ -403,6 +403,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 // Brands to exclude for USA
                 excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha+-DreamWorks+-UniversalStudios+-Paramount+-20thCenturyStudios+-SonyPictures+-Lionsgate+-HBO+-AMC+-BBC+-Netflix+-Hulu+-PlayStation+-Xbox+-Fortnite+-LeagueofLegends+-Overwatch+-CallofDuty+-Minecraft+-EldenRing+-WorldofWarcraft+-TheSims+-AmongUs+-Tetris+-SEGA+-Atari+-Capcom+-Konami+-TheBeatles+-LedZeppelin+-ACDC+-Metallica+-Nirvana+-TaylorSwift+-BTS+-BLACKPINK+-Drake+-GameofThrones+-SquidGame+-PeakyBlinders+-Lego+-Barney+-ThomasandFriends+-PeppaPig+-Bluey+-FisherPrice+-Tonka+-PowerRangers+-Ford+-Chevrolet+-Toyota+-Honda+-Tesla+-BMW+-MercedesBenz+-HarleyDavidson+-Nike+-Adidas+-Puma+-Gucci+-LouisVuitton+-Chanel+-Balenciaga+-Vans+-Fila+-Pepsi+-MountainDew+-Sprite+-DrPepper+-Nestle+-Oreo+-Reeses+-Snickers+-TacoBell+-McDonalds+-KFC+-Starbucks+-NFL+-NBA+-MLB+-NHL+-NCAA+-FIFA+-UFC+-Google+-Facebook+-Instagram+-Snapchat+-YouTube+-Twitter+-TikTok',
+                // No Preset Defaults
+                noPresetDefaults: {
+                    productType: 'tshirt',
+                    department: 'fashion-novelty',
+                    sortOrder: 'featured',
+                    category: ''
+                },
                 // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for USA
                 departmentSettings: {
                     'mobile': {
@@ -557,6 +564,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 // Brands to exclude for UK
                 excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha+-DreamWorks+-UniversalStudios+-Paramount+-20thCenturyStudios+-SonyPictures+-Lionsgate+-HBO+-AMC+-Netflix+-Hulu+-PlayStation+-Xbox+-LeagueofLegends+-Overwatch+-Minecraft+-EldenRing+-WorldofWarcraft+-TheSims+-AmongUs+-Tetris+-SEGA+-Atari+-Capcom+-Konami+-TheBeatles+-ACDC+-Metallica+-Nirvana+-TaylorSwift+-BTS+-BLACKPINK+-Drake+-GameofThrones+-SquidGame+-PeakyBlinders+-Lego+-Barney+-ThomasandFriends+-PeppaPig+-Bluey+-FisherPrice+-Tonka+-PowerRangers+-Ford+-Chevrolet+-Toyota+-Honda+-Tesla+-BMW+-MercedesBenz+-HarleyDavidson+-Nike+-Adidas+-Puma+-Gucci+-LouisVuitton+-Chanel+-Balenciaga+-Vans+-Fila+-Pepsi+-MountainDew+-Sprite+-DrPepper+-Nestle+-Oreo+-Reeses+-Snickers+-TacoBell+-McDonalds+-KFC+-Starbucks+-NFL+-NBA+-MLB+-NHL+-NCAA+-FIFA+-UFC+-Google+-Facebook+-Instagram+-Snapchat+-YouTube+-Twitter+-TikTok+-BBC+-ITV+-Channel4+-Channel5+-VirginMedia+-Vodafone+-Tesco+-Sainsburys+-Morrisons+-Waitrose+-MarksandSpencer+-JohnLewis+-Debenhams+-Harrods+-Selfridges+-WHSmith+-Waterstones+-PenguinBooks+-OxfordUniversityPress+-CambridgeUniversityPress+-Barclays+-HSBC+-LloydsBank+-NatWest+-SantanderUK+-RollsRoyce+-Bentley+-Jaguar+-LandRover+-AstonMartin+-McLaren+-Burberry+-AlexanderMcQueen+-VivienneWestwood+-PaulSmith+-Superdry+-DrMartens+-Topshop+-Primark+-TedBaker+-Mulberry+-EasyJet+-BritishAirways+-Ocado+-PremierLeague+-Arsenal+-Chelsea+-LiverpoolFC+-ManchesterUnited+-TottenhamHotspur+-DoctorWho+-DowntonAbbey+-EastEnders+-RollingStones+-LedZeppelin+-SpiceGirls+-HarryStyles+-OneDirection+-Fortnite+-CallofDuty+-Funko+-LEGO',
+                // No Preset Defaults
+                noPresetDefaults: {
+                    productType: 'tshirt',
+                    department: 'fashion',
+                    sortOrder: 'featured',
+                    category: ''
+                },
                 // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for UK
                 departmentSettings: {
                     'electronics': {
@@ -711,6 +725,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 // Brands to exclude for DE
                 excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha+-DreamWorks+-UniversalStudios+-Paramount+-20thCenturyStudios+-SonyPictures+-Lionsgate+-HBO+-AMC+-BBC+-Netflix+-Hulu+-PlayStation+-Xbox+-Fortnite+-LeagueofLegends+-Overwatch+-CallofDuty+-Minecraft+-EldenRing+-WorldofWarcraft+-TheSims+-AmongUs+-Tetris+-SEGA+-Atari+-Capcom+-Konami+-TheBeatles+-LedZeppelin+-ACDC+-Metallica+-Nirvana+-TaylorSwift+-BTS+-BLACKPINK+-Drake+-GameofThrones+-SquidGame+-PeakyBlinders+-Lego+-Barney+-ThomasandFriends+-PeppaPig+-Bluey+-FisherPrice+-Tonka+-PowerRangers+-Ford+-Chevrolet+-Toyota+-Honda+-Tesla+-BMW+-MercedesBenz+-HarleyDavidson+-Nike+-Adidas+-Puma+-Gucci+-LouisVuitton+-Chanel+-Balenciaga+-Vans+-Fila+-Pepsi+-MountainDew+-Sprite+-DrPepper+-Nestle+-Oreo+-Reeses+-Snickers+-TacoBell+-McDonalds+-KFC+-Starbucks+-NFL+-NBA+-MLB+-NHL+-NCAA+-FIFA+-UFC+-Google+-Facebook+-Instagram+-Snapchat+-YouTube+-Twitter+-TikTok+-Audi+-Volkswagen+-Porsche+-Opel+-BOSCH+-Siemens+-Allianz+-DeutscheBank+-Commerzbank+-DeutscheTelekom+-VodafoneDE+-TelefonicaDE+-Lufthansa+-Eurowings+-DHL+-DeutschePost+-Bayer+-Henkel+-Miele+-Nivea+-BASF+-Continental+-AldiNord+-AldiSued+-Lidl+-Rewe+-Edeka+-MetroAG+-FCBayernMunich+-BorussiaDortmund+-Bundesliga+-ProSieben+-ZDF+-DeutscheWelle+-Bild+-Spiegel+-Volksbuehne+-Fortnite+-CallofDuty+-PlayStation+-Xbox+-STEIFF+-Playmobil+-Ravensburger',
+                // No Preset Defaults
+                noPresetDefaults: {
+                    productType: 'tshirt',
+                    department: 'fashion',
+                    sortOrder: 'featured',
+                    category: ''
+                },
                 // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for DE
                 departmentSettings: {
                     'electronics': {
@@ -866,6 +887,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 // Brands to exclude for FR
                 excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha+-DreamWorks+-UniversalStudios+-Paramount+-20thCenturyStudios+-SonyPictures+-Lionsgate+-HBO+-AMC+-BBC+-Netflix+-Hulu+-PlayStation+-Xbox+-Fortnite+-LeagueofLegends+-Overwatch+-CallofDuty+-Minecraft+-EldenRing+-WorldofWarcraft+-TheSims+-AmongUs+-Tetris+-SEGA+-Atari+-Capcom+-Konami+-TheBeatles+-LedZeppelin+-ACDC+-Metallica+-Nirvana+-TaylorSwift+-BTS+-BLACKPINK+-Drake+-GameofThrones+-SquidGame+-PeakyBlinders+-Barney+-ThomasandFriends+-PeppaPig+-Bluey+-FisherPrice+-Tonka+-PowerRangers+-Ford+-Chevrolet+-Toyota+-Honda+-Tesla+-BMW+-MercedesBenz+-HarleyDavidson+-Nike+-Adidas+-Puma+-Gucci+-LouisVuitton+-Chanel+-Balenciaga+-Vans+-Fila+-Pepsi+-MountainDew+-Sprite+-DrPepper+-Nestle+-Oreo+-Reeses+-Snickers+-TacoBell+-McDonalds+-KFC+-Starbucks+-NFL+-NBA+-MLB+-NHL+-NCAA+-FIFA+-Olympics+-UFC+-Google+-Facebook+-Instagram+-Snapchat+-YouTube+-Twitter+-TikTok+-Dior+-Hermes+-Cartier+-LVMH+-Kering+-LOreal+-Clarins+-Lancome+-Guerlain+-Peugeot+-Renault+-Citroen+-DSAutomobiles+-AirFrance+-BNPParibas+-SocieteGenerale+-CreditAgricole+-AXA+-Danone+-Michelin+-Decathlon+-Carrefour+-Auchan+-Leclerc+-TotalEnergies+-Engie+-SFR+-BouyguesTelecom+-TF1+-CanalPlus+-FranceTelevisions+-Gaumont+-PSG+-OlympiqueMarseille+-Ligue1+-SMEG+-LEGO+-Schleich',
+                // No Preset Defaults
+                noPresetDefaults: {
+                    productType: 'tshirt',
+                    department: 'fashion',
+                    sortOrder: 'featured',
+                    category: ''
+                },
                 // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for FR
                 departmentSettings: {
                     'electronics': {
@@ -1019,6 +1047,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 // Brands to exclude for IT
                 excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha+-DreamWorks+-UniversalStudios+-Paramount+-20thCenturyStudios+-SonyPictures+-Lionsgate+-HBO+-AMC+-BBC+-Netflix+-Hulu+-PlayStation+-Xbox+-Fortnite+-LeagueofLegends+-Overwatch+-CallofDuty+-Minecraft+-EldenRing+-WorldofWarcraft+-TheSims+-AmongUs+-Tetris+-SEGA+-Atari+-Capcom+-Konami+-TheBeatles+-LedZeppelin+-ACDC+-Metallica+-Nirvana+-TaylorSwift+-BTS+-BLACKPINK+-Drake+-GameofThrones+-SquidGame+-PeakyBlinders+-Lego+-Barney+-ThomasandFriends+-PeppaPig+-Bluey+-FisherPrice+-Tonka+-PowerRangers+-Ford+-Chevrolet+-Toyota+-Honda+-Tesla+-BMW+-MercedesBenz+-HarleyDavidson+-Nike+-Adidas+-Puma+-LouisVuitton+-Chanel+-Balenciaga+-Vans+-Fila+-Pepsi+-MountainDew+-Sprite+-DrPepper+-Nestle+-Oreo+-Reeses+-Snickers+-TacoBell+-McDonalds+-KFC+-Starbucks+-NFL+-NBA+-MLB+-NHL+-NCAA+-FIFA+-UFC+-Google+-Facebook+-Instagram+-Snapchat+-YouTube+-Twitter+-TikTok+-Gucci+-Armani+-Versace+-DolceGabbana+-Valentino+-Fendi+-Bulgari+-Ferragamo+-SalvatoreFerragamo+-Benetton+-Prada+-Ferrari+-Lamborghini+-Maserati+-Fiat+-Iveco+-Barilla+-Lavazza+-Ferrero+-Pirelli+-Luxottica+-UniCredit+-IntesaSanpaolo+-TelecomItalia+-Mediaset+-BerlusconiMediaGroup+-JuventusFC+-ACMilan+-InterMilan+-SerieA+-LEGO+-Clementoni',
+                // No Preset Defaults
+                noPresetDefaults: {
+                    productType: 'tshirt',
+                    department: 'fashion',
+                    sortOrder: 'featured',
+                    category: ''
+                },
                 // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for IT
                 departmentSettings: {
                     'electronics': {
@@ -1171,6 +1206,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 // Brands to exclude for ES
                 excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha+-DreamWorks+-UniversalStudios+-Paramount+-20thCenturyStudios+-SonyPictures+-Lionsgate+-HBO+-AMC+-BBC+-Netflix+-Hulu+-PlayStation+-Xbox+-Fortnite+-LeagueofLegends+-Overwatch+-CallofDuty+-Minecraft+-EldenRing+-WorldofWarcraft+-TheSims+-AmongUs+-Tetris+-SEGA+-Atari+-Capcom+-Konami+-TheBeatles+-LedZeppelin+-ACDC+-Metallica+-Nirvana+-TaylorSwift+-BTS+-BLACKPINK+-Drake+-GameofThrones+-SquidGame+-PeakyBlinders+-Lego+-Barney+-ThomasandFriends+-PeppaPig+-Bluey+-FisherPrice+-Tonka+-PowerRangers+-Ford+-Chevrolet+-Toyota+-Honda+-Tesla+-BMW+-MercedesBenz+-HarleyDavidson+-Nike+-Adidas+-Puma+-Gucci+-LouisVuitton+-Chanel+-Balenciaga+-Vans+-Fila+-Pepsi+-MountainDew+-Sprite+-DrPepper+-Nestle+-Oreo+-Reeses+-Snickers+-TacoBell+-McDonalds+-KFC+-Starbucks+-NFL+-NBA+-MLB+-NHL+-NCAA+-FIFA+-UFC+-Google+-Facebook+-Instagram+-Snapchat+-YouTube+-Twitter+-TikTok+-Zara+-Inditex+-MassimoDutti+-Bershka+-Stradivarius+-Desigual+-CustoBarcelona+-Santander+-BBVA+-CaixaBank+-BancoSabadell+-Bankia+-Iberdrola+-Repsol+-Endesa+-Telefonica+-Movistar+-VodafoneES+-OrangeES+-Iberia+-Vueling+-Renfe+-Mercadona+-DiaES+-ElCorteIngles+-Mahou+-EstrellaDamm+-FCBarcelona+-RealMadrid+-LaLiga+-LEGO',
+                // No Preset Defaults
+                noPresetDefaults: {
+                    productType: 'tshirt',
+                    department: 'fashion',
+                    sortOrder: 'featured',
+                    category: ''
+                },
                 // Department Exclusive Settings (TimeFilters, Seller & Review Filters, sort Filters for ES
                 departmentSettings: {
                     'electronics': {
@@ -1947,124 +1989,173 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("--- [applyPreset CALLED] --- Selected Preset Value:", selectedPresetValue);
 
             const marketplace = marketplaceSelect.value;
-            const presets = presetConfigs[marketplace] || presetConfigs.com;
-            const marketplaceSpecificConfig = marketplaceConfig[marketplace] || marketplaceConfig.com;
+            const presets = presetConfigs[marketplace] || presetConfigs.com; // For finding the preset
+            const marketplaceSpecificConfig = marketplaceConfig[marketplace] || marketplaceConfig.com; // For general marketplace data
             const searchInputElem = document.getElementById('searchInput');
             const customHiddenInputElem = document.getElementById('customHiddenKeywords');
             const availableProductTypes = productTypeAvailability[marketplace] || productTypeAvailability.com;
-            const sortOrderDropdown = document.getElementById('sortOrder'); // Cache for easier access
+            const sortOrderDropdown = document.getElementById('sortOrder');
 
-            // 1. Reset all filter fields to a baseline default
+            // 1. General Reset of all fields to absolute neutral/first values
             document.getElementById('timeFilterNone').checked = true;
-            document.getElementById('sellerAmazon').checked = true; // Default state
+            document.getElementById('sellerAmazon').checked = true;
             document.getElementById('reviewsFilter').checked = false;
             document.getElementById('filterExcludeBrands').checked = false;
             document.getElementById('minPrice').value = '';
             document.getElementById('maxPrice').value = '';
-            // sortOrderDropdown.value will be set by updateSortOrderOptions via department change
-            productTypeSelect.value = availableProductTypes[0] || 'custom';
-            departmentSelect.value = '';
+            // Initial sort order will be set by updateSortOrderOptions via department change
+            // Initial product type (will be overridden by "No Preset" defaults if applicable)
+            productTypeSelect.value = availableProductTypes.length > 0 ? availableProductTypes[0] : 'custom';
+            departmentSelect.value = ''; // This will trigger "All" for categories/sort initially
             categorySelect.innerHTML = '<option value="">No Category Filter</option>';
             categorySelect.disabled = true;
             searchInputElem.value = '';
             customHiddenInputElem.value = '';
-            searchInputElem.dispatchEvent(new Event('input')); // Update clear button UI
+            searchInputElem.dispatchEvent(new Event('input')); // Update UI for search input
 
-            // 2. Handle "No Preset" selection
+            // 2. Handle "No Preset" selection (apply marketplace-specific defaults)
             if (!selectedPresetValue) {
-                console.log("[applyPreset] No Preset selected. Resetting and dispatching changes.");
-                // Dispatch department change first, as it affects sort/category options
+                console.log("[applyPreset] 'No Preset' selected. Applying marketplace defaults.");
+                const defaults = marketplaceSpecificConfig.noPresetDefaults || { // Fallback if noPresetDefaults not defined
+                    productType: availableProductTypes.length > 0 ? availableProductTypes[0] : 'custom',
+                    department: '', // Default to "All Departments"
+                    sortOrder: marketplaceSpecificConfig.sortOrders[0]?.value || 'custom',
+                    category: ''
+                };
+                console.log("[applyPreset] 'No Preset' - Using defaults:", defaults);
+
+                // A. Set Product Type from defaults
+                if (availableProductTypes.includes(defaults.productType)) {
+                    productTypeSelect.value = defaults.productType;
+                } else {
+                    productTypeSelect.value = availableProductTypes.length > 0 ? availableProductTypes[0] : 'custom';
+                    console.warn(`Default productType "${defaults.productType}" not in available types for ${marketplace}. Using first available.`);
+                }
+                console.log("[applyPreset] 'No Preset' - ProductType set to:", productTypeSelect.value);
+
+                // B. Set Department from defaults.
+                departmentSelect.value = defaults.department;
+                // Dispatching change on department will:
+                // 1. Repopulate category options based on 'defaults.department'.
+                // 2. Trigger updateMarketplaceFilters -> updateSortOrderOptions.
+                //    updateSortOrderOptions will try to set sort order to the preset's (none here) or first available.
+                console.log("[applyPreset] 'No Preset' - Setting Department to:", departmentSelect.value, "and dispatching change.");
                 departmentSelect.dispatchEvent(new Event('change'));
+
+                // C. After department change effects (category/sort options updated),
+                //    explicitly set category and sortOrder from our defined defaults.
                 setTimeout(() => {
-                    // Then product type can update department if needed,
-                    // and its own listener will handle keyword overrides if any were active.
+                    console.log("[applyPreset] 'No Preset' - setTimeout after department change.");
+
+                    // Set Category from defaults
+                    if (defaults.category && categorySelect.querySelector(`option[value="${defaults.category}"]`)) {
+                        categorySelect.value = defaults.category;
+                        console.log("[applyPreset] 'No Preset' - Category explicitly set to default:", defaults.category);
+                    } else if (defaults.category) {
+                        console.warn(`[applyPreset] 'No Preset' - Default category "${defaults.category}" not found in current options.`);
+                        categorySelect.value = ""; // Fallback to "No Category"
+                    } else {
+                         categorySelect.value = ""; // Explicitly no category
+                    }
+                    // Ensure category dropdown state (enabled/disabled) is correct
+                    updateDepartmentCategoryState();
+
+
+                    // Set Sort Order from defaults
+                    if (defaults.sortOrder && sortOrderDropdown.querySelector(`option[value="${defaults.sortOrder}"]`)) {
+                        sortOrderDropdown.value = defaults.sortOrder;
+                        console.log("[applyPreset] 'No Preset' - Sort order explicitly set to default:", defaults.sortOrder);
+                    } else if (defaults.sortOrder) {
+                        console.warn(`[applyPreset] 'No Preset' - Default sortOrder "${defaults.sortOrder}" not found. Using first available in dropdown: ${sortOrderDropdown.options.length > 0 ? sortOrderDropdown.options[0].value : 'N/A'}`);
+                        if(sortOrderDropdown.options.length > 0) sortOrderDropdown.value = sortOrderDropdown.options[0].value;
+                    } else if (sortOrderDropdown.options.length > 0) {
+                         sortOrderDropdown.value = sortOrderDropdown.options[0].value; // Fallback to first available
+                         console.log(`[applyPreset] 'No Preset' - No default sortOrder specified. Using first available in dropdown: ${sortOrderDropdown.value}`);
+                    }
+
+                    // D. Dispatch Product Type change (AFTER department, category, and sort are set to defaults)
+                    // This triggers updateDepartmentFromProductType and its own keyword override logic (which will find no active preset)
+                    console.log("[applyPreset] 'No Preset' - Dispatching change on productTypeSelect.");
                     productTypeSelect.dispatchEvent(new Event('change'));
-                    // updateMarketplaceFilters(); // This is implicitly called by departmentSelect change
-                    updateGeneratedUrl();
-                }, 50); // Short delay for department change to process
-                return;
+
+                    // E. Final URL update
+                    setTimeout(updateGeneratedUrl, 50); // Allow product type change effects
+
+                }, 200); // Increased delay to allow department change to fully process and populate dependent dropdowns
+
+                return; // EXIT "No Preset" logic
             }
 
-            // 3. Find and apply the selected preset
+            // 3. Find and apply the selected preset (logic for when a specific preset is chosen)
             const preset = presets.find(p => p.value === selectedPresetValue);
             if (preset && preset.settings) {
                 const settings = preset.settings;
                 console.log("[applyPreset] Applying preset:", selectedPresetValue, "with settings:", JSON.parse(JSON.stringify(settings)));
 
-                // A. Apply core non-dependent preset settings first
+                // A. Apply core non-dependent preset settings
                 if (settings.timeFilter) document.getElementById(settings.timeFilter).checked = true;
                 document.getElementById('reviewsFilter').checked = !!settings.reviewsFilter;
                 document.getElementById('filterExcludeBrands').checked = !!settings.excludeBrands;
                 document.getElementById('minPrice').value = settings.minPrice || '';
                 document.getElementById('maxPrice').value = settings.maxPrice || '';
 
-                // B. Set product type from preset (important for subsequent keyword overrides)
-                let presetProductType = productTypeSelect.value; // Fallback to current (which is default after reset)
+                // B. Set product type from preset
+                let presetProductType = productTypeSelect.value;
                 if (settings.productType !== undefined && availableProductTypes.includes(settings.productType)) {
                     presetProductType = settings.productType;
                 }
                 productTypeSelect.value = presetProductType;
-                console.log("[applyPreset] ProductType value tentatively set to:", presetProductType);
-                // We will dispatch productTypeSelect's change event *later*, after department, category, sort and keywords are set.
+                console.log("[applyPreset] Preset - ProductType value tentatively set to:", presetProductType);
 
-                // C. Set department from preset.
-                // Dispatching 'change' on department is crucial as it calls updateMarketplaceFilters,
-                // which in turn calls the enhanced updateSortOrderOptions.
-                // updateSortOrderOptions will then use the active preset (selectedPresetValue) to set the correct sort order.
+                // C. Set department from preset & dispatch change
                 const presetDepartment = settings.department !== undefined ? settings.department : '';
-                console.log("[applyPreset] Setting Department to:", presetDepartment);
+                console.log("[applyPreset] Preset - Setting Department to:", presetDepartment);
                 departmentSelect.value = presetDepartment;
-                departmentSelect.dispatchEvent(new Event('change')); // This is key for sort order to be set by preset.
+                departmentSelect.dispatchEvent(new Event('change')); // Triggers updateSortOrderOptions
 
-                // D. Use setTimeout to allow department change effects (like category/sort options populating)
+                // D. setTimeout to allow department change effects
                 setTimeout(() => {
-                    console.log("[applyPreset - setTimeout] Applying category and keywords. Sort should be set by dept. change.");
+                    console.log("[applyPreset - setTimeout for preset] Applying category, sort, and keywords.");
 
-                    // Set Category (dropdown options should now be populated from department change)
                     if (settings.category !== undefined) {
                         if (categorySelect.querySelector(`option[value="${settings.category}"]`)) {
                             categorySelect.value = settings.category;
-                            console.log("[applyPreset - setTimeout] Category set to:", settings.category);
+                            console.log("[applyPreset - setTimeout for preset] Category set to:", settings.category);
                         } else {
-                            console.warn("[applyPreset - setTimeout] Category option not found for preset:", settings.category);
-                            categorySelect.value = ""; // Default to "No Category Filter"
-                        }
-                    }
-                    // Note: Sort order value is now primarily set by updateSortOrderOptions,
-                    // which was triggered by the departmentSelect.dispatchEvent(new Event('change')) above.
-                    // We can log the intended sort for debugging.
-                    if (settings.sortOrder !== undefined) {
-                        console.log("[applyPreset - setTimeout] Preset *intended* sortOrder:", settings.sortOrder, ". Actual value is now:", sortOrderDropdown.value);
-                         // If sortOrderDropdown.value is NOT settings.sortOrder, then the option wasn't available for the current department.
-                        if (sortOrderDropdown.value !== settings.sortOrder && sortOrderDropdown.querySelector(`option[value="${settings.sortOrder}"]`)) {
-                            // This is a fallback, in case updateSortOrderOptions didn't catch it due to timing.
-                            // But ideally, updateSortOrderOptions handles this.
-                            console.warn("[applyPreset - setTimeout] Forcing sort order from preset as a fallback:", settings.sortOrder);
-                            sortOrderDropdown.value = settings.sortOrder;
+                            console.warn("[applyPreset - setTimeout for preset] Category option not found:", settings.category);
+                            categorySelect.value = "";
                         }
                     }
 
-                    // E. Apply keywords based on the preset's settings and the (preset-defined) productType
-                    console.log("[applyPreset - setTimeout] Calling applyPresetKeywordOverrides with ProductType:", productTypeSelect.value);
+                    // Sort order is set by updateSortOrderOptions via department change,
+                    // which respects the active preset (selectedPresetValue).
+                    // We log the current state for verification.
+                    if (settings.sortOrder !== undefined) {
+                         console.log("[applyPreset - setTimeout for preset] Preset *intended* sortOrder:", settings.sortOrder, ". Actual value (should match if valid):", sortOrderDropdown.value);
+                         // If sortOrder is still not what preset defined, but option exists, force it (should be rare if updateSortOrderOptions works)
+                         if (sortOrderDropdown.value !== settings.sortOrder && sortOrderDropdown.querySelector(`option[value="${settings.sortOrder}"]`)) {
+                            console.warn("[applyPreset - setTimeout for preset] Forcing sort order from preset as a fallback:", settings.sortOrder);
+                            sortOrderDropdown.value = settings.sortOrder;
+                         }
+                    }
+                    updateDepartmentCategoryState(); // Ensure category disabled state is correct
+
+                    // E. Apply keywords for the preset's specified product type
+                    console.log("[applyPreset - setTimeout for preset] Calling applyPresetKeywordOverrides with ProductType:", productTypeSelect.value);
                     applyPresetKeywordOverrides(settings, productTypeSelect.value);
 
-                    // F. Finally, dispatch the product type change event.
-                    // This ensures that if the productType maps to a different department than specified
-                    // by the preset, updateDepartmentFromProductType() can adjust it.
-                    // The productTypeSelect's change handler will also re-call applyPresetKeywordOverrides
-                    // ensuring keywords are correct for the FINAL state.
-                    console.log("[applyPreset - setTimeout] Dispatching final change event on productTypeSelect.");
+                    // F. Dispatch product type change event
+                    console.log("[applyPreset - setTimeout for preset] Dispatching final change event on productTypeSelect.");
                     productTypeSelect.dispatchEvent(new Event('change'));
 
-                    // G. Final URL update after a short delay for all events to settle.
+                    // G. Final URL update
                     setTimeout(updateGeneratedUrl, 100);
 
-                }, 200); // Increased delay to ensure department change fully processes before proceeding
+                }, 200); // Delay for department effects
 
             } else {
                 console.warn("[applyPreset] Preset not found or has no settings:", selectedPresetValue);
-                // If preset not found, make sure UI reflects the "No Preset" state by re-triggering changes
-                departmentSelect.dispatchEvent(new Event('change'));
+                departmentSelect.dispatchEvent(new Event('change')); // Trigger default reset path
                 setTimeout(() => {
                     productTypeSelect.dispatchEvent(new Event('change'));
                     updateGeneratedUrl();

@@ -1470,7 +1470,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const config = marketplaceConfig[marketplace] || marketplaceConfig.com;
         const sortOrderSelect = document.getElementById('sortOrder');
 
-        console.log("[updateSortOrderOptions] Called. Dept:", department);
+        // console.log("[updateSortOrderOptions] Called. Dept:", department);
 
         // Determine the list of sort options to populate based on current marketplace and department
         const sortOptionsToShow = (department && config.departmentSettings?.[department]?.sortOrders)
@@ -1478,7 +1478,7 @@ document.addEventListener('DOMContentLoaded', function() {
             : config.sortOrders;
 
         if (!sortOptionsToShow || sortOptionsToShow.length === 0) {
-            console.warn("[updateSortOrderOptions] No sort options found for current config.");
+            // console.warn("[updateSortOrderOptions] No sort options found for current config.");
             sortOrderSelect.innerHTML = '<option value="custom">NONE</option>'; // Fallback
             sortOrderSelect.value = 'custom';
             return;
@@ -1493,7 +1493,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const activePreset = presets.find(p => p.value === activePresetValue);
             if (activePreset && activePreset.settings && activePreset.settings.sortOrder !== undefined) {
                 presetIntendedSortOrder = activePreset.settings.sortOrder;
-                console.log("[updateSortOrderOptions] Active preset wants sortOrder:", presetIntendedSortOrder);
+                // console.log("[updateSortOrderOptions] Active preset wants sortOrder:", presetIntendedSortOrder);
             }
         }
 
@@ -1506,25 +1506,25 @@ document.addEventListener('DOMContentLoaded', function() {
             optionEl.textContent = option.text;
             sortOrderSelect.appendChild(optionEl);
         });
-        console.log("[updateSortOrderOptions] Dropdown populated with:", sortOptionsToShow.map(o => o.value));
+        // console.log("[updateSortOrderOptions] Dropdown populated with:", sortOptionsToShow.map(o => o.value));
 
         // Now, set the selected value
         if (presetIntendedSortOrder !== null && sortOptionsToShow.some(opt => opt.value === presetIntendedSortOrder)) {
             // If a preset is active AND its intended sort order is valid in the current list, use it.
             sortOrderSelect.value = presetIntendedSortOrder;
-            console.log("[updateSortOrderOptions] Setting sort to PRESET'S value:", presetIntendedSortOrder);
+            // console.log("[updateSortOrderOptions] Setting sort to PRESET'S value:", presetIntendedSortOrder);
         } else if (!activePresetValue && sortOptionsToShow.some(opt => opt.value === previousSortValue)) {
             // NO preset active, try to preserve user's previous selection if still valid in the new list
             sortOrderSelect.value = previousSortValue;
-            console.log("[updateSortOrderOptions] No preset. Preserving previous valid sort:", previousSortValue);
+            // console.log("[updateSortOrderOptions] No preset. Preserving previous valid sort:", previousSortValue);
         } else {
             // Otherwise (no preset and previous invalid, OR preset's sort order invalid for current options), default to the first option.
             if (sortOptionsToShow.length > 0) {
                 sortOrderSelect.value = sortOptionsToShow[0].value;
-                console.log("[updateSortOrderOptions] Setting sort to DEFAULT (first option):", sortOptionsToShow[0].value);
+                // console.log("[updateSortOrderOptions] Setting sort to DEFAULT (first option):", sortOptionsToShow[0].value);
             }
         }
-        console.log("[updateSortOrderOptions] Final sortOrder value:", sortOrderSelect.value);
+        // console.log("[updateSortOrderOptions] Final sortOrder value:", sortOrderSelect.value);
     }
 
     function updateDepartmentFromProductType() {
@@ -1682,15 +1682,15 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('maxPrice').addEventListener('input', updateGeneratedUrl);
 
         marketplaceSelect.addEventListener('change', function() {
-            console.log("[Marketplace Change] Changed to:", this.value);
+            // console.log("[Marketplace Change] Changed to:", this.value);
             const presetsSelect = document.getElementById('presetsSelect');
             presetsSelect.value = ''; // Clear preset selection
-            console.log("[Marketplace Change] Preset selection cleared.");
+            // console.log("[Marketplace Change] Preset selection cleared.");
             updateZipCode();
             populateProductTypes();
             populateDepartments();
             updatePresetsDropdown();
-            console.log("[Marketplace Change] Calling applyPreset() to establish default state for new marketplace.");
+            // console.log("[Marketplace Change] Calling applyPreset() to establish default state for new marketplace.");
             applyPreset();
         });
         
@@ -1729,7 +1729,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // --- This is the function you should ensure is active in your setupEventListeners ---
         function applyPreset() {
             const selectedPresetValue = document.getElementById('presetsSelect').value;
-            console.log("--- [applyPreset CALLED] --- Selected Preset Value:", selectedPresetValue);
+            // console.log("--- [applyPreset CALLED] --- Selected Preset Value:", selectedPresetValue);
 
             const marketplace = marketplaceSelect.value;
             const presets = presetConfigs[marketplace] || presetConfigs.com; // For finding the preset
@@ -1757,34 +1757,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // 2. Handle "No Preset" selection (apply marketplace-specific defaults)
             if (!selectedPresetValue) {
-                console.log("[applyPreset] 'No Preset' selected. Applying marketplace defaults.");
+                // console.log("[applyPreset] 'No Preset' selected. Applying marketplace defaults.");
                 const defaults = marketplaceSpecificConfig.noPresetDefaults || {
                     productType: availableProductTypes.length > 0 ? availableProductTypes[0] : 'custom',
                     department: '',
                     sortOrder: marketplaceSpecificConfig.sortOrders[0]?.value || 'custom',
                     category: ''
                 };
-                console.log("[applyPreset] 'No Preset' - Using defaults:", defaults);
+                // console.log("[applyPreset] 'No Preset' - Using defaults:", defaults);
 
                 if (availableProductTypes.includes(defaults.productType)) {
                     productTypeSelect.value = defaults.productType;
                 } else {
                     productTypeSelect.value = availableProductTypes.length > 0 ? availableProductTypes[0] : 'custom';
-                    console.warn(`Default productType "${defaults.productType}" not in available types for ${marketplace}. Using first available.`);
+                    // console.warn(`Default productType "${defaults.productType}" not in available types for ${marketplace}. Using first available.`);
                 }
-                console.log("[applyPreset] 'No Preset' - ProductType set to:", productTypeSelect.value);
+                // console.log("[applyPreset] 'No Preset' - ProductType set to:", productTypeSelect.value);
 
                 departmentSelect.value = defaults.department;
-                console.log("[applyPreset] 'No Preset' - Setting Department to:", departmentSelect.value, "and dispatching change.");
+                // console.log("[applyPreset] 'No Preset' - Setting Department to:", departmentSelect.value, "and dispatching change.");
                 departmentSelect.dispatchEvent(new Event('change')); // Triggers category/sort updates via updateSortOrderOptions
 
                 setTimeout(() => {
-                    console.log("[applyPreset] 'No Preset' - setTimeout after department change.");
+                    // console.log("[applyPreset] 'No Preset' - setTimeout after department change.");
                     if (defaults.category && categorySelect.querySelector(`option[value="${defaults.category}"]`)) {
                         categorySelect.value = defaults.category;
-                        console.log("[applyPreset] 'No Preset' - Category explicitly set to default:", defaults.category);
+                        // console.log("[applyPreset] 'No Preset' - Category explicitly set to default:", defaults.category);
                     } else if (defaults.category) {
-                        console.warn(`[applyPreset] 'No Preset' - Default category "${defaults.category}" not found.`);
+                        // console.warn(`[applyPreset] 'No Preset' - Default category "${defaults.category}" not found.`);
                         categorySelect.value = "";
                     } else {
                         categorySelect.value = "";
@@ -1795,14 +1795,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     // to the default for the department. We can explicitly set it if noPresetDefaults has a specific one.
                     if (defaults.sortOrder && sortOrderDropdown.querySelector(`option[value="${defaults.sortOrder}"]`)) {
                         sortOrderDropdown.value = defaults.sortOrder;
-                        console.log("[applyPreset] 'No Preset' - Sort order explicitly set to default from noPresetDefaults:", defaults.sortOrder);
+                        // console.log("[applyPreset] 'No Preset' - Sort order explicitly set to default from noPresetDefaults:", defaults.sortOrder);
                     } else if (defaults.sortOrder) {
-                        console.warn(`[applyPreset] 'No Preset' - Default sortOrder "${defaults.sortOrder}" not found. Current: ${sortOrderDropdown.value}`);
+                        // console.warn(`[applyPreset] 'No Preset' - Default sortOrder "${defaults.sortOrder}" not found. Current: ${sortOrderDropdown.value}`);
                     } else {
-                        console.log(`[applyPreset] 'No Preset' - Sort order at default for department: ${sortOrderDropdown.value}`);
+                        // console.log(`[applyPreset] 'No Preset' - Sort order at default for department: ${sortOrderDropdown.value}`);
                     }
                     
-                    console.log("[applyPreset] 'No Preset' - Dispatching change on productTypeSelect.");
+                    // console.log("[applyPreset] 'No Preset' - Dispatching change on productTypeSelect.");
                     productTypeSelect.dispatchEvent(new Event('change'));
                     setTimeout(updateGeneratedUrl, 50);
                 }, 200);
@@ -1813,7 +1813,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const preset = presets.find(p => p.value === selectedPresetValue);
             if (preset && preset.settings) {
                 const settings = preset.settings;
-                console.log("[applyPreset] Applying preset:", selectedPresetValue, "with settings (raw):", settings); // Raw log
+                // console.log("[applyPreset] Applying preset:", selectedPresetValue, "with settings (raw):", settings); // Raw log
 
                 if (settings.timeFilter) document.getElementById(settings.timeFilter).checked = true;
                 document.getElementById('reviewsFilter').checked = !!settings.reviewsFilter;
@@ -1826,44 +1826,44 @@ document.addEventListener('DOMContentLoaded', function() {
                     presetProductType = settings.productType;
                 }
                 productTypeSelect.value = presetProductType;
-                console.log("[applyPreset] Preset - ProductType value tentatively set to:", presetProductType);
+                // console.log("[applyPreset] Preset - ProductType value tentatively set to:", presetProductType);
 
                 const presetDepartment = settings.department !== undefined ? settings.department : '';
-                console.log("[applyPreset] Preset - Setting Department to:", presetDepartment);
+                // console.log("[applyPreset] Preset - Setting Department to:", presetDepartment);
                 departmentSelect.value = presetDepartment;
                 departmentSelect.dispatchEvent(new Event('change'));
 
                 setTimeout(() => {
-                    console.log("[applyPreset - setTimeout for preset] Applying category, and keywords. Sort should be set by dept. change.");
+                    // console.log("[applyPreset - setTimeout for preset] Applying category, and keywords. Sort should be set by dept. change.");
 
                     if (settings.category !== undefined) {
                         if (categorySelect.querySelector(`option[value="${settings.category}"]`)) {
                             categorySelect.value = settings.category;
-                            console.log("[applyPreset - setTimeout for preset] Category set to:", settings.category);
+                            // console.log("[applyPreset - setTimeout for preset] Category set to:", settings.category);
                         } else {
-                            console.warn("[applyPreset - setTimeout for preset] Category option not found:", settings.category);
+                            // console.warn("[applyPreset - setTimeout for preset] Category option not found:", settings.category);
                             categorySelect.value = "";
                         }
                     }
                     
                     // Log the intended sort order from preset vs actual, now that updateSortOrderOptions has run
                     if (settings.sortOrder !== undefined) {
-                        console.log("[applyPreset - setTimeout for preset] Preset *intended* sortOrder:", settings.sortOrder, ". Actual value in dropdown:", sortOrderDropdown.value);
+                        // console.log("[applyPreset - setTimeout for preset] Preset *intended* sortOrder:", settings.sortOrder, ". Actual value in dropdown:", sortOrderDropdown.value);
                          // The value should already be settings.sortOrder IF it was valid for the department
                     }
                     updateDepartmentCategoryState();
 
-                    console.log("[applyPreset - setTimeout for preset] Calling applyPresetKeywordOverrides with ProductType:", productTypeSelect.value);
+                    // console.log("[applyPreset - setTimeout for preset] Calling applyPresetKeywordOverrides with ProductType:", productTypeSelect.value);
                     applyPresetKeywordOverrides(settings, productTypeSelect.value);
 
-                    console.log("[applyPreset - setTimeout for preset] Dispatching final change event on productTypeSelect.");
+                    // console.log("[applyPreset - setTimeout for preset] Dispatching final change event on productTypeSelect.");
                     productTypeSelect.dispatchEvent(new Event('change'));
 
                     setTimeout(updateGeneratedUrl, 100);
                 }, 200);
 
             } else {
-                console.warn("[applyPreset] Preset not found or has no settings:", selectedPresetValue);
+                // console.warn("[applyPreset] Preset not found or has no settings:", selectedPresetValue);
                 departmentSelect.dispatchEvent(new Event('change'));
                 setTimeout(() => {
                     productTypeSelect.dispatchEvent(new Event('change'));
@@ -1913,7 +1913,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 2000);
             })
             .catch(function(err) {
-                console.error('Could not copy ZIP code: ', err);
+                // console.error('Could not copy ZIP code: ', err);
                 copyMessage.textContent = 'Copy failed';
                 copyMessage.style.display = 'inline';
                 setTimeout(() => {
@@ -1942,7 +1942,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 1500);
             })
             .catch(function(err) {
-                console.error('Could not copy text: ', err);
+                // console.error('Could not copy text: ', err);
                 copyUrlBtn.classList.add('copy-error');
                 setTimeout(function() {
                     copyUrlBtn.classList.remove('copy-error');
@@ -2080,7 +2080,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (activePreset && activePreset.settings) {
                 if (activePreset.settings.suppressDefaultProductTypeKeywords === true) {
                     shouldAddDefaultProductTypeKeywords = false;
-                    console.log("[generateAmazonUrl] Suppressing default product type keywords due to preset setting.");
+                    // console.log("[generateAmazonUrl] Suppressing default product type keywords due to preset setting.");
                 }
             }
         }
@@ -2098,10 +2098,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (shouldAddDefaultProductTypeKeywords) { // Check the flag here
             if (productType !== 'custom' && config.productTypeKeywords && config.productTypeKeywords[productType]) {
                 hiddenKeywordsArray.push(config.productTypeKeywords[productType]);
-                console.log("[generateAmazonUrl] Adding default product type keywords for:", productType);
+                // console.log("[generateAmazonUrl] Adding default product type keywords for:", productType);
             }
         } else {
-             console.log("[generateAmazonUrl] SKIPPED adding default product type keywords for:", productType);
+             // console.log("[generateAmazonUrl] SKIPPED adding default product type keywords for:", productType);
         }
 
 
@@ -2609,7 +2609,7 @@ $(document).ready(function() {
                 }
             })
             .catch(error => {
-                console.error('Error fetching one or more suggestions:', error);
+                // console.error('Error fetching one or more suggestions:', error);
                 suggestionsContainer.empty().hide(); // Hide on error
                 currentDisplayedKeywords = []; // Clear list
                 updateActionButtonsState(); // Update buttons
@@ -2801,7 +2801,7 @@ $(document).ready(function() {
             }, 1500);
         }).catch(err => {
             // Error feedback
-            console.error('Failed to copy suggestions:', err);
+            // console.error('Failed to copy suggestions:', err);
             button.addClass('copy-error-feedback').text('FAIL!');
             setTimeout(() => {
                  // Reset after timeout only if text is still 'FAIL!'

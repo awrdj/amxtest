@@ -1703,6 +1703,18 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('maxPrice').addEventListener('input', updateGeneratedUrl);
 
         marketplaceSelect.addEventListener('change', function() {
+            console.log("[Marketplace Change] Changed to:", this.value);
+            const presetsSelect = document.getElementById('presetsSelect');
+            presetsSelect.value = ''; // Clear preset selection
+            console.log("[Marketplace Change] Preset selection cleared.");
+            updateZipCode();
+            populateProductTypes();
+            populateDepartments();
+            updatePresetsDropdown();
+            console.log("[Marketplace Change] Calling applyPreset() to establish default state for new marketplace.");
+            applyPreset();
+        });
+        /*marketplaceSelect.addEventListener('change', function() {
             updateZipCode();
             updateMarketplaceFilters();
             populateDepartments();
@@ -1723,7 +1735,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             updateGeneratedUrl();
-        });
+        });*/
 
         productTypeSelect.addEventListener('change', function() {
             const activePresetValue = document.getElementById('presetsSelect').value;

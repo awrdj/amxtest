@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
             { value: 'archive-view-com', text: 'Archive Fashion Novelty', 
               settings: { sortOrder: 'date-desc-rank', department: 'fashion-novelty', productType: 'custom'} },
             { value: 'competition-view-com', text: 'T-Shirt Competition Checker', 
-              settings: { sortOrder: 'custom', department: 'fashion-novelty', productType: 'tshirt'} }
+              settings: { sortOrder: 'custom', department: 'fashion-novelty', productType: 'tshirt', searchKeywords: 'funny graphic tee', customHiddenKeywords: '-vintage'} }
         ],
         // Presets config UK
         'co.uk': [
@@ -1570,7 +1570,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         document.getElementById('presetsSelect').addEventListener('change', applyPreset);
         // this function to handle preset selection
-        function applyPreset() {
+        /*function applyPreset() {
         const selectedPreset = document.getElementById('presetsSelect').value;
         const marketplace = marketplaceSelect.value;
         const presets = presetConfigs[marketplace] || presetConfigs.com;
@@ -1674,7 +1674,126 @@ document.addEventListener('DOMContentLoaded', function() {
             // Update the generated URL with new settings
             updateGeneratedUrl();
         }
-    }
+    } */
+
+        function applyPreset() {
+            const selectedPreset = document.getElementById('presetsSelect').value;
+            const marketplace = marketplaceSelect.value;
+            const presets = presetConfigs[marketplace] || presetConfigs.com;
+            const config = marketplaceConfig[marketplace] || marketplaceConfig.com;
+            const searchInput = document.getElementById('searchInput'); // Get search input element
+            const customHiddenInput = document.getElementById('customHiddenKeywords'); // Get custom hidden input
+
+            // Reset filters to default first (including new keyword fields)
+            document.getElementById('timeFilterNone').checked = true;
+            document.getElementById('sellerAmazon').checked = true; // Default might vary based on config, but presets override
+            document.getElementById('reviewsFilter').checked = false;
+            document.getElementById('filterExcludeBrands').checked = false; // Presets can override this
+            document.getElementById('minPrice').value = '';
+            document.getElementById('maxPrice').value = '';
+            document.getElementById('sortOrder').value = config.sortOrders[0]?.value || 'custom'; // Reset to first available sort or 'custom'
+            productTypeSelect.value = productTypeAvailability[marketplace]?.[0] || 'custom'; // Reset to first available or 'custom'
+            departmentSelect.value = ''; // Reset department
+            categorySelect.value = ''; // Reset category
+            searchInput.value = ''; // <-- Reset search input
+            customHiddenInput.value = ''; // <-- Reset custom hidden keywords
+            searchInput.dispatchEvent(new Event('input')); // <-- Trigger input event for UI update (like clear button)
+
+            // Handle "No Preset" selection
+            if (!selectedPreset) {
+                // Reset necessary dependent UI elements after resetting fields
+                productTypeSelect.dispatchEvent(new Event('change'));
+                setTimeout(() => {
+                    departmentSelect.dispatchEvent(new Event('change')); // Updates categories, filters
+                    updateMarketplaceFilters(); // Re-apply marketplace defaults if needed
+                    updateGeneratedUrl();
+                }, 100);
+                return; // EXIT FUNCTION EARLY for "No Preset"
+            }
+
+            // Find the selected preset configuration
+            const preset = presets.find(p => p.value === selectedPreset);
+
+            if (preset) {
+                const settings = preset.settings;
+
+                // --- Apply NEW keyword settings FIRST ---
+                if (settings.searchKeywords !== undefined) {
+                    searchInput.value = settings.searchKeywords;
+                    // Trigger input event AFTER setting value for UI consistency (e.g., clear button)
+                    // Ensure suggestions are triggered if enabled
+                     setTimeout(() => searchInput.dispatchEvent(new Event('input')), 0);
+                }
+                if (settings.customHiddenKeywords !== undefined) {
+                    customHiddenInput.value = settings.customHiddenKeywords;
+                }
+                // --- End Apply NEW keyword settings ---
+
+                // Apply product type - affects department potentially
+                if (settings.productType !== undefined) {
+                    productTypeSelect.value = settings.productType;
+                    productTypeSelect.dispatchEvent(new Event('change')); // Triggers department update if mapped
+                }
+
+                // Apply department AFTER product type (product type might change it)
+                // Use a small delay to ensure product type change effects settle
+                setTimeout(() => {
+                    if (settings.department !== undefined) {
+                        departmentSelect.value = settings.department;
+                        departmentSelect.dispatchEvent(new Event('change')); // Triggers category options, filter updates
+
+                        // Apply category only AFTER department is set and options are populated
+                        if (settings.category !== undefined) {
+                            // Further delay needed for category options to populate
+                            setTimeout(() => {
+                                categorySelect.value = settings.category;
+                                categorySelect.dispatchEvent(new Event('change')); // Ensure URL updates if category changes
+                            }, 50);
+                        }
+                    }
+
+                     // Apply sort order AFTER department change (department might change sort options)
+                    if (settings.sortOrder !== undefined) {
+                         // Apply sort order after department/category potentially updated options
+                         setTimeout(() => {
+                            document.getElementById('sortOrder').value = settings.sortOrder;
+                            document.getElementById('sortOrder').dispatchEvent(new Event('change')); // Ensure URL updates
+                         }, 100); // Increased delay slightly
+                    }
+
+                    // Apply other filters
+                    if (settings.timeFilter) {
+                        document.getElementById(settings.timeFilter).checked = true;
+                    } else {
+                         document.getElementById('timeFilterNone').checked = true; // Ensure default if not specified
+                    }
+
+                    if (settings.reviewsFilter !== undefined) {
+                        document.getElementById('reviewsFilter').checked = !!settings.reviewsFilter;
+                    } else {
+                         document.getElementById('reviewsFilter').checked = false; // Default if not specified
+                    }
+
+                    if (settings.excludeBrands !== undefined) {
+                        document.getElementById('filterExcludeBrands').checked = !!settings.excludeBrands;
+                    } else {
+                        document.getElementById('filterExcludeBrands').checked = false; // Default if not specified
+                    }
+                     // Apply price range
+                    document.getElementById('minPrice').value = settings.minPrice !== undefined ? settings.minPrice : '';
+                    document.getElementById('maxPrice').value = settings.maxPrice !== undefined ? settings.maxPrice : '';
+
+
+                    // Final URL update after all settings have had time to apply
+                    setTimeout(updateGeneratedUrl, 200); // Delay final update
+
+                }, 50); // Delay for department/sort/etc. application
+
+            } else {
+                 // Fallback if preset definition not found (shouldn't happen normally)
+                 updateGeneratedUrl();
+            }
+        }
         
 
         document.getElementById('sellerAmazon').addEventListener('click', updateGeneratedUrl);

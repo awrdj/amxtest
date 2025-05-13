@@ -2131,7 +2131,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     // --- End of modified generateAmazonUrl function ---
 
-    /*function generateAmazonUrl() {
+    /* OLD GenerateAmazonURL function
+    function generateAmazonUrl() {
         // Get base marketplace
         const marketplace = marketplaceSelect.value;
         let baseUrl = `https://www.amazon.${marketplace}`;

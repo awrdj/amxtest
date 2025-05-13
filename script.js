@@ -147,7 +147,38 @@ document.addEventListener('DOMContentLoaded', function() {
             { value: 'archive-view-com', text: 'Archive Fashion Novelty', 
               settings: { sortOrder: 'date-desc-rank', department: 'fashion-novelty', productType: 'custom'} },
             { value: 'competition-view-com', text: 'T-Shirt Competition Checker', 
-              settings: { sortOrder: 'custom', department: 'fashion-novelty', productType: 'tshirt', searchKeywords: 'funny graphic tee', customHiddenKeywords: '-vintage'} }
+              settings: { sortOrder: 'custom', department: 'fashion-novelty', productType: 'tshirt', searchKeywords: 'funny graphic tee', customHiddenKeywords: '-vintage'} },
+            {
+            value: 'competition-checker-com', // Renamed example
+            text: 'Competition Checker',      // Renamed example
+            settings: {
+                // Base Settings
+                sortOrder: 'custom',
+                department: 'fashion-novelty',
+                productType: 'tshirt',              // Default product type for this preset
+                searchKeywords: 'funny graphic',    // Base search keyword(s)
+                customHiddenKeywords: '-vintage',   // Base custom hidden keyword(s)
+        
+                // --- NEW: Product Type Specific Overrides ---
+                productTypeOverrides: {
+                    'tshirt': { // Optional: Override even for the default type
+                        searchKeywords: 'funny graphic tee', // More specific than base
+                        // customHiddenKeywords not specified, would use base '-vintage'
+                    }, 'hoodie': {
+                        searchKeywords: 'funny graphic hoodie',
+                        customHiddenKeywords: '-pullover -zip' // Override both
+                    },
+                    'sweatshirt': {
+                        searchKeywords: 'funny graphic sweatshirt'
+                        // customHiddenKeywords not specified, would use base '-vintage'
+                    },
+                    'longsleeve': {
+                        // searchKeywords not specified, would use base 'funny graphic'
+                        customHiddenKeywords: '-short -tank'
+                    }
+                }
+        } 
+        }
         ],
         // Presets config UK
         'co.uk': [

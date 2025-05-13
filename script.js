@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Base Settings
                 sortOrder: 'custom',
                 department: 'fashion-novelty',
-                productType: 'tshirt',              // Default product type for this preset
+                productType: 'custom',              // Default product type for this preset
                 searchKeywords: 'funny graphic',    // Base search keyword(s)
                 customHiddenKeywords: '-vintage',   // Base custom hidden keyword(s)
         

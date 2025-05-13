@@ -2315,6 +2315,7 @@ $(document).ready(function() {
     let currentMarketplace = getMarketplace();
     let suggestionTimeoutId;
     let currentDisplayedKeywords = []; // Variable to hold the final list of displayed keywords
+    let isDownloadingCsv = false;
 
     // --- Utility Functions ---
     function debugResponse(apiType, queryFirst, queryLast, response) {

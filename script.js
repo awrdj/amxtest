@@ -1423,7 +1423,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Modified updateSortOrderOptions
-    function updateSortOrderOptions() {
+    /*function updateSortOrderOptions() {
       const marketplace = marketplaceSelect.value;
       const department = departmentSelect.value;
       const config = marketplaceConfig[marketplace] || marketplaceConfig.com;
@@ -1442,6 +1442,68 @@ document.addEventListener('DOMContentLoaded', function() {
         optionEl.textContent = option.text;
         sortOrderSelect.appendChild(optionEl);
       });
+    }*/
+    function updateSortOrderOptions() {
+        const marketplace = marketplaceSelect.value;
+        const department = departmentSelect.value;
+        const config = marketplaceConfig[marketplace] || marketplaceConfig.com;
+        const sortOrderSelect = document.getElementById('sortOrder');
+
+        console.log("[updateSortOrderOptions] Called. Dept:", department);
+
+        // Determine the list of sort options to populate based on current marketplace and department
+        const sortOptionsToShow = (department && config.departmentSettings?.[department]?.sortOrders)
+            ? config.departmentSettings[department].sortOrders
+            : config.sortOrders;
+
+        if (!sortOptionsToShow || sortOptionsToShow.length === 0) {
+            console.warn("[updateSortOrderOptions] No sort options found for current config.");
+            sortOrderSelect.innerHTML = '<option value="custom">NONE</option>'; // Fallback
+            sortOrderSelect.value = 'custom';
+            return;
+        }
+        
+        // Store the PRESET'S desired sort order, if a preset is active
+        const activePresetValue = document.getElementById('presetsSelect').value;
+        let presetIntendedSortOrder = null;
+
+        if (activePresetValue) {
+            const presets = presetConfigs[marketplace] || presetConfigs.com;
+            const activePreset = presets.find(p => p.value === activePresetValue);
+            if (activePreset && activePreset.settings && activePreset.settings.sortOrder !== undefined) {
+                presetIntendedSortOrder = activePreset.settings.sortOrder;
+                console.log("[updateSortOrderOptions] Active preset wants sortOrder:", presetIntendedSortOrder);
+            }
+        }
+
+        // Populate the dropdown
+        const previousSortValue = sortOrderSelect.value; // Store before clearing
+        sortOrderSelect.innerHTML = '';
+        sortOptionsToShow.forEach(option => {
+            const optionEl = document.createElement('option');
+            optionEl.value = option.value;
+            optionEl.textContent = option.text;
+            sortOrderSelect.appendChild(optionEl);
+        });
+        console.log("[updateSortOrderOptions] Dropdown populated with:", sortOptionsToShow.map(o => o.value));
+
+        // Now, set the selected value
+        if (presetIntendedSortOrder !== null && sortOptionsToShow.some(opt => opt.value === presetIntendedSortOrder)) {
+            // If a preset is active AND its intended sort order is valid in the current list, use it.
+            sortOrderSelect.value = presetIntendedSortOrder;
+            console.log("[updateSortOrderOptions] Setting sort to PRESET'S value:", presetIntendedSortOrder);
+        } else if (!activePresetValue && sortOptionsToShow.some(opt => opt.value === previousSortValue)) {
+            // NO preset active, try to preserve user's previous selection if still valid in the new list
+            sortOrderSelect.value = previousSortValue;
+            console.log("[updateSortOrderOptions] No preset. Preserving previous valid sort:", previousSortValue);
+        } else {
+            // Otherwise (no preset and previous invalid, OR preset's sort order invalid for current options), default to the first option.
+            if (sortOptionsToShow.length > 0) {
+                sortOrderSelect.value = sortOptionsToShow[0].value;
+                console.log("[updateSortOrderOptions] Setting sort to DEFAULT (first option):", sortOptionsToShow[0].value);
+            }
+        }
+        console.log("[updateSortOrderOptions] Final sortOrder value:", sortOrderSelect.value);
     }
 
     function updateDepartmentFromProductType() {
@@ -1879,7 +1941,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }*/
 
-        // Modify this function inside setupEventListeners
+        // --- Replace your ENTIRE existing applyPreset function with this ---
         function applyPreset() {
             const selectedPresetValue = document.getElementById('presetsSelect').value;
             console.log("--- [applyPreset CALLED] --- Selected Preset Value:", selectedPresetValue);
@@ -1892,30 +1954,34 @@ document.addEventListener('DOMContentLoaded', function() {
             const availableProductTypes = productTypeAvailability[marketplace] || productTypeAvailability.com;
             const sortOrderDropdown = document.getElementById('sortOrder'); // Cache for easier access
 
-            // 1. Reset all filter fields
+            // 1. Reset all filter fields to a baseline default
             document.getElementById('timeFilterNone').checked = true;
-            document.getElementById('sellerAmazon').checked = true;
+            document.getElementById('sellerAmazon').checked = true; // Default state
             document.getElementById('reviewsFilter').checked = false;
             document.getElementById('filterExcludeBrands').checked = false;
             document.getElementById('minPrice').value = '';
             document.getElementById('maxPrice').value = '';
-            sortOrderDropdown.value = marketplaceSpecificConfig.sortOrders[0]?.value || 'custom'; // Default sort
+            // sortOrderDropdown.value will be set by updateSortOrderOptions via department change
             productTypeSelect.value = availableProductTypes[0] || 'custom';
             departmentSelect.value = '';
             categorySelect.innerHTML = '<option value="">No Category Filter</option>';
             categorySelect.disabled = true;
             searchInputElem.value = '';
             customHiddenInputElem.value = '';
-            searchInputElem.dispatchEvent(new Event('input'));
+            searchInputElem.dispatchEvent(new Event('input')); // Update clear button UI
 
             // 2. Handle "No Preset" selection
             if (!selectedPresetValue) {
                 console.log("[applyPreset] No Preset selected. Resetting and dispatching changes.");
+                // Dispatch department change first, as it affects sort/category options
                 departmentSelect.dispatchEvent(new Event('change'));
                 setTimeout(() => {
+                    // Then product type can update department if needed,
+                    // and its own listener will handle keyword overrides if any were active.
                     productTypeSelect.dispatchEvent(new Event('change'));
+                    // updateMarketplaceFilters(); // This is implicitly called by departmentSelect change
                     updateGeneratedUrl();
-                }, 50);
+                }, 50); // Short delay for department change to process
                 return;
             }
 
@@ -1925,81 +1991,84 @@ document.addEventListener('DOMContentLoaded', function() {
                 const settings = preset.settings;
                 console.log("[applyPreset] Applying preset:", selectedPresetValue, "with settings:", JSON.parse(JSON.stringify(settings)));
 
-                // A. Apply core non-dependent preset settings
+                // A. Apply core non-dependent preset settings first
                 if (settings.timeFilter) document.getElementById(settings.timeFilter).checked = true;
                 document.getElementById('reviewsFilter').checked = !!settings.reviewsFilter;
                 document.getElementById('filterExcludeBrands').checked = !!settings.excludeBrands;
                 document.getElementById('minPrice').value = settings.minPrice || '';
                 document.getElementById('maxPrice').value = settings.maxPrice || '';
 
-                // B. Set product type from preset
-                let presetProductType = productTypeSelect.value;
+                // B. Set product type from preset (important for subsequent keyword overrides)
+                let presetProductType = productTypeSelect.value; // Fallback to current (which is default after reset)
                 if (settings.productType !== undefined && availableProductTypes.includes(settings.productType)) {
                     presetProductType = settings.productType;
                 }
                 productTypeSelect.value = presetProductType;
-                console.log("[applyPreset] ProductType set to:", presetProductType);
+                console.log("[applyPreset] ProductType value tentatively set to:", presetProductType);
+                // We will dispatch productTypeSelect's change event *later*, after department, category, sort and keywords are set.
 
-                // C. Set department from preset & dispatch change
-                // This is crucial as it triggers updateMarketplaceFilters -> updateSortOrderOptions
+                // C. Set department from preset.
+                // Dispatching 'change' on department is crucial as it calls updateMarketplaceFilters,
+                // which in turn calls the enhanced updateSortOrderOptions.
+                // updateSortOrderOptions will then use the active preset (selectedPresetValue) to set the correct sort order.
                 const presetDepartment = settings.department !== undefined ? settings.department : '';
                 console.log("[applyPreset] Setting Department to:", presetDepartment);
                 departmentSelect.value = presetDepartment;
-                departmentSelect.dispatchEvent(new Event('change'));
+                departmentSelect.dispatchEvent(new Event('change')); // This is key for sort order to be set by preset.
 
-                // D. setTimeout to allow dependent UI (categories, sort options) to update
+                // D. Use setTimeout to allow department change effects (like category/sort options populating)
                 setTimeout(() => {
-                    console.log("[applyPreset - setTimeout] Applying category, sort, and keywords.");
+                    console.log("[applyPreset - setTimeout] Applying category and keywords. Sort should be set by dept. change.");
 
-                    // Set Category
+                    // Set Category (dropdown options should now be populated from department change)
                     if (settings.category !== undefined) {
-                        // Check if option exists before setting
                         if (categorySelect.querySelector(`option[value="${settings.category}"]`)) {
                             categorySelect.value = settings.category;
                             console.log("[applyPreset - setTimeout] Category set to:", settings.category);
                         } else {
-                            console.warn("[applyPreset - setTimeout] Category option not found:", settings.category);
+                            console.warn("[applyPreset - setTimeout] Category option not found for preset:", settings.category);
+                            categorySelect.value = ""; // Default to "No Category Filter"
                         }
                     }
-
-                    // Set Sort Order
+                    // Note: Sort order value is now primarily set by updateSortOrderOptions,
+                    // which was triggered by the departmentSelect.dispatchEvent(new Event('change')) above.
+                    // We can log the intended sort for debugging.
                     if (settings.sortOrder !== undefined) {
-                        console.log("[applyPreset - setTimeout] Attempting to set SortOrder to:", settings.sortOrder);
-                        const availableSortOptions = Array.from(sortOrderDropdown.options).map(opt => opt.value);
-                        console.log("[applyPreset - setTimeout] Available sort options in dropdown:", availableSortOptions);
-                        
-                        let optionFound = false;
-                        for (let i = 0; i < sortOrderDropdown.options.length; i++) {
-                            if (sortOrderDropdown.options[i].value === settings.sortOrder) {
-                                optionFound = true;
-                                break;
-                            }
-                        }
-
-                        if (optionFound) {
+                        console.log("[applyPreset - setTimeout] Preset *intended* sortOrder:", settings.sortOrder, ". Actual value is now:", sortOrderDropdown.value);
+                         // If sortOrderDropdown.value is NOT settings.sortOrder, then the option wasn't available for the current department.
+                        if (sortOrderDropdown.value !== settings.sortOrder && sortOrderDropdown.querySelector(`option[value="${settings.sortOrder}"]`)) {
+                            // This is a fallback, in case updateSortOrderOptions didn't catch it due to timing.
+                            // But ideally, updateSortOrderOptions handles this.
+                            console.warn("[applyPreset - setTimeout] Forcing sort order from preset as a fallback:", settings.sortOrder);
                             sortOrderDropdown.value = settings.sortOrder;
-                            console.log("[applyPreset - setTimeout] SortOrder SET to:", sortOrderDropdown.value);
-                        } else {
-                            console.warn(`[applyPreset - setTimeout] SortOrder option "${settings.sortOrder}" NOT FOUND in dropdown. Current value: ${sortOrderDropdown.value}`);
                         }
                     }
 
-                    // E. Apply keywords
+                    // E. Apply keywords based on the preset's settings and the (preset-defined) productType
                     console.log("[applyPreset - setTimeout] Calling applyPresetKeywordOverrides with ProductType:", productTypeSelect.value);
                     applyPresetKeywordOverrides(settings, productTypeSelect.value);
 
-                    // F. Dispatch productType change event (AFTER keywords for initial type are set)
-                    console.log("[applyPreset - setTimeout] Dispatching change event on productTypeSelect.");
+                    // F. Finally, dispatch the product type change event.
+                    // This ensures that if the productType maps to a different department than specified
+                    // by the preset, updateDepartmentFromProductType() can adjust it.
+                    // The productTypeSelect's change handler will also re-call applyPresetKeywordOverrides
+                    // ensuring keywords are correct for the FINAL state.
+                    console.log("[applyPreset - setTimeout] Dispatching final change event on productTypeSelect.");
                     productTypeSelect.dispatchEvent(new Event('change'));
 
-                    // G. Final URL update
-                    setTimeout(updateGeneratedUrl, 100); // Allow product type change to settle
+                    // G. Final URL update after a short delay for all events to settle.
+                    setTimeout(updateGeneratedUrl, 100);
 
-                }, 200); // Increased delay slightly to ensure department change effects complete
+                }, 200); // Increased delay to ensure department change fully processes before proceeding
 
             } else {
                 console.warn("[applyPreset] Preset not found or has no settings:", selectedPresetValue);
-                updateGeneratedUrl();
+                // If preset not found, make sure UI reflects the "No Preset" state by re-triggering changes
+                departmentSelect.dispatchEvent(new Event('change'));
+                setTimeout(() => {
+                    productTypeSelect.dispatchEvent(new Event('change'));
+                    updateGeneratedUrl();
+                }, 50);
             }
         }
         // --- End of corrected applyPreset function ---

@@ -18,6 +18,10 @@ body {
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
+a:hover {
+	text-decoration: none;
+}
+
 .header-section {
 	background-color: var(--primary-color);
 	color: white;
@@ -500,11 +504,7 @@ footer {
 	background-color: #e8f5e9 !important;
 }
 
-/* Ensure the parent of the search input group allows relative positioning, */
-/* or add position: relative; to a specific container if needed.       */
-/* Your .search-input-group already has position: relative, which works. */
-
-/* --- NEW CSS for Floating Suggestions --- */
+/* Suggestions container */
 #suggestionsContainer {
     position: static;
     top: 100%;
@@ -517,45 +517,36 @@ footer {
     border-top: none;
     border-radius: 0 0 6px 6px;
     box-shadow: var(--box-shadow);
-    display: none; /* Initially hidden */
-    /* Consider adjusting height if needed */
-    height: 371px; /* Keep your current height or change to ~300px like extension */
+    display: none;
+    height: 371px;
     flex-flow: column wrap;
-    /*align-content: flex-start;*/
     overflow-y: hidden;
     overflow-x: auto;
-    /*padding: 0 15px;*/
-	padding:0;
+    padding:0;
     box-sizing: border-box;
 }
 
-/* Style for Titles (direct children) */
 #suggestionsContainer > h3 {
     background-color: #f8f9fa;
-    /* Adjusted padding */
     padding: 7px 10px;
     margin: 0;
-    /* Adjusted font-size (using 1rem which is often default 16px) */
     font-size: 14px;
-line-height:1.4;
+    line-height:1.4;
     font-weight: bold;
     color: #333;
     box-sizing: border-box;
-    break-inside: avoid; /* Keep this for column layout */
-    page-break-inside: avoid; /* Keep this for column layout */
+    break-inside: avoid;
+    page-break-inside: avoid;
 }
 #suggestionsContainer > h3:first-of-type {
-     margin-top: 0; /* Remove top margin for the very first title */
+     margin-top: 0;
      border-top: none;
 }
 
 .suggestion-item {
-    /* Adjusted padding */
     padding: 7px 10px;
     cursor: pointer;
-    /* Adjusted font-size */
     font-size: 14px; /* or 16px */
-    /* Added font-family like extension (using common fallbacks) */
     font-family: "Amazon Ember", Arial, sans-serif;
     line-height: 1.4;
     color: #212529;
@@ -564,18 +555,13 @@ line-height:1.4;
     border-radius: 0;
     margin-bottom: 0;
     box-sizing: border-box;
-    /* Removed min-width unless you specifically need it */
     min-width: 300px;
-    break-inside: avoid; /* Keep this */
-    page-break-inside: avoid; /* Keep this */
-
-    /* Keep your existing background color classes (.group-*) */
-    /* Exact color matching requires JS changes to apply inline styles */
+    break-inside: avoid;
+    page-break-inside: avoid;
 }
 
 .suggestion-item:hover {
-    /* Adjusted hover color to match extension's alternative */
-    background-color: #e5e5e5 !important; /* Consider removing !important if possible */
+    background-color: #e5e5e5 !important;
 }
 
 #suggestionsContainer > h3,
@@ -584,21 +570,19 @@ line-height:1.4;
     page-break-inside: avoid;
 }
 
-/* Highlighting Style - This should visually match the extension */
 .suggestion-item .s-heavy {
-    font-weight: normal; /* Non-matched part */
+    font-weight: normal;
 }
 .suggestion-item > span:not(.s-heavy) {
-    font-weight: bold; /* Matched part */
+    font-weight: bold;
 }
 
-/* Ensure spans from addKeywordItem display correctly */
 .suggestion-item span {
     /* Default span styling if needed */
 }
 
 .suggestion-item span.s-heavy {
-     font-weight: bold; /* Make sure non-matched parts are normal */
+     font-weight: bold;
 }
 
 .suggestion-item.group-main { background-color: #ffffff; }
@@ -607,18 +591,18 @@ line-height:1.4;
 .suggestion-item.group-between { background-color: #e6ecff; }
 .suggestion-item.group-other { background-color: #f2f2f2; }
 
-/* --- Styles for Suggestion Action Buttons --- */
+/* Suggestion Action Buttons */
 #suggestionActions {
-    display: flex; /* Use flex for inline layout */
+    display: flex;
     align-items: center;
 }
 
 #suggestionActions .btn-sm {
-    padding: 2px 8px; /* Smaller padding for compact buttons */
-    font-size: 11px; /* Smaller font size */
+    padding: 2px 8px;
+    font-size: 11px;
     line-height: 1.5;
-    height: 25px; /* Match height of the select dropdown */
-    white-space: nowrap; /* Prevent text wrapping */
+    height: 25px;
+    white-space: nowrap;
 }
 
 #suggestionActions .btn:disabled {
@@ -626,25 +610,23 @@ line-height:1.4;
     opacity: 0.65;
 }
 
-/* Optional: Add slight spacing if needed, though 'gap' handles it */
 #suggestionActions .btn + .btn {
     /* margin-left: 5px; */ /* Already handled by gap in the container div */
 }
 
-/* Style for copy feedback */
+/* copy feedback */
 #copySuggestionsBtn.copy-success-feedback {
-    background-color: #d4edda !important; /* Light green */
+    background-color: #d4edda !important;
     border-color: #c3e6cb !important;
     color: #155724 !important;
 }
 #copySuggestionsBtn.copy-error-feedback {
-    background-color: #f8d7da !important; /* Light red */
+    background-color: #f8d7da !important;
     border-color: #f5c6cb !important;
     color: #721c24 !important;
 }
 
-/* Adjust alignment within the main controls container */
 .suggestion-controls {
-    align-items: center; /* Vertically center items */
-    flex-wrap: wrap; /* Allow wrapping on small screens if needed */
+    align-items: center;
+    flex-wrap: wrap;
 }

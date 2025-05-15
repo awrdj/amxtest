@@ -41,6 +41,24 @@ a:hover {
 	opacity: 0.9;
 }
 
+.logo-container {
+        display: inline-flex;
+        align-items: center;
+        vertical-align: middle;
+}
+.logo-image {
+	max-height: 40px;
+        margin-right: 10px;
+        vertical-align: middle;
+}
+.logo-text {
+        display: inline-block;
+        vertical-align: middle;
+}
+.plz_hinweis:hover {
+        background-color: #fff!important;
+}
+
 .logo-highlight {
 	color: var(--secondary-color);
 	font-weight: 800;

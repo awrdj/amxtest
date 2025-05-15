@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const productTypeSelect = document.getElementById('productTypeSelect');
     const departmentSelect = document.getElementById('department');
     const categorySelect = document.getElementById('category');
-    const customHiddenInput = document.getElementById('customHiddenKeywords'); // Ensure this is cached
+    const customHiddenInput = document.getElementById('customHiddenKeywords');
     const basicTeesCheckbox = document.getElementById('filterBasicTees');
     const cottonCheckbox = document.getElementById('filterCotton');
     const hiddenKeywordsContainer = document.getElementById('hiddenKeywordsContainer');
@@ -135,6 +135,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Presets Config
     const presetConfigs = {
+/* Possible parameters for the settings object:
+productType: (String) Sets the Product Type dropdown (e.g., 'tshirt', 'hoodie', 'custom').
+department: (String) Sets the Department dropdown (e.g., 'fashion', 'fashion-novelty', 'stripbooks').
+category: (String) Sets the Category dropdown after the department is set (e.g., '7141123011'). Make sure the category ID is valid for the specified department.
+sortOrder: (String) Sets the Sort Order dropdown (e.g., 'date-desc-rank', 'most-purchased-rank', 'custom').
+timeFilter: (String) Specifies which time filter radio button to check by its ID (e.g., 'timeFilter30Days', 'timeFilter90Days'). If omitted, defaults to 'timeFilterNone'.
+reviewsFilter: (Boolean) Set to true to check the "Reviews 4+" checkbox, false or omit to leave it unchecked.
+excludeBrands: (Boolean) Set to true to check the "Exclude Major Brands" checkbox, false or omit to leave it unchecked.
+minPrice: (String or Number) Sets the minimum price input value.
+maxPrice: (String or Number) Sets the maximum price input value.
+searchKeywords: (String) - New - Sets the main search input value.
+customHiddenKeywords: (String) - New - Sets the custom hidden keywords input value.
+productTypeOverrides: (Object) - New - Contains nested objects where keys are product type strings (e.g., 'hoodie') and values are objects that can contain searchKeywords and/or customHiddenKeywords to override the base settings for that specific product type.*/
         // Presets config US
         'com': [
             { value: 'last30-fashion-com', text: 'Last 30 Days Fashion', 
@@ -149,37 +162,19 @@ document.addEventListener('DOMContentLoaded', function() {
               settings: { sortOrder: 'date-desc-rank', department: 'fashion-novelty', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'competition-view-com', text: 'T-Shirt Competition Checker', 
               settings: { sortOrder: 'custom', department: 'fashion-novelty', productType: 'tshirt', suppressDefaultProductTypeKeywords: false} },
-            {
-            value: 'competition-checker-com', // Renamed example
-            text: 'Competition Checker',      // Renamed example
-            settings: {
+            { value: 'competition-checker-com', text: 'Competition Checker',
+              settings: {
                 // Base Settings
-                sortOrder: 'custom',
-                department: 'fashion-novelty',
-                productType: 'custom',              // Default product type for this preset
-                searchKeywords: 'funny graphic',    // Base search keyword(s)
-                customHiddenKeywords: '-vintage',   // Base custom hidden keyword(s)
-                suppressDefaultProductTypeKeywords: true,
-                // --- NEW: Product Type Specific Overrides ---
+                sortOrder: 'custom', department: 'fashion-novelty', productType: 'tshirt', searchKeywords: 'funny graphic', customHiddenKeywords: '-vintage', suppressDefaultProductTypeKeywords: true,
+                // Product type overrides
                 productTypeOverrides: {
-                    'tshirt': { // Optional: Override even for the default type
-                        searchKeywords: 'funny graphic tee', // More specific than base
-                        // customHiddenKeywords not specified, would use base '-vintage'
-                    }, 'hoodie': {
-                        searchKeywords: 'funny graphic hoodie',
-                        customHiddenKeywords: '-pullover -zip' // Override both
-                    },
-                    'sweatshirt': {
-                        searchKeywords: 'funny graphic sweatshirt'
-                        // customHiddenKeywords not specified, would use base '-vintage'
-                    },
-                    'longsleeve': {
-                        // searchKeywords not specified, would use base 'funny graphic'
-                        customHiddenKeywords: '-short -tank'
-                    }
+                    'tshirt': { searchKeywords: 'funny graphic tee' },
+                    'hoodie': { searchKeywords: 'funny graphic hoodie', customHiddenKeywords: '-pullover -zip' },
+                    'sweatshirt': { searchKeywords: 'funny graphic sweatshirt' },
+                    'longsleeve': { customHiddenKeywords: '-short -tank' }
                 }
-        } 
-        }
+              } 
+            }
         ],
         // Presets config UK
         'co.uk': [
@@ -1412,7 +1407,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }*/
     };
 
-    // --- THIS IS THE CORRECT SCOPE FOR THE HELPER ---
     function applyPresetKeywordOverrides(presetSettings, selectedProductType) {
         const searchInputElem = document.getElementById('searchInput');
         const customHiddenInputElem = document.getElementById('customHiddenKeywords');
@@ -1440,7 +1434,6 @@ document.addEventListener('DOMContentLoaded', function() {
             searchInputElem.dispatchEvent(new Event('input'));
         }, 0);
     }
-    // --- END HELPER FUNCTION ---
 
     // Update time filter radio values based on marketplace
     function updateMarketplaceFilters() {
@@ -1469,7 +1462,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const department = departmentSelect.value;
         const config = marketplaceConfig[marketplace] || marketplaceConfig.com;
         const sortOrderSelect = document.getElementById('sortOrder');
-
         // console.log("[updateSortOrderOptions] Called. Dept:", department);
 
         // Determine the list of sort options to populate based on current marketplace and department
@@ -1498,7 +1490,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Populate the dropdown
-        const previousSortValue = sortOrderSelect.value; // Store before clearing
+        const previousSortValue = sortOrderSelect.value;
         sortOrderSelect.innerHTML = '';
         sortOptionsToShow.forEach(option => {
             const optionEl = document.createElement('option');
@@ -1508,7 +1500,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         // console.log("[updateSortOrderOptions] Dropdown populated with:", sortOptionsToShow.map(o => o.value));
 
-        // Now, set the selected value
         if (presetIntendedSortOrder !== null && sortOptionsToShow.some(opt => opt.value === presetIntendedSortOrder)) {
             // If a preset is active AND its intended sort order is valid in the current list, use it.
             sortOrderSelect.value = presetIntendedSortOrder;
@@ -1667,7 +1658,6 @@ document.addEventListener('DOMContentLoaded', function() {
         generatedUrlEl.textContent = amazonUrl;
     }
 
-    // Completely revised event listener setup
     function setupEventListeners() {
         searchForm.addEventListener('submit', handleFormSubmit);
         searchForm.addEventListener('reset', function() {
@@ -1704,9 +1694,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     applyPresetKeywordOverrides(activePreset.settings, this.value);
                 }
             }
-            // Original logic:
-            updateProductTypeSettings(); // (often empty)
-            updateDepartmentFromProductType(); // This is important
+            updateProductTypeSettings(); 
+            updateDepartmentFromProductType();
             updateDepartmentCategoryState();
             updateGeneratedUrl();
         });
@@ -1726,14 +1715,13 @@ document.addEventListener('DOMContentLoaded', function() {
             radio.addEventListener('click', updateGeneratedUrl);
         });
 
-        // --- This is the function you should ensure is active in your setupEventListeners ---
         function applyPreset() {
             const selectedPresetValue = document.getElementById('presetsSelect').value;
             // console.log("--- [applyPreset CALLED] --- Selected Preset Value:", selectedPresetValue);
 
             const marketplace = marketplaceSelect.value;
-            const presets = presetConfigs[marketplace] || presetConfigs.com; // For finding the preset
-            const marketplaceSpecificConfig = marketplaceConfig[marketplace] || marketplaceConfig.com; // For general marketplace data
+            const presets = presetConfigs[marketplace] || presetConfigs.com;
+            const marketplaceSpecificConfig = marketplaceConfig[marketplace] || marketplaceConfig.com;
             const searchInputElem = document.getElementById('searchInput');
             const customHiddenInputElem = document.getElementById('customHiddenKeywords');
             const availableProductTypes = productTypeAvailability[marketplace] || productTypeAvailability.com;
@@ -1791,8 +1779,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     updateDepartmentCategoryState();
 
-                    // For "No Preset", sort order is already set by updateSortOrderOptions (triggered by dept change)
-                    // to the default for the department. We can explicitly set it if noPresetDefaults has a specific one.
                     if (defaults.sortOrder && sortOrderDropdown.querySelector(`option[value="${defaults.sortOrder}"]`)) {
                         sortOrderDropdown.value = defaults.sortOrder;
                         // console.log("[applyPreset] 'No Preset' - Sort order explicitly set to default from noPresetDefaults:", defaults.sortOrder);
@@ -1871,7 +1857,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 50);
             }
         }
-        // --- End of corrected applyPreset function ---
         
         document.getElementById('presetsSelect').addEventListener('change', applyPreset);
         document.getElementById('sellerAmazon').addEventListener('click', updateGeneratedUrl);
@@ -2018,7 +2003,6 @@ document.addEventListener('DOMContentLoaded', function() {
       const productType = productTypeSelect.value;
     }
 
-    // --- Replace your existing generateAmazonUrl function with this ---
     function generateAmazonUrl() {
         const marketplace = marketplaceSelect.value;
         let baseUrl = `https://www.amazon.${marketplace}`;
@@ -2067,10 +2051,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        let hiddenKeywordsArray = []; // Use an array to build the parts
+        let hiddenKeywordsArray = [];
         const customKeywordsFromInput = document.getElementById('customHiddenKeywords').value.trim();
 
-        // --- Logic for suppressDefaultProductTypeKeywords ---
         const activePresetValue = document.getElementById('presetsSelect').value;
         let shouldAddDefaultProductTypeKeywords = true; // Default to including them
 
@@ -2084,7 +2067,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         }
-        // --- End of new logic block ---
 
         if (customKeywordsFromInput) {
             const customKeywordsParts = customKeywordsFromInput.split(' ').filter(k => k.length > 0);
@@ -2095,7 +2077,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const productType = productTypeSelect.value;
-        if (shouldAddDefaultProductTypeKeywords) { // Check the flag here
+        if (shouldAddDefaultProductTypeKeywords) {
             if (productType !== 'custom' && config.productTypeKeywords && config.productTypeKeywords[productType]) {
                 hiddenKeywordsArray.push(config.productTypeKeywords[productType]);
                 // console.log("[generateAmazonUrl] Adding default product type keywords for:", productType);
@@ -2129,166 +2111,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         return url;
     }
-    // --- End of modified generateAmazonUrl function ---
-
-    /* OLD GenerateAmazonURL function
-    function generateAmazonUrl() {
-        // Get base marketplace
-        const marketplace = marketplaceSelect.value;
-        let baseUrl = `https://www.amazon.${marketplace}`;
-
-        // Get marketplace config
-        const config = marketplaceConfig[marketplace] || marketplaceConfig['com']; // Fallback to US
-
-        // Get search query
-        const searchQuery = document.getElementById('searchInput').value.trim();
-
-        // Initialize parameters array to join with & later
-        let paramParts = [];
-
-        // Add search term if provided
-        if (searchQuery) {
-            paramParts.push(`k=${encodeURIComponent(searchQuery)}`);
-        }
-
-        // Collection for rh parameters
-        let rhParams = [];
-
-        // Add time filter
-        const timeFilter = document.querySelector('input[name="timeFilter"]:checked').value;
-        if (timeFilter) {
-            rhParams.push(timeFilter);
-        }
-
-        // Add seller filter
-        const sellerAmazon = document.getElementById('sellerAmazon').checked;
-        if (sellerAmazon) {
-            rhParams.push(document.getElementById('sellerAmazon').value);
-        }
-
-        // Add reviews filter
-        const reviewsFilter = document.getElementById('reviewsFilter').checked;
-        if (reviewsFilter) {
-            rhParams.push(document.getElementById('reviewsFilter').value);
-        }
-
-        // Add price filter
-        const minPrice = document.getElementById('minPrice').value;
-        const maxPrice = document.getElementById('maxPrice').value;
-        if (minPrice && maxPrice) {
-            rhParams.push(`p_36%3A${minPrice}00-${maxPrice}00`);
-        }
-
-        // Always add department and category if selected (regardless of product type)
-        const department = document.getElementById('department').value;
-        if (department) {
-            paramParts.push(`i=${department}`);
-
-            // Add category filter if department and category are both selected - OLD ONE ALWAYS DOES RH
-            //const category = document.getElementById('category').value;
-            //if (category) {
-            //    rhParams.push(`n%3A${category}`);
-            //}
-
-            // Get selected category and its configuration NEW ONE
-            const category = document.getElementById('category').value;
-            const categoryOption = categorySelect.options[categorySelect.selectedIndex];
-            
-            if (category) {
-                // Determine parameter type from category configuration or default to rh
-                const paramType = categoryOption.dataset.catParamType || 'rh';
-                
-                if (paramType === 'bbn') {
-                    paramParts.push(`bbn=${category}`);
-                } else {
-                    rhParams.push(`n%3A${category}`);
-                }
-            }
-            
-        }
-
-        // Function to add category selection based on rh or bbn input FRONTEND SELECTION
-        //    <select id="categoryParamType" class="form-control mt-2">
-        //    <option value="rh">rh=n:</option>
-        //    <option value="bbn">bbn=</option>
-        //    </select>
-            // Get category parameter type
-        //    const categoryParamType = document.getElementById('categoryParamType').value;
-            // Add category filter based on selected parameter type
-        //    const category = document.getElementById('category').value;
-        //    if (category) {
-        //        if (categoryParamType === 'bbn') {
-        //            paramParts.push(`bbn=${category}`);
-        //        } else {
-        //            rhParams.push(`n%3A${category}`);
-        //        }
-        //    }
-
-        let hiddenKeywords = [];
-        const customKeywords = document.getElementById('customHiddenKeywords').value.trim();
-        if (customKeywords) {
-            // Split by spaces and encode each keyword individually
-            const customKeywordsParts = customKeywords.split(' ').filter(k => k.length > 0);
-            const encodedKeywords = customKeywordsParts.map(k => encodeURIComponent(k));
-            if (encodedKeywords.length > 0) {
-                hiddenKeywords.push(encodedKeywords.join('+'));
-            }
-        }
-        
-        const productType = productTypeSelect.value;
-        if (productType !== 'custom' && config.productTypeKeywords && config.productTypeKeywords[productType]) {
-            hiddenKeywords.push(config.productTypeKeywords[productType]);
-        }
-
-        // Add exclude brands filter - always add this at the end if selected
-        const filterExcludeBrands = document.getElementById('filterExcludeBrands').checked;
-        if (filterExcludeBrands && config.excludeBrands) {
-          hiddenKeywords.push(config.excludeBrands);
-        }
-
-        // Add hidden-keywords parameter if we have any
-        if (hiddenKeywords.length > 0) {
-            paramParts.push(`hidden-keywords=${hiddenKeywords.join('+')}`);
-        }
-
-        // Add sort order
-        const sortOrder = document.getElementById('sortOrder').value;
-        if (sortOrder !== 'custom') {
-            paramParts.push(`s=${sortOrder}`);
-        }
-
-        // Combine all rh parameters with comma (%2C)
-        if (rhParams.length > 0) {
-            paramParts.push(`rh=${rhParams.join('%2C')}`);
-        }
-
-        // Add language parameter for non-US/UK marketplaces
-        //if (marketplace !== 'com' && marketplace !== 'co.uk') {
-            // Map marketplace to language code
-        //    const languageMap = {
-        //        'de': 'de',
-        //        'fr': 'fr',
-        //        'it': 'it',
-        //        'es': 'es',
-        //        'jp': 'ja'
-        //    };
-        //    const langCode = languageMap[marketplace] || marketplace;
-        //    paramParts.push(`language=${langCode}`);
-        // }
-
-        // Build the final URL
-        let url = baseUrl;
-
-        // Always add /s for search
-        url += '/s';
-
-        // Add parameters if we have any
-        if (paramParts.length > 0) {
-            url += '?' + paramParts.join('&');
-        }
-
-        return url;
-    }*/
 });
 
 // Suggestions Expander (jQuery section)
@@ -2300,11 +2122,9 @@ $(document).ready(function() {
     const clearSearchBtn = $("#clearSearchBtn");
     const kwSuggestionsCheckbox = $("#kwsuggestions");
     const suggestionDepartmentSelect = $("#suggestionDepartmentSelect");
-    // --- Cache NEW elements ---
     const suggestionActionsContainer = $("#suggestionActions");
     const downloadCsvBtn = $("#downloadCsvBtn");
     const copySuggestionsBtn = $("#copySuggestionsBtn");
-    // --- End Cache ---
 
     // --- Configuration ---
     const MAX_KEYWORDS_IN_SEARCH = 1000; // Max Keywords, recommended 500
@@ -2314,7 +2134,7 @@ $(document).ready(function() {
     // --- State ---
     let currentMarketplace = getMarketplace();
     let suggestionTimeoutId;
-    let currentDisplayedKeywords = []; // Variable to hold the final list of displayed keywords
+    let currentDisplayedKeywords = [];
     let isDownloadingCsv = false;
 
     // --- Utility Functions ---
@@ -2351,7 +2171,6 @@ $(document).ready(function() {
              .replace(/'/g, "&#039;");
     }
 
-    // --- NEW Helper Function to Update Button States ---
     function updateActionButtonsState() {
         const hasKeywords = currentDisplayedKeywords.length > 0;
         downloadCsvBtn.prop('disabled', !hasKeywords);
@@ -2365,7 +2184,6 @@ $(document).ready(function() {
              copySuggestionsBtn.removeClass('copy-success-feedback copy-error-feedback').text('COPY');
         }
     }
-    // --- End NEW Helper Function ---
 
     // --- Core Suggestion Logic ---
     function getSuggestions(queryFirst, queryLast, marketplace, apiType = 'Generic') {
@@ -2455,11 +2273,11 @@ $(document).ready(function() {
          );
 
          item.on('click', () => {
-             searchInput.val(keyword); // Use original case keyword when clicked
+             searchInput.val(keyword);
              suggestionsContainer.empty().css('display', 'none');
              searchInput.focus();
-             currentDisplayedKeywords = []; // Clear list as suggestion is chosen
-             updateActionButtonsState(); // Update buttons
+             currentDisplayedKeywords = [];
+             updateActionButtonsState();
          });
 
          suggestionsContainer.append(item);
@@ -2468,8 +2286,8 @@ $(document).ready(function() {
 
     // Modify renderCategorizedSuggestions to store keywords and update buttons
     function renderCategorizedSuggestions(search, results) {
-        suggestionsContainer.empty(); // Clear previous UI
-        currentDisplayedKeywords = []; // Clear internal keyword list
+        suggestionsContainer.empty();
+        currentDisplayedKeywords = [];
 
         const mainKeywordsSet = new Set();
         const allDisplayedKeywordsSet = new Set();
@@ -2480,9 +2298,8 @@ $(document).ready(function() {
         const initialMainKeywords = parseResults(results[0] || { suggestions: [] });
         initialMainKeywords.forEach(kw => mainKeywordsSet.add(kw));
 
-        // --- Loop through API result categories (results[0] = Main, results[1] = Before, etc.) ---
         for (let i = 0; i < results.length; i++) {
-            if (keywordCount >= MAX_KEYWORDS_IN_SEARCH) break; // Stop if max is reached
+            if (keywordCount >= MAX_KEYWORDS_IN_SEARCH) break;
 
             const currentResultData = results[i] || { suggestions: [] };
             const keywordsRaw = parseResults(currentResultData);
@@ -2490,90 +2307,81 @@ $(document).ready(function() {
             let suggestionType = "";
             let groupClass = "";
 
-            // --- Filter keywords based on category index and uniqueness ---
             if (i === 0) { // Main Suggestions (index 0)
                 suggestionType = "Amazon Suggestions";
                 groupClass = "group-main";
                 keywordsRaw.forEach(kw => {
-                    // Add if not already displayed anywhere and under the limit
                     if (!allDisplayedKeywordsSet.has(kw) && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
                         keywordsToAddInCategory.push(kw);
-                        allDisplayedKeywordsSet.add(kw); // Track all displayed keywords
+                        allDisplayedKeywordsSet.add(kw);
                     }
                 });
             } else { // Other suggestion types (Before, After, Between, Other)
                 keywordsRaw.forEach(kw => {
-                    // Add if NOT in main suggestions, NOT already displayed, and under the limit
                     if (!mainKeywordsSet.has(kw) && !allDisplayedKeywordsSet.has(kw) && keywordCount < MAX_KEYWORDS_IN_SEARCH) {
                         keywordsToAddInCategory.push(kw);
-                        allDisplayedKeywordsSet.add(kw); // Track all displayed keywords
+                        allDisplayedKeywordsSet.add(kw);
                     }
                 });
 
-                // Determine title and class based on index 'i'
                 switch (i) {
                     case 1: suggestionType = "Keywords Before"; groupClass = "group-before"; break;
                     case 2: suggestionType = "Keywords After"; groupClass = "group-after"; break;
-                    case 3: // Between (only show title if keywords exist for this specific type)
+                    case 3:
                         if (results[3] && results[3].suggestions && results[3].suggestions.length > 0 && keywordsToAddInCategory.length > 0) {
                              suggestionType = "Keywords Between"; groupClass = "group-between";
-                        } else { suggestionType = ""; } // No title if no specific 'between' keywords
+                        } else { suggestionType = ""; }
                         break;
-                    default: suggestionType = "Other"; groupClass = "group-other"; break; // Indices 4, 5, 6+ fall here
+                    default: suggestionType = "Other"; groupClass = "group-other"; break;
                 }
             }
 
-            // --- Append Title and Items if keywords exist for this category ---
             if (keywordsToAddInCategory.length > 0 && suggestionType) {
                 let shouldAddTitle = true;
-                // Special handling for "Other" title - only show it once
                 if (suggestionType === "Other") {
                     if (!otherTitleDisplayed) {
-                        otherTitleDisplayed = true; // Mark as displayed
+                        otherTitleDisplayed = true;
                     } else {
-                        shouldAddTitle = false; // Don't add "Other" title again
+                        shouldAddTitle = false;
                     }
                 }
 
-                // Append the title directly to the main container if needed
                 if (shouldAddTitle) {
                     suggestionsContainer.append($('<h3></h3>').text(suggestionType));
                 }
 
-                // Append each item and STORE the keyword internally
                 keywordsToAddInCategory.forEach(keyword => {
                     if (keywordCount < MAX_KEYWORDS_IN_SEARCH) {
-                        addKeywordItem(keyword, search, groupClass); // Add item to UI
-                        currentDisplayedKeywords.push(keyword);    // Store the added keyword
+                        addKeywordItem(keyword, search, groupClass);
+                        currentDisplayedKeywords.push(keyword);
                         keywordCount++;
                     }
                 });
             }
-        } // --- End Loop ---
-
-        // --- Final Show/Hide and Button Update ---
-        if (keywordCount > 0) {
-            suggestionsContainer.css('display', 'flex'); // Show container if keywords were added
-        } else {
-            suggestionsContainer.css('display', 'none'); // Hide if empty
-            currentDisplayedKeywords = []; // Ensure list is empty if nothing is shown
         }
-        updateActionButtonsState(); // Update CSV/Copy button state
+
+        if (keywordCount > 0) {
+            suggestionsContainer.css('display', 'flex');
+        } else {
+            suggestionsContainer.css('display', 'none');
+            currentDisplayedKeywords = [];
+        }
+        updateActionButtonsState();
     }
 
 
     // Modify fetchAndDisplaySuggestions to handle clearing state
     function fetchAndDisplaySuggestions(search) {
         const trimmedSearch = search.trim();
-        const rawSearch = searchInput.val(); // Use raw value for API calls consistency
+        const rawSearch = searchInput.val();
         const words = trimmedSearch.split(" ").filter(w => w !== "");
         const marketplace = currentMarketplace;
 
         if (!trimmedSearch) {
             suggestionsContainer.empty().hide();
             clearSearchBtn.hide();
-            currentDisplayedKeywords = []; // Clear list
-            updateActionButtonsState(); // Update buttons
+            currentDisplayedKeywords = [];
+            updateActionButtonsState();
             return;
         }
         clearSearchBtn.show();
@@ -2600,36 +2408,33 @@ $(document).ready(function() {
                             renderCategorizedSuggestions(trimmedSearch, results);
                         } else { // Input changed during the small render delay
                             suggestionsContainer.css('display', 'none');
-                            currentDisplayedKeywords = []; // Clear list
-                            updateActionButtonsState(); // Update buttons
+                            currentDisplayedKeywords = [];
+                            updateActionButtonsState();
                         }
                      }, RENDER_DELAY_MS);
                 } else { // Input changed before suggestions even arrived
                     suggestionsContainer.css('display', 'none');
-                    currentDisplayedKeywords = []; // Clear list
-                    updateActionButtonsState(); // Update buttons
+                    currentDisplayedKeywords = [];
+                    updateActionButtonsState();
                 }
             })
             .catch(error => {
                 // console.error('Error fetching one or more suggestions:', error);
-                suggestionsContainer.empty().hide(); // Hide on error
-                currentDisplayedKeywords = []; // Clear list
-                updateActionButtonsState(); // Update buttons
+                suggestionsContainer.empty().hide();
+                currentDisplayedKeywords = [];
+                updateActionButtonsState();
             });
     }
 
-    // --- Event Handlers ---
-
-    // Checkbox Handler (Modified for Action Buttons)
     kwSuggestionsCheckbox.on('change', function() {
         const isChecked = $(this).is(':checked');
         suggestionDepartmentSelect.toggle(isChecked);
-        suggestionActionsContainer.toggle(isChecked); // Toggle action buttons visibility
+        suggestionActionsContainer.toggle(isChecked);
 
         if (!isChecked) {
             clearTimeout(suggestionTimeoutId);
             suggestionsContainer.empty().css('display', 'none');
-            currentDisplayedKeywords = []; // Clear keyword list
+            currentDisplayedKeywords = [];
         } else {
             // If checking the box, re-trigger suggestions if input has text
             const currentQuery = searchInput.val();
@@ -2637,28 +2442,24 @@ $(document).ready(function() {
                 fetchAndDisplaySuggestions(currentQuery);
             }
         }
-        // Always update button state after toggling visibility or potentially clearing list
         updateActionButtonsState();
     });
 
-    // Department Select Handler
     suggestionDepartmentSelect.on('change', function() {
         // Re-fetch suggestions only if the feature is enabled
         if (kwSuggestionsCheckbox.is(':checked')) {
             const currentQuery = searchInput.val();
             if (currentQuery.trim()) {
-                clearTimeout(suggestionTimeoutId); // Clear pending fetch from typing
-                fetchAndDisplaySuggestions(currentQuery); // Fetch immediately
+                clearTimeout(suggestionTimeoutId);
+                fetchAndDisplaySuggestions(currentQuery);
             }
         }
     });
 
-    // Search Input Handler (Modified for Action Buttons state)
     searchInput.on('input', function() {
         const query = $(this).val();
         clearTimeout(suggestionTimeoutId); // Clear previous debounce timer
 
-        // Always manage clear button visibility
         if (query.trim()) {
             clearSearchBtn.show();
         } else {
@@ -2670,7 +2471,7 @@ $(document).ready(function() {
             suggestionsContainer.empty().css('display', 'none');
             currentDisplayedKeywords = [];
             updateActionButtonsState();
-            return; // Exit
+            return;
         }
 
         // If suggestions enabled:
@@ -2687,17 +2488,15 @@ $(document).ready(function() {
         }
     });
 
-    // Clear Button Handler (Modified for Action Buttons state)
     clearSearchBtn.on('click', function() {
         searchInput.val('');
         suggestionsContainer.empty().css('display', 'none');
         $(this).hide();
         searchInput.focus();
-        currentDisplayedKeywords = []; // Clear list
-        updateActionButtonsState(); // Update buttons
+        currentDisplayedKeywords = [];
+        updateActionButtonsState();
     });
 
-    // Marketplace Select Handler (Modified for Action Buttons state)
     marketplaceSelect.on('change', function() {
         currentMarketplace = getMarketplace();
         const currentQuery = searchInput.val();
@@ -2713,7 +2512,6 @@ $(document).ready(function() {
         }
     });
 
-    // Document Click Handler (Modified to ignore Action Buttons)
     $(document).on('click', (event) => {
         if (isDownloadingCsv) {
             // If check for the download flag is true, ignore this click event entirely
@@ -2744,14 +2542,11 @@ $(document).ready(function() {
         }
     });
 
-    // --- Add Handlers for New CSV/Copy Buttons ---
     downloadCsvBtn.on('click', function() {
         if ($(this).prop('disabled') || currentDisplayedKeywords.length === 0) {
             return;
         }
-
-        isDownloadingCsv = true; // <-- Set the flag before starting download
-
+        isDownloadingCsv = true;
         // Prepare CSV content (Header + Data rows)
         let csvContent = "Keyword Suggestions\n";
         currentDisplayedKeywords.forEach(keyword => {
@@ -2761,37 +2556,29 @@ $(document).ready(function() {
             }
             csvContent += escapedKeyword + "\n";
         });
-
         // Create Blob and trigger download
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement("a");
         const url = URL.createObjectURL(blob);
-
         link.setAttribute("href", url);
         link.setAttribute("download", "merchscope_Suggestions.csv");
         link.style.visibility = 'hidden';
         document.body.appendChild(link);
-        link.click(); // Simulate click
+        link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
-
-        // --- Reset the flag shortly after the click simulation ---
-        // Use setTimeout to ensure it runs after the click event finishes processing
         setTimeout(() => {
             isDownloadingCsv = false;
         }, 0);
-        // --- End Reset flag ---
     });
 
     copySuggestionsBtn.on('click', function() {
         if ($(this).prop('disabled') || currentDisplayedKeywords.length === 0) {
-            return; // Extra safety check
+            return;
         }
-
         const textToCopy = currentDisplayedKeywords.join("\n"); // Newline separated
         const button = $(this);
-        const originalText = button.text(); // Store original text ("COPY")
-
+        const originalText = button.text();
         navigator.clipboard.writeText(textToCopy).then(() => {
             // Success feedback
             button.addClass('copy-success-feedback').text('COPIED!');
@@ -2813,9 +2600,7 @@ $(document).ready(function() {
             }, 1500);
         });
     });
-    // --- End Add Handlers ---
 
-    // --- Initial Setup ---
     clearSearchBtn.hide(); // Initially hide clear button
 
     // Set initial visibility for suggestion controls based on checkbox state

@@ -166,7 +166,7 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
                 sortOrder: 'custom', department: 'fashion-novelty', productType: 'tshirt', searchKeywords: 'funny graphic', customHiddenKeywords: '-vintage', suppressDefaultProductTypeKeywords: true,
                 // Product type overrides
                 productTypeOverrides: {
-                    'tshirt': { /*searchKeywords: 'funny graphic tee',*/ customHiddenKeywords: 'Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-Vneck+-Tanktop' },
+                    'tshirt': { /*searchKeywords: 'funny graphic tee',*/ customHiddenKeywords: 'Lightweight, Classic fit, Double-needle sleeve and bottom hem -Longsleeve -Raglan -Vneck -Tanktop' },
                     'premtshirt': { customHiddenKeywords: 'Fit%3A+Men’s+fit+runs+small%2C+size+up+for+a+looser+fit.+Women’s+fit+is+true+to+size%2C+order+usual+size.+is+made+of+lightweight+fine+jersey+fabric+-Longsleeve+-Raglan+-Vneck+-Tanktop' },
                     'tanktop': { customHiddenKeywords: '"tanktop"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-Vneck' },
                     'longsleeve': { customHiddenKeywords: '"Long+sleeve"+unisex-adult+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Raglan+-Vneck+-sweatshirt+-tanktop' },

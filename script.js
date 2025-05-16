@@ -163,23 +163,22 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
             { value: 'competition-checker-com', text: 'Competition Checker',
               settings: {
                 // Base Settings
-                sortOrder: 'custom', department: 'fashion-novelty', productType: 'tshirt', searchKeywords: 'funny graphic', customHiddenKeywords: '-vintage', suppressDefaultProductTypeKeywords: true,
+                sortOrder: 'custom', /*department: 'fashion-novelty',*/ productType: 'tshirt', /*searchKeywords: 'funny graphic',*/ customHiddenKeywords: 'Lightweight, Classic fit, Double-needle sleeve and bottom hem -Longsleeve -Raglan -Vneck -Tanktop', suppressDefaultProductTypeKeywords: true,
                 // Product type overrides
                 productTypeOverrides: {
-                    'tshirt': { /*searchKeywords: 'funny graphic tee',*/ customHiddenKeywords: 'Lightweight, Classic fit, Double-needle sleeve and bottom hem -Longsleeve -Raglan -Vneck -Tanktop' },
-                    'premtshirt': { customHiddenKeywords: 'Fit%3A+Men’s+fit+runs+small%2C+size+up+for+a+looser+fit.+Women’s+fit+is+true+to+size%2C+order+usual+size.+is+made+of+lightweight+fine+jersey+fabric+-Longsleeve+-Raglan+-Vneck+-Tanktop' },
-                    'tanktop': { customHiddenKeywords: '"tanktop"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Longsleeve+-Raglan+-Vneck' },
-                    'longsleeve': { customHiddenKeywords: '"Long+sleeve"+unisex-adult+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Raglan+-Vneck+-sweatshirt+-tanktop' },
-                    'raglan': { customHiddenKeywords: '"raglan"+Lightweight%2C+Classic+fit%2C+Double-needle+sleeve+and+bottom+hem+-Vneck+-Tanktop' },
-                    'sweatshirt': { customHiddenKeywords: '"sweatshirt"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-hoodie' },
-                    'hoodie': { customHiddenKeywords: '"pullover+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-zip' },
-                    'ziphoodie': { customHiddenKeywords: '"zip+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop' },
-                    'popsocket': { customHiddenKeywords: '"Popsocket"+Printed+top+is+swappable+with+other+compatible+PopGrip+models.+Just+press+flat%2C+turn+90+degrees+until+you+hear+a+click+and+remove+to+swap.' },
-                    'case': { customHiddenKeywords: '"case"+"Two-part+protective+case+made+from+a+premium+scratch-resistant+polycarbonate+shell+and+shock+absorbent+TPU+liner+protects+against+drops"' },
-                    'totebag': { customHiddenKeywords: '"Tote+Bag"+Made+of+a+lightweight%2C+spun+polyester+canvas-like+fabric.+All+seams+and+stress+points+are+double-stitched+for+durability%2C+and+the+reinforced+bottom+flattens+to+fit+more+items+and+hold+larger+objects.' },
-                    'throwpillow': { customHiddenKeywords: '"Throw+Pillow"+Filled+with+100%25+polyester+and+sewn+closed' },
-                    'tumbler': { customHiddenKeywords: '"Tumbler"+"Merch+on+Demand"' },
-                    'KDP': { customHiddenKeywords: '"independently+published"' }
+                    'premtshirt': { customHiddenKeywords: 'Fit: Men’s fit runs small, size up for a looser fit. Women’s fit is true to size, order usual size. is made of lightweight fine jersey fabric -Longsleeve -Raglan -Vneck -Tanktop' },
+                    'tanktop': { customHiddenKeywords: '"tanktop" Lightweight, Classic fit, Double-needle sleeve and bottom hem -Longsleeve -Raglan -Vneck' },
+                    'longsleeve': { customHiddenKeywords: '"Longsleeve" unisex-adult Lightweight, Classic fit, Double-needle sleeve and bottom hem -Raglan -Vneck -sweatshirt -tanktop' },
+                    'raglan': { customHiddenKeywords: '"raglan" Lightweight, Classic fit, Double-needle sleeve and bottom hem -Vneck -Tanktop' },
+                    'sweatshirt': { customHiddenKeywords: '"sweatshirt" 8.5 oz, Classic fit, Twill-taped neck -Raglan -Vneck -Tanktop -hoodie' },
+                    'hoodie': { customHiddenKeywords: '"pullover hoodie" 8.5 oz, Classic fit, Twill-taped neck -Raglan -Vneck -Tanktop -zip' },
+                    'ziphoodie': { customHiddenKeywords: '"zip hoodie" 8.5 oz, Classic fit, Twill-taped neck -Raglan -Vneck -Tanktop' },
+                    'popsocket': { customHiddenKeywords: '"Popsocket" Printed top is swappable with other compatible PopGrip models. Just press flat, turn 90 degrees until you hear a click and remove to swap.' },
+                    'case': { customHiddenKeywords: '"case" "Two-part protective case made from a premium scratch-resistant polycarbonate shell and shock absorbent TPU liner protects against drops"' },
+                    'totebag': { customHiddenKeywords: '"Tote Bag" Made of a lightweight, spun polyester canvas-like fabric. All seams and stress points are double-stitched for durability, and the reinforced bottom flattens to fit more items and hold larger objects.' },
+                    'throwpillow': { customHiddenKeywords: '"Throw Pillow" Filled with 100% polyester and sewn closed' },
+                    'tumbler': { customHiddenKeywords: '"Tumbler" "Merch on Demand"' },
+                    'KDP': { customHiddenKeywords: '"independently published"' }
                 }
               }
             }

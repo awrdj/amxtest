@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MerchScope Inspo Gallery</title>
+  <link rel="icon" type="image/x-icon" href="../favicon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .header-section {
+        margin-bottom: 0;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+      /*padding: 1rem;*/
+    }
+    .image-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+    .image-card:hover {
+      transform: scale(1.03);
+    }
+    .image-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .badge-number {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(36, 63, 63,0.75);
+      color: #fff;
+      padding: 1px 4px;
+      font-size: 0.5rem;
+      border-radius: 4px;
+    }
+    .sort-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      margin-bottom: 1rem;
+      background: #ffffff;
+      border-bottom: 1px solid #ddd;
+    }
+    .sort-bar h5 {
+      margin: 0;
+    }
+    @media (min-width: 0px) {
+        .container, .container-lg, .container-md, .container-sm, .container-xl {
+            max-width: 100%;
+            padding: 0 1.5rem;
+        }
+    }
+    @media (max-width: 424px) {
+        .gallery-grid {
+            grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+        }
+    }
+  </style>
+</head>
+<body>
+  <div class="header-section">
+    <div class="container text-center">
+      <a href="../" class="text-white text-decoration-none" style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.3rem;">
+        <div class="logo-container d-flex align-items-center justify-content-center">
+          <img src="../icon.png" alt="MerchScope Logo" class="mr-2" style="height: 40px;">
+          <span class="logo-text">Merch<span class="logo-highlight">Scope</span></span>
+        </div>
+      </a>
+      <p class="header-subtitle mb-0">Discover your niche. Design with insight.</p>
+    </div>
+  </div>
+
+  <div class="sort-bar">
+    <h5 id="sort-label" class="mb-0">Top Rated</h5>
+    <div class="dropdown">
+      <button class="btn btn-outline-primary dropdown-toggle" type="button" id="sortDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Sort
+      </button>
+      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="sortDropdown">
+        <a class="dropdown-item" href="#" onclick="setSort(0)">Top Rated</a>
+        <a class="dropdown-item" href="#" onclick="setSort(1)">Least Rated</a>
+        <a class="dropdown-item" href="#" onclick="setSort(2)">Random</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="gallery-grid" id="gallery">
+      </div>
+  </div>
+
+  <script>
+    const sortModes = ["Sorted by most reviews", "Sorted by least reviews", "The top reviewed designs sorted randomly"];
+    let currentSort = 0; // Default sort mode: Top Rated (original order from JSON)
+    let originalItems = [];
+
+    async function loadItems() {
+      try {
+        console.log("Fetching items.json...");
+        const res = await fetch('items.json'); // Ensure items.json is in the same directory or path is correct
+        console.log("Fetch response status:", res.status, res.statusText);
+
+        if (!res.ok) {
+          console.error("Failed to fetch items.json. Status:", res.status);
+          const errorText = await res.text();
+          console.error("Raw error response:", errorText);
+          originalItems = [];
+          document.getElementById('gallery').innerHTML = `<p>Error loading item data (status: ${res.status}). Please check console.</p>`;
+          document.getElementById('sort-label').innerText = "Failed to load items";
+          return;
+        }
+
+        const rawText = await res.text();
+        console.log(`items.json raw text received. Length: ${rawText.length} characters.`);
+        
+        originalItems = JSON.parse(rawText);
+        console.log("Successfully parsed items.json. Number of items loaded:", originalItems.length);
+
+        if (originalItems.length === 0 && rawText.length > 100) {
+            console.error("Parsed to 0 items, but raw text was not empty. Check JSON validity thoroughly!");
+        }
+        
+        sortAndRender(); // Initial render with default sort
+
+      } catch (error) {
+        console.error("Error in loadItems function (fetching or parsing items.json):", error);
+        originalItems = [];
+        document.getElementById('gallery').innerHTML = '<p>An error occurred while loading items. Please check the console for details.</p>';
+        document.getElementById('sort-label').innerText = "Failed to load items";
+      }
+    }
+
+    function render(items) {
+      const gallery = document.getElementById('gallery');
+      gallery.innerHTML = ''; // Clear previous items
+      console.log("Rendering items. Number of items to render:", items.length);
+
+      if (!items || items.length === 0) {
+        if (originalItems.length > 0) {
+            console.warn("Render function received 0 items to display, but originalItems has data. This might happen if sorting resulted in an empty list, or items array was accidentally emptied.");
+        } else {
+            console.log("Render function received 0 items and originalItems is also empty (or load failed).");
+            // Potentially display a "No items found" message if not an error state
+            if (!document.getElementById('gallery').innerHTML.includes("Error") && !document.getElementById('gallery').innerHTML.includes("Failed")) {
+                 gallery.innerHTML = '<p>No items to display.</p>';
+            }
+        }
+        return;
+      }
+
+      items.forEach((item, idx) => {
+        if (!item || typeof item.img !== 'string' || typeof item.url !== 'string') {
+          console.warn(`Skipping invalid item at index ${idx}:`, item);
+          return; // Skip this item if it's malformed
+        }
+        const indexMatch = item.img.match(/(\d+)\.png$/);
+        // Use the number from the image filename for the badge. Fallback to index+1 if regex fails or not present.
+        const number = indexMatch ? parseInt(indexMatch[1], 10) : (idx + 1); 
+        
+        const div = document.createElement('div');
+        div.className = 'image-card';
+        div.innerHTML = `
+          <span class="badge-number">${number}</span>
+          <a href="${item.url}" target="_blank">
+            <img src="${item.img}" alt="Image #${number}" loading="lazy"> {/* Added loading="lazy" */}
+          </a>
+        `;
+        gallery.appendChild(div);
+      });
+      console.log("Rendering complete.");
+    }
+
+    function sortAndRender() {
+      if (!originalItems || originalItems.length === 0) {
+        console.log("sortAndRender called, but originalItems is empty. No items to sort or render.");
+         // Update sort label if items haven't loaded or list is empty
+        if (document.getElementById('gallery').innerHTML.includes("Error") || 
+            document.getElementById('gallery').innerHTML.includes("Failed") ||
+            document.getElementById('gallery').innerHTML.includes("No items to display")) {
+            // Keep existing message from render/loadItems
+        } else {
+            document.getElementById('sort-label').innerText = "No items to display";
+        }
+        render([]); // Ensure gallery is cleared or shows "No items"
+        return;
+      }
+
+      document.getElementById('sort-label').innerText = sortModes[currentSort];
+      let sortedItems;
+      if (currentSort === 0) { // Top Rated (original order)
+        sortedItems = [...originalItems];
+      } else if (currentSort === 1) { // Least Rated (reverse of original order)
+        sortedItems = [...originalItems].reverse();
+      } else { // Random
+        // Create a copy before shuffling to not alter originalItems if it's used directly elsewhere
+        sortedItems = [...originalItems].sort(() => Math.random() - 0.5);
+      }
+      console.log(`Sorting complete. Mode: ${sortModes[currentSort]}. Number of items to render: ${sortedItems.length}`);
+      render(sortedItems);
+    }
+
+    function setSort(modeIndex) {
+      currentSort = modeIndex;
+      sortAndRender();
+    }
+
+    // Load items when the script runs
+    loadItems();
+  </script>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -89,10 +89,10 @@
   </div>
 
   <div class="sort-bar">
-    <h5 id="sort-label" class="mb-0">Top Rated</h5>
+    <h5 id="sort-label" class="mb-0">Top Rated</h5> {/* This will be updated by JS */}
     <div class="dropdown">
       <button class="btn btn-outline-primary dropdown-toggle" type="button" id="sortDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Sort
+        Sort {/* This will be updated by JS */}
       </button>
       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="sortDropdown">
         <a class="dropdown-item" href="#" onclick="setSort(0)">Top Rated</a>
@@ -109,16 +109,16 @@
 
   <script>
     const sortModes = ["Sorted by most reviews", "Sorted by least reviews", "The top reviewed designs sorted randomly"];
-    let currentSort = 0;
-    let originalItems = []; // Holds all items from JSON
+    const sortButtonLabels = ["Top Rated", "Least Rated", "Random"]; // Labels for the button
+    let currentSort = 0; // Default sort mode index
+    let originalItems = [];
     
-    let sortedMasterList = []; // Holds the currently sorted full list of items
+    let sortedMasterList = [];
     let itemsCurrentlyRenderedCount = 0;
     const BATCH_SIZE = 50;
     let intersectionObserver;
     let isLoadingBatch = false;
 
-    // Helper function to create a single image card element
     function createImageCardElement(item) {
       const indexMatch = item.img.match(/(\d+)\.png$/);
       const number = indexMatch ? parseInt(indexMatch[1], 10) : '?';
@@ -135,6 +135,11 @@
     }
 
     async function loadItems() {
+      const sortDropdownButton = document.getElementById('sortDropdown');
+      const sortLabelElement = document.getElementById('sort-label');
+      const galleryElement = document.getElementById('gallery');
+      const sentinelElement = document.getElementById('sentinel');
+
       try {
         console.log("Fetching items.json...");
         const res = await fetch('items.json');
@@ -142,9 +147,10 @@
           console.error("Failed to fetch items.json. Status:", res.status, res.statusText);
           const errorText = await res.text();
           console.error("Raw error response:", errorText);
-          document.getElementById('gallery').innerHTML = `<p>Error loading item data (status: ${res.status}).</p>`;
-          document.getElementById('sort-label').innerText = "Failed to load items";
-          document.getElementById('sentinel').style.display = 'none';
+          galleryElement.innerHTML = `<p>Error loading item data (status: ${res.status}).</p>`;
+          sortLabelElement.innerText = "Failed to load items";
+          sortDropdownButton.innerText = "Sort"; // Reset button text
+          if(sentinelElement) sentinelElement.style.display = 'none';
           return;
         }
         const rawText = await res.text();
@@ -152,32 +158,33 @@
         console.log("Successfully parsed items.json. Total items:", originalItems.length);
         
         if (originalItems.length === 0) {
-            document.getElementById('gallery').innerHTML = '<p>No items found in the data source.</p>';
-            document.getElementById('sort-label').innerText = "No items to display";
-            document.getElementById('sentinel').style.display = 'none';
+            galleryElement.innerHTML = '<p>No items found in the data source.</p>';
+            sortLabelElement.innerText = "No items to display";
+            sortDropdownButton.innerText = "Sort"; // Reset button text
+            if(sentinelElement) sentinelElement.style.display = 'none';
             return;
         }
         
         sortAndRender(); // Initial sort and render
       } catch (error) {
         console.error("Error in loadItems (fetching/parsing):", error);
-        document.getElementById('gallery').innerHTML = '<p>An error occurred loading items.</p>';
-        document.getElementById('sort-label').innerText = "Error loading items";
-        document.getElementById('sentinel').style.display = 'none';
+        galleryElement.innerHTML = '<p>An error occurred loading items.</p>';
+        sortLabelElement.innerText = "Error loading items";
+        sortDropdownButton.innerText = "Sort"; // Reset button text
+        if(sentinelElement) sentinelElement.style.display = 'none';
       }
     }
 
     function loadMoreItems() {
+      const sentinelElement = document.getElementById('sentinel');
       if (isLoadingBatch || itemsCurrentlyRenderedCount >= sortedMasterList.length) {
         if (itemsCurrentlyRenderedCount >= sortedMasterList.length) {
-            console.log("All items from sorted list have been rendered.");
             if (intersectionObserver) intersectionObserver.disconnect();
-            document.getElementById('sentinel').style.display = 'none';
+            if(sentinelElement) sentinelElement.style.display = 'none';
         }
         return;
       }
       isLoadingBatch = true;
-      console.log(`Loading next batch. Currently rendered: ${itemsCurrentlyRenderedCount}`);
 
       const gallery = document.getElementById('gallery');
       const batch = sortedMasterList.slice(itemsCurrentlyRenderedCount, itemsCurrentlyRenderedCount + BATCH_SIZE);
@@ -188,16 +195,11 @@
       });
 
       itemsCurrentlyRenderedCount += batch.length;
-      console.log(`Batch rendered. Total items now: ${itemsCurrentlyRenderedCount}/${sortedMasterList.length}`);
       isLoadingBatch = false;
 
-      // If all items are loaded, disconnect observer and hide sentinel
       if (itemsCurrentlyRenderedCount >= sortedMasterList.length) {
-        console.log("All items loaded after this batch.");
-        if (intersectionObserver) {
-          intersectionObserver.disconnect();
-        }
-        document.getElementById('sentinel').style.display = 'none';
+        if (intersectionObserver) intersectionObserver.disconnect();
+        if(sentinelElement) sentinelElement.style.display = 'none';
       }
     }
 
@@ -207,44 +209,42 @@
       }
       
       const sentinel = document.getElementById('sentinel');
-      if (!sentinel) {
-          console.error("Sentinel for IntersectionObserver not found!");
-          return;
-      }
-      // Ensure sentinel is visible if there are more items to load
+      if (!sentinel) return;
+
       if (itemsCurrentlyRenderedCount < sortedMasterList.length) {
           sentinel.style.display = 'block';
       } else {
           sentinel.style.display = 'none';
-          return; // No need to observe if all items are already shown
+          return; 
       }
-
-      const options = {
-        root: null, // viewport
-        rootMargin: '0px',
-        threshold: 0.1 // 10% of sentinel visible
-      };
 
       intersectionObserver = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
-          console.log("Sentinel in view, attempting to load more items.");
           loadMoreItems();
         }
-      }, options);
+      }, { root: null, rootMargin: '0px', threshold: 0.1 });
       
       intersectionObserver.observe(sentinel);
     }
 
     function sortAndRender() {
-      document.getElementById('sort-label').innerText = sortModes[currentSort];
-      const gallery = document.getElementById('gallery');
+      const sortLabelElement = document.getElementById('sort-label');
+      const sortDropdownButton = document.getElementById('sortDropdown');
+      const galleryElement = document.getElementById('gallery');
+      const sentinelElement = document.getElementById('sentinel');
 
       if (!originalItems || originalItems.length === 0) {
-        gallery.innerHTML = '<p>No items to display.</p>';
-        document.getElementById('sentinel').style.display = 'none';
+        sortLabelElement.innerText = "No items to display";
+        sortDropdownButton.innerText = "Sort"; // Reset button
+        galleryElement.innerHTML = '<p>No items to display.</p>';
+        if(sentinelElement) sentinelElement.style.display = 'none';
         if (intersectionObserver) intersectionObserver.disconnect();
         return;
       }
+
+      // Update labels with active sort mode
+      sortLabelElement.innerText = sortModes[currentSort];
+      sortDropdownButton.innerText = sortButtonLabels[currentSort]; // Update button text
 
       if (currentSort === 0) {
         sortedMasterList = [...originalItems];
@@ -254,23 +254,21 @@
         sortedMasterList = [...originalItems].sort(() => Math.random() - 0.5);
       }
       
-      gallery.innerHTML = ''; // Clear previous items
+      galleryElement.innerHTML = ''; 
       itemsCurrentlyRenderedCount = 0;
       isLoadingBatch = false;
-      console.log(`Gallery sorted. Mode: ${sortModes[currentSort]}. Total items in list: ${sortedMasterList.length}`);
 
       if (sortedMasterList.length > 0) {
-        loadMoreItems(); // Load the first batch
+        loadMoreItems(); 
         if (itemsCurrentlyRenderedCount < sortedMasterList.length) {
-          setupIntersectionObserver(); // Setup observer if more items might exist
+          setupIntersectionObserver(); 
         } else {
-          // All items were rendered in the first batch
-          document.getElementById('sentinel').style.display = 'none';
+          if(sentinelElement) sentinelElement.style.display = 'none';
           if (intersectionObserver) intersectionObserver.disconnect();
         }
       } else {
-        gallery.innerHTML = '<p>No items to display for this sort.</p>';
-        document.getElementById('sentinel').style.display = 'none';
+        galleryElement.innerHTML = '<p>No items to display for this sort.</p>';
+        if(sentinelElement) sentinelElement.style.display = 'none';
         if (intersectionObserver) intersectionObserver.disconnect();
       }
     }

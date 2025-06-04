@@ -131,19 +131,36 @@
     let isLoadingBatch = false;
 
     function createImageCardElement(item) {
-      const indexMatch = item.img.match(/(\d+)\.png$/);
-      const number = indexMatch ? parseInt(indexMatch[1], 10) : '?';
-      
-      const div = document.createElement('div');
-      div.className = 'image-card';
-      div.innerHTML = `
-        <span class="badge-number">${number}</span>
-        <a href="${item.url}" target="_blank">
-          <img src="${item.img}" alt="Image #${number}" loading="lazy">
-        </a>
-      `;
-      return div;
-    }
+  // Defensive check for item and item.img
+  if (!item || typeof item.img !== 'string') {
+    console.warn('CreateImageCardElement: Problematic item or item.img is not a string:', item);
+    const div = document.createElement('div');
+    div.className = 'image-card';
+    // Display a clear message or a placeholder for broken items
+    div.innerHTML = `<div style="padding: 10px; text-align: center; color: red;">Error: Invalid image data for this item.</div>`;
+    return div;
+  }
+
+  // Updated regex to match common image extensions: png, jpg, jpeg, webp, gif
+  // It captures the number (\d+) before the dot and extension.
+  const indexMatch = item.img.match(/(\d+)\.(png|jpe?g|webp|gif)$/i); 
+  const number = indexMatch ? parseInt(indexMatch[1], 10) : '?';
+
+  if (number === '?') {
+    // This log will help you identify any item.img strings that *still* don't match
+    console.log(`Badge is '?' for item.img: "${item.img}" (Item data: ${JSON.stringify(item)})`);
+  }
+  
+  const div = document.createElement('div');
+  div.className = 'image-card';
+  div.innerHTML = `
+    <span class="badge-number">${number}</span>
+    <a href="${item.url}" target="_blank">
+      <img src="${item.img}" alt="Image #${number}" loading="lazy">
+    </a>
+  `;
+  return div;
+}
 
     async function loadItems() {
       const sortDropdownButton = document.getElementById('sortDropdown');

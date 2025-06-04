@@ -14,7 +14,9 @@
       background-color: #f8f9fa;
     }
     .header-section {
+
         margin-bottom: 0;
+
     }
     .gallery-grid {
       display: grid;
@@ -41,10 +43,10 @@
       position: absolute;
       top: 8px;
       left: 8px;
-      background: rgba(0,0,0,0.75);
+      background: rgba(36, 63, 63,0.75);
       color: #fff;
-      padding: 2px 6px;
-      font-size: 0.75rem;
+      padding: 1px 4px;
+      font-size: 0.5rem;
       border-radius: 4px;
     }
     .sort-bar {
@@ -63,6 +65,11 @@
         .container, .container-lg, .container-md, .container-sm, .container-xl {
             max-width: 100%;
             padding: 0 1.5rem;
+        }
+    }
+    @media (max-width: 424px) {
+        .gallery-grid {
+            grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
         }
     }
   </style>
@@ -84,7 +91,7 @@
     <h5 id="sort-label" class="mb-0">Top Rated</h5>
     <div class="dropdown">
       <button class="btn btn-outline-primary dropdown-toggle" type="button" id="sortDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Sort
+        Change Sort
       </button>
       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="sortDropdown">
         <a class="dropdown-item" href="#" onclick="setSort(0)">Top Rated</a>
@@ -96,59 +103,68 @@
 
   <div class="container">
     <div class="gallery-grid" id="gallery"></div>
+    <div class="text-center my-3">
+      <button id="loadMore" class="btn btn-secondary">Load More</button>
+    </div>
   </div>
 
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    const sortModes = ["Top Rated", "Least Rated", "Random"];
+    const sortModes = ["Sorted by most reviews", "Sorted by least reviews", "The top reviewed designs sorted randomly"];
     let currentSort = 0;
-    let originalItems = [];
+    let allItems = [];
+    let visibleCount = 0;
+    const batchSize = 100;
 
     async function loadItems() {
       const res = await fetch('items.json');
-      originalItems = await res.json();
-      sortAndRender();
+      allItems = await res.json();
+      applySort();
     }
 
-    function render(items) {
+    function renderNextBatch() {
       const gallery = document.getElementById('gallery');
-      gallery.innerHTML = '';
-      items.forEach((item) => {
-        const indexMatch = item.img.match(/(\d+)\.png$/);
-        const number = indexMatch ? parseInt(indexMatch[1], 10) : '?';
+      const nextItems = allItems.slice(visibleCount, visibleCount + batchSize);
+      nextItems.forEach((item, i) => {
         const div = document.createElement('div');
         div.className = 'image-card';
         div.innerHTML = `
-          <span class="badge-number">${number}</span>
+          <span class="badge-number">${visibleCount + i + 1}</span>
           <a href="${item.url}" target="_blank">
-            <img src="${item.img}" alt="Image #${number}">
+            <img src="${item.img}" alt="Image #${visibleCount + i + 1}">
           </a>
         `;
         gallery.appendChild(div);
       });
-    }
-
-    function sortAndRender() {
-      document.getElementById('sort-label').innerText = sortModes[currentSort];
-      let sorted;
-      if (currentSort === 0) {
-        sorted = [...originalItems];
-      } else if (currentSort === 1) {
-        sorted = [...originalItems].reverse();
-      } else {
-        sorted = [...originalItems].sort(() => Math.random() - 0.5);
+      visibleCount += batchSize;
+      if (visibleCount >= allItems.length) {
+        document.getElementById('loadMore').style.display = 'none';
       }
-      render(sorted);
     }
 
-    function setSort(modeIndex) {
-      currentSort = modeIndex;
-      sortAndRender();
+    function applySort() {
+      document.getElementById('sort-label').innerText = sortModes[currentSort];
+      if (currentSort === 0) {
+        allItems.sort((a, b) => a.img.localeCompare(b.img));
+      } else if (currentSort === 1) {
+        allItems.sort((a, b) => b.img.localeCompare(a.img));
+      } else {
+        allItems = allItems.sort(() => Math.random() - 0.5);
+      }
+      visibleCount = 0;
+      document.getElementById('gallery').innerHTML = '';
+      document.getElementById('loadMore').style.display = 'block';
+      renderNextBatch();
     }
 
+    function setSort(index) {
+      currentSort = index;
+      applySort();
+    }
+
+    document.getElementById('loadMore').addEventListener('click', renderNextBatch);
     loadItems();
   </script>
-
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

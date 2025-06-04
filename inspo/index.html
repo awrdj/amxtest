@@ -20,7 +20,6 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 1rem;
-      /*padding: 1rem;*/
     }
     .image-card {
       position: relative;
@@ -70,6 +69,10 @@
             grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
         }
     }
+    #sentinel {
+        height: 40px; /* Visible area for observer to trigger */
+        width: 100%;
+    }
   </style>
 </head>
 <body>
@@ -102,116 +105,174 @@
   <div class="container">
     <div class="gallery-grid" id="gallery">
       </div>
-  </div>
+    <div id="sentinel"></div> </div>
 
   <script>
     const sortModes = ["Sorted by most reviews", "Sorted by least reviews", "The top reviewed designs sorted randomly"];
-    let currentSort = 0; // Default sort mode: Top Rated (original order from JSON)
-    let originalItems = [];
+    let currentSort = 0;
+    let originalItems = []; // Holds all items from JSON
+    
+    let sortedMasterList = []; // Holds the currently sorted full list of items
+    let itemsCurrentlyRenderedCount = 0;
+    const BATCH_SIZE = 50;
+    let intersectionObserver;
+    let isLoadingBatch = false;
+
+    // Helper function to create a single image card element
+    function createImageCardElement(item) {
+      const indexMatch = item.img.match(/(\d+)\.png$/);
+      const number = indexMatch ? parseInt(indexMatch[1], 10) : '?';
+      
+      const div = document.createElement('div');
+      div.className = 'image-card';
+      div.innerHTML = `
+        <span class="badge-number">${number}</span>
+        <a href="${item.url}" target="_blank">
+          <img src="${item.img}" alt="Image #${number}" loading="lazy">
+        </a>
+      `;
+      return div;
+    }
 
     async function loadItems() {
       try {
         console.log("Fetching items.json...");
-        const res = await fetch('items.json'); // Ensure items.json is in the same directory or path is correct
-        console.log("Fetch response status:", res.status, res.statusText);
-
+        const res = await fetch('items.json');
         if (!res.ok) {
-          console.error("Failed to fetch items.json. Status:", res.status);
+          console.error("Failed to fetch items.json. Status:", res.status, res.statusText);
           const errorText = await res.text();
           console.error("Raw error response:", errorText);
-          originalItems = [];
-          document.getElementById('gallery').innerHTML = `<p>Error loading item data (status: ${res.status}). Please check console.</p>`;
+          document.getElementById('gallery').innerHTML = `<p>Error loading item data (status: ${res.status}).</p>`;
           document.getElementById('sort-label').innerText = "Failed to load items";
+          document.getElementById('sentinel').style.display = 'none';
           return;
         }
-
         const rawText = await res.text();
-        console.log(`items.json raw text received. Length: ${rawText.length} characters.`);
-        
         originalItems = JSON.parse(rawText);
-        console.log("Successfully parsed items.json. Number of items loaded:", originalItems.length);
-
-        if (originalItems.length === 0 && rawText.length > 100) {
-            console.error("Parsed to 0 items, but raw text was not empty. Check JSON validity thoroughly!");
+        console.log("Successfully parsed items.json. Total items:", originalItems.length);
+        
+        if (originalItems.length === 0) {
+            document.getElementById('gallery').innerHTML = '<p>No items found in the data source.</p>';
+            document.getElementById('sort-label').innerText = "No items to display";
+            document.getElementById('sentinel').style.display = 'none';
+            return;
         }
         
-        sortAndRender(); // Initial render with default sort
-
+        sortAndRender(); // Initial sort and render
       } catch (error) {
-        console.error("Error in loadItems function (fetching or parsing items.json):", error);
-        originalItems = [];
-        document.getElementById('gallery').innerHTML = '<p>An error occurred while loading items. Please check the console for details.</p>';
-        document.getElementById('sort-label').innerText = "Failed to load items";
+        console.error("Error in loadItems (fetching/parsing):", error);
+        document.getElementById('gallery').innerHTML = '<p>An error occurred loading items.</p>';
+        document.getElementById('sort-label').innerText = "Error loading items";
+        document.getElementById('sentinel').style.display = 'none';
       }
     }
 
-    function render(items) {
-      const gallery = document.getElementById('gallery');
-      gallery.innerHTML = ''; // Clear previous items
-      console.log("Rendering items. Number of items to render:", items.length);
-
-      if (!items || items.length === 0) {
-        if (originalItems.length > 0) {
-            console.warn("Render function received 0 items to display, but originalItems has data. This might happen if sorting resulted in an empty list, or items array was accidentally emptied.");
-        } else {
-            console.log("Render function received 0 items and originalItems is also empty (or load failed).");
-            // Potentially display a "No items found" message if not an error state
-            if (!document.getElementById('gallery').innerHTML.includes("Error") && !document.getElementById('gallery').innerHTML.includes("Failed")) {
-                 gallery.innerHTML = '<p>No items to display.</p>';
-            }
+    function loadMoreItems() {
+      if (isLoadingBatch || itemsCurrentlyRenderedCount >= sortedMasterList.length) {
+        if (itemsCurrentlyRenderedCount >= sortedMasterList.length) {
+            console.log("All items from sorted list have been rendered.");
+            if (intersectionObserver) intersectionObserver.disconnect();
+            document.getElementById('sentinel').style.display = 'none';
         }
         return;
       }
+      isLoadingBatch = true;
+      console.log(`Loading next batch. Currently rendered: ${itemsCurrentlyRenderedCount}`);
 
-      items.forEach((item, idx) => {
-        if (!item || typeof item.img !== 'string' || typeof item.url !== 'string') {
-          console.warn(`Skipping invalid item at index ${idx}:`, item);
-          return; // Skip this item if it's malformed
-        }
-        const indexMatch = item.img.match(/(\d+)\.png$/);
-        // Use the number from the image filename for the badge. Fallback to index+1 if regex fails or not present.
-        const number = indexMatch ? parseInt(indexMatch[1], 10) : (idx + 1); 
-        
-        const div = document.createElement('div');
-        div.className = 'image-card';
-        div.innerHTML = `
-          <span class="badge-number">${number}</span>
-          <a href="${item.url}" target="_blank">
-            <img src="${item.img}" alt="Image #${number}" loading="lazy"> {/* Added loading="lazy" */}
-          </a>
-        `;
-        gallery.appendChild(div);
+      const gallery = document.getElementById('gallery');
+      const batch = sortedMasterList.slice(itemsCurrentlyRenderedCount, itemsCurrentlyRenderedCount + BATCH_SIZE);
+      
+      batch.forEach(item => {
+        const cardElement = createImageCardElement(item);
+        gallery.appendChild(cardElement);
       });
-      console.log("Rendering complete.");
+
+      itemsCurrentlyRenderedCount += batch.length;
+      console.log(`Batch rendered. Total items now: ${itemsCurrentlyRenderedCount}/${sortedMasterList.length}`);
+      isLoadingBatch = false;
+
+      // If all items are loaded, disconnect observer and hide sentinel
+      if (itemsCurrentlyRenderedCount >= sortedMasterList.length) {
+        console.log("All items loaded after this batch.");
+        if (intersectionObserver) {
+          intersectionObserver.disconnect();
+        }
+        document.getElementById('sentinel').style.display = 'none';
+      }
+    }
+
+    function setupIntersectionObserver() {
+      if (intersectionObserver) {
+        intersectionObserver.disconnect();
+      }
+      
+      const sentinel = document.getElementById('sentinel');
+      if (!sentinel) {
+          console.error("Sentinel for IntersectionObserver not found!");
+          return;
+      }
+      // Ensure sentinel is visible if there are more items to load
+      if (itemsCurrentlyRenderedCount < sortedMasterList.length) {
+          sentinel.style.display = 'block';
+      } else {
+          sentinel.style.display = 'none';
+          return; // No need to observe if all items are already shown
+      }
+
+      const options = {
+        root: null, // viewport
+        rootMargin: '0px',
+        threshold: 0.1 // 10% of sentinel visible
+      };
+
+      intersectionObserver = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          console.log("Sentinel in view, attempting to load more items.");
+          loadMoreItems();
+        }
+      }, options);
+      
+      intersectionObserver.observe(sentinel);
     }
 
     function sortAndRender() {
+      document.getElementById('sort-label').innerText = sortModes[currentSort];
+      const gallery = document.getElementById('gallery');
+
       if (!originalItems || originalItems.length === 0) {
-        console.log("sortAndRender called, but originalItems is empty. No items to sort or render.");
-         // Update sort label if items haven't loaded or list is empty
-        if (document.getElementById('gallery').innerHTML.includes("Error") || 
-            document.getElementById('gallery').innerHTML.includes("Failed") ||
-            document.getElementById('gallery').innerHTML.includes("No items to display")) {
-            // Keep existing message from render/loadItems
-        } else {
-            document.getElementById('sort-label').innerText = "No items to display";
-        }
-        render([]); // Ensure gallery is cleared or shows "No items"
+        gallery.innerHTML = '<p>No items to display.</p>';
+        document.getElementById('sentinel').style.display = 'none';
+        if (intersectionObserver) intersectionObserver.disconnect();
         return;
       }
 
-      document.getElementById('sort-label').innerText = sortModes[currentSort];
-      let sortedItems;
-      if (currentSort === 0) { // Top Rated (original order)
-        sortedItems = [...originalItems];
-      } else if (currentSort === 1) { // Least Rated (reverse of original order)
-        sortedItems = [...originalItems].reverse();
-      } else { // Random
-        // Create a copy before shuffling to not alter originalItems if it's used directly elsewhere
-        sortedItems = [...originalItems].sort(() => Math.random() - 0.5);
+      if (currentSort === 0) {
+        sortedMasterList = [...originalItems];
+      } else if (currentSort === 1) {
+        sortedMasterList = [...originalItems].reverse();
+      } else {
+        sortedMasterList = [...originalItems].sort(() => Math.random() - 0.5);
       }
-      console.log(`Sorting complete. Mode: ${sortModes[currentSort]}. Number of items to render: ${sortedItems.length}`);
-      render(sortedItems);
+      
+      gallery.innerHTML = ''; // Clear previous items
+      itemsCurrentlyRenderedCount = 0;
+      isLoadingBatch = false;
+      console.log(`Gallery sorted. Mode: ${sortModes[currentSort]}. Total items in list: ${sortedMasterList.length}`);
+
+      if (sortedMasterList.length > 0) {
+        loadMoreItems(); // Load the first batch
+        if (itemsCurrentlyRenderedCount < sortedMasterList.length) {
+          setupIntersectionObserver(); // Setup observer if more items might exist
+        } else {
+          // All items were rendered in the first batch
+          document.getElementById('sentinel').style.display = 'none';
+          if (intersectionObserver) intersectionObserver.disconnect();
+        }
+      } else {
+        gallery.innerHTML = '<p>No items to display for this sort.</p>';
+        document.getElementById('sentinel').style.display = 'none';
+        if (intersectionObserver) intersectionObserver.disconnect();
+      }
     }
 
     function setSort(modeIndex) {
@@ -219,7 +280,6 @@
       sortAndRender();
     }
 
-    // Load items when the script runs
     loadItems();
   </script>
 

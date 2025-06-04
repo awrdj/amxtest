@@ -14,9 +14,7 @@
       background-color: #f8f9fa;
     }
     .header-section {
-
         margin-bottom: 0;
-
     }
     .gallery-grid {
       display: grid;
@@ -116,54 +114,72 @@
     let allItems = [];
     let visibleItems = [];
     let visibleCount = 0;
-    const batchSize = 100;
+    const batchSize = 100; // You can adjust this batch size
 
     async function loadItems() {
-      const res = await fetch('items.json');
-      allItems = await res.json();
-      applySort();
+      try {
+        const res = await fetch('items.json');
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        allItems = await res.json();
+        applySort();
+      } catch (error) {
+        console.error("Could not load items.json:", error);
+        // Optionally, display an error message to the user in the gallery
+        document.getElementById('gallery').innerHTML = '<p class="text-danger text-center">Failed to load gallery items. Please try again later.</p>';
+        document.getElementById('loadMore').style.display = 'none';
+      }
     }
 
     function renderNextBatch() {
       const gallery = document.getElementById('gallery');
       const nextItems = visibleItems.slice(visibleCount, visibleCount + batchSize);
+
       for (let i = 0; i < nextItems.length; i++) {
         const item = nextItems[i];
-        const globalIndex = visibleCount + i + 1;
+        const globalIndex = allItems.findIndex(originalItem => originalItem.img === item.img) + 1; // Get original index if needed, otherwise can use a simpler counter
         const div = document.createElement('div');
         div.className = 'image-card';
         div.innerHTML = `
           <span class="badge-number">#${globalIndex}</span>
           <a href="${item.url}" target="_blank">
-            <img src="${item.img}" alt="Image #${globalIndex}">
+            <img src="${item.img}" alt="Image #${globalIndex}" loading="lazy" width="180" height="180"> {/* Added loading="lazy" and optional width/height */}
           </a>
         `;
+        // It's good practice to set width and height attributes for images if known,
+        // to prevent layout shifts, especially with lazy loading.
+        // You might need to adjust these values or fetch them from your items.json if they vary.
         gallery.appendChild(div);
       }
       visibleCount += nextItems.length;
       if (visibleCount >= visibleItems.length) {
         document.getElementById('loadMore').style.display = 'none';
+      } else {
+        document.getElementById('loadMore').style.display = 'block'; // Ensure it's shown if there are more items
       }
     }
 
     function applySort() {
       document.getElementById('sort-label').innerText = sortModes[currentSort];
-      if (currentSort === 0) {
+      if (currentSort === 0) { // Top Rated (assuming filenames are sortable e.g., 001.jpg, 002.jpg)
         visibleItems = [...allItems].sort((a, b) => a.img.localeCompare(b.img));
-      } else if (currentSort === 1) {
+      } else if (currentSort === 1) { // Least Rated
         visibleItems = [...allItems].sort((a, b) => b.img.localeCompare(a.img));
-      } else {
+      } else { // Random
         visibleItems = [...allItems].sort(() => Math.random() - 0.5);
       }
       visibleCount = 0;
-      document.getElementById('gallery').innerHTML = '';
-      document.getElementById('loadMore').style.display = 'block';
+      document.getElementById('gallery').innerHTML = ''; // Clear previous items
+      document.getElementById('loadMore').style.display = 'block'; // Show load more button initially
       renderNextBatch();
     }
 
     function setSort(index) {
-      currentSort = index;
-      applySort();
+      if (index !== currentSort || sortModes[index] === "Random") { // Re-sort if different or if Random is clicked again
+        currentSort = index;
+        applySort();
+      }
     }
 
     document.getElementById('loadMore').addEventListener('click', renderNextBatch);

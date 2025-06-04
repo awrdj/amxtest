@@ -20,7 +20,6 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 1rem;
-      /*padding: 1rem;*/
     }
     .image-card {
       position: relative;
@@ -28,13 +27,16 @@
       border-radius: 8px;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
       transition: transform 0.2s;
+      /* Crucial for reserving space if images have a consistent aspect ratio */
+      /* E.g., for square images: aspect-ratio: 1 / 1; */
     }
     .image-card:hover {
       transform: scale(1.03);
     }
     .image-card img {
       width: 100%;
-      height: auto;
+      height: 100%; /* Changed from auto to 100% for aspect-ratio consistency if container has it */
+      object-fit: cover; /* Ensures image covers the area without distortion */
       display: block;
     }
     .badge-number {
@@ -46,6 +48,7 @@
       padding: 1px 4px;
       font-size: 0.5rem;
       border-radius: 4px;
+      z-index: 1;
     }
     .sort-bar {
       display: flex;
@@ -100,9 +103,10 @@
   </div>
 
   <div class="container">
-    <div class="gallery-grid" id="gallery"></div>
+    <div class="gallery-grid" id="gallery">
+        </div>
     <div class="text-center my-3">
-      <button id="loadMore" class="btn btn-secondary">Load More</button>
+      <button id="loadMore" class="btn btn-secondary" style="display: none;">Load More</button>
     </div>
   </div>
 
@@ -111,79 +115,116 @@
   <script>
     const sortModes = ["Top Rated", "Least Rated", "Random"];
     let currentSort = 0;
-    let allItems = [];
-    let visibleItems = [];
-    let visibleCount = 0;
-    const batchSize = 100; // You can adjust this batch size
+    let allItems = [];      // Stores all items from items.json
+    let visibleItems = [];  // Stores currently sorted items
+    let renderedCount = 0;  // How many items from visibleItems are currently rendered
+    const batchSize = 100;   // Number of items to load per batch
 
-    async function loadItems() {
+    async function loadInitialItems() {
       try {
-        const res = await fetch('items.json');
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
+        const response = await fetch('items.json'); // Make sure items.json is in the same folder or path is correct
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status} while fetching items.json`);
         }
-        allItems = await res.json();
-        applySort();
+        allItems = await response.json();
+        if (!Array.isArray(allItems)) {
+            console.error("items.json did not return an array. Data:", allItems);
+            allItems = []; // Prevent further errors
+            throw new Error("Data from items.json is not an array.");
+        }
+        applySortAndRender();
       } catch (error) {
-        console.error("Could not load items.json:", error);
-        // Optionally, display an error message to the user in the gallery
-        document.getElementById('gallery').innerHTML = '<p class="text-danger text-center">Failed to load gallery items. Please try again later.</p>';
+        console.error("Failed to load or parse items.json:", error);
+        document.getElementById('gallery').innerHTML = '<p class="text-danger text-center">Error loading gallery items. Please check console for details.</p>';
         document.getElementById('loadMore').style.display = 'none';
       }
     }
 
-    function renderNextBatch() {
+    function renderBatch() {
       const gallery = document.getElementById('gallery');
-      const nextItems = visibleItems.slice(visibleCount, visibleCount + batchSize);
+      const itemsToRender = visibleItems.slice(renderedCount, renderedCount + batchSize);
 
-      for (let i = 0; i < nextItems.length; i++) {
-        const item = nextItems[i];
-        const globalIndex = allItems.findIndex(originalItem => originalItem.img === item.img) + 1; // Get original index if needed, otherwise can use a simpler counter
+      if (itemsToRender.length === 0 && renderedCount === 0) {
+        // This case means visibleItems is empty or something went wrong before rendering the first batch
+        document.getElementById('loadMore').style.display = 'none';
+        if(allItems.length > 0 && visibleItems.length === 0) { // Data loaded but sorting yielded empty results?
+            gallery.innerHTML = '<p class="text-center">No items to display for the current sort.</p>';
+        }
+        return;
+      }
+
+      itemsToRender.forEach((item, indexInBatch) => {
+        // The badge number will be its position in the currently sorted and displayed list
+        const itemNumberInSortedList = renderedCount + indexInBatch + 1;
         const div = document.createElement('div');
         div.className = 'image-card';
+
+        // Set a placeholder aspect ratio for the card to prevent layout shift
+        // If your images are mostly square, 1/1. If mostly 4:3, then 4/3.
+        // This can also be done with CSS on .image-card directly.
+        // div.style.aspectRatio = '1 / 1'; // Example for square
+
         div.innerHTML = `
-          <span class="badge-number">#${globalIndex}</span>
+          <span class="badge-number">#${itemNumberInSortedList}</span>
           <a href="${item.url}" target="_blank">
-            <img src="${item.img}" alt="Image #${globalIndex}" loading="lazy" width="180" height="180"> {/* Added loading="lazy" and optional width/height */}
+            <img src="${item.img}" alt="Gallery image ${itemNumberInSortedList}" loading="lazy" width="180" height="180">
           </a>
         `;
-        // It's good practice to set width and height attributes for images if known,
-        // to prevent layout shifts, especially with lazy loading.
-        // You might need to adjust these values or fetch them from your items.json if they vary.
+        // The width and height attributes on <img> help the browser reserve space if known.
+        // If images are not 180x180, this might cause stretching IF CSS doesn't override.
+        // The CSS object-fit: cover on .image-card img will help.
         gallery.appendChild(div);
-      }
-      visibleCount += nextItems.length;
-      if (visibleCount >= visibleItems.length) {
+      });
+
+      renderedCount += itemsToRender.length;
+
+      if (renderedCount >= visibleItems.length) {
         document.getElementById('loadMore').style.display = 'none';
       } else {
-        document.getElementById('loadMore').style.display = 'block'; // Ensure it's shown if there are more items
+        document.getElementById('loadMore').style.display = 'block';
       }
     }
 
-    function applySort() {
+    function applySortAndRender() {
       document.getElementById('sort-label').innerText = sortModes[currentSort];
-      if (currentSort === 0) { // Top Rated (assuming filenames are sortable e.g., 001.jpg, 002.jpg)
-        visibleItems = [...allItems].sort((a, b) => a.img.localeCompare(b.img));
-      } else if (currentSort === 1) { // Least Rated
-        visibleItems = [...allItems].sort((a, b) => b.img.localeCompare(a.img));
+      
+      // Create a mutable copy for sorting
+      let itemsToSort = [...allItems];
+
+      if (currentSort === 0) { // Top Rated (filename ascending)
+        visibleItems = itemsToSort.sort((a, b) => String(a.img).localeCompare(String(b.img)));
+      } else if (currentSort === 1) { // Least Rated (filename descending)
+        visibleItems = itemsToSort.sort((a, b) => String(b.img).localeCompare(String(a.img)));
       } else { // Random
-        visibleItems = [...allItems].sort(() => Math.random() - 0.5);
+        visibleItems = itemsToSort.sort(() => Math.random() - 0.5);
       }
-      visibleCount = 0;
+
+      renderedCount = 0;
       document.getElementById('gallery').innerHTML = ''; // Clear previous items
-      document.getElementById('loadMore').style.display = 'block'; // Show load more button initially
-      renderNextBatch();
+      
+      if (visibleItems.length === 0 && allItems.length > 0) {
+        document.getElementById('gallery').innerHTML = '<p class="text-center">No items to display for this sort criteria.</p>';
+        document.getElementById('loadMore').style.display = 'none';
+      } else if (visibleItems.length === 0 && allItems.length === 0) {
+        // This case is handled by the fetch error or initial load.
+        // If items.json was empty, this will be the state.
+        document.getElementById('gallery').innerHTML = '<p class="text-center">No items available in the gallery.</p>';
+        document.getElementById('loadMore').style.display = 'none';
+      } else {
+         renderBatch(); // Render the first batch of the newly sorted items
+      }
     }
 
     function setSort(index) {
-      if (index !== currentSort || sortModes[index] === "Random") { // Re-sort if different or if Random is clicked again
-        currentSort = index;
-        applySort();
-      }
+      // Allow re-sorting even if the same sort type is chosen (especially for "Random")
+      currentSort = index;
+      applySortAndRender();
     }
 
-    document.getElementById('loadMore').addEventListener('click', renderNextBatch);
-    loadItems();
+    document.getElementById('loadMore').addEventListener('click', renderBatch);
+    
+    // Initialize
+    loadInitialItems();
   </script>
 </body>
 </html>

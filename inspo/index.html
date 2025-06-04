@@ -50,12 +50,12 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.5rem 1rem;
+      padding: 0.5rem 1.5rem;
       margin-bottom: 1rem;
       background: #ffffff;
       border-bottom: 1px solid #ddd;
     }
-    .sort-bar h5 {
+    .sort-bar h6 {
       margin: 0;
     }
     @media (min-width: 0px) {
@@ -89,10 +89,10 @@
   </div>
 
   <div class="sort-bar">
-    <h5 id="sort-label" class="mb-0">Top Rated</h5> {/* This will be updated by JS */}
+    <h6 id="sort-label" class="mb-0">Top Rated</h6>
     <div class="dropdown">
       <button class="btn btn-outline-primary dropdown-toggle" type="button" id="sortDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Sort {/* This will be updated by JS */}
+        Sort
       </button>
       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="sortDropdown">
         <a class="dropdown-item" href="#" onclick="setSort(0)">Top Rated</a>

@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'com': [
             'tshirt', 'premtshirt', 'tanktop', 'longsleeve', 'raglan', 'sweatshirt', 
             'hoodie', 'ziphoodie', 'popsocket', 'case', 'totebag', 'throwpillow', 
-            'tumbler', 'KDP', 'custom'
+            'tumbler', 'coffeemug', 'KDP', 'custom'
         ],
         'co.uk': [
             'tshirt', 'tanktop', 'longsleeve', 'raglan', 'sweatshirt', 
@@ -74,6 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'totebag': 'Tote bag',
         'throwpillow': 'Throw pillows',
         'tumbler': 'Tumbler',
+        'coffeemug': 'Coffee Mug',
         'KDP': 'KDP',
         'custom': 'None'
     };
@@ -178,6 +179,7 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
                     'totebag': { customHiddenKeywords: '"Tote Bag" Made of a lightweight, spun polyester canvas-like fabric. All seams and stress points are double-stitched for durability, and the reinforced bottom flattens to fit more items and hold larger objects.' },
                     'throwpillow': { customHiddenKeywords: '"Throw Pillow" Filled with 100% polyester and sewn closed' },
                     'tumbler': { customHiddenKeywords: '"Tumbler" "Merch on Demand"' },
+                    'coffeemug': { customHiddenKeywords: '"Ceramic Mug" "Merch on Demand"' },
                     'KDP': { customHiddenKeywords: '"independently published"' }
                 }
               }
@@ -318,6 +320,7 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
                     'totebag': '"Tote+Bag"+Made+of+a+lightweight%2C+spun+polyester+canvas-like+fabric.+All+seams+and+stress+points+are+double-stitched+for+durability%2C+and+the+reinforced+bottom+flattens+to+fit+more+items+and+hold+larger+objects.',
                     'throwpillow': '"Throw+Pillow"+Filled+with+100%25+polyester+and+sewn+closed',
                     'tumbler': '"Tumbler"+"Merch+on+Demand"',
+                    'coffeemug': '"Ceramic Mug"+"Merch+on+Demand"',
                     'KDP': '"independently+published"'
                 },
                 // Sort orders for USA
@@ -459,7 +462,8 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
                 'case': 'mobile',
                 'totebag': 'fashion',
                 'throwpillow': 'garden',
-                'tumbler': 'garden'
+                'tumbler': 'garden',
+                'coffeemug': 'garden'
                 },
                 departmentToProductType: {
                     'stripbooks': 'KDP'

@@ -76,6 +76,15 @@
         <!-- Filters -->
         <div class="filters-container">
             <div class="filter-box">
+                <div class="filter-title">Presets</div>
+                <select id="presetsSelect" class="form-control">
+                    <option value="">No Preset</option>
+                    <option value="newest_bestselling_physical">Newest Best-selling (Physical)</option>
+                    <option value="newest_bestselling_digital">Newest Best-selling (Digital)</option>
+                </select>
+            </div>
+
+            <div class="filter-box">
                 <div class="filter-title">Sort Order</div>
                 <select id="sortOrder" class="form-control">
                     <option value="most_relevant">Most Relevant</option>
@@ -101,6 +110,10 @@
             <div class="filter-box">
                 <div class="filter-title">Item Type</div>
                 <div class="checkbox-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="physicalItems">
+                        <label class="form-check-label" for="physicalItems">Physical Items</label>
+                    </div>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="instantDownload">
                         <label class="form-check-label" for="instantDownload">Digital Downloads</label>
@@ -136,6 +149,24 @@
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="bestSeller">
                         <label class="form-check-label" for="bestSeller">Best Seller (Hidden Filter)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-box">
+                <div class="filter-title">Content Filter</div>
+                <div class="checkbox-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="explicitFilter" id="explicitAuto" value="auto" checked>
+                        <label class="form-check-label" for="explicitAuto">Auto (No Filter)</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="explicitFilter" id="explicitSafe" value="0">
+                        <label class="form-check-label" for="explicitSafe">Safe Content Only</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="explicitFilter" id="explicitAll" value="1">
+                        <label class="form-check-label" for="explicitAll">All Content</label>
                     </div>
                 </div>
             </div>

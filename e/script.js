@@ -24,25 +24,55 @@ document.addEventListener('DOMContentLoaded', function() {
         generateEtsyUrl();
     });
 
+    // Function to reset all filters to default
+    function resetAllFilters() {
+        // Reset shipping selects
+        document.getElementById('shipToSelect').value = '';
+        document.getElementById('locationQuerySelect').value = '';
+        
+        // Reset sort order
+        document.getElementById('sortOrder').value = 'most_relevant';
+        
+        // Reset price range
+        document.getElementById('minPrice').value = '';
+        document.getElementById('maxPrice').value = '';
+        
+        // Uncheck all checkboxes
+        document.getElementById('physicalItems').checked = false;
+        document.getElementById('instantDownload').checked = false;
+        document.getElementById('customizable').checked = false;
+        document.getElementById('freeShipping').checked = false;
+        document.getElementById('onSale').checked = false;
+        document.getElementById('starSeller').checked = false;
+        document.getElementById('bestSeller').checked = false;
+        
+        // Reset explicit filter to auto
+        document.getElementById('explicitAuto').checked = true;
+        
+        // Note: We don't reset the search query
+    }
+
     // Presets functionality
     presetsSelect.addEventListener('change', function() {
         const preset = this.value;
+        
+        // First, reset all filters
+        resetAllFilters();
         
         if (preset === 'newest_bestselling_physical') {
             // Apply Newest Best-selling (Physical) preset
             document.getElementById('bestSeller').checked = true;
             physicalItemsCheckbox.checked = true;
-            instantDownloadCheckbox.checked = false;
             document.getElementById('sortOrder').value = 'date_desc';
             document.getElementById('explicitAll').checked = true;
         } else if (preset === 'newest_bestselling_digital') {
             // Apply Newest Best-selling (Digital) preset
             document.getElementById('bestSeller').checked = true;
             instantDownloadCheckbox.checked = true;
-            physicalItemsCheckbox.checked = false;
             document.getElementById('sortOrder').value = 'date_desc';
             document.getElementById('explicitAll').checked = true;
         }
+        // If preset === '', resetAllFilters() has already been called
         
         generateEtsyUrl();
     });

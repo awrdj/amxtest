@@ -1,236 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Etsy Research Tool - EtsyScope</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="etsy-styles.css">
+</head>
+<body>
+    <div class="header-section">
+        <div class="container">
+            <h1 class="text-center header-title">
+                <a href="./" style="color:white;">
+                    <div class="logo-container">
+                        <i class="fas fa-search-dollar logo-icon"></i>
+                        <span class="logo-text">Etsy<span class="logo-highlight">Scope</span></span>
+                    </div>
+                </a>
+            </h1>
+            <p class="text-center header-subtitle mb-0">Discover trending niches on Etsy</p>
+        </div>
+    </div>
 
-:root {
-    --etsy-orange: #F1641E;
-    --etsy-dark: #222222;
-    --etsy-light: #F7F7F7;
-    --etsy-border: #DDDDDD;
-}
+    <div class="container-fluid px-4" style="padding-top: 24px;">
+        <div class="search-section">
+            <form id="searchForm">
+                <div class="row">
+                    <div class="col-md-6 mb-2">
+                        <label for="regionSelect" class="small mb-1">Region</label>
+                        <select id="regionSelect" class="form-control">
+                            <option value="">All Regions</option>
+                            <option value="US">United States</option>
+                            <option value="GB">United Kingdom</option>
+                            <option value="CA">Canada</option>
+                            <option value="AU">Australia</option>
+                            <option value="DE">Germany</option>
+                            <option value="FR">France</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label for="categorySelect" class="small mb-1">Category</label>
+                        <select id="categorySelect" class="form-control">
+                            <option value="">All Categories</option>
+                            <option value="jewelry">Jewelry & Accessories</option>
+                            <option value="clothing">Clothing & Shoes</option>
+                            <option value="home_and_living">Home & Living</option>
+                            <option value="wedding_and_party">Wedding & Party</option>
+                            <option value="toys_and_games">Toys & Entertainment</option>
+                            <option value="art_and_collectibles">Art & Collectibles</option>
+                            <option value="craft_supplies_and_tools">Craft Supplies & Tools</option>
+                            <option value="gifts">Gifts & Gift Cards</option>
+                        </select>
+                    </div>
+                </div>
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+                <div class="row mt-2">
+                    <div class="col-12 mb-2">
+                        <div class="search-input-group">
+                            <input id="searchInput" type="text" class="form-control" placeholder="Enter keyword (e.g., custom mug, vintage ring)">
+                            <span id="clearSearchBtn" class="clear-search-btn" style="display: none;">
+                                <i class="fas fa-times"></i>
+                            </span>
+                            <button type="submit" class="search-button">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <div id="suggestionsContainer"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--etsy-light);
-    color: var(--etsy-dark);
-}
+        <!-- Filters -->
+        <div class="filters-container">
+            <div class="filter-box">
+                <div class="filter-title">Sort Order</div>
+                <select id="sortOrder" class="form-control">
+                    <option value="relevancy">Most Relevant</option>
+                    <option value="date_desc">Newest</option>
+                    <option value="price_asc">Price: Low to High</option>
+                    <option value="price_desc">Price: High to Low</option>
+                </select>
+            </div>
 
-.header-section {
-    background: linear-gradient(135deg, var(--etsy-orange) 0%, #D95E1C 100%);
-    padding: 30px 0;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
+            <div class="filter-box">
+                <div class="filter-title">Price Range</div>
+                <div class="row">
+                    <div class="col-6 pr-1">
+                        <input type="number" class="form-control" id="minPrice" min="0" step="1" placeholder="Min $">
+                    </div>
+                    <div class="col-6 pl-1">
+                        <input type="number" class="form-control" id="maxPrice" min="0" step="1" placeholder="Max $">
+                    </div>
+                </div>
+            </div>
 
-.header-title {
-    margin-bottom: 10px;
-}
+            <div class="filter-box">
+                <div class="filter-title">Shipping & Seller</div>
+                <div class="checkbox-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="freeShipping">
+                        <label class="form-check-label" for="freeShipping">Free Shipping</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="onSale">
+                        <label class="form-check-label" for="onSale">On Sale</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="customizable">
+                        <label class="form-check-label" for="customizable">Customizable</label>
+                    </div>
+                </div>
+            </div>
 
-.logo-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-}
+            <div class="filter-box">
+                <div class="filter-title">Special Filters</div>
+                <div class="checkbox-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="giftWrap">
+                        <label class="form-check-label" for="giftWrap">Gift Wrap Available</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="acceptsGiftCards">
+                        <label class="form-check-label" for="acceptsGiftCards">Accepts Gift Cards</label>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-.logo-icon {
-    font-size: 2.5rem;
-    color: white;
-}
+        <div class="result-url" id="resultUrlContainer">
+            <h5 class="mb-2">Generated Etsy URL Preview</h5>
+            <div class="url-copy-container">
+                <div class="url-box" id="generatedUrl"></div>
+                <button id="copyUrlBtn" class="btn-url-copy"><i class="fas fa-clipboard"></i></button>
+            </div>
+        </div>
+    </div>
 
-.logo-text {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: white;
-}
-
-.logo-highlight {
-    color: #FFE5D9;
-}
-
-.header-subtitle {
-    color: white;
-    font-size: 1.1rem;
-    opacity: 0.95;
-}
-
-.search-section {
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    margin-bottom: 20px;
-}
-
-.search-input-group {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.search-input-group input {
-    flex: 1;
-    padding-right: 100px;
-    height: 48px;
-    border: 2px solid var(--etsy-border);
-    border-radius: 8px;
-    font-size: 16px;
-}
-
-.search-input-group input:focus {
-    outline: none;
-    border-color: var(--etsy-orange);
-    box-shadow: 0 0 0 3px rgba(241, 100, 30, 0.1);
-}
-
-.clear-search-btn {
-    position: absolute;
-    right: 110px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    color: #999;
-    transition: color 0.2s;
-}
-
-.clear-search-btn:hover {
-    color: var(--etsy-dark);
-}
-
-.search-button {
-    position: absolute;
-    right: 8px;
-    height: 36px;
-    padding: 0 25px;
-    background: var(--etsy-orange);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s;
-    font-weight: 600;
-}
-
-.search-button:hover {
-    background: #D95E1C;
-}
-
-.filters-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-.filter-box {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
-.filter-title {
-    font-weight: 600;
-    color: var(--etsy-dark);
-    margin-bottom: 12px;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.form-control {
-    border-radius: 6px;
-    border: 1px solid var(--etsy-border);
-    padding: 8px 12px;
-    font-size: 14px;
-}
-
-.form-control:focus {
-    border-color: var(--etsy-orange);
-    box-shadow: 0 0 0 3px rgba(241, 100, 30, 0.1);
-}
-
-.checkbox-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.form-check {
-    margin-bottom: 5px;
-}
-
-.form-check-input:checked {
-    background-color: var(--etsy-orange);
-    border-color: var(--etsy-orange);
-}
-
-.result-url {
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    margin-bottom: 30px;
-    display: none;
-}
-
-.result-url h5 {
-    color: var(--etsy-dark);
-    font-weight: 600;
-    font-size: 16px;
-}
-
-.url-copy-container {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-.url-box {
-    flex: 1;
-    padding: 15px;
-    background: var(--etsy-light);
-    border: 1px solid var(--etsy-border);
-    border-radius: 6px;
-    word-break: break-all;
-    font-size: 14px;
-    color: #555;
-}
-
-.btn-url-copy {
-    padding: 12px 20px;
-    background: var(--etsy-orange);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s;
-    font-size: 16px;
-}
-
-.btn-url-copy:hover {
-    background: #D95E1C;
-}
-
-footer {
-    background: var(--etsy-dark);
-    color: white;
-    padding: 20px 0;
-    text-align: center;
-    margin-top: 40px;
-}
-
-@media (max-width: 768px) {
-    .filters-container {
-        grid-template-columns: 1fr;
-    }
+    <footer>
+        <div class="container">
+            <p style="margin-bottom:0;">© 2025 EtsyScope Research Tool. Created for personal research purposes.</p>
+        </div>
+    </footer>
     
-    .logo-text {
-        font-size: 2rem;
-    }
-}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="etsy-script.js"></script>
+</body>
+</html>

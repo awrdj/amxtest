@@ -9,7 +9,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const instantDownloadCheckbox = document.getElementById('instantDownload');
     const presetsSelect = document.getElementById('presetsSelect');
     
-    let useMarketPage = false; // Track if we should use market page format
+    let useMarketPage = false;
+
+    // Toggle Additional Filters
+    const toggleButton = document.getElementById('toggleAdditionalFilters');
+    const additionalFilters = document.getElementById('additionalFilters');
+    const toggleText = document.getElementById('toggleText');
+    const toggleIcon = document.getElementById('toggleIcon');
+
+    toggleButton.addEventListener('click', function() {
+        const isHidden = additionalFilters.style.display === 'none';
+        
+        if (isHidden) {
+            additionalFilters.style.display = 'grid';
+            toggleText.textContent = 'Hide Additional Filters';
+            toggleButton.classList.add('active');
+        } else {
+            additionalFilters.style.display = 'none';
+            toggleText.textContent = 'Show Additional Filters';
+            toggleButton.classList.remove('active');
+        }
+    }); 
 
     // Mutual exclusivity for Physical Items and Digital Downloads
     physicalItemsCheckbox.addEventListener('change', function() {

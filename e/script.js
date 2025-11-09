@@ -6,9 +6,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
     const clearSearchBtn = document.getElementById('clearSearchBtn');
 
-    // Show/hide clear button
+    // Show/hide clear button and update URL as user types
     searchInput.addEventListener('input', function() {
         clearSearchBtn.style.display = this.value ? 'flex' : 'none';
+        generateEtsyUrl(); // Update URL in real-time
     });
 
     clearSearchBtn.addEventListener('click', function() {

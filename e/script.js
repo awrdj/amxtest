@@ -236,13 +236,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 params.push('is_discounted=true');
             }
 
-            // Customizable
+            // Personalizable (Market Page uses is_personalizable)
             if (document.getElementById('customizable').checked) {
-                params.push('customizable=true');
+                params.push('is_personalizable=1');
             }
-            // Non Customizable
+            
+            // Non Personalizable (Market Page uses is_personalizable)
             if (nonCustomizableCheckbox.checked) {
-                params.push('customizable=false');
+                params.push('is_personalizable=0');
             }
 
             // Physical Items (instant_download=false)

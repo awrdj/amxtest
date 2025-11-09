@@ -34,6 +34,10 @@ body {
     margin-bottom: 10px;
 }
 
+a:hover {
+    text-decoration: none;
+}
+
 .logo-container {
     display: flex;
     align-items: center;

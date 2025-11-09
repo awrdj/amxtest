@@ -37,6 +37,14 @@ body {
 a:hover {
     text-decoration: none;
 }
+.hidden-backlink {
+    text-decoration:none;
+    color: #9a9a9a;
+}
+.hidden-backlink:hover {
+    text-decoration:underline;
+    color: #9a9a9a;
+}
 
 .form-control:focus {
     color: #E0E0E0;

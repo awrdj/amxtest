@@ -5,11 +5,52 @@ document.addEventListener('DOMContentLoaded', function() {
     const generatedUrlEl = document.getElementById('generatedUrl');
     const searchInput = document.getElementById('searchInput');
     const clearSearchBtn = document.getElementById('clearSearchBtn');
+    const physicalItemsCheckbox = document.getElementById('physicalItems');
+    const instantDownloadCheckbox = document.getElementById('instantDownload');
+    const presetsSelect = document.getElementById('presetsSelect');
+
+    // Mutual exclusivity for Physical Items and Digital Downloads
+    physicalItemsCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            instantDownloadCheckbox.checked = false;
+        }
+        generateEtsyUrl();
+    });
+
+    instantDownloadCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            physicalItemsCheckbox.checked = false;
+        }
+        generateEtsyUrl();
+    });
+
+    // Presets functionality
+    presetsSelect.addEventListener('change', function() {
+        const preset = this.value;
+        
+        if (preset === 'newest_bestselling_physical') {
+            // Apply Newest Best-selling (Physical) preset
+            document.getElementById('bestSeller').checked = true;
+            physicalItemsCheckbox.checked = true;
+            instantDownloadCheckbox.checked = false;
+            document.getElementById('sortOrder').value = 'date_desc';
+            document.getElementById('explicitAll').checked = true;
+        } else if (preset === 'newest_bestselling_digital') {
+            // Apply Newest Best-selling (Digital) preset
+            document.getElementById('bestSeller').checked = true;
+            instantDownloadCheckbox.checked = true;
+            physicalItemsCheckbox.checked = false;
+            document.getElementById('sortOrder').value = 'date_desc';
+            document.getElementById('explicitAll').checked = true;
+        }
+        
+        generateEtsyUrl();
+    });
 
     // Show/hide clear button and update URL as user types
     searchInput.addEventListener('input', function() {
         clearSearchBtn.style.display = this.value ? 'flex' : 'none';
-        generateEtsyUrl(); // Update URL in real-time
+        generateEtsyUrl();
     });
 
     clearSearchBtn.addEventListener('click', function() {
@@ -58,6 +99,12 @@ document.addEventListener('DOMContentLoaded', function() {
             params.push(`q=${encodeURIComponent(query)}`);
         }
 
+        // Explicit filter
+        const explicitFilter = document.querySelector('input[name="explicitFilter"]:checked').value;
+        if (explicitFilter !== 'auto') {
+            params.push(`explicit=${explicitFilter}`);
+        }
+
         // Ships to (ship_to)
         const shipTo = document.getElementById('shipToSelect').value;
         if (shipTo) {
@@ -76,11 +123,11 @@ document.addEventListener('DOMContentLoaded', function() {
             params.push(`order=${sortOrder}`);
         }
 
-        // Price range - Add explicit=1 only if prices are set
+        // Price range - Add custom_price=1 when prices are set
         const minPrice = document.getElementById('minPrice').value;
         const maxPrice = document.getElementById('maxPrice').value;
         if (minPrice || maxPrice) {
-            params.push('explicit=1');
+            params.push('custom_price=1');
             if (minPrice) {
                 params.push(`min=${minPrice}`);
             }
@@ -104,8 +151,13 @@ document.addEventListener('DOMContentLoaded', function() {
             params.push('customizable=true');
         }
 
+        // Physical Items (instant_download=false)
+        if (physicalItemsCheckbox.checked) {
+            params.push('instant_download=false');
+        }
+
         // Instant download (digital)
-        if (document.getElementById('instantDownload').checked) {
+        if (instantDownloadCheckbox.checked) {
             params.push('instant_download=true');
         }
 
@@ -129,13 +181,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Auto-generate URL on any filter change
     const filterElements = [
         'shipToSelect', 'locationQuerySelect', 'sortOrder', 'minPrice', 'maxPrice',
-        'freeShipping', 'onSale', 'customizable', 'instantDownload', 'starSeller', 'bestSeller'
+        'freeShipping', 'onSale', 'customizable', 'starSeller', 'bestSeller',
+        'explicitAuto', 'explicitSafe', 'explicitAll'
     ];
 
     filterElements.forEach(id => {
         const element = document.getElementById(id);
         if (element) {
-            if (element.type === 'checkbox') {
+            if (element.type === 'checkbox' || element.type === 'radio') {
                 element.addEventListener('change', generateEtsyUrl);
             } else {
                 element.addEventListener('change', generateEtsyUrl);

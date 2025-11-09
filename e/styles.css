@@ -1,0 +1,235 @@
+:root {
+    --etsy-orange: #F1641E;
+    --etsy-dark: #222222;
+    --etsy-light: #F7F7F7;
+    --etsy-border: #DDDDDD;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--etsy-light);
+    color: var(--etsy-dark);
+}
+
+.header-section {
+    background: linear-gradient(135deg, var(--etsy-orange) 0%, #D95E1C 100%);
+    padding: 30px 0;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.header-title {
+    margin-bottom: 10px;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.logo-icon {
+    font-size: 2.5rem;
+    color: white;
+}
+
+.logo-text {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+}
+
+.logo-highlight {
+    color: #FFE5D9;
+}
+
+.header-subtitle {
+    color: white;
+    font-size: 1.1rem;
+    opacity: 0.95;
+}
+
+.search-section {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+.search-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input-group input {
+    flex: 1;
+    padding-right: 100px;
+    height: 48px;
+    border: 2px solid var(--etsy-border);
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.search-input-group input:focus {
+    outline: none;
+    border-color: var(--etsy-orange);
+    box-shadow: 0 0 0 3px rgba(241, 100, 30, 0.1);
+}
+
+.clear-search-btn {
+    position: absolute;
+    right: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    color: #999;
+    transition: color 0.2s;
+}
+
+.clear-search-btn:hover {
+    color: var(--etsy-dark);
+}
+
+.search-button {
+    position: absolute;
+    right: 8px;
+    height: 36px;
+    padding: 0 25px;
+    background: var(--etsy-orange);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-weight: 600;
+}
+
+.search-button:hover {
+    background: #D95E1C;
+}
+
+.filters-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.filter-box {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.filter-title {
+    font-weight: 600;
+    color: var(--etsy-dark);
+    margin-bottom: 12px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-control {
+    border-radius: 6px;
+    border: 1px solid var(--etsy-border);
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+.form-control:focus {
+    border-color: var(--etsy-orange);
+    box-shadow: 0 0 0 3px rgba(241, 100, 30, 0.1);
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-check {
+    margin-bottom: 5px;
+}
+
+.form-check-input:checked {
+    background-color: var(--etsy-orange);
+    border-color: var(--etsy-orange);
+}
+
+.result-url {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom: 30px;
+    display: none;
+}
+
+.result-url h5 {
+    color: var(--etsy-dark);
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.url-copy-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.url-box {
+    flex: 1;
+    padding: 15px;
+    background: var(--etsy-light);
+    border: 1px solid var(--etsy-border);
+    border-radius: 6px;
+    word-break: break-all;
+    font-size: 14px;
+    color: #555;
+}
+
+.btn-url-copy {
+    padding: 12px 20px;
+    background: var(--etsy-orange);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-size: 16px;
+}
+
+.btn-url-copy:hover {
+    background: #D95E1C;
+}
+
+footer {
+    background: var(--etsy-dark);
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    margin-top: 40px;
+}
+
+@media (max-width: 768px) {
+    .filters-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .logo-text {
+        font-size: 2rem;
+    }
+}

@@ -38,6 +38,10 @@ a:hover {
     text-decoration: none;
 }
 
+.form-control:focus {
+    color: #E0E0E0;
+}
+
 .logo-container {
     display: flex;
     align-items: center;

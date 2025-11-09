@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
     const searchForm = document.getElementById('searchForm');
     const copyUrlBtn = document.getElementById('copyUrlBtn');
+    const visitUrlBtn = document.getElementById('visitUrlBtn');
     const generatedUrlEl = document.getElementById('generatedUrl');
     const searchInput = document.getElementById('searchInput');
     const clearSearchBtn = document.getElementById('clearSearchBtn');
-    const suggestionsContainer = document.getElementById('suggestionsContainer');
 
     // Show/hide clear button
     searchInput.addEventListener('input', function() {
@@ -14,14 +14,17 @@ document.addEventListener('DOMContentLoaded', function() {
     clearSearchBtn.addEventListener('click', function() {
         searchInput.value = '';
         this.style.display = 'none';
-        suggestionsContainer.innerHTML = '';
         searchInput.focus();
+        generateEtsyUrl();
     });
 
-    // Generate URL on form submit
+    // Generate URL on form submit (pressing Enter or clicking Search button)
     searchForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        generateEtsyUrl();
+        const url = generatedUrlEl.textContent;
+        if (url && url.startsWith('http')) {
+            window.open(url, '_blank');
+        }
     });
 
     // Copy URL to clipboard
@@ -29,11 +32,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const url = generatedUrlEl.textContent;
         navigator.clipboard.writeText(url).then(() => {
             const originalHTML = copyUrlBtn.innerHTML;
-            copyUrlBtn.innerHTML = '<i class="fas fa-check"></i>';
+            copyUrlBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
             setTimeout(() => {
                 copyUrlBtn.innerHTML = originalHTML;
             }, 2000);
         });
+    });
+
+    // Visit URL button
+    visitUrlBtn.addEventListener('click', function() {
+        const url = generatedUrlEl.textContent;
+        if (url && url.startsWith('http')) {
+            window.open(url, '_blank');
+        }
     });
 
     function generateEtsyUrl() {
@@ -41,37 +52,40 @@ document.addEventListener('DOMContentLoaded', function() {
         const params = [];
 
         // Search query
-        const query = document.getElementById('searchInput').value.trim();
+        const query = searchInput.value.trim();
         if (query) {
             params.push(`q=${encodeURIComponent(query)}`);
         }
 
-        // Region filter
-        const region = document.getElementById('regionSelect').value;
-        if (region) {
-            params.push(`ship_to=${region}`);
+        // Ships to (ship_to)
+        const shipTo = document.getElementById('shipToSelect').value;
+        if (shipTo) {
+            params.push(`ship_to=${shipTo}`);
         }
 
-        // Category filter
-        const category = document.getElementById('categorySelect').value;
-        if (category) {
-            params.push(`category=${category}`);
+        // Ships from (locationQuery)
+        const locationQuery = document.getElementById('locationQuerySelect').value;
+        if (locationQuery) {
+            params.push(`locationQuery=${locationQuery}`);
         }
 
         // Sort order
         const sortOrder = document.getElementById('sortOrder').value;
-        if (sortOrder && sortOrder !== 'relevancy') {
+        if (sortOrder && sortOrder !== 'most_relevant') {
             params.push(`order=${sortOrder}`);
         }
 
-        // Price range
+        // Price range - Add explicit=1 only if prices are set
         const minPrice = document.getElementById('minPrice').value;
         const maxPrice = document.getElementById('maxPrice').value;
-        if (minPrice) {
-            params.push(`min_price=${minPrice}`);
-        }
-        if (maxPrice) {
-            params.push(`max_price=${maxPrice}`);
+        if (minPrice || maxPrice) {
+            params.push('explicit=1');
+            if (minPrice) {
+                params.push(`min=${minPrice}`);
+            }
+            if (maxPrice) {
+                params.push(`max=${maxPrice}`);
+            }
         }
 
         // Free shipping
@@ -79,24 +93,29 @@ document.addEventListener('DOMContentLoaded', function() {
             params.push('free_shipping=true');
         }
 
-        // On sale
+        // On sale (is_discounted)
         if (document.getElementById('onSale').checked) {
-            params.push('on_sale=1');
+            params.push('is_discounted=true');
         }
 
         // Customizable
         if (document.getElementById('customizable').checked) {
-            params.push('is_customizable=true');
+            params.push('customizable=true');
         }
 
-        // Gift wrap
-        if (document.getElementById('giftWrap').checked) {
-            params.push('is_gift_wrappable=true');
+        // Instant download (digital)
+        if (document.getElementById('instantDownload').checked) {
+            params.push('instant_download=true');
         }
 
-        // Accepts gift cards
-        if (document.getElementById('acceptsGiftCards').checked) {
-            params.push('accepts_gift_cards=true');
+        // Star Seller
+        if (document.getElementById('starSeller').checked) {
+            params.push('is_star_seller=true');
+        }
+
+        // Best Seller (hidden filter)
+        if (document.getElementById('bestSeller').checked) {
+            params.push('is_best_seller=true');
         }
 
         // Construct final URL
@@ -108,14 +127,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Auto-generate URL on any filter change
     const filterElements = [
-        'regionSelect', 'categorySelect', 'sortOrder', 'minPrice', 'maxPrice',
-        'freeShipping', 'onSale', 'customizable', 'giftWrap', 'acceptsGiftCards'
+        'shipToSelect', 'locationQuerySelect', 'sortOrder', 'minPrice', 'maxPrice',
+        'freeShipping', 'onSale', 'customizable', 'instantDownload', 'starSeller', 'bestSeller'
     ];
 
     filterElements.forEach(id => {
         const element = document.getElementById(id);
         if (element) {
-            element.addEventListener('change', generateEtsyUrl);
+            if (element.type === 'checkbox') {
+                element.addEventListener('change', generateEtsyUrl);
+            } else {
+                element.addEventListener('change', generateEtsyUrl);
+                if (element.tagName === 'INPUT') {
+                    element.addEventListener('input', generateEtsyUrl);
+                }
+            }
         }
     });
 

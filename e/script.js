@@ -11,25 +11,29 @@ document.addEventListener('DOMContentLoaded', function() {
     
     let useMarketPage = false;
 
-    // Toggle Additional Filters
+    // Toggle Additional Filters (commented but keep for reference)
+    /*
     const toggleButton = document.getElementById('toggleAdditionalFilters');
     const additionalFilters = document.getElementById('additionalFilters');
     const toggleText = document.getElementById('toggleText');
     const toggleIcon = document.getElementById('toggleIcon');
 
-    toggleButton.addEventListener('click', function() {
-        const isHidden = additionalFilters.style.display === 'none';
-        
-        if (isHidden) {
-            additionalFilters.style.display = 'grid';
-            toggleText.textContent = 'Hide Additional Filters';
-            toggleButton.classList.add('active');
-        } else {
-            additionalFilters.style.display = 'none';
-            toggleText.textContent = 'Show Additional Filters';
-            toggleButton.classList.remove('active');
-        }
-    }); 
+    if (toggleButton) {
+        toggleButton.addEventListener('click', function() {
+            const isHidden = additionalFilters.style.display === 'none';
+            
+            if (isHidden) {
+                additionalFilters.style.display = 'grid';
+                toggleText.textContent = 'Hide Additional Filters';
+                toggleButton.classList.add('active');
+            } else {
+                additionalFilters.style.display = 'none';
+                toggleText.textContent = 'Show Additional Filters';
+                toggleButton.classList.remove('active');
+            }
+        });
+    }
+    */
 
     // Mutual exclusivity for Physical Items and Digital Downloads
     physicalItemsCheckbox.addEventListener('change', function() {
@@ -63,8 +67,13 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('physicalItems').checked = false;
         document.getElementById('instantDownload').checked = false;
         document.getElementById('customizable').checked = false;
-        document.getElementById('freeShipping').checked = false;
-        document.getElementById('onSale').checked = false;
+        
+        // Only reset these if they exist (they're commented out in your HTML)
+        const freeShippingEl = document.getElementById('freeShipping');
+        const onSaleEl = document.getElementById('onSale');
+        if (freeShippingEl) freeShippingEl.checked = false;
+        if (onSaleEl) onSaleEl.checked = false;
+        
         document.getElementById('starSeller').checked = false;
         document.getElementById('bestSeller').checked = false;
         
@@ -83,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
         resetAllFilters();
         
         if (preset === 'market_page') {
-            // Apply Market Page preset - just sets the flag
+            // Apply Market Page preset
             useMarketPage = true;
         } else if (preset === 'newest_bestselling_physical') {
             // Apply Newest Best-selling (Physical) preset
@@ -153,31 +162,37 @@ document.addEventListener('DOMContentLoaded', function() {
             const keyword = query ? encodeURIComponent(query.replace(/\s+/g, '_')) : 'specify_your_keyword';
             const baseMarketUrl = `https://www.etsy.com/market/${keyword}`;
             const params = [];
-    
+
             // Explicit filter
             const explicitFilter = document.querySelector('input[name="explicitFilter"]:checked').value;
             if (explicitFilter !== 'auto') {
                 params.push(`explicit=${explicitFilter}`);
             }
-    
+
             // Ships to (ship_to)
             const shipTo = document.getElementById('shipToSelect').value;
             if (shipTo) {
                 params.push(`ship_to=${shipTo}`);
             }
-    
+
             // Ships from (locationQuery)
             const locationQuery = document.getElementById('locationQuerySelect').value;
             if (locationQuery) {
                 params.push(`locationQuery=${locationQuery}`);
             }
-    
+
+            // Sort order without giving most relevant a value since it's default (KEEP THIS COMMENT)
+            /*const sortOrder = document.getElementById('sortOrder').value;
+            if (sortOrder && sortOrder !== 'most_relevant') {
+                params.push(`order=${sortOrder}`);
+            }*/
+
             // Sort order
             const sortOrder = document.getElementById('sortOrder').value;
             if (sortOrder) {
                 params.push(`order=${sortOrder}`);
             }
-    
+
             // Price range
             const minPrice = document.getElementById('minPrice').value;
             const maxPrice = document.getElementById('maxPrice').value;
@@ -190,42 +205,44 @@ document.addEventListener('DOMContentLoaded', function() {
                     params.push(`max=${maxPrice}`);
                 }
             }
-    
-            // Free shipping
-            if (document.getElementById('freeShipping').checked) {
+
+            // Free shipping (only if element exists)
+            const freeShippingEl = document.getElementById('freeShipping');
+            if (freeShippingEl && freeShippingEl.checked) {
                 params.push('free_shipping=true');
             }
-    
-            // On sale (is_discounted)
-            if (document.getElementById('onSale').checked) {
+
+            // On sale (only if element exists)
+            const onSaleEl = document.getElementById('onSale');
+            if (onSaleEl && onSaleEl.checked) {
                 params.push('is_discounted=true');
             }
-    
+
             // Customizable
             if (document.getElementById('customizable').checked) {
                 params.push('customizable=true');
             }
-    
+
             // Physical Items (instant_download=false)
             if (physicalItemsCheckbox.checked) {
                 params.push('instant_download=false');
             }
-    
+
             // Instant download (digital)
             if (instantDownloadCheckbox.checked) {
                 params.push('instant_download=true');
             }
-    
+
             // Star Seller
             if (document.getElementById('starSeller').checked) {
                 params.push('is_star_seller=true');
             }
-    
+
             // Best Seller (hidden filter)
             if (document.getElementById('bestSeller').checked) {
                 params.push('is_best_seller=true');
             }
-    
+
             // Construct market URL with parameters
             finalUrl = params.length > 0 ? `${baseMarketUrl}?${params.join('&')}` : baseMarketUrl;
             
@@ -233,43 +250,37 @@ document.addEventListener('DOMContentLoaded', function() {
             // Standard search format
             const baseUrl = 'https://www.etsy.com/search';
             const params = [];
-    
+
             // Search query
             if (query) {
                 params.push(`q=${encodeURIComponent(query)}`);
             }
-    
+
             // Explicit filter
             const explicitFilter = document.querySelector('input[name="explicitFilter"]:checked').value;
             if (explicitFilter !== 'auto') {
                 params.push(`explicit=${explicitFilter}`);
             }
-    
+
             // Ships to (ship_to)
             const shipTo = document.getElementById('shipToSelect').value;
             if (shipTo) {
                 params.push(`ship_to=${shipTo}`);
             }
-    
+
             // Ships from (locationQuery)
             const locationQuery = document.getElementById('locationQuerySelect').value;
             if (locationQuery) {
                 params.push(`locationQuery=${locationQuery}`);
             }
 
-            // Sort order without giving most relevant a value since it's default (KEEP THIS COMMENT)
-            /*const sortOrder = document.getElementById('sortOrder').value;
-            if (sortOrder && sortOrder !== 'most_relevant') {
-                params.push(`order=${sortOrder}`);
-            }*/
-    
             // Sort order
             const sortOrder = document.getElementById('sortOrder').value;
             if (sortOrder) {
                 params.push(`order=${sortOrder}`);
             }
-    
-            // Price range - Add custom_price=1 when prices are set
+
+            // Price range
             const minPrice = document.getElementById('minPrice').value;
             const maxPrice = document.getElementById('maxPrice').value;
             if (minPrice || maxPrice) {
@@ -281,42 +292,44 @@ document.addEventListener('DOMContentLoaded', function() {
                     params.push(`max=${maxPrice}`);
                 }
             }
-    
-            // Free shipping
-            if (document.getElementById('freeShipping').checked) {
+
+            // Free shipping (only if element exists)
+            const freeShippingEl = document.getElementById('freeShipping');
+            if (freeShippingEl && freeShippingEl.checked) {
                 params.push('free_shipping=true');
             }
-    
-            // On sale (is_discounted)
-            if (document.getElementById('onSale').checked) {
+
+            // On sale (only if element exists)
+            const onSaleEl = document.getElementById('onSale');
+            if (onSaleEl && onSaleEl.checked) {
                 params.push('is_discounted=true');
             }
-    
+
             // Customizable
             if (document.getElementById('customizable').checked) {
                 params.push('customizable=true');
             }
-    
+
             // Physical Items (instant_download=false)
             if (physicalItemsCheckbox.checked) {
                 params.push('instant_download=false');
             }
-    
+
             // Instant download (digital)
             if (instantDownloadCheckbox.checked) {
                 params.push('instant_download=true');
             }
-    
+
             // Star Seller
             if (document.getElementById('starSeller').checked) {
                 params.push('is_star_seller=true');
             }
-    
+
             // Best Seller (hidden filter)
             if (document.getElementById('bestSeller').checked) {
                 params.push('is_best_seller=true');
             }
-    
+
             // Construct final URL
             finalUrl = params.length > 0 ? `${baseUrl}?${params.join('&')}` : baseUrl;
         }
@@ -325,13 +338,20 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('resultUrlContainer').style.display = 'block';
     }
 
-
     // Auto-generate URL on any filter change
     const filterElements = [
         'shipToSelect', 'locationQuerySelect', 'sortOrder', 'minPrice', 'maxPrice',
-        'freeShipping', 'onSale', 'customizable', 'starSeller', 'bestSeller',
+        'customizable', 'starSeller', 'bestSeller',
         'explicitAuto', 'explicitSafe', 'explicitAll'
     ];
+
+    // Add optional elements if they exist
+    if (document.getElementById('freeShipping')) {
+        filterElements.push('freeShipping');
+    }
+    if (document.getElementById('onSale')) {
+        filterElements.push('onSale');
+    }
 
     filterElements.forEach(id => {
         const element = document.getElementById(id);
@@ -347,6 +367,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Initialize with empty URL
+    // Initialize with empty URL on page load
     generateEtsyUrl();
 });

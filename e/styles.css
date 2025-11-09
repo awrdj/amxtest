@@ -201,7 +201,7 @@ body {
     color: #555;
 }
 
-.btn-url-copy {
+.btn-url-copy, .btn-url-visit {
     padding: 12px 20px;
     background: var(--etsy-orange);
     color: white;
@@ -209,10 +209,12 @@ body {
     border-radius: 6px;
     cursor: pointer;
     transition: background 0.3s;
-    font-size: 16px;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
 }
 
-.btn-url-copy:hover {
+.btn-url-copy:hover, .btn-url-visit:hover {
     background: #D95E1C;
 }
 
@@ -231,5 +233,13 @@ footer {
     
     .logo-text {
         font-size: 2rem;
+    }
+    
+    .url-copy-container {
+        flex-direction: column;
+    }
+    
+    .btn-url-copy, .btn-url-visit {
+        width: 100%;
     }
 }

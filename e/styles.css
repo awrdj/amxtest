@@ -318,3 +318,37 @@ footer {
         width: 100%;
     }
 }
+
+/* Toggle Button Styles */
+.btn-toggle-filters {
+    background: var(--dark-card);
+    color: var(--dark-text);
+    border: 1px solid var(--dark-border);
+    padding: 12px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-toggle-filters:hover {
+    background: var(--dark-card-hover);
+    border-color: var(--etsy-orange);
+    color: var(--etsy-orange);
+}
+
+.btn-toggle-filters i {
+    transition: transform 0.3s ease;
+}
+
+.btn-toggle-filters.active i {
+    transform: rotate(180deg);
+}
+
+#additionalFilters {
+    margin-bottom: 20px;
+}
+

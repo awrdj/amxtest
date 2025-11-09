@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const clearSearchBtn = document.getElementById('clearSearchBtn');
     const physicalItemsCheckbox = document.getElementById('physicalItems');
     const instantDownloadCheckbox = document.getElementById('instantDownload');
+    const customizableCheckbox = document.getElementById('customizable');
+    const nonCustomizableCheckbox = document.getElementById('nonCustomizable');
     const presetsSelect = document.getElementById('presetsSelect');
     
     let useMarketPage = false;
@@ -50,6 +52,21 @@ document.addEventListener('DOMContentLoaded', function() {
         generateEtsyUrl();
     });
 
+    // Mutual exclusivity for Personalizable and Non Personalizable
+    customizableCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            nonCustomizableCheckbox.checked = false;
+        }
+        generateEtsyUrl();
+    });
+    
+    nonCustomizableCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            customizableCheckbox.checked = false;
+        }
+        generateEtsyUrl();
+    });
+
     // Function to reset all filters to default
     function resetAllFilters() {
         // Reset shipping selects
@@ -67,6 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('physicalItems').checked = false;
         document.getElementById('instantDownload').checked = false;
         document.getElementById('customizable').checked = false;
+        document.getElementById('nonCustomizable').checked = false;
         
         // Only reset these if they exist (they're commented out in your HTML)
         const freeShippingEl = document.getElementById('freeShipping');
@@ -222,6 +240,10 @@ document.addEventListener('DOMContentLoaded', function() {
             if (document.getElementById('customizable').checked) {
                 params.push('customizable=true');
             }
+            // Non Customizable
+            if (nonCustomizableCheckbox.checked) {
+                params.push('customizable=false');
+            }
 
             // Physical Items (instant_download=false)
             if (physicalItemsCheckbox.checked) {
@@ -308,6 +330,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // Customizable
             if (document.getElementById('customizable').checked) {
                 params.push('customizable=true');
+            }
+
+            // Non Customizable
+            if (nonCustomizableCheckbox.checked) {
+                params.push('customizable=false');
             }
 
             // Physical Items (instant_download=false)

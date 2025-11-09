@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const physicalItemsCheckbox = document.getElementById('physicalItems');
     const instantDownloadCheckbox = document.getElementById('instantDownload');
     const presetsSelect = document.getElementById('presetsSelect');
+    
+    let useMarketPage = false; // Track if we should use market page format
 
     // Mutual exclusivity for Physical Items and Digital Downloads
     physicalItemsCheckbox.addEventListener('change', function() {
@@ -49,7 +51,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Reset explicit filter to auto
         document.getElementById('explicitAuto').checked = true;
         
-        // Note: We don't reset the search query
+        // Reset market page flag
+        useMarketPage = false;
     }
 
     // Presets functionality
@@ -59,7 +62,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // First, reset all filters
         resetAllFilters();
         
-        if (preset === 'newest_bestselling_physical') {
+        if (preset === 'market_page') {
+            // Apply Market Page preset - just sets the flag
+            useMarketPage = true;
+        } else if (preset === 'newest_bestselling_physical') {
             // Apply Newest Best-selling (Physical) preset
             document.getElementById('bestSeller').checked = true;
             physicalItemsCheckbox.checked = true;
@@ -72,7 +78,6 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('sortOrder').value = 'date_desc';
             document.getElementById('explicitAll').checked = true;
         }
-        // If preset === '', resetAllFilters() has already been called
         
         generateEtsyUrl();
     });
@@ -120,89 +125,98 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function generateEtsyUrl() {
-        const baseUrl = 'https://www.etsy.com/search';
-        const params = [];
-
-        // Search query
+        let finalUrl;
         const query = searchInput.value.trim();
-        if (query) {
-            params.push(`q=${encodeURIComponent(query)}`);
-        }
+        
+        // Market Page format
+        if (useMarketPage) {
+            const keyword = query ? encodeURIComponent(query.replace(/\s+/g, '_')) : 'specify_your_keyword';
+            finalUrl = `https://www.etsy.com/market/${keyword}`;
+        } else {
+            // Standard search format
+            const baseUrl = 'https://www.etsy.com/search';
+            const params = [];
 
-        // Explicit filter
-        const explicitFilter = document.querySelector('input[name="explicitFilter"]:checked').value;
-        if (explicitFilter !== 'auto') {
-            params.push(`explicit=${explicitFilter}`);
-        }
-
-        // Ships to (ship_to)
-        const shipTo = document.getElementById('shipToSelect').value;
-        if (shipTo) {
-            params.push(`ship_to=${shipTo}`);
-        }
-
-        // Ships from (locationQuery)
-        const locationQuery = document.getElementById('locationQuerySelect').value;
-        if (locationQuery) {
-            params.push(`locationQuery=${locationQuery}`);
-        }
-
-        // Sort order
-        const sortOrder = document.getElementById('sortOrder').value;
-        if (sortOrder && sortOrder !== 'most_relevant') {
-            params.push(`order=${sortOrder}`);
-        }
-
-        // Price range - Add custom_price=1 when prices are set
-        const minPrice = document.getElementById('minPrice').value;
-        const maxPrice = document.getElementById('maxPrice').value;
-        if (minPrice || maxPrice) {
-            params.push('custom_price=1');
-            if (minPrice) {
-                params.push(`min=${minPrice}`);
+            // Search query
+            if (query) {
+                params.push(`q=${encodeURIComponent(query)}`);
             }
-            if (maxPrice) {
-                params.push(`max=${maxPrice}`);
+
+            // Explicit filter
+            const explicitFilter = document.querySelector('input[name="explicitFilter"]:checked').value;
+            if (explicitFilter !== 'auto') {
+                params.push(`explicit=${explicitFilter}`);
             }
-        }
 
-        // Free shipping
-        if (document.getElementById('freeShipping').checked) {
-            params.push('free_shipping=true');
-        }
+            // Ships to (ship_to)
+            const shipTo = document.getElementById('shipToSelect').value;
+            if (shipTo) {
+                params.push(`ship_to=${shipTo}`);
+            }
 
-        // On sale (is_discounted)
-        if (document.getElementById('onSale').checked) {
-            params.push('is_discounted=true');
-        }
+            // Ships from (locationQuery)
+            const locationQuery = document.getElementById('locationQuerySelect').value;
+            if (locationQuery) {
+                params.push(`locationQuery=${locationQuery}`);
+            }
 
-        // Customizable
-        if (document.getElementById('customizable').checked) {
-            params.push('customizable=true');
-        }
+            // Sort order
+            const sortOrder = document.getElementById('sortOrder').value;
+            if (sortOrder && sortOrder !== 'most_relevant') {
+                params.push(`order=${sortOrder}`);
+            }
 
-        // Physical Items (instant_download=false)
-        if (physicalItemsCheckbox.checked) {
-            params.push('instant_download=false');
-        }
+            // Price range - Add custom_price=1 when prices are set
+            const minPrice = document.getElementById('minPrice').value;
+            const maxPrice = document.getElementById('maxPrice').value;
+            if (minPrice || maxPrice) {
+                params.push('custom_price=1');
+                if (minPrice) {
+                    params.push(`min=${minPrice}`);
+                }
+                if (maxPrice) {
+                    params.push(`max=${maxPrice}`);
+                }
+            }
 
-        // Instant download (digital)
-        if (instantDownloadCheckbox.checked) {
-            params.push('instant_download=true');
-        }
+            // Free shipping
+            if (document.getElementById('freeShipping').checked) {
+                params.push('free_shipping=true');
+            }
 
-        // Star Seller
-        if (document.getElementById('starSeller').checked) {
-            params.push('is_star_seller=true');
-        }
+            // On sale (is_discounted)
+            if (document.getElementById('onSale').checked) {
+                params.push('is_discounted=true');
+            }
 
-        // Best Seller (hidden filter)
-        if (document.getElementById('bestSeller').checked) {
-            params.push('is_best_seller=true');
-        }
+            // Customizable
+            if (document.getElementById('customizable').checked) {
+                params.push('customizable=true');
+            }
 
-        // Construct final URL
-        const finalUrl = params.length > 0 ? `${baseUrl}?${params.join('&')}` : baseUrl;
+            // Physical Items (instant_download=false)
+            if (physicalItemsCheckbox.checked) {
+                params.push('instant_download=false');
+            }
+
+            // Instant download (digital)
+            if (instantDownloadCheckbox.checked) {
+                params.push('instant_download=true');
+            }
+
+            // Star Seller
+            if (document.getElementById('starSeller').checked) {
+                params.push('is_star_seller=true');
+            }
+
+            // Best Seller (hidden filter)
+            if (document.getElementById('bestSeller').checked) {
+                params.push('is_best_seller=true');
+            }
+
+            // Construct final URL
+            finalUrl = params.length > 0 ? `${baseUrl}?${params.join('&')}` : baseUrl;
+        }
         
         generatedUrlEl.textContent = finalUrl;
         document.getElementById('resultUrlContainer').style.display = 'block';

@@ -160,9 +160,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 params.push(`locationQuery=${locationQuery}`);
             }
 
+            // Sort order without giving most relevant a value since it's default (KEEP THIS COMMENT)
+            /*const sortOrder = document.getElementById('sortOrder').value;
+            if (sortOrder && sortOrder !== 'most_relevant') {
+                params.push(`order=${sortOrder}`);
+            }*/
+
             // Sort order
             const sortOrder = document.getElementById('sortOrder').value;
-            if (sortOrder && sortOrder !== 'most_relevant') {
+            if (sortOrder) {
                 params.push(`order=${sortOrder}`);
             }
 

@@ -73,8 +73,8 @@
             </form>
         </div>
 
-        <!-- Filters -->
-        <div class="filters-container">
+        <!-- Main Filters (Always Visible) -->
+        <div class="filters-container" id="mainFilters">
             <div class="filter-box">
                 <div class="filter-title">Presets</div>
                 <select id="presetsSelect" class="form-control">
@@ -85,20 +85,15 @@
                 </select>
             </div>
 
-
             <div class="filter-box">
-                <div class="filter-title">Sort Order</div>
-                <select id="sortOrder" class="form-control">
+                <div class="filter-title">Sort & Price</div>
+                <select id="sortOrder" class="form-control mb-2">
                     <option value="most_relevant">Most Relevant</option>
                     <option value="date_desc">Newest</option>
                     <option value="price_asc">Price: Low to High</option>
                     <option value="price_desc">Price: High to Low</option>
                     <option value="highest_reviews">Highest Reviews</option>
                 </select>
-            </div>
-
-            <div class="filter-box">
-                <div class="filter-title">Price Range</div>
                 <div class="row">
                     <div class="col-6 pr-1">
                         <input type="number" class="form-control" id="minPrice" min="0" step="1" placeholder="Min $">
@@ -128,20 +123,6 @@
             </div>
 
             <div class="filter-box">
-                <div class="filter-title">Shipping & Sale</div>
-                <div class="checkbox-group">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="freeShipping">
-                        <label class="form-check-label" for="freeShipping">Free Shipping</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="onSale">
-                        <label class="form-check-label" for="onSale">On Sale</label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="filter-box">
                 <div class="filter-title">Seller Quality</div>
                 <div class="checkbox-group">
                     <div class="form-check">
@@ -155,6 +136,31 @@
                 </div>
             </div>
 
+            <div class="filter-box">
+                <div class="filter-title">Shipping & Sale</div>
+                <div class="checkbox-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="freeShipping">
+                        <label class="form-check-label" for="freeShipping">Free Shipping</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="onSale">
+                        <label class="form-check-label" for="onSale">On Sale</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toggle Button for Additional Filters -->
+        <div class="text-center mb-3">
+            <button type="button" id="toggleAdditionalFilters" class="btn-toggle-filters">
+                <span id="toggleText">Show Additional Filters</span>
+                <i class="fas fa-chevron-down" id="toggleIcon"></i>
+            </button>
+        </div>
+
+        <!-- Additional Filters (Hidden by Default) -->
+        <div class="filters-container" id="additionalFilters" style="display: none;">
             <div class="filter-box">
                 <div class="filter-title">Content Filter</div>
                 <div class="checkbox-group">

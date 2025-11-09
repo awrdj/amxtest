@@ -1,8 +1,14 @@
 :root {
     --etsy-orange: #F1641E;
-    --etsy-dark: #222222;
-    --etsy-light: #F7F7F7;
-    --etsy-border: #DDDDDD;
+    --etsy-orange-hover: #D95E1C;
+    --etsy-orange-dim: #FF7A45;
+    --dark-bg: #1a1a1a;
+    --dark-card: #242424;
+    --dark-card-hover: #2a2a2a;
+    --dark-border: #3a3a3a;
+    --dark-text: #e0e0e0;
+    --dark-text-muted: #9a9a9a;
+    --dark-input-bg: #2d2d2d;
 }
 
 * {
@@ -13,14 +19,15 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--etsy-light);
-    color: var(--etsy-dark);
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
 }
 
 .header-section {
-    background: linear-gradient(135deg, var(--etsy-orange) 0%, #D95E1C 100%);
+    background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+    border-bottom: 3px solid var(--etsy-orange);
     padding: 30px 0;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
 
 .header-title {
@@ -36,30 +43,30 @@ body {
 
 .logo-icon {
     font-size: 2.5rem;
-    color: white;
+    color: var(--etsy-orange);
 }
 
 .logo-text {
     font-size: 2.5rem;
     font-weight: 700;
-    color: white;
+    color: var(--dark-text);
 }
 
 .logo-highlight {
-    color: #FFE5D9;
+    color: var(--etsy-orange);
 }
 
 .header-subtitle {
-    color: white;
+    color: var(--dark-text-muted);
     font-size: 1.1rem;
-    opacity: 0.95;
 }
 
 .search-section {
-    background: white;
+    background: var(--dark-card);
     padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    border: 1px solid var(--dark-border);
     margin-bottom: 20px;
 }
 
@@ -73,15 +80,23 @@ body {
     flex: 1;
     padding-right: 100px;
     height: 48px;
-    border: 2px solid var(--etsy-border);
+    border: 2px solid var(--dark-border);
     border-radius: 8px;
     font-size: 16px;
+    background-color: var(--dark-input-bg);
+    color: var(--dark-text);
+    transition: all 0.3s ease;
+}
+
+.search-input-group input::placeholder {
+    color: var(--dark-text-muted);
 }
 
 .search-input-group input:focus {
     outline: none;
     border-color: var(--etsy-orange);
-    box-shadow: 0 0 0 3px rgba(241, 100, 30, 0.1);
+    box-shadow: 0 0 0 3px rgba(241, 100, 30, 0.2);
+    background-color: #333333;
 }
 
 .clear-search-btn {
@@ -93,12 +108,12 @@ body {
     width: 30px;
     height: 30px;
     cursor: pointer;
-    color: #999;
+    color: var(--dark-text-muted);
     transition: color 0.2s;
 }
 
 .clear-search-btn:hover {
-    color: var(--etsy-dark);
+    color: var(--etsy-orange);
 }
 
 .search-button {
@@ -116,7 +131,7 @@ body {
 }
 
 .search-button:hover {
-    background: #D95E1C;
+    background: var(--etsy-orange-hover);
 }
 
 .filters-container {
@@ -127,15 +142,21 @@ body {
 }
 
 .filter-box {
-    background: white;
+    background: var(--dark-card);
     padding: 20px;
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    border: 1px solid var(--dark-border);
+    transition: border-color 0.3s ease;
+}
+
+.filter-box:hover {
+    border-color: var(--etsy-orange);
 }
 
 .filter-title {
     font-weight: 600;
-    color: var(--etsy-dark);
+    color: var(--etsy-orange);
     margin-bottom: 12px;
     font-size: 14px;
     text-transform: uppercase;
@@ -144,14 +165,24 @@ body {
 
 .form-control {
     border-radius: 6px;
-    border: 1px solid var(--etsy-border);
+    border: 1px solid var(--dark-border);
     padding: 8px 12px;
     font-size: 14px;
+    background-color: var(--dark-input-bg);
+    color: var(--dark-text);
+    transition: all 0.3s ease;
 }
 
 .form-control:focus {
     border-color: var(--etsy-orange);
-    box-shadow: 0 0 0 3px rgba(241, 100, 30, 0.1);
+    box-shadow: 0 0 0 3px rgba(241, 100, 30, 0.2);
+    background-color: #333333;
+    outline: none;
+}
+
+.form-control option {
+    background-color: var(--dark-input-bg);
+    color: var(--dark-text);
 }
 
 .checkbox-group {
@@ -164,22 +195,39 @@ body {
     margin-bottom: 5px;
 }
 
+.form-check-label {
+    color: var(--dark-text);
+    cursor: pointer;
+    user-select: none;
+}
+
+.form-check-input {
+    cursor: pointer;
+    background-color: var(--dark-input-bg);
+    border-color: var(--dark-border);
+}
+
 .form-check-input:checked {
     background-color: var(--etsy-orange);
     border-color: var(--etsy-orange);
 }
 
+.form-check-input:focus {
+    box-shadow: 0 0 0 3px rgba(241, 100, 30, 0.2);
+}
+
 .result-url {
-    background: white;
+    background: var(--dark-card);
     padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    border: 1px solid var(--dark-border);
     margin-bottom: 30px;
     display: none;
 }
 
 .result-url h5 {
-    color: var(--etsy-dark);
+    color: var(--etsy-orange);
     font-weight: 600;
     font-size: 16px;
 }
@@ -193,12 +241,12 @@ body {
 .url-box {
     flex: 1;
     padding: 15px;
-    background: var(--etsy-light);
-    border: 1px solid var(--etsy-border);
+    background: var(--dark-input-bg);
+    border: 1px solid var(--dark-border);
     border-radius: 6px;
     word-break: break-all;
     font-size: 14px;
-    color: #555;
+    color: var(--dark-text-muted);
 }
 
 .btn-url-copy, .btn-url-visit {
@@ -215,15 +263,34 @@ body {
 }
 
 .btn-url-copy:hover, .btn-url-visit:hover {
-    background: #D95E1C;
+    background: var(--etsy-orange-hover);
 }
 
 footer {
-    background: var(--etsy-dark);
-    color: white;
+    background: #0d0d0d;
+    color: var(--dark-text-muted);
     padding: 20px 0;
     text-align: center;
     margin-top: 40px;
+    border-top: 1px solid var(--dark-border);
+}
+
+/* Scrollbar styling for dark theme */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--dark-border);
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--etsy-orange);
 }
 
 @media (max-width: 768px) {

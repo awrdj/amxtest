@@ -124,6 +124,11 @@ document.addEventListener('DOMContentLoaded', function() {
             instantDownloadCheckbox.checked = true;
             document.getElementById('sortOrder').value = 'date_desc';
             document.getElementById('explicitAll').checked = true;
+        } else if (preset === 'newest_bestselling_digiphy') {
+            // Apply Newest Best-selling (Digital) preset
+            document.getElementById('bestSeller').checked = true;
+            document.getElementById('sortOrder').value = 'date_desc';
+            document.getElementById('explicitAll').checked = true;
         }
         
         generateEtsyUrl();

@@ -1,0 +1,5373 @@
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+
+
+
+// --- Icon Imports ---
+// ... (icons definitions remain unchanged) ...
+const icons = {
+
+  book: (props) => (
+
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+
+      <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+
+    </svg>
+
+  ),
+
+  wand: (props) => (
+
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+
+      <path d="M15 4V2" /><path d="M15 16v-2" /><path d="M8 9h2" /><path d="M20 9h2" /><path d="M17.8 11.8 19 13" /><path d="M15 9h.01" /><path d="M17.8 6.2 19 5" /><path d="m3 21 9-9" /><path d="M3.5 15.5 5 17" /><path d="m19 21-9-9" /><path d="M14 4v.01" /><path d="M6.2 6.2 5 5" /><path d="M8 15h.01" /><path d="M12 15h.01" />
+
+    </svg>
+
+  ),
+
+  image: (props) => (
+
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+
+      <rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+
+    </svg>
+
+  ),
+
+  printer: (props) => (
+
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+
+      <polyline points="6 9 6 2 18 2 18 9" /><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" /><rect width="12" height="8" x="6" y="14" />
+
+    </svg>
+
+  ),
+
+  loader: (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M21 12a9 9 0 1 1-6.219-8.56">
+        {/* This animation tag makes the SVG spin on its own, no CSS needed */}
+        <animateTransform
+          attributeName="transform"
+          attributeType="XML"
+          type="rotate"
+          from="0 12 12"
+          to="360 12 12"
+          dur="1s"
+          repeatCount="indefinite"
+        />
+      </path>
+    </svg>
+  ),
+
+  chevronLeft: (props) => (
+
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+
+      <path d="m15 18-6-6 6-6" />
+
+    </svg>
+
+  ),
+
+  chevronRight: (props) => (
+
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+
+      <path d="m9 18 6-6-6-6" />
+
+    </svg>
+
+  ),
+
+  alert: (props) => (
+
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" />
+
+    </svg>
+
+  ),
+
+  chevronDown: (props) => (
+
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+
+      <path d="m6 9 6 6 6-6" />
+
+    </svg>
+
+  ),
+
+  users: (props) => (
+
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
+
+    </svg>
+
+  ),
+
+  palette: (props) => (
+
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+
+      <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" /><circle cx="17.5" cy="10.5" r=".5" fill="currentColor" /><circle cx="8.5" cy="7.5" r=".5" fill="currentColor" /><circle cx="6.5" cy="12.5" r=".5" fill="currentColor" /><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.668 0-.921-.722-1.668-1.648-1.668-.926 0-1.648-.746-1.648-1.668 0-.921.722-1.668 1.648-1.668.926 0 1.648-.746 1.648-1.668 0-.921-.722-1.668-1.648-1.668-.926 0-1.648-.746-1.648-1.668C10.352 2.746 11.074 2 12 2Z" />
+
+    </svg>
+
+  ),
+
+  layout: (props) => (
+
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+
+      <rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><path d="M3 9h18" /><path d="M9 21V9" />
+
+    </svg>
+
+  ),
+
+  sparkles: (props) => (
+
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+
+      <path d="m12 3-1.9 4.8-4.8 1.9 4.8 1.9 1.9 4.8 1.9-4.8 4.8-1.9-4.8-1.9Z"/><path d="M5 12s2.5-1.5 5-3c-2.5 1.5-5 3-5 3Z"/><path d="M19 12s-2.5 1.5-5 3c2.5-1.5 5-3 5-3Z"/>
+
+    </svg>
+
+  ),
+
+  x: (props) => (
+
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+
+      <path d="M18 6 6 18" /><path d="m6 6 12 12" />
+
+    </svg>
+
+  ),
+
+  refresh: (props) => (
+
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+
+      <path d="M3 2v6h6" /><path d="M21 12A9 9 0 0 0 6 5.3L3 8" /><path d="M21 22v-6h-6" /><path d="M3 12a9 9 0 0 0 15 6.7l3-2.7" />
+
+    </svg>
+
+  ),
+
+  user: (props) => (
+
+     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+
+       <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
+
+     </svg>
+  ),
+
+  trash: (props) => ( // NEW ICON
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M3 6h18" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><path d="M10 11v6" /><path d="M14 11v6" />
+    </svg>
+  ),
+
+};
+
+
+
+// --- API Configuration ---
+// ... (API config remains unchanged) ...
+const API_KEY = ""; // Provided by environment
+
+
+
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${API_KEY}`;
+
+const IMAGEN_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${API_KEY}`;
+const GEMINI_FLASH_IMAGE_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${API_KEY}`;
+
+const ERROR_PLACEHOLDER = "https://placehold.co/800x600/f87171/ffffff?text=Image+Failed";
+
+
+// --- KDP Print Data ---
+// ... (KDP data remains unchanged) ...
+const KDP_PRESETS = {
+
+  us_paperback: {
+
+    name: "US Paperback",
+
+    sizes: [
+
+      { name: '5" x 8"', w: 5, h: 8, min: 24, max: 828 },
+
+      { name: '5.06" x 7.81"', w: 5.06, h: 7.81, min: 24, max: 828 },
+
+      { name: '5.25" x 8"', w: 5.25, h: 8, min: 24, max: 828 },
+
+      { name: '5.5" x 8.5"', w: 5.5, h: 8.5, min: 24, max: 828 },
+
+      { name: '6" x 9"', w: 6, h: 9, min: 24, max: 828 },
+
+      { name: '6.14" x 9.21"', w: 6.14, h: 9.21, min: 24, max: 828 },
+
+      { name: '6.69" x 9.61"', w: 6.69, h: 9.61, min: 24, max: 828 },
+
+      { name: '7" x 10"', w: 7, h: 10, min: 24, max: 828 },
+
+      { name: '7.44" x 9.69"', w: 7.44, h: 9.69, min: 24, max: 828 },
+
+      { name: '7.5" x 9.25"', w: 7.5, h: 9.25, min: 24, max: 828 },
+
+      { name: '8" x 10"', w: 8, h: 10, min: 24, max: 828 },
+
+      { name: '8.25" x 6"', w: 8.25, h: 6, min: 24, max: 800 },
+
+      { name: '8.25" x 8.25"', w: 8.25, h: 8.25, min: 24, max: 800 },
+
+      { name: '8.5" x 8.5"', w: 8.5, h: 8.5, min: 24, max: 590 },
+
+      { name: '8.5" x 11"', w: 8.5, h: 11, min: 24, max: 590 },
+
+      { name: '8.27" x 11.69" (A4)', w: 8.27, h: 11.69, min: 24, max: 780 },
+
+    ]
+
+  },
+
+  us_hardcover: {
+
+    name: "US Hardcover",
+
+    sizes: [
+
+      { name: '5.5" x 8.5"', w: 5.5, h: 8.5, min: 75, max: 550 },
+
+      { name: '6" x 9"', w: 6, h: 9, min: 75, max: 550 },
+
+      { name: '6.14" x 9.21"', w: 6.14, h: 9.21, min: 75, max: 550 },
+
+      { name: '7" x 10"', w: 7, h: 10, min: 75, max: 550 },
+
+      { name: '8.25" x 11"', w: 8.25, h: 11, min: 75, max: 550 },
+
+    ]
+
+  },
+
+  jp_paperback: {
+
+    name: "Japan Paperback",
+
+    sizes: [
+
+      { name: '4.06" x 7.17"', w: 4.06, h: 7.17, min: 24, max: 828 },
+
+      { name: '5.04" x 7.17"', w: 5.04, h: 7.17, min: 24, max: 828 },
+
+      { name: '5.83" x 8.27" (A5)', w: 5.83, h: 8.27, min: 24, max: 828 },
+
+      { name: '7.17" x 10.12" (B5)', w: 7.17, h: 10.12, min: 24, max: 828 },
+
+      { name: '8.27" x 11.69" (A4)', w: 8.27, h: 11.69, min: 24, max: 780 },
+
+    ]
+
+  }
+
+};
+
+
+
+const DEFAULT_PRINT_SETTINGS = {
+  trimWidth: 8.5,
+  trimHeight: 8.5,
+  hasBleed: true,
+  margins: {
+
+    top: 0.375,
+
+    bottom: 0.375,
+
+    inside: 0.375,
+    outside: 0.375,
+  },
+  includePageNumbers: true, // NEW: Add page numbers by default
+};
+
+const calculateMinMargins = (pageCount, hasBleed) => {
+
+  let inside;
+
+  if (pageCount <= 150) inside = 0.375;
+
+  else if (pageCount <= 300) inside = 0.5;
+
+  else if (pageCount <= 500) inside = 0.625;
+
+  else if (pageCount <= 700) inside = 0.75;
+
+  else inside = 0.875;
+
+
+
+  const outside = hasBleed ? 0.375 : 0.25;
+
+  
+
+  return { inside, outside, top: outside, bottom: outside };
+
+};
+
+
+
+// --- Utility Hooks ---
+// ... (useDebounce remains unchanged) ...
+function useDebounce(value, delay) {
+
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+
+    const handler = setTimeout(() => {
+
+      setDebouncedValue(value);
+
+    }, delay);
+
+    // Cancel the timeout if value changes (e.g., user is still typing)
+
+    return () => {
+
+      clearTimeout(handler);
+
+    };
+
+  }, [value, delay]);
+
+  return debouncedValue;
+
+}
+
+
+// --- API Utility Functions ---
+// ... (fetchWithBackoff, generateIdeaFromAPI, generateTitleFromAPI, generateAgeRangeFromAPI, extractCharacterNamesFromPlotAPI, generateCharacterDescriptionsFromAPI, generateStoryFromAPI, generateImageFromAPI, generateFrontCoverFromAPI, generateCharacterImageFromAPI remain unchanged) ...
+const fetchWithBackoff = async (url, options, maxRetries = 5) => {
+
+  let delay = 1000; // start with 1 second
+
+  for (let i = 0; i < maxRetries; i++) {
+
+    try {
+
+      const response = await fetch(url, options);
+
+      if (!response.ok) {
+
+        let errorBody;
+
+        try {
+
+          errorBody = await response.json();
+
+        } catch (e) {
+
+          // Ignore if error body isn't json
+
+        }
+
+        
+
+        if (errorBody && errorBody.error && errorBody.error.message) {
+
+          throw new Error(errorBody.error.message);
+
+        }
+
+
+
+        if (response.status >= 400 && response.status < 500) {
+
+          throw new Error(`Client error: ${response.status} ${response.statusText}`);
+
+        }
+
+        throw new Error(`Server error: ${response.status} ${response.statusText}`);
+
+      }
+
+      return await response.json();
+
+    } catch (error) {
+
+      if (i === maxRetries - 1) throw error; 
+
+      await new Promise(resolve => setTimeout(resolve, delay));
+
+      delay *= 2; 
+
+    }
+
+  }
+
+};
+
+
+
+/**
+
+ * Generates a plot idea or author name.
+ */
+const generateIdeaFromAPI = async (context, seedPhrase, ageRange = "any age") => {
+  let prompt;
+  if (context === 'plot') {
+    prompt = `Generate a unique children's book plot idea (2-3 sentences) suitable for the age range: ${ageRange}.
+It must introduce one or two main characters by name and a brief descriptor (e.g., 'a curious girl', 'a shy robot', 'a grumpy badger').
+Example: "A story about a boy named Leo who finds a magical map, and his cautious best friend, Maya, who helps him on his quest."`;
+    if (seedPhrase) {
+      prompt += ` Base it on this theme or idea: "${seedPhrase}"`;
+
+    }
+
+  } else {
+
+    prompt = "Generate a creative and memorable author pen name for a children's book.";
+
+    if (seedPhrase) {
+
+      prompt += ` Base it on this theme: "${seedPhrase}"`;
+
+    }
+
+  }
+
+  
+
+  const payload = {
+
+    contents: [{ parts: [{ text: prompt }] }],
+
+    generationConfig: { responseMimeType: "application/json", responseSchema: { type: "STRING" } }
+
+  };
+
+
+
+  try {
+
+    const data = await fetchWithBackoff(GEMINI_API_URL, {
+
+      method: 'POST',
+
+      headers: { 'Content-Type': 'application/json' },
+
+      body: JSON.stringify(payload),
+
+    });
+
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!text) throw new Error("API returned no text.");
+
+    return JSON.parse(text);
+
+  } catch (error) {
+
+    // console.error("Idea generation failed:", error);
+
+    throw new Error(`Idea generation failed: ${error.message}`);
+
+  }
+
+};
+
+
+
+/**
+
+ * Generates a book title.
+
+ * @param {string} storyPrompt - The plot of the story.
+
+ * @returns {Promise<string>} - The generated title.
+
+ */
+
+const generateTitleFromAPI = async (storyPrompt) => {
+
+  const prompt = `Generate a short, catchy children's book title (max 10 words) based on this plot: "${storyPrompt}". Respond with a single JSON string.`;
+
+  const payload = {
+
+    contents: [{ parts: [{ text: prompt }] }],
+
+    generationConfig: { responseMimeType: "application/json", responseSchema: { type: "STRING" } }
+
+  };
+
+  try {
+
+    const data = await fetchWithBackoff(GEMINI_API_URL, {
+
+      method: 'POST',
+
+      headers: { 'Content-Type': 'application/json' },
+
+      body: JSON.stringify(payload),
+
+    });
+
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!text) throw new Error("API returned no text.");
+
+    return JSON.parse(text);
+
+  } catch (error) {
+
+    // console.error("Title generation failed:", error);
+
+    return "My Awesome Story"; // Fallback on non-critical error
+
+  }
+
+};
+
+
+
+/**
+
+ * Generates a specific age range from a general audience description.
+
+ * @param {string} audience - The general audience (e.g., "teens", "older kids").
+
+ * @returns {Promise<string>} - The processed string (e.g., "Teens (13-17)").
+
+ */
+
+const generateAgeRangeFromAPI = async (audience) => {
+
+  const prompt = `Take this audience description: "${audience}" and return a single, concise string that clarifies it with a common numerical age range. Keep the original description.
+
+
+
+Examples:
+
+- "teens" -> "Teens (13-17)"
+
+- "older kids" -> "Older Kids (8-12)"
+
+- "adults" -> "Adults (18+)"
+
+- "young children" -> "Young Children (3-6)"
+
+
+
+Respond with a single JSON string.`;
+
+  
+
+  const payload = {
+
+    contents: [{ parts: [{ text: prompt }] }],
+
+    generationConfig: { responseMimeType: "application/json", responseSchema: { type: "STRING" } }
+
+  };
+
+
+
+  try {
+
+    const data = await fetchWithBackoff(GEMINI_API_URL, {
+
+      method: 'POST',
+
+      headers: { 'Content-Type': 'application/json' },
+
+      body: JSON.stringify(payload),
+
+    });
+
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!text) throw new Error("API returned no text.");
+
+    return JSON.parse(text);
+
+  } catch (error) {
+
+    // console.error("Age range generation failed:", error);
+
+    return audience; // Return original text on failure
+
+  }
+
+};
+
+
+
+
+
+/**
+
+ * Extracts character names from a story plot.
+
+ * @param {string} storyPrompt - The plot of the story.
+
+ * @returns {Promise<string[]>} - An array of character names (e.g., ["Squeaky the mouse", "Barnaby the bear"])
+
+ */
+
+const extractCharacterNamesFromPlotAPI = async (storyPrompt) => {
+
+  const systemPrompt = `You are a story analyst. Read the following plot summary and extract the main characters (max 4).
+
+Respond ONLY with a valid JSON array of strings. Each string should be a character name with a brief descriptor (e.g., "Squeaky the brave mouse", "Mr. Grumbles the badger").
+
+If no specific characters are named, return an empty array.
+
+Example Plot: "A story about a brave mouse named Squeaky who teams up with a grumpy badger, Mr. Grumbles, to find a lost acorn."
+
+Example Response: ["Squeaky the brave mouse", "Mr. Grumbles the badger"]
+
+`;
+
+  const userQuery = `Plot: "${storyPrompt}"`;
+
+  
+
+  const payload = {
+
+    contents: [{ parts: [{ text: userQuery }] }],
+
+    systemInstruction: { parts: [{ text: systemPrompt }] },
+
+    generationConfig: {
+
+      responseMimeType: "application/json",
+
+      responseSchema: {
+
+        type: "ARRAY",
+
+        items: { type: "STRING" }
+
+      }
+
+    }
+
+  };
+
+
+
+  try {
+
+    const data = await fetchWithBackoff(GEMINI_API_URL, {
+
+      method: 'POST',
+
+      headers: { 'Content-Type': 'application/json' },
+
+      body: JSON.stringify(payload),
+
+    });
+
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!text) throw new Error("API returned no character names.");
+
+    return JSON.parse(text);
+
+  } catch (error) {
+
+    console.warn("Could not extract character names:", error.message);
+
+    return []; // Return empty array on failure, allowing manual entry
+
+  }
+
+};
+
+
+
+/**
+
+ * Generates character descriptions.
+
+ * @param {string[]} characterNames - e.g., ["Squeaky the squirrel", "Barnaby the bear"]
+
+ * @param {string} ageRange - e.g., "Preschool (3-5)"
+
+ */
+
+const generateCharacterDescriptionsFromAPI = async (characterNames, ageRange) => {
+
+  const systemPrompt = `You are a character designer creating descriptions for a children's book aimed at: ${ageRange}.
+
+For each character name provided, create a detailed, visually descriptive 'Character Sheet' description.
+
+This description will be used by an illustrator, so be specific about colors, clothing, facial features, and overall appearance, keeping the target age range in mind.
+
+A character for "Toddlers (1-3)" should be simpler (e.g., "A bright red, round, fluffy bird.") than one for "Middle Grade (8-12)" (e.g., "A tall, lanky bird with spectacles and a tattered tweed vest.").
+
+
+
+Respond ONLY with a valid JSON array of objects, where each object has "name" and "description".
+
+Example: [{"name": "Squeaky", "description": "A small, fluffy red squirrel with a very bushy tail..."}]
+
+  `;
+
+  
+
+  const userQuery = `Characters: ${characterNames.join(', ')}`;
+
+  
+
+  const payload = {
+
+    contents: [{ parts: [{ text: userQuery }] }],
+
+    systemInstruction: { parts: [{ text: systemPrompt }] },
+
+    generationConfig: {
+
+      responseMimeType: "application/json",
+
+      responseSchema: {
+
+        type: "ARRAY",
+
+        items: {
+
+          type: "OBJECT",
+
+          properties: {
+
+            name: { type: "STRING" },
+
+            description: { type: "STRING" }
+
+          },
+
+          required: ["name", "description"]
+
+        }
+
+      }
+
+    }
+
+  };
+
+  
+
+  const data = await fetchWithBackoff(GEMINI_API_URL, {
+
+    method: 'POST',
+
+    headers: { 'Content-Type': 'application/json' },
+
+    body: JSON.stringify(payload),
+
+  });
+
+  
+
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+  if (!text) throw new Error("Failed to generate character descriptions.");
+
+  return JSON.parse(text);
+
+};
+
+
+
+
+
+/**
+
+ * Generates the story, aware of characters, age, style, AND picture frequency.
+
+ * @param {object} options - All story generation options.
+
+ * @returns {Promise<Array<object>>} - An array of page OR spread objects.
+
+ */
+
+const generateStoryFromAPI = async ({
+  storyPrompt, artStyle, numPages, ageRange, language, writingStyle, characters, wordCountTarget,
+  pictureFrequency
+}) => {
+  
+  // --- MODIFIED: Character sheet now includes shortName and fullName ---
+  const characterSheet = characters
+    .map(c => `- fullName (key): "${c.fullName}"\n  - shortName (for story): "${c.shortName}"\n  - description: ${c.description}`)
+    .join('\n\n');
+  // --- END MODIFICATION ---
+  
+  const wordCountGuide = wordCountTarget 
+
+    ? `Each page's 'pageText' should be approximately ${wordCountTarget} words.`
+
+    : "Each page's 'pageText' should be 3-4 simple sentences (around 90-150 words).";
+
+
+
+  const userQuery = `Prompt: "${storyPrompt}"\nArt Style: "${artStyle}"\nPages/Spreads: ${numPages}`;
+
+
+
+  let systemPrompt, payload;
+
+
+
+  if (pictureFrequency === 'other_page') {
+
+    const numSpreads = Math.ceil(numPages / 2);
+
+    systemPrompt = `You are a creative children's book author writing a story in ${language}.
+
+Your task is to write a story based on a user's prompt, tailored for ${ageRange} old children.
+
+The writing style must be: ${writingStyle.name} (${writingStyle.description}).
+
+
+
+The story must be exactly ${numSpreads} spreads long.
+
+A spread consists of two facing pages: an IMAGE-ONLY page and a TEXT-ONLY page.
+
+
+
+HERE IS THE CAST OF CHARACTERS. You MUST be consistent with their descriptions:
+${characterSheet || "No specific characters provided."}
+
+For each spread, you must provide:
+1.  "pageText": The text for the TEXT-ONLY page. ${wordCountGuide}
+    -   **STORY RULE:** For the 'pageText', **primarily** use the \`shortName\` (e.g., 'Squeaky') to make the story sound natural. You **may** use the \`fullName\` *occasionally* for stylistic emphasis, but prefer the \`shortName\`.
+2.  "imagePrompt": A detailed, concrete description for the illustrator for the IMAGE-ONLY page.
+
+    -   This prompt must be visually descriptive and match the page text.
+    -   Do NOT include the art style (e.g., "watercolor") in the 'imagePrompt'.
+    -   **IMAGE RULE (CRITICAL):** If a main character is in the scene, you **MUST** include their exact \`fullName (key)\` string (e.g., "Squeaky the brave mouse") in the 'imagePrompt'. This is how the system identifies the character for the illustrator.
+
+Respond ONLY with a valid JSON array of ${numSpreads} spread objects.
+    `;
+    
+
+    payload = {
+
+      contents: [{ parts: [{ text: userQuery }] }],
+
+      systemInstruction: { parts: [{ text: systemPrompt }] },
+
+      generationConfig: {
+
+        responseMimeType: "application/json",
+
+        responseSchema: {
+
+          type: "ARRAY",
+
+          maxItems: numSpreads,
+
+          minItems: numSpreads,
+
+          items: {
+
+            type: "OBJECT",
+
+            properties: {
+
+              pageText: { type: "STRING" },
+
+              imagePrompt: { type: "STRING" },
+
+            },
+
+            required: ["pageText", "imagePrompt"],
+
+          },
+
+        },
+
+      },
+
+    };
+
+
+
+  } else if (pictureFrequency === 'no_pictures') {
+    systemPrompt = `You are a creative children's book author writing a story in ${language}.
+
+Your task is to write a story based on a user's prompt, tailored for ${ageRange} old children.
+
+The writing style must be: ${writingStyle.name} (${writingStyle.description}).
+
+
+
+The story must be exactly ${numPages} pages long.
+
+
+
+HERE IS THE CAST OF CHARACTERS. You MUST be consistent with their descriptions:
+${characterSheet || "No specific characters provided."}
+
+For each page, you must provide ONLY:
+1.  "pageText": The text for that page. ${wordCountGuide}
+    -   **STORY RULE:** For the 'pageText', **primarily** use the \`shortName\` (e.g., 'Squeaky') to make the story sound natural. You **may** use the \`fullName\` *occasionally* for stylistic emphasis, but prefer the \`shortName\`.
+
+Do NOT provide 'imagePrompt'. This is a text-only book.
+
+Respond ONLY with a valid JSON array of ${numPages} page objects.
+
+    `;
+
+    
+
+    payload = {
+
+      contents: [{ parts: [{ text: userQuery }] }],
+
+      systemInstruction: { parts: [{ text: systemPrompt }] },
+
+      generationConfig: {
+
+        responseMimeType: "application/json",
+
+        responseSchema: {
+
+          type: "ARRAY",
+
+          maxItems: numPages,
+
+          minItems: numPages,
+
+          items: {
+
+            type: "OBJECT",
+
+            properties: {
+
+              pageText: { type: "STRING" },
+
+            },
+
+            required: ["pageText"],
+
+          },
+
+        },
+
+      },
+
+    };
+
+
+
+  } else { // Default: 'each_page'
+    systemPrompt = `You are a creative children's book author writing a story in ${language}.
+
+Your task is to write a story based on a user's prompt, tailored for ${ageRange} old children.
+
+The writing style must be: ${writingStyle.name} (${writingStyle.description}).
+
+
+
+The story must be exactly ${numPages} pages long.
+
+
+
+HERE IS THE CAST OF CHARACTERS. You MUST be consistent with their descriptions:
+${characterSheet || "No specific characters provided."}
+
+For each page, you must provide:
+1.  "pageText": The text for that page. ${wordCountGuide}
+    -   **STORY RULE:** For the 'pageText', **primarily** use the \`shortName\` (e.g., 'Squeaky') to make the story sound natural. You **may** use the \`fullName\` *occasionally* for stylistic emphasis, but prefer the \`shortName\`.
+2.  "imagePrompt": A detailed, concrete description for an illustrator.
+
+    -   This prompt must be visually descriptive and match the page text.
+    -   Do NOT include the art style (e.g., "watercolor") in the 'imagePrompt'.
+    -   **IMAGE RULE (CRITICAL):** If a main character is in the scene, you **MUST** include their exact \`fullName (key)\` string (e.g., "Squeaky the brave mouse") in the 'imagePrompt'. This is how the system identifies the character for the illustrator.
+
+Respond ONLY with a valid JSON array of ${numPages} page objects.
+    `;
+    
+
+    payload = {
+
+      contents: [{ parts: [{ text: userQuery }] }],
+
+      systemInstruction: { parts: [{ text: systemPrompt }] },
+
+      generationConfig: {
+
+        responseMimeType: "application/json",
+
+        responseSchema: {
+
+          type: "ARRAY",
+
+          maxItems: numPages,
+
+          minItems: numPages,
+
+          items: {
+
+            type: "OBJECT",
+
+            properties: {
+
+              pageText: { type: "STRING" },
+
+              imagePrompt: { type: "STRING" },
+
+            },
+
+            required: ["pageText", "imagePrompt"],
+
+          },
+
+        },
+
+      },
+
+    };
+
+  }
+
+
+
+  const data = await fetchWithBackoff(GEMINI_API_URL, {
+
+    method: 'POST',
+
+    headers: { 'Content-Type': 'application/json' },
+
+    body: JSON.stringify(payload),
+
+  });
+
+
+
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+  if (!text) {
+
+    throw new Error("Failed to generate story. The API returned no content.");
+
+  }
+
+  
+
+  try {
+
+    return JSON.parse(text);
+
+  } catch (e) {
+
+    throw new Error(`Failed to parse story data from API. ${e.message}`);
+
+  }
+
+};
+
+
+
+/**
+
+ * Generates images, now supports variations.
+
+ * @param {string} imagePrompt - The prompt for the image.
+
+ * @param {string} artStyle - The desired art style.
+
+ * @param {number} variations - Number of images to generate.
+
+ * @param {Array<object>} characters - The full character sheet array.
+ * @returns {Promise<string[]>} - An array of base64-encoded image strings.
+ */
+const generateImageFromAPI = async (imagePrompt, artStyle, variations = 1, characters = [], ageRange = "any age") => {
+  const finalPrompt = `A children's book illustration, in the style of ${artStyle}, for ${ageRange} old children, showing: ${imagePrompt}. Vibrant colors, simple background.`;
+
+  // Find which characters are in the prompt
+  // --- THIS IS THE FIX ---
+  // We no longer check if the prompt.includes(name).
+  // We now send ALL character reference images with EVERY page.
+  // The AI will use the references as needed based on the prompt.
+  const referenceImages = characters
+    .filter(char => char.imageUrl && char.imageUrl !== ERROR_PLACEHOLDER) // Get all valid character images
+    .map(char => getBase64Data(char.imageUrl))
+    .filter(Boolean);
+
+
+
+  const imageParts = referenceImages.map(data => ({
+
+    inlineData: { mimeType: "image/png", data }
+
+  }));
+
+
+
+  const textPart = { text: finalPrompt };
+
+
+
+  // If we have reference images, adjust the prompt to use them
+
+  if (imageParts.length > 0) {
+    textPart.text = `Illustrate this scene: "${imagePrompt}".
+    Art Style: "${artStyle}".
+    Target Age: "${ageRange}".
+    CRITICAL: Use the exact character appearances from the reference images provided. Place them in this new scene. Do not just edit the reference images.`;
+  }
+  
+
+  const imageUrls = [];
+
+
+
+  // We must call the API 'variations' times, as it doesn't support multiple outputs for this model.
+
+  for (let i = 0; i < variations; i++) {
+
+    const payload = {
+
+      contents: [{
+
+        parts: [textPart, ...imageParts] // Add both text and image parts
+
+      }],
+
+      generationConfig: {
+
+        responseModalities: ['IMAGE']
+
+      },
+
+    };
+
+
+
+    try {
+
+      const data = await fetchWithBackoff(GEMINI_FLASH_IMAGE_API_URL, {
+
+        method: 'POST',
+
+        headers: { 'Content-Type': 'application/json' },
+
+        body: JSON.stringify(payload),
+
+      });
+
+
+
+      const base64Data = data?.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
+
+      if (!base64Data) {
+
+        throw new Error("No image data returned from Gemini Flash.");
+
+      }
+
+      imageUrls.push(`data:image/png;base64,${base64Data}`);
+
+    } catch (error) {
+
+      console.warn(`Image generation failed (variation ${i+1}): ${error.message}`);
+
+      imageUrls.push(ERROR_PLACEHOLDER);
+
+    }
+
+  }
+
+  return imageUrls;
+
+};
+
+
+
+/**
+
+ * Generates a front cover image.
+
+ * @param {object} options - All generation options from setup.
+
+ * @returns {Promise<string[]>} - An array of base64-encoded image strings.
+ */
+const generateFrontCoverFromAPI = async (options) => {
+  const { artStyle, storyPrompt, bookTitle, authorName, titleOnCover, authorOnCover, characters, imageVariations, ageRange } = options;
+  
+  // Use the first character as a subject, if available
+
+  let subject = "A beautiful, evocative scene related to the story.";
+  if (characters.length > 0) {
+    // --- MODIFIED: Use fullName and description ---
+    subject = `${characters[0].fullName} (${characters[0].description}).`;
+    // --- END MODIFIED ---
+  }
+
+  const coverPrompt = `A beautiful, print-ready front cover for a children's book in the style of ${artStyle}.
+
+  Main subject: ${subject}
+
+  The cover should be vibrant, inviting, and magical, suitable for a story about "${storyPrompt}".
+
+  ${titleOnCover ? `Please write the title "${bookTitle}" clearly and beautifully on the cover.` : ''}
+
+  ${authorOnCover ? `Please write the author's name "By ${authorName}" clearly on the cover, usually at the bottom.` : ''}
+  The text should be legible and well-integrated into the art.`;
+
+  return await generateImageFromAPI(coverPrompt, artStyle, imageVariations, characters, ageRange);
+};
+
+/**
+
+ * Generates a single character reference image.
+
+ * @param {string} description - The character's detailed description.
+
+ * @param {string} artStyle - The art style.
+
+ * @param {string} ageRange - The target age range
+
+ */
+
+const generateCharacterImageFromAPI = async (description, artStyle, ageRange) => {
+
+   const finalPrompt = `A children's book illustration, in the style of ${artStyle}, for ${ageRange} old children.
+
+A full-body, standalone character portrait of: ${description}.
+
+Simple, plain white background.
+
+The character should be in a neutral, standing pose.`;
+
+
+
+  const payload = {
+
+    contents: [{
+
+      parts: [{ text: finalPrompt }]
+
+    }],
+
+    generationConfig: {
+
+      responseModalities: ['IMAGE']
+
+    },
+
+  };
+
+
+
+  try {
+
+    const data = await fetchWithBackoff(GEMINI_FLASH_IMAGE_API_URL, {
+
+      method: 'POST',
+
+      headers: { 'Content-Type': 'application/json' },
+
+      body: JSON.stringify(payload),
+
+    });
+
+    const base64Data = data?.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
+
+    if (!base64Data) throw new Error("No image data returned.");
+
+    return `data:image/png;base64,${base64Data}`;
+
+  } catch (error) {
+
+    console.warn(`Character image failed: ${error.message}`);
+
+    return ERROR_PLACEHOLDER;
+
+  }
+
+};
+
+
+
+/**
+ * NEW: Describes an uploaded image to fill the character description.
+ * @param {string} base64ImageData - The raw base64 data (no prefix).
+ * @param {string} mimeType - e.g., "image/png" or "image/jpeg".
+ * @returns {Promise<string>} - The generated description.
+ */
+const describeImageFromAPI = async (base64ImageData, mimeType) => {
+  const prompt = `You are a character designer. Analyze this image of a character.
+Your task is to create a detailed, visually descriptive 'Character Sheet' description based *only* on the character in the image.
+This description will be used by an illustrator, so be specific about species, colors, clothing, facial features, and overall appearance.
+Do NOT describe the pose, background, or art style.
+
+Example: "A small, fluffy red squirrel with a very bushy tail, wearing a tiny blue vest and round spectacles."
+
+Respond ONLY with a single JSON string.`;
+
+  const payload = {
+    contents: [
+      {
+        parts: [
+          { text: prompt },
+          {
+            inlineData: {
+              mimeType: mimeType,
+              data: base64ImageData
+            }
+          }
+        ]
+      }
+    ],
+    generationConfig: {
+      responseMimeType: "application/json",
+      responseSchema: { type: "STRING" }
+    }
+  };
+
+  const data = await fetchWithBackoff(GEMINI_API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error("Failed to describe image.");
+  return JSON.parse(text);
+};
+
+
+const getBase64Data = (dataUrl) => {
+
+  if (!dataUrl || !dataUrl.includes(',')) return null;
+
+  return dataUrl.split(',')[1];
+
+};
+
+
+
+// ... (regenerateImageFromAPI, regenerateTextFromAPI remain unchanged) ...
+
+
+const regenerateImageFromAPI = async (base64ImageData, editPrompt) => {
+
+  const payload = {
+
+    contents: [{
+
+      parts: [
+
+        { text: `You are a children's book illustrator. Edit this image based on the prompt: "${editPrompt}". Maintain the original art style. Only return the edited image.` },
+
+        {
+
+          inlineData: {
+
+            mimeType: "image/png",
+
+            data: base64ImageData
+
+          }
+
+        }
+
+      ]
+
+    }],
+
+    generationConfig: {
+
+      responseModalities: ['IMAGE']
+
+    },
+
+  };
+
+
+
+  try {
+
+    const data = await fetchWithBackoff(GEMINI_FLASH_IMAGE_API_URL, {
+
+      method: 'POST',
+
+      headers: { 'Content-Type': 'application/json' },
+
+      body: JSON.stringify(payload),
+
+    });
+
+
+
+    const base64Data = data?.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
+
+    if (!base64Data) {
+
+      throw new Error("No image data returned from Gemini Flash.");
+
+    }
+
+    return `data:image/png;base64,${base64Data}`;
+
+  } catch (error) {
+
+    console.warn(`Image regeneration failed: ${error.message}`);
+
+    throw new Error(`Image regeneration failed: ${error.message}`);
+
+  }
+
+};
+
+
+
+
+
+const regenerateTextFromAPI = async (originalText, imagePrompt, userPrompt) => {
+
+  const systemPrompt = `You are a creative children's book author.
+
+A page in a storybook currently has this text:
+
+"${originalText}"
+
+
+
+The image on the page is described as:
+
+"${imagePrompt}"
+
+
+
+The user wants to change the text based on this request:
+
+"${userPrompt}"
+
+
+
+Please write the new, improved page text (max 3-4 simple sentences) that fits the user's request and the image.
+
+Respond ONLY with the new page text, formatted as a single JSON string.
+
+  `;
+
+
+
+  const payload = {
+
+    contents: [{ parts: [{ text: userPrompt }] }],
+
+    systemInstruction: {
+
+      parts: [{ text: systemPrompt }]
+
+    },
+
+    generationConfig: {
+
+      responseMimeType: "application/json",
+
+      responseSchema: { type: "STRING" }
+
+    }
+
+  };
+
+
+
+  try {
+
+    const data = await fetchWithBackoff(GEMINI_API_URL, {
+
+      method: 'POST',
+
+      headers: { 'Content-Type': 'application/json' },
+
+      body: JSON.stringify(payload),
+
+    });
+
+
+
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!text) {
+
+      throw new Error("Failed to regenerate text. No text returned.");
+
+    }
+
+    return JSON.parse(text); // API returns a JSON-encoded string
+
+  } catch (error) {
+
+    // console.error("Text regeneration failed:", error);
+
+    throw new Error(`Text regeneration failed: ${error.message}`);
+
+  }
+
+};
+
+
+
+// --- React Components ---
+// ... (INITIAL_AGE_RANGES, LANGUAGES, ART_STYLES, WRITING_STYLES, IdeaModal remain unchanged) ...
+const INITIAL_AGE_RANGES = ["Toddlers (1-3)", "Preschool (3-5)", "Early Readers (5-7)", "Middle Grade (8-12)", "Custom..."];
+
+const LANGUAGES = ["English", "Spanish", "French", "German", "Japanese", "Mandarin", "More..."];
+
+
+
+const ART_STYLES = [
+
+  "Children's Book Illustration", "Watercolor painting", "Digital Painting", 
+
+  "Cartoon/Anime", "Kawaii", "Realistic Storybook", "Pencil Sketch/Drawing", 
+
+  "Vintage Children's Book", "Modern Minimalist", "Fantasy Concept Art", 
+
+  "Classic Animation Cel", "Manga/Chibi", "Cut Paper Collage", 
+
+  "Whimsical Illustration", "Ink & Wash", "Pen-and-Ink Crosshatching", 
+
+  "Gouache/Painterly", "Flat Vector/Geometric", "Mid-century Modern", "Woodcut/Linocut"
+
+];
+
+
+
+const WRITING_STYLES = {
+
+  default: { name: "Default", description: "A simple, clear, and engaging style.", example: "The squirrel found a big nut." },
+
+  action: { name: "Action-packed", description: "Fast-paced and exciting, with lots of verbs.", example: "The squirrel zipped up the tree and grabbed the nut!" },
+
+  conversational: { name: "Conversational", description: "Friendly and informal, as if talking to the reader.", example: "You'll never guess what the squirrel did next..." },
+
+  descriptive: { name: "Descriptive", description: "Uses vivid language and sensory details.", example: "The squirrel's bushy, red tail twitched on the rough bark." },
+
+  minimalist: { name: "Minimalist", description: "Uses very few words, clear and direct.", example: "Big tree. Red squirrel. One nut." },
+
+  poetic: { name: "Poetic", description: "Uses rhythm, rhyme, and figurative language.", example: "A flash of red, a bushy tail, he found a nut, he did not fail." },
+
+  humorous: { name: "Humorous", description: "Silly, funny, and playful.", example: "The squirrel tried to hide the nut in his ear. That tickled!" },
+
+  mysterious: { name: "Mysterious", description: "Builds suspense and intrigue.", example: "The nut was gone. Where could it be?" },
+
+  adventure: { name: "Adventure", description: "Focuses on a journey, quest, or challenge.", example: "The squirrel began his long journey to the Great Oak." },
+
+  heartwarming: { name: "Heartwarming", description: "Focuses on themes of love, friendship, and kindness.", example: "The squirrel shared his nut with the little lost bird." },
+
+  educational: { name: "Educational", description: "Teaches a concept, moral, or fact.", example: "Squirrels are mammals, and they bury nuts to eat later." },
+
+};
+
+
+
+/**
+ * Modal for generating plot ideas or author names
+ */
+function IdeaModal({ show, onClose, context, onGenerate, ageRange }) {
+  const [seedPhrase, setSeedPhrase] = useState("");
+  const [generatedIdea, setGeneratedIdea] = useState("");
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [error, setError] = useState(null);
+
+
+
+  const handleGenerate = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const idea = await generateIdeaFromAPI(context, seedPhrase, ageRange); // Pass ageRange
+      setGeneratedIdea(idea);
+    } catch (e) {
+      setError(e.message);
+
+    }
+
+    setIsLoading(false);
+
+  };
+
+
+
+  const handleUseIdea = () => {
+
+    onGenerate(generatedIdea);
+
+    onClose();
+
+    setGeneratedIdea("");
+
+    setSeedPhrase("");
+
+    setError(null);
+
+  };
+
+
+
+  // Reset error when closing
+
+  const handleClose = () => {
+
+    setError(null);
+
+    setGeneratedIdea("");
+
+    setSeedPhrase("");
+
+    onClose();
+
+  }
+
+
+
+  if (!show) return null;
+
+
+
+  const title = context === 'plot' ? "Generate a Plot Idea" : "Generate an Author Name";
+
+  const placeholder = context === 'plot' ? "e.g., friendship, space, dragons" : "e.g., funny, classic, whimsical";
+
+
+
+  return (
+
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-lg">
+
+        <div className="flex justify-between items-center p-4 border-b">
+
+          <h3 className="text-xl font-semibold">{title}</h3>
+
+          <button onClick={handleClose} className="text-gray-400 hover:text-gray-600">
+
+            <icons.x className="h-6 w-6" />
+
+          </button>
+
+        </div>
+
+        <div className="p-6 space-y-4">
+
+          <div>
+
+            <label htmlFor="seed" className="block text-sm font-medium text-gray-700 mb-1">
+
+              Optional Seed Phrase
+
+            </label>
+
+            <input
+
+              type="text"
+
+              id="seed"
+
+              value={seedPhrase}
+
+              onChange={(e) => setSeedPhrase(e.target.value)}
+
+              className="w-full p-2 border border-gray-300 rounded-lg shadow-sm"
+
+              placeholder={placeholder}
+
+            />
+
+          </div>
+
+          <button
+
+            onClick={handleGenerate}
+
+            disabled={isLoading}
+
+            className="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg shadow-sm hover:bg-blue-700 disabled:opacity-50"
+
+          >
+
+            {isLoading ? <icons.loader className="h-5 w-5 mr-2" /> : <icons.sparkles className="h-5 w-5 mr-2" />}
+
+            Generate Idea
+
+          </button>
+
+          {error && (
+
+            <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+
+              <p className="text-sm">{error}</p>
+
+            </div>
+
+          )}
+
+          {generatedIdea && (
+
+            <div className="pt-4 border-t">
+
+              <p className="text-gray-700">{generatedIdea}</p>
+
+              <button
+
+                onClick={handleUseIdea}
+
+                className="w-full mt-4 px-4 py-2 bg-green-600 text-white rounded-lg shadow-sm hover:bg-green-700"
+
+              >
+
+                Use This Idea
+
+              </button>
+
+            </div>
+
+          )}
+
+        </div>
+
+      </div>
+
+    </div>
+
+  );
+
+}
+
+
+/**
+ * A single item in the Character Sheet
+ */
+function CharacterSheetItem({ character, onUpdate, onRegenDesc, onRegenImage, onUploadImage, onDelete, isLoading }) { // Add onDelete
+  const isFailed = character.imageUrl === ERROR_PLACEHOLDER;
+  const fileInputRef = useRef(null);
+
+  const handleUploadClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        onUploadImage(reader.result, file.type);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      // console.warn("Please select a valid PNG or JPG image.");
+    }
+    // Clear the input value to allow re-uploading the same file
+    e.target.value = null;
+  };
+
+  return (
+    <div className="bg-gray-50 rounded-lg flex flex-col space-y-4 shadow-sm overflow-hidden">
+      {/* Hidden file input */}
+      <input type="file" accept="image/png, image/jpeg" ref={fileInputRef} onChange={handleFileChange} className="hidden" />
+      
+      <div onClick={handleUploadClick} className="w-full aspect-square flex-shrink-0 bg-gray-300 flex items-center justify-center overflow-hidden relative cursor-pointer group">
+        {isLoading.image ? (
+          <icons.loader className="h-8 w-8 text-gray-500" />
+        ) : character.imageUrl ? (
+          <img src={character.imageUrl} alt={character.shortName} className={`w-full h-full object-contain ${isFailed ? 'opacity-50' : ''}`} />
+        ) : (
+          <icons.user className="h-12 w-12 text-gray-400" />
+        )}
+        {isFailed && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-red-100 bg-opacity-75">
+            <icons.alert className="h-8 w-8 text-red-600" />
+            <span className="text-xs font-semibold text-red-600 mt-1">Failed</span>
+          </div>
+        )}
+        {!isLoading.image && !character.imageUrl && (
+          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 flex items-center justify-center transition-opacity">
+            <span className="text-white text-xs font-semibold opacity-0 group-hover:opacity-100">Click to Upload</span>
+          </div>
+        )}
+      </div>
+      <div className="w-full space-y-2">
+        <input
+          type="text"
+          value={character.shortName}
+          onChange={(e) => onUpdate('shortName', e.target.value)}
+          className="w-full p-2 font-semibold text-lg border border-gray-300 rounded-lg"
+          placeholder="Short Name"
+        />
+        <textarea
+          value={character.description}
+          onChange={(e) => onUpdate('description', e.target.value)}
+          rows="3"
+          className="w-full p-2 text-sm border border-gray-300 rounded-lg"
+          placeholder="Visual description..."
+          disabled={isLoading.desc}
+        />
+        <div className="flex space-x-2">
+          <button
+            type="button" 
+            onClick={onRegenDesc}
+            disabled={isLoading.desc}
+            className="flex-1 text-xs px-2 py-1 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 disabled:opacity-50"
+          >
+            {isLoading.desc ? <icons.loader className="h-4 w-4 mx-auto" /> : "Regen Desc"}
+          </button>
+          
+          <button
+            type="button" 
+            onClick={onRegenImage}
+            disabled={isLoading.image}
+            className="flex-1 text-xs px-2 py-1 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 disabled:opacity-50"
+          >
+            {isLoading.image ? <icons.loader className="h-4 w-4 mx-auto" /> : "Regen Image"}
+          </button>
+
+          <button
+            type="button" 
+            onClick={handleUploadClick}
+            className="flex-1 text-xs px-2 py-1 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 disabled:opacity-50"
+          >
+            Upload
+          </button>
+          
+          {/* --- NEW DELETE BUTTON --- */}
+          <button
+            type="button" 
+            onClick={onDelete}
+            className="flex-shrink-0 text-xs px-2 py-1 bg-red-100 text-red-700 border border-red-300 rounded-md shadow-sm hover:bg-red-200 disabled:opacity-50"
+            title="Delete Character"
+          >
+            <icons.trash className="h-4 w-4 mx-auto" />
+          </button>
+          {/* --- END NEW --- */}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Collapsible section for the SetupView
+ */
+// ... (SetupSection remains unchanged) ...
+function SetupSection({ title, icon, children, defaultOpen = false, isLoading = false }) {
+
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+
+  const IconComponent = icons[icon];
+
+  
+
+  return (
+
+    <div className="border border-gray-200 rounded-lg overflow-hidden">
+
+      <button
+
+        type="button" 
+
+        onClick={() => setIsOpen(!isOpen)}
+
+        className="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition"
+
+      >
+
+        <div className="flex items-center space-x-3">
+
+          <IconComponent className="h-6 w-6 text-blue-600" />
+
+          <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
+
+          {isLoading && <icons.loader className="h-5 w-5 text-gray-400" />}
+
+        </div>
+
+        <icons.chevronDown className={`h-6 w-6 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+
+      </button>
+
+      {isOpen && (
+
+        <div className="p-6 space-y-6">
+
+          {children}
+
+        </div>
+
+      )}
+
+    </div>
+
+  );
+
+}
+
+
+/**
+ * The initial setup screen, now with many more options.
+ */
+function SetupView({ onStart, isLoading, error, onDismissError, onGoToEditor, hasExistingStory }) {
+  const [storyPrompt, setStoryPrompt] = useState("");
+  
+
+  const [ageRanges, setAgeRanges] = useState(INITIAL_AGE_RANGES);
+
+  const [ageRange, setAgeRange] = useState(ageRanges[1]);
+
+  const [customAgeRange, setCustomAgeRange] = useState("");
+
+  const [isAgeRangeLoading, setIsAgeRangeLoading] = useState(false);
+
+
+
+  const [language, setLanguage] = useState(LANGUAGES[0]);
+
+  const [artStyle, setArtStyle] = useState(ART_STYLES[1]);
+
+  const [writingStyleKey, setWritingStyleKey] = useState("default");
+  
+  const [characters, setCharacters] = useState([]);
+  const [charLoading, setCharLoading] = useState({}); // e.g., { 0: { desc: true, image: false } }
+  const [isCharNameLoading, setIsCharNameLoading] = useState(false);
+  const [isSheetLoading, setIsSheetLoading] = useState(false);
+  const [characterNameInput, setCharacterNameInput] = useState(""); // NEW: For the semi-auto input
+  
+  const debouncedStoryPrompt = useDebounce(storyPrompt, 2000);
+  const isGeneratingChars = useRef(false); // Ref to prevent race conditions
+  
+  // Track what settings were used to generate the current characters
+  const [lastGeneratedStyle, setLastGeneratedStyle] = useState('');
+
+
+  const [numPages, setNumPages] = useState(12);
+
+  const [wordCountMode, setWordCountMode] = useState("auto");
+
+  const [wordCountTarget, setWordCountTarget] = useState(130);
+
+  const [pictureFrequency, setPictureFrequency] = useState("each_page");
+
+  const [useNanoBanana, setUseNanoBanana] = useState(true);
+
+  const [imageVariations, setImageVariations] = useState(1);
+
+  
+
+  const [genCover, setGenCover] = useState(true);
+
+  const [bookTitle, setBookTitle] = useState("");
+
+  const [isTitleLoading, setIsTitleLoading] = useState(false);
+
+  const [titleOnCover, setTitleOnCover] = useState(true);
+
+  const [authorOnCover, setAuthorOnCover] = useState(true);
+  const [authorName, setAuthorName] = useState("");
+  
+  // --- NEW: Add missing function ---
+  const handleProcessCustomAge = async () => {
+    if (ageRange !== 'Custom...' || !customAgeRange.trim()) return;
+
+    setIsAgeRangeLoading(true);
+    try {
+      const processedRange = await generateAgeRangeFromAPI(customAgeRange);
+      // Check if this range already exists
+      if (!ageRanges.includes(processedRange)) {
+        // Add it right before 'Custom...'
+        setAgeRanges(currentRanges => {
+          const newRanges = [...currentRanges];
+          newRanges.splice(newRanges.length - 1, 0, processedRange);
+          return newRanges;
+        });
+      }
+      setAgeRange(processedRange); // Select it
+      setCustomAgeRange(processedRange); // Update the input field
+    } catch (e) {
+      console.warn("Could not process custom age:", e.message);
+      // Fallback: just use what they typed
+      if (!ageRanges.includes(customAgeRange)) {
+        setAgeRanges(currentRanges => {
+          const newRanges = [...currentRanges];
+          newRanges.splice(newRanges.length - 1, 0, customAgeRange);
+          return newRanges;
+        });
+      }
+      setAgeRange(customAgeRange);
+    }
+    setIsAgeRangeLoading(false);
+  };
+  // --- END NEW ---
+  
+  // --- NEW: State for character delete confirmation ---
+  const [showDeleteCharModal, setShowDeleteCharModal] = useState(false);
+  const [charToDelete, setCharToDelete] = useState(null); // This will store the character ID
+  // --- End New State ---
+  
+  // --- NEW: Front Matter State ---
+  const [includeTitlePage, setIncludeTitlePage] = useState(true);
+  const [includeCopyrightPage, setIncludeCopyrightPage] = useState(true);
+  const [copyrightUrl, setCopyrightUrl] = useState("");
+  const [includePageNumbers, setIncludePageNumbers] = useState(true);
+  // --- End New State ---
+  
+  const [printSettings, setPrintSettings] = useState(DEFAULT_PRINT_SETTINGS);
+  const [kdpPreset, setKdpPreset] = useState("us_paperback:8.5x8.5");
+
+  
+
+  const [showIdeaModal, setShowIdeaModal] = useState(false);
+
+  const [modalContext, setModalContext] = useState("plot"); // 'plot' or 'author'
+
+
+
+  const [isTestingMode, setIsTestingMode] = useState(false); 
+
+  const writingStyle = WRITING_STYLES[writingStyleKey];
+
+
+
+  // --- KDP Settings Handlers ---
+  // ... (KDP handlers remain unchanged) ...
+  useEffect(() => {
+
+    const minMargins = calculateMinMargins(numPages, printSettings.hasBleed);
+
+    setPrintSettings(currentSettings => ({
+
+      ...currentSettings,
+
+      margins: {
+
+        top: Math.max(currentSettings.margins.top, minMargins.top),
+
+        bottom: Math.max(currentSettings.margins.bottom, minMargins.bottom),
+
+        inside: Math.max(currentSettings.margins.inside, minMargins.inside),
+
+        outside: Math.max(currentSettings.margins.outside, minMargins.outside),
+
+      }
+
+    }));
+
+  }, [numPages, printSettings.hasBleed]);
+
+
+
+  const handlePresetChange = (e) => {
+    const value = e.target.value;
+    setKdpPreset(value);
+    if (value === 'custom') return;
+    const [groupKey, sizeKey] = value.split(':');
+    const [w, h] = sizeKey.split('x').map(Number);
+    
+    // --- FIX: This block was incorrect. Replaced with correct logic. ---
+    setPrintSettings(current => {
+      const newMinMargins = calculateMinMargins(numPages, current.hasBleed);
+      return {
+        ...current,
+        trimWidth: w,
+        trimHeight: h,
+        // Also re-validate margins
+        margins: {
+          top: Math.max(current.margins.top, newMinMargins.top),
+          bottom: Math.max(current.margins.bottom, newMinMargins.bottom),
+          inside: Math.max(current.margins.inside, newMinMargins.inside),
+          outside: Math.max(current.margins.outside, newMinMargins.outside),
+        }
+      };
+    });
+    // --- End Fix ---
+  };
+  
+  const handlePrintSettingChange = (e) => {
+
+    const { name, value, type, checked } = e.target;
+
+    const val = type === 'checkbox' ? checked : type === 'number' ? parseFloat(value) : value;
+
+
+
+    // Get the *current* minimums before we set the new state
+
+    const minMargins = calculateMinMargins(numPages, printSettings.hasBleed);
+
+
+
+    if (name.startsWith("margin_")) {
+
+      const marginName = name.split("_")[1];
+
+      // Check the new value against the minimum for that specific margin
+
+      const minVal = minMargins[marginName];
+
+      const finalVal = Math.max(val, minVal);
+
+
+
+      setPrintSettings(current => ({ 
+
+        ...current, 
+
+        margins: { ...current.margins, [marginName]: finalVal } 
+
+      }));
+
+    } else {
+
+      // Handle hasBleed change, which also affects minimums
+
+      let newHasBleed = printSettings.hasBleed;
+
+      if (name === 'hasBleed') {
+
+        newHasBleed = checked;
+
+      }
+
+      
+
+      // Recalculate minimums *if* bleed changed
+
+      const newMinMargins = (name === 'hasBleed') 
+
+        ? calculateMinMargins(numPages, newHasBleed) 
+
+        : minMargins;
+
+        
+
+      setPrintSettings(current => ({ 
+
+        ...current, 
+
+        [name]: val,
+
+        // Also re-validate all margins in case bleed changed
+
+        margins: {
+
+          top: Math.max(current.margins.top, newMinMargins.top),
+
+          bottom: Math.max(current.margins.bottom, newMinMargins.bottom),
+
+          inside: Math.max(current.margins.inside, newMinMargins.inside),
+
+          outside: Math.max(current.margins.outside, newMinMargins.outside),
+
+        }
+
+      }));
+
+    }
+
+  };
+  
+  const getPageLimits = () => {
+
+    if (kdpPreset === 'custom') return { min: 4, max: 828 };
+
+    const [groupKey, sizeKey] = kdpPreset.split(':');
+
+    const [w, h] = sizeKey.split('x').map(Number);
+
+    const preset = KDP_PRESETS[groupKey].sizes.find(s => s.w === w && s.h === h);
+
+    return preset ? { min: preset.min, max: preset.max } : { min: 4, max: 828 };
+
+  };
+  const pageLimits = getPageLimits();
+
+
+  // --- Idea Modal Handlers ---
+  // ... (Idea Modal handlers remain unchanged) ...
+  const openIdeaModal = (context) => {
+
+    setModalContext(context);
+
+    setShowIdeaModal(true);
+
+  };
+  
+  const handleIdeaGenerated = (idea) => {
+    if (modalContext === 'plot') {
+      setStoryPrompt(idea);
+
+    } else {
+      setAuthorName(idea);
+    }
+  };
+
+
+  // --- NEW: Handlers for character deletion ---
+  const promptDeleteCharacter = (id) => {
+    setCharToDelete(id);
+    setShowDeleteCharModal(true);
+  };
+
+  const cancelDeleteCharacter = () => {
+    setShowDeleteCharModal(false);
+    setCharToDelete(null);
+  };
+
+  const confirmDeleteCharacter = () => {
+    if (charToDelete === null) return;
+    setCharacters(currentChars => currentChars.filter(c => c.id !== charToDelete));
+    cancelDeleteCharacter(); // Reset state
+  };
+  // --- END NEW ---
+
+  // --- Character Sheet Handlers ---
+  
+  // NEW: Effect to auto-extract character names from plot
+  useEffect(() => {
+    if (debouncedStoryPrompt.trim().length < 20) {
+      return;
+    }
+    
+    // Don't run if sheets are already being generated
+    if (isGeneratingChars.current || isSheetLoading) {
+      return;
+    }
+
+    const extractNames = async () => {
+      setIsCharNameLoading(true);
+      try {
+        const names = await extractCharacterNamesFromPlotAPI(debouncedStoryPrompt);
+        if (names.length > 0) {
+          setCharacterNameInput(names.join('\n'));
+        }
+      } catch (e) {
+        console.warn("Could not extract character names:", e.message);
+      }
+      setIsCharNameLoading(false);
+    };
+
+    extractNames();
+    
+  }, [debouncedStoryPrompt, isSheetLoading]); // Only depends on plot
+  
+
+  // NEW: Click handler to generate character sheets from the input
+  const handleGenerateSheets = async (e) => {
+    e.preventDefault();
+    if (!characterNameInput.trim()) return;
+
+    const names = characterNameInput.split('\n').map(name => name.trim()).filter(Boolean);
+    if (names.length === 0) return;
+
+    isGeneratingChars.current = true;
+    setIsSheetLoading(true);
+    setCharacters([]); // Wipe old characters
+    setCharLoading({});
+    
+    const finalAgeRange = ageRange === 'Custom...' ? (customAgeRange.trim() || 'any age') : ageRange;
+    setLastGeneratedStyle(artStyle); // Store the style used
+    
+    try {
+      // 1. Get descriptions
+      const descriptions = await generateCharacterDescriptionsFromAPI(names, finalAgeRange);
+      
+      const charsWithDesc = names.map(name => {
+        const found = descriptions.find(d => name.toLowerCase().includes(d.name.toLowerCase()) || d.name.toLowerCase().includes(name.toLowerCase()));
+        
+        // --- MODIFIED: Use the AI's shortName, with a fallback ---
+        let simpleName;
+        if (found && found.name) {
+          simpleName = found.name; // Use the name from the AI
+        } else {
+          // Fallback logic (the old, flawed logic, but better than nothing)
+          simpleName = (name.split(' ')[0] || "Character").replace(/[^a-zA-Z0-9]/g, '');
+          if (simpleName.length === 0) simpleName = "Character";
+        }
+
+        return {
+          id: crypto.randomUUID(),
+          fullName: name, // The full, descriptive name is the "key"
+          shortName: simpleName, // The simple, editable name for the UI
+          description: found ? found.description : "A character in the story.",
+          imageUrl: null,
+          isUploaded: false,
+        };
+        // --- END MODIFICATION ---
+      });
+      setCharacters(charsWithDesc);
+
+      // 2. Generate images in parallel
+      const loadingState = {};
+      charsWithDesc.forEach((_, index) => {
+        loadingState[index] = { desc: false, image: true };
+      });
+      setCharLoading(loadingState);
+
+      const imagePromises = charsWithDesc.map(char => 
+        generateCharacterImageFromAPI(char.description, artStyle, finalAgeRange)
+      );
+          
+      const results = await Promise.allSettled(imagePromises);
+          
+      setCharacters(currentChars => {
+        const newChars = [...currentChars]; 
+        results.forEach((result, i) => {
+          if (newChars[i]) {
+            newChars[i].imageUrl = result.status === 'fulfilled' ? result.value : ERROR_PLACEHOLDER;
+          }
+        });
+        return newChars;
+      });
+
+    } catch (e) {
+      console.error("Failed to generate character sheets:", e);
+    }
+    
+    setCharLoading({});
+    setIsSheetLoading(false);
+    isGeneratingChars.current = false;
+  };
+
+  // UPDATED: Effect to regenerate *images only* if art style changes
+  useEffect(() => {
+    // Only run if style changed, we have characters, and nothing else is loading
+    if (
+      artStyle === lastGeneratedStyle || 
+      characters.length === 0 || 
+      isGeneratingChars.current ||
+      isSheetLoading
+    ) {
+      return;
+    }
+
+    const regenerateCharacterImages = async () => {
+      isGeneratingChars.current = true; // Use this ref to block other processes
+      
+      const loadingState = {};
+      characters.forEach((_, index) => {
+        loadingState[index] = { desc: false, image: true };
+      });
+      setCharLoading(loadingState);
+
+      const finalAgeRange = ageRange === 'Custom...' ? (customAgeRange.trim() || 'any age') : ageRange;
+      
+      const imagePromises = characters.map(char => {
+        // --- MODIFICATION: Check for isUploaded flag ---
+        if (char.isUploaded && char.imageUrl) {
+          return Promise.resolve(char.imageUrl); // Keep the uploaded image
+        }
+        // --- END MODIFICATION ---
+        return generateCharacterImageFromAPI(char.description, artStyle, finalAgeRange);
+      });
+          
+      const results = await Promise.allSettled(imagePromises);
+      
+      // --- MODIFICATION: When regenerating, unset the isUploaded flag ---
+      const wasGenerated = characters.map(char => !char.isUploaded || !char.imageUrl);
+      // --- END MODIFICATION ---
+          
+      setCharacters(currentChars => {
+        const newChars = [...currentChars];
+        results.forEach((result, i) => {
+          if (newChars[i]) {
+            newChars[i].imageUrl = result.status === 'fulfilled' ? result.value : ERROR_PLACEHOLDER;
+            // --- MODIFICATION: Unset the flag if it was generated ---
+            if (wasGenerated[i] && result.status === 'fulfilled') {
+              newChars[i].isUploaded = false;
+            }
+            // --- END MODIFICATION ---
+          }
+        });
+        return newChars;
+      });
+      
+      setCharLoading({});
+      setLastGeneratedStyle(artStyle); // Update the last-used style
+      isGeneratingChars.current = false;
+    };
+
+    regenerateCharacterImages();
+    
+  }, [artStyle, characters, ageRange, customAgeRange, isSheetLoading, lastGeneratedStyle]);
+
+
+  /**
+   * Manually adds a blank character sheet
+
+   */
+
+  const handleAddCharacter = (e) => {
+
+    e.preventDefault();
+    const newChar = {
+      id: crypto.randomUUID(),
+      // --- NEW: Use shortName and fullName ---
+      shortName: "New Character",
+      fullName: "New Character (with a custom description)",
+      // --- END NEW ---
+      description: "A new character in the story.",
+      imageUrl: null,
+      isUploaded: false, // NEW: Default to false
+    };
+    setCharacters(current => [...current, newChar]);
+  };
+
+
+  // --- NEW: Handler for manual image upload ---
+  const handleUploadImage = async (id, dataUrl, mimeType) => {
+    const charIndex = characters.findIndex(c => c.id === id);
+    if (charIndex === -1) return;
+
+    // 1. Set image and loading state immediately
+    setCharacters(current =>
+      current.map(c => 
+        c.id === id ? { ...c, imageUrl: dataUrl, isUploaded: true, description: "Describing image..." } : c
+      )
+    );
+    setCharLoading(current => ({
+      ...current,
+      [charIndex]: { ...current[charIndex], desc: true, image: false } // Set desc loading
+    }));
+
+    // 2. Try to generate description
+    try {
+      const base64Data = getBase64Data(dataUrl);
+      if (!base64Data) throw new Error("Invalid data URL.");
+
+      const description = await describeImageFromAPI(base64Data, mimeType);
+      
+      // 3. Update description on success
+      setCharacters(current =>
+        current.map(c => 
+          c.id === id ? { ...c, description: description } : c
+        )
+      );
+    } catch (e) {
+      // console.warn("Failed to describe image:", e.message);
+      // 3b. Update description on failure
+      setCharacters(current =>
+        current.map(c => 
+          c.id === id ? { ...c, description: "My uploaded character." } : c
+        )
+      );
+    } finally {
+      // 4. Unset loading state
+      setCharLoading(current => ({
+        ...current,
+        [charIndex]: { ...current[charIndex], desc: false }
+      }));
+    }
+  };
+  // --- END NEW ---
+
+  // --- Character Sheet Handlers ---
+  
+  const updateCharacter = (id, field, value) => {
+
+    setCharacters(current => 
+
+      current.map(c => c.id === id ? { ...c, [field]: value } : c)
+
+    );
+
+  };
+  
+  const handleRegenDesc = async (id) => {
+
+    const charIndex = characters.findIndex(c => c.id === id);
+
+    if (charIndex === -1) return;
+
+    const char = characters[charIndex];
+
+    
+
+    setCharLoading(current => ({
+
+      ...current,
+
+      [charIndex]: { ...current[charIndex], desc: true }
+
+    }));
+
+    
+
+    const finalAgeRange = ageRange === 'Custom...' ? (customAgeRange.trim() || 'any age') : ageRange;
+
+    try {
+      // --- MODIFIED: Use fullName ---
+      const descriptions = await generateCharacterDescriptionsFromAPI([char.fullName], finalAgeRange); // Pass age range
+      // --- END MODIFIED ---
+      const newDesc = descriptions[0]?.description || "Failed to generate.";
+      
+      setCharacters(currentChars => 
+
+        currentChars.map(c => c.id === id ? { ...c, description: newDesc } : c)
+
+      );
+
+    } catch (error) {
+
+      // console.error("Failed to regen desc:", error);
+
+    } finally {
+
+      setCharLoading(current => ({
+
+        ...current,
+
+        [charIndex]: { ...current[charIndex], desc: false }
+
+      }));
+
+    }
+
+  };
+  
+  const handleRegenImage = async (id) => {
+    const charIndex = characters.findIndex(c => c.id === id);
+    if (charIndex === -1) return;
+
+    const char = characters[charIndex];
+
+
+
+    if (!artStyle) {
+
+      // console.error("Art style not set.");
+
+      return; 
+
+    }
+
+
+
+    setCharLoading(current => ({
+
+      ...current,
+
+      [charIndex]: { ...current[charIndex], image: true }
+
+    }));
+
+    
+
+    const finalAgeRange = ageRange === 'Custom...' ? (customAgeRange.trim() || 'any age') : ageRange;
+
+
+
+    try {
+
+      const imageUrl = await generateCharacterImageFromAPI(char.description, artStyle, finalAgeRange); // Pass age range
+
+      setCharacters(currentChars => 
+
+        currentChars.map(c => c.id === id ? { ...c, imageUrl, isUploaded: false } : c) // MODIFIED: Set isUploaded to false
+
+      );
+
+    } catch (error) {
+
+      // console.error("Failed to regen image:", error);
+
+    } finally {
+
+      setCharLoading(current => ({
+
+        ...current,
+
+        [charIndex]: { ...current[charIndex], image: false }
+
+      }));
+
+    }
+
+  };
+
+  
+  // --- NEW: Add missing handleGenerateTitle ---
+  const handleGenerateTitle = async () => {
+    if (!storyPrompt) return;
+    setIsTitleLoading(true);
+    try {
+      const title = await generateTitleFromAPI(storyPrompt);
+      setBookTitle(title);
+    } catch (e) {
+      // console.warn("Title generation failed, using fallback.");
+      setBookTitle("My Awesome Story");
+    }
+    setIsTitleLoading(false);
+  };
+  // --- END NEW ---
+
+
+  // --- Form Submit ---
+  // ... (handleSubmit remains unchanged) ...
+  const handleSubmit = (e) => {
+
+    e.preventDefault();
+
+    if (!storyPrompt.trim()) return;
+
+    
+
+    const finalPageCount = isTestingMode ? 4 : (numPages === 0 ? 12 : numPages); 
+
+    const finalWordCount = wordCountMode === 'auto' ? 130 : wordCountTarget;
+
+    const finalAgeRange = ageRange === 'Custom...' ? (customAgeRange.trim() || 'any age') : ageRange;
+
+
+
+    onStart({
+
+      storyPrompt,
+
+      artStyle,
+
+      numPages: finalPageCount,
+
+      printSettings,
+
+      ageRange: finalAgeRange, 
+
+      language,
+
+      writingStyle: WRITING_STYLES[writingStyleKey], // Pass the full style object
+
+      characters,
+
+      wordCountTarget: finalWordCount,
+
+      pictureFrequency,
+
+      useNanoBanana,
+
+      imageVariations,
+      genCover,
+      bookTitle: bookTitle || "My Awesome Story",
+      titleOnCover,
+      authorOnCover,
+      authorName: authorName || "A. N. Author",
+      // --- FIX: Add missing front matter settings ---
+      includeTitlePage,
+      includeCopyrightPage,
+      copyrightUrl,
+      includePageNumbers,
+      // --- End Fix ---
+    });
+  };
+
+
+  const isButtonDisabled = isLoading || !storyPrompt.trim();
+
+  // --- NEW: Calculate finalAgeRange for use in modal ---
+  const finalAgeRange = ageRange === 'Custom...' ? (customAgeRange.trim() || 'any age') : ageRange;
+
+  return (
+    <>
+      <IdeaModal
+        show={showIdeaModal}
+        onClose={() => setShowIdeaModal(false)}
+        context={modalContext}
+        onGenerate={handleIdeaGenerated}
+        ageRange={finalAgeRange} // Pass the calculated age range
+      />
+      
+      {/* --- NEW: Character Delete Modal --- */}
+      <ConfirmationModal
+        show={showDeleteCharModal}
+        onCancel={cancelDeleteCharacter}
+        onConfirm={confirmDeleteCharacter}
+        title="Delete Character"
+        message={charToDelete !== null ? `Are you sure you want to delete this character? This cannot be undone.` : ""}
+      />
+      {/* --- END NEW --- */}
+
+      <div className="flex-1 overflow-y-auto p-8 bg-gray-50">
+        {/* NEW "Back to Editor" BUTTON */}
+        {hasExistingStory && (
+          <div className="w-full max-w-3xl mx-auto mb-6">
+            <button
+              type="button"
+              onClick={onGoToEditor}
+              className="w-full flex items-center justify-center px-4 py-3 bg-green-600 text-white rounded-lg shadow-sm hover:bg-green-700 transition"
+            >
+              <icons.chevronLeft className="h-5 w-5 mr-2" />
+              Back to Story Editor
+            </button>
+          </div>
+        )}
+        {/* END NEW BUTTON */}
+        <div className="w-full max-w-3xl mx-auto">
+
+          <div className="text-center mb-8">
+
+            <icons.book className="h-16 w-16 mx-auto text-blue-600" />
+
+            <h1 className="text-4xl font-bold text-gray-800 mt-4">KDP Story Creator</h1>
+
+            <p className="text-lg text-gray-600 mt-2">
+              Bring your children's book ideas to life with AI.
+            </p>
+
+          </div>
+
+
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+
+            
+
+            {/* --- Section 1: Story Basics --- */}
+            {/* ... (Story Basics section remains unchanged) ... */}
+            <SetupSection title="1. Story Basics" icon="book" defaultOpen={true}>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Age Range */}
+                <div>
+                  <label htmlFor="ageRange" className="block text-sm font-medium text-gray-700 mb-1">
+                    Age Range
+                  </label>
+                  <select
+                    id="ageRange"
+                    value={ageRange}
+                    onChange={(e) => setAgeRange(e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-lg shadow-sm bg-white"
+                  >
+                    {ageRanges.map(age => <option key={age} value={age}>{age}</option>)}
+                  </select>
+                </div>
+                {/* Language */}
+                <div>
+                  <label htmlFor="language" className="block text-sm font-medium text-gray-700 mb-1">
+                    Generation Language
+                  </label>
+                  <select
+                    id="language"
+                    value={language}
+                    onChange={(e) => setLanguage(e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-lg shadow-sm bg-white"
+                  >
+                    {LANGUAGES.map(lang => <option key={lang} value={lang}>{lang}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              {/* Custom Age Range Input */}
+              {ageRange === 'Custom...' && (
+                <div>
+
+                  <label htmlFor="customAgeRange" className="block text-sm font-medium text-gray-700 mb-1">
+
+                    Custom Audience
+
+                  </label>
+                  <div className="relative">
+
+                    <input
+
+                      type="text"
+
+                      id="customAgeRange"
+
+                      value={customAgeRange}
+
+                      onChange={(e) => setCustomAgeRange(e.target.value)}
+
+                      onKeyDown={(e) => {
+
+                        if (e.key === 'Enter') {
+
+                          e.preventDefault();
+
+                          handleProcessCustomAge();
+
+                        }
+
+                      }}
+
+                      onBlur={handleProcessCustomAge}
+                      className="w-full p-3 border border-gray-300 rounded-lg shadow-sm"
+                      placeholder="e.g., 'Teens' or 'Adults' (press Enter to process)"
+                    />
+                    {isAgeRangeLoading && (
+
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+
+                        <icons.loader className="h-5 w-5 text-gray-400" />
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">Type an audience and press Enter or click away to get an AI-assisted age range.</p>
+                </div>
+              )}
+
+              {/* Plot Outline */}
+              <div>
+                <label htmlFor="prompt" className="block text-sm font-medium text-gray-700 mb-1">
+                  Plot Outline
+                </label>
+
+                <textarea
+
+                  id="prompt"
+
+                  value={storyPrompt}
+
+                  onChange={(e) => setStoryPrompt(e.target.value)}
+
+                  rows="3"
+
+                  className="w-full p-3 border border-gray-300 rounded-lg shadow-sm"
+
+                  placeholder="e.g., A brave little squirrel who wants to fly..."
+
+                />
+
+                <button
+
+                  type="button"
+
+                  onClick={(e) => {
+
+                    e.preventDefault();
+
+                    openIdeaModal('plot');
+
+                  }}
+
+                  className="flex items-center text-sm text-blue-600 hover:text-blue-800 mt-2"
+
+                >
+
+                  <icons.sparkles className="h-4 w-4 mr-1" />
+
+                  Give me an idea
+
+                </button>
+              </div>
+              
+              {/* Custom Age Range Input */}
+              {ageRange === 'Custom...' && (
+                <div style={{display: 'none'}}> {/* This block is being moved */}
+                </div>
+              )}
+            </SetupSection>
+
+
+            {/* --- Section 2: Style & Tone --- */}
+            {/* ... (Style & Tone section remains unchanged) ... */}
+            <SetupSection title="2. Style & Tone" icon="palette">
+
+              {/* Art Style */}
+
+              <div>
+
+                <label htmlFor="artStyle" className="block text-sm font-medium text-gray-700 mb-1">
+
+                  Art Style
+
+                </label>
+
+                <select
+
+                  id="artStyle"
+
+                  value={artStyle}
+
+                  onChange={(e) => setArtStyle(e.target.value)}
+
+                  className="w-full p-3 border border-gray-300 rounded-lg shadow-sm bg-white"
+
+                >
+
+                  {ART_STYLES.map(style => (
+
+                    <option key={style} value={style}>{style}</option>
+
+                  ))}
+
+                </select>
+
+              </div>
+
+              {/* Writing Style */}
+
+              <div>
+
+                <label htmlFor="writingStyle" className="block text-sm font-medium text-gray-700 mb-1">
+
+                  Writing Style
+
+                </label>
+
+                <select
+
+                  id="writingStyle"
+
+                  value={writingStyleKey}
+
+                  onChange={(e) => setWritingStyleKey(e.target.value)}
+
+                  className="w-full p-3 border border-gray-300 rounded-lg shadow-sm bg-white"
+
+                >
+
+                  {Object.entries(WRITING_STYLES).map(([key, style]) => (
+
+                    <option key={key} value={key}>{style.name}</option>
+
+                  ))}
+
+                </select>
+
+                {writingStyle && (
+
+                  <div className="mt-2 p-3 bg-gray-100 rounded-lg text-sm">
+
+                    <p className="font-semibold text-gray-700">{writingStyle.description}</p>
+
+                    <p className="text-gray-600 italic mt-1">e.g., "{writingStyle.example}"</p>
+
+                  </div>
+
+                )}
+
+              </div>
+
+            </SetupSection>
+
+
+            {/* --- Section 3: Characters --- */}
+            <SetupSection title="3. Characters" icon="users" isLoading={isSheetLoading}>
+              <p className="text-sm text-gray-600 -mt-2">
+                Type your plot, and character names will be auto-suggested below.
+                Review and edit the names, then click Generate.
+              </p>
+
+              <div>
+                <label htmlFor="characterNameInput" className="block text-sm font-medium text-gray-700 mb-1">
+                  Character Names (one per line)
+                </label>
+                <div className="relative">
+                  <textarea
+                    id="characterNameInput"
+                    value={characterNameInput}
+                    onChange={(e) => setCharacterNameInput(e.target.value)}
+                    rows="2"
+                    className="w-full p-3 border border-gray-300 rounded-lg shadow-sm"
+                    placeholder="e.g., Squeaky the mouse
+Professor Hoot the owl"
+                    disabled={isSheetLoading}
+                  />
+                  {isCharNameLoading && (
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                      <icons.loader className="h-5 w-5 text-gray-400" />
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              <button
+                type="button"
+                onClick={handleGenerateSheets}
+                disabled={isSheetLoading || !characterNameInput.trim()}
+                className="w-full mt-2 flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg shadow-sm hover:bg-blue-700 disabled:opacity-50"
+              >
+                {isSheetLoading ? <icons.loader className="h-5 w-5 mr-2" /> : <icons.sparkles className="h-5 w-5 mr-2" />}
+                Generate Character Sheets
+              </button>
+
+              {characters.length > 0 && (
+                <div className="mt-4 pt-4 border-t grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {characters.map((char, index) => (
+                    <CharacterSheetItem
+
+                      key={char.id}
+
+                      character={char}
+
+                      onUpdate={(field, value) => updateCharacter(char.id, field, value)}
+
+                      onRegenDesc={() => handleRegenDesc(char.id)}
+                      onUploadImage={(dataUrl, mimeType) => handleUploadImage(char.id, dataUrl, mimeType)}
+
+                      onRegenImage={() => handleRegenImage(char.id)}
+                      
+                      onDelete={() => promptDeleteCharacter(char.id)}
+
+                      isLoading={charLoading[index] || {}}
+
+                    />
+                  ))}
+                </div>
+              )}
+               <button
+                type="button"
+
+                onClick={handleAddCharacter}
+
+                className="w-full mt-4 flex items-center justify-center px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
+
+              >
+
+                Add Character Manually
+
+              </button>
+
+            </SetupSection>
+
+            
+            {/* --- Section 4: Book Format & KDP Settings --- */}
+            {/* ... (Book Format section remains unchanged) ... */}
+            <SetupSection title="4. Book Format & KDP Settings" icon="layout">
+
+              {/* Page Count */}
+
+              <div>
+
+                <label htmlFor="numPages" className="block text-sm font-medium text-gray-700 mb-1">
+
+                  Preferred Page Count (0 = auto)
+
+                </label>
+
+                <input
+
+                  type="number"
+
+                  id="numPages"
+
+                  value={numPages}
+
+                  onChange={(e) => setNumPages(Math.max(0, Math.min(pageLimits.max, Number(e.target.value))))}
+
+                  className="w-full p-3 border border-gray-300 rounded-lg shadow-sm"
+
+                  min="0"
+
+                  max={pageLimits.max}
+
+                />
+
+                <p className="text-xs text-gray-500 text-left mt-1">
+
+                  (Using preset limits: Min: {pageLimits.min}, Max: {pageLimits.max})
+
+                </p>
+
+              </div>
+
+
+
+              {/* Word Count */}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <div>
+
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+
+                    Word Count
+
+                  </label>
+
+                  <div className="flex space-x-4">
+
+                    <label className="flex items-center">
+
+                      <input type="radio" name="wordCount" value="auto" checked={wordCountMode === 'auto'} onChange={(e) => setWordCountMode(e.target.value)} className="text-blue-600" />
+
+                      <span className="ml-2">Automatic</span>
+
+                    </label>
+
+                    <label className="flex items-center">
+
+                      <input type="radio" name="wordCount" value="manual" checked={wordCountMode === 'manual'} onChange={(e) => setWordCountMode(e.target.value)} className="text-blue-600" />
+
+                      <span className="ml-2">Manual</span>
+
+                    </label>
+
+                  </div>
+
+                </div>
+
+                {wordCountMode === 'manual' && (
+
+                  <div>
+
+                    <label htmlFor="wordCountTarget" className="block text-sm font-medium text-gray-700 mb-1">
+
+                      Target Words Per Page
+
+                    </label>
+
+                    <input
+
+                      type="number"
+
+                      id="wordCountTarget"
+
+                      value={wordCountTarget}
+
+                      onChange={(e) => setWordCountTarget(Number(e.target.value))}
+
+                      className="w-full p-3 border border-gray-300 rounded-lg shadow-sm"
+
+                      min="10"
+
+                      step="10"
+
+                    />
+
+                  </div>
+
+                )}
+
+              </div>
+
+
+
+              {/* Picture Frequency & Variations */}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <div>
+
+                  <label htmlFor="pictureFrequency" className="block text-sm font-medium text-gray-700 mb-1">
+
+                    Picture Frequency
+
+                  </label>
+
+                  <select
+
+                    id="pictureFrequency"
+
+                    value={pictureFrequency}
+
+                    onChange={(e) => setPictureFrequency(e.target.value)}
+
+                    className="w-full p-3 border border-gray-300 rounded-lg shadow-sm bg-white"
+
+                  >
+
+                    <option value="each_page">Picture on each page</option>
+
+                    <option value="other_page">Facing Pages (Image, Text, Image, Text...)</option>
+
+                    <option value="no_pictures">No pictures (text only)</option>
+
+                    <option value="per_chapter" disabled>Picture every chapter (coming soon)</option>
+
+                  </select>
+
+                </div>
+
+                <div>
+
+                  <label htmlFor="imageVariations" className="block text-sm font-medium text-gray-700 mb-1">
+
+                    Image Variations Per Page
+
+                  </label>
+
+                  <select
+
+                    id="imageVariations"
+
+                    value={imageVariations}
+
+                    onChange={(e) => setImageVariations(Number(e.target.value))}
+
+                    className="w-full p-3 border border-gray-300 rounded-lg shadow-sm bg-white"
+
+                  >
+
+                    <option value={1}>1</option>
+                    <option value={2}>2</option>
+                    <option value={3} disabled>3 (coming soon)</option>
+
+                  </select>
+
+                </div>
+              </div>
+
+              {/* --- NEW: Front Matter Options --- */}
+              <div className="pt-6 border-t space-y-3">
+                <label className="block text-lg font-medium text-gray-800">Front Matter & Numbering</label>
+                
+                {/* Include Title Page */}
+                <div className="flex items-center">
+                  <input id="includeTitlePage" type="checkbox" checked={includeTitlePage} onChange={(e) => setIncludeTitlePage(e.target.checked)} className="h-4 w-4 text-blue-600 border-gray-300 rounded" />
+                  <label htmlFor="includeTitlePage" className="ml-2 block text-sm text-gray-800">Include Interior Title Page</label>
+                </div>
+
+                {/* Include Copyright Page */}
+                <div className="flex items-center">
+                  <input id="includeCopyrightPage" type="checkbox" checked={includeCopyrightPage} onChange={(e) => setIncludeCopyrightPage(e.target.checked)} className="h-4 w-4 text-blue-600 border-gray-300 rounded" />
+                  <label htmlFor="includeCopyrightPage" className="ml-2 block text-sm text-gray-800">Include Copyright Page</label>
+                </div>
+
+                {/* Copyright URL Input (Conditional) */}
+                {includeCopyrightPage && (
+                  <div className="pl-6">
+                    <label htmlFor="copyrightUrl" className="block text-sm font-medium text-gray-700 mb-1">
+                      Website URL (for QR Code)
+                    </label>
+                    <input
+                      type="text"
+                      id="copyrightUrl"
+                      value={copyrightUrl}
+                      onChange={(e) => setCopyrightUrl(e.target.value)}
+                      className="flex-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm"
+                      placeholder="https://www.mybooks.com"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">A QR code will be generated for this link.</p>
+                  </div>
+                )}
+                
+                {/* Include Page Numbers */}
+                <div className="flex items-center">
+                  <input id="includePageNumbers" type="checkbox" checked={includePageNumbers} onChange={(e) => setIncludePageNumbers(e.target.checked)} className="h-4 w-4 text-blue-600 border-gray-300 rounded" />
+                  <label htmlFor="includePageNumbers" className="ml-2 block text-sm text-gray-800">Include Centered Page Numbers</label>
+                </div>
+              </div>
+              {/* --- End New --- */}
+
+
+              {/* Cover Options */}
+              <div className="space-y-3 pt-6 border-t">
+                {/* Generate Cover Toggle */}
+                <div className="flex items-center">
+                  <input id="genCover" type="checkbox" checked={genCover} onChange={(e) => setGenCover(e.target.checked)} className="h-4 w-4 text-blue-600 border-gray-300 rounded" />
+                  <label htmlFor="genCover" className="ml-2 block text-sm font-medium text-gray-800">Generate Front Cover</label>
+                </div>
+
+                {/* Conditional Cover Options */}
+                {genCover && (
+                  <div className="pl-6 space-y-4">
+                    {/* Include Title on Cover */}
+                    <div className="flex items-center">
+                      <input id="titleOnCover" type="checkbox" checked={titleOnCover} onChange={(e) => setTitleOnCover(e.target.checked)} className="h-4 w-4 text-blue-600 border-gray-300 rounded" />
+                      <label htmlFor="titleOnCover" className="ml-2 block text-sm text-gray-800">Include title on cover</label>
+                    </div>
+
+                    {/* Book Title Input (now conditional) */}
+                    {titleOnCover && (
+                      <div className="pl-6">
+                        <label htmlFor="bookTitle" className="block text-sm font-medium text-gray-700 mb-1">
+                          Book Title
+                        </label>
+                        <div className="flex">
+                          <input
+                            type="text"
+                            id="bookTitle"
+                            value={bookTitle}
+                            onChange={(e) => setBookTitle(e.target.value)}
+                            className="flex-1 w-full p-3 border border-gray-300 rounded-l-lg shadow-sm"
+                            placeholder="Generates from plot..."
+                            disabled={isTitleLoading}
+                          />
+                          <button
+                            type="button"
+                            onClick={handleGenerateTitle}
+                            disabled={isTitleLoading || !storyPrompt}
+                            className="flex items-center justify-center px-3 bg-gray-200 border-t border-r border-b border-gray-300 rounded-r-lg hover:bg-gray-300 disabled:opacity-50"
+                            title="Generate title from plot"
+                          >
+                            {isTitleLoading ? (
+                              <icons.loader className="h-5 w-5 text-gray-600" />
+                            ) : (
+                              <icons.sparkles className="h-5 w-5 text-gray-600" />
+                            )}
+                          </button>
+                        </div>
+                        {!storyPrompt && <p className="text-xs text-gray-500 mt-1">Write your plot first to enable title generation.</p>}
+                      </div>
+                    )}
+
+                    {/* Include Author on Cover */}
+                    <div className="flex items-center">
+                      <input id="authorOnCover" type="checkbox" checked={authorOnCover} onChange={(e) => setAuthorOnCover(e.target.checked)} className="h-4 w-4 text-blue-600 border-gray-300 rounded" />
+                      <label htmlFor="authorOnCover" className="ml-2 block text-sm text-gray-800">Include author name on cover</label>
+                    </div>
+
+                    {/* Author Name Input (now conditional) */}
+                    {authorOnCover && (
+                       <div className="pl-6">
+                         <label htmlFor="authorName" className="block text-sm font-medium text-gray-700 mb-1">
+                          Author Name
+                        </label>
+                        <div className="flex">
+                          <input
+                            type="text"
+                            id="authorName"
+                            value={authorName}
+                            onChange={(e) => setAuthorName(e.target.value)}
+                            className="flex-1 w-full p-3 border border-gray-300 rounded-l-lg shadow-sm"
+                            placeholder="e.g., Jane Doe"
+                          />
+                           <button
+                            type="button"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              openIdeaModal('author');
+                            }}
+                            className="flex items-center justify-center px-3 bg-gray-200 border-t border-r border-b border-gray-300 rounded-r-lg hover:bg-gray-300"
+                            title="Give me an idea"
+                          >
+                            <icons.sparkles className="h-5 w-5 text-gray-600" />
+                          </button>
+                        </div>
+                       </div>
+                    )}
+                  </div>
+                )}
+              </div>
+              
+              {/* KDP Settings */}
+
+              <div className="pt-6 border-t">
+
+                <h3 className="text-lg font-medium text-gray-800 text-left mb-4">
+
+                  KDP Print Settings
+
+                </h3>
+
+                {/* KDP Preset */}
+
+                <div>
+
+                  <label htmlFor="kdpPreset" className="block text-sm font-medium text-gray-700 mb-1">KDP Preset</label>
+
+                  <select id="kdpPreset" value={kdpPreset} onChange={handlePresetChange} className="w-full p-3 border border-gray-300 rounded-lg shadow-sm bg-white">
+
+                    <option value="custom">Custom Size</option>
+
+                    {Object.entries(KDP_PRESETS).map(([groupKey, group]) => (
+
+                      <optgroup label={group.name} key={groupKey}>
+
+                        {group.sizes.map(size => (
+
+                          <option key={`${groupKey}:${size.w}x${size.h}`} value={`${groupKey}:${size.w}x${size.h}`}>{size.name}</option>
+
+                        ))}
+
+                      </optgroup>
+
+                    ))}
+
+                  </select>
+
+                </div>
+
+                {/* Trim Size */}
+
+                <div className="grid grid-cols-2 gap-4 mt-4">
+
+                  <div>
+
+                    <label htmlFor="trimWidth" className="block text-sm font-medium text-gray-700 mb-1">Trim Width (in)</label>
+
+                    <input type="number" id="trimWidth" name="trimWidth" value={printSettings.trimWidth} onChange={handlePrintSettingChange} className="w-full p-3 border border-gray-300 rounded-lg shadow-sm" step="0.01" min="4" disabled={kdpPreset !== 'custom'} />
+
+                  </div>
+
+                  <div>
+
+                    <label htmlFor="trimHeight" className="block text-sm font-medium text-gray-700 mb-1">Trim Height (in)</label>
+
+                    <input type="number" id="trimHeight" name="trimHeight" value={printSettings.trimHeight} onChange={handlePrintSettingChange} className="w-full p-3 border border-gray-300 rounded-lg shadow-sm" step="0.01" min="6" disabled={kdpPreset !== 'custom'} />
+
+                  </div>
+
+                </div>
+
+                {/* Bleed Toggle */}
+
+                <div className="flex items-center mt-4">
+
+                  <input id="hasBleed" name="hasBleed" type="checkbox" checked={printSettings.hasBleed} onChange={handlePrintSettingChange} className="h-4 w-4 text-blue-600 border-gray-300 rounded" />
+
+                  <label htmlFor="hasBleed" className="ml-2 block text-sm text-gray-800">Full Bleed (Images go to edge)</label>
+
+                </div>
+
+                {/* Margins */}
+
+                <div className="mt-4">
+
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Margins (in) - Safe Zone</label>
+
+                  <div className="grid grid-cols-2 gap-4">
+
+                    <input type="number" name="margin_top" placeholder="Top" value={printSettings.margins.top} onChange={handlePrintSettingChange} step="0.01" min={calculateMinMargins(numPages, printSettings.hasBleed).top} className="w-full p-2 border border-gray-300 rounded-lg shadow-sm" />
+
+                    <input type="number" name="margin_bottom" placeholder="Bottom" value={printSettings.margins.bottom} onChange={handlePrintSettingChange} step="0.01" min={calculateMinMargins(numPages, printSettings.hasBleed).bottom} className="w-full p-2 border border-gray-300 rounded-lg shadow-sm" />
+
+                    <input type="number" name="margin_inside" placeholder="Inside" value={printSettings.margins.inside} onChange={handlePrintSettingChange} step="0.01" min={calculateMinMargins(numPages, printSettings.hasBleed).inside} className="w-full p-2 border border-gray-300 rounded-lg shadow-sm" />
+
+                    <input type="number" name="margin_outside" placeholder="Outside" value={printSettings.margins.outside} onChange={handlePrintSettingChange} step="0.01" min={calculateMinMargins(numPages, printSettings.hasBleed).outside} className="w-full p-2 border border-gray-300 rounded-lg shadow-sm" />
+
+                  </div>
+
+                  <p className="text-xs text-gray-500 text-left mt-1">Values will automatically increase to meet KDP minimums.</p>
+
+                </div>
+
+              </div>
+
+            </SetupSection>
+
+
+
+
+
+            {/* Error Display */}
+            {/* ... (Error Display remains unchanged) ... */}
+            {error && (
+
+              <div className="p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg flex justify-between items-center" role="alert">
+
+                <div>
+
+                  <h4 className="font-bold">Generation Failed</h4>
+
+                  <p className="text-sm">{error}</p>
+
+                </div>
+
+                <button
+
+                  type="button"
+
+                  onClick={onDismissError}
+
+                  className="p-1 text-red-700 hover:text-red-900"
+
+                  aria-label="Close"
+
+                >
+
+                  <icons.x className="h-6 w-6" />
+
+                </button>
+
+              </div>
+
+            )}
+
+
+            {/* Submit Button */}
+            {/* ... (Submit Button remains unchanged) ... */}
+            <div className="flex items-center justify-center my-4">
+
+              <input
+
+                id="testingMode"
+
+                type="checkbox"
+
+                checked={isTestingMode}
+
+                onChange={(e) => setIsTestingMode(e.target.checked)}
+
+                className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+
+              />
+
+              <label htmlFor="testingMode" className="ml-2 block text-sm text-gray-800 font-medium">
+
+                Testing Mode (Limit to 4 pages for speed)
+
+              </label>
+
+            </div>
+            
+            <button
+
+              type="submit"
+
+              disabled={isButtonDisabled}
+
+              className={`w-full flex items-center justify-center p-4 text-lg font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+
+                ${isButtonDisabled ? 'opacity-50 cursor-not-allowed' : ''}
+
+                ${isLoading ? 'bg-blue-700' : ''}`}
+
+            >
+
+              {isLoading ? (
+
+                <>
+
+                  <icons.loader className="h-6 w-6 mr-3" />
+
+                  Generating...
+
+                </>
+
+              ) : (
+
+                <>
+
+                  <icons.wand className="h-6 w-6 mr-3" />
+
+                  Create My Story
+
+                </>
+
+              )}
+
+            </button>
+
+          </form>
+
+        </div>
+
+      </div>
+
+    </>
+
+  );
+
+}
+
+
+/**
+ * A loading screen shown while the story and images are generated.
+ */
+// ... (CreatingView, ConfirmationModal, TitlePagePreview, CopyrightPagePreview remain unchanged) ...
+function CreatingView({ storyStatus, imageStatus }) {
+
+  return (
+
+    <div className="flex-1 flex flex-col items-center justify-center p-8 bg-gray-50 text-center">
+
+      <icons.loader className="h-16 w-16 text-blue-600" />
+
+      <h1 className="text-3xl font-bold text-gray-800 mt-6">Creating your masterpiece...</h1>
+
+      <p className="text-lg text-gray-600 mt-2">This may take a minute or two.</p>
+
+      
+
+      <div className="mt-8 text-left space-y-3 w-full max-w-md">
+
+        <div className="flex items-center text-lg">
+
+          {storyStatus === 'complete' ? (
+
+            <span className="text-green-500">✔</span>
+
+          ) : (
+
+            <icons.loader className="h-5 w-5 mr-3 flex-shrink-0" />
+
+          )}
+
+          <span className="ml-3">Generating story text...</span>
+
+        </div>
+
+        <div className="flex items-center text-lg">
+
+           {storyStatus === 'complete' ? (
+
+             imageStatus === 'complete' ? (
+
+                <span className="text-green-500">✔</span>
+
+             ) : (
+
+                <icons.loader className="h-5 w-5 mr-3 flex-shrink-0" />
+
+             )
+
+           ) : (
+
+            <span className="text-gray-400">...</span>
+
+           )}
+
+          <span className={`ml-3 ${storyStatus !== 'complete' ? 'text-gray-400' : ''}`}>
+
+            {imageStatus}
+
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  );
+}
+
+// --- NEW: Confirmation Modal Component ---
+function ConfirmationModal({ show, onCancel, onConfirm, title, message }) {
+  if (!show) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-sm">
+        <div className="flex justify-between items-center p-4 border-b">
+          <h3 className="text-xl font-semibold text-gray-800">{title}</h3>
+          <button onClick={onCancel} className="text-gray-400 hover:text-gray-600">
+            <icons.x className="h-6 w-6" />
+          </button>
+        </div>
+        <div className="p-6 space-y-4">
+          <p className="text-gray-700">{message}</p>
+        </div>
+        <div className="flex justify-end p-4 bg-gray-50 rounded-b-lg space-x-3">
+          <button
+            onClick={onCancel}
+            className="px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm text-gray-700 hover:bg-gray-50"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg shadow-sm hover:bg-red-700"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+// --- End New ---
+
+/**
+ * The initial setup screen, now with many more options.
+// --- NEW: Preview components for read-only pages ---
+
+/**
+ * Preview for Title Page in the editor
+ */
+function TitlePagePreview({ page, settings }) {
+  const { margins } = settings;
+  return (
+    <div 
+      className="w-full h-full flex flex-col items-center justify-center text-center p-8"
+      style={{
+        paddingLeft: `${(margins.inside / settings.trimWidth) * 100}%`,
+        paddingRight: `${(margins.outside / settings.trimWidth) * 100}%`,
+      }}
+    >
+      <p className="text-xl text-gray-700">{page.authorName} Presents</p>
+      <h1 className="text-4xl font-bold text-gray-900 mt-4">{page.pageText}</h1>
+    </div>
+  );
+}
+
+/**
+ * Preview for Copyright Page in the editor
+ */
+function CopyrightPagePreview({ page, settings }) {
+  const { margins } = settings;
+  const qrPlaceholder = `https://placehold.co/120x120/eee/ccc?text=QR+Code`;
+  const qrApi = page.qrUrl ? `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(page.qrUrl)}` : qrPlaceholder;
+  
+  return (
+    <div 
+      className="w-full h-full flex flex-col items-center justify-between text-center p-8"
+      style={{
+        paddingTop: `${(margins.top / settings.trimHeight) * 100}%`,
+        paddingBottom: `${(margins.bottom / settings.trimHeight) * 100}%`,
+        paddingLeft: `${(margins.inside / settings.trimWidth) * 100}%`,
+        paddingRight: `${(margins.outside / settings.trimWidth) * 100}%`,
+      }}
+    >
+      <div className="flex-grow flex flex-col items-center justify-center">
+        <p className="text-sm text-gray-700 mb-2">{page.promoText}</p>
+        <img 
+          src={qrApi} 
+          alt="QR Code" 
+          className="w-24 h-24 rounded-lg"
+          onError={(e) => e.target.src = qrPlaceholder} // Fallback
+        />
+        {page.qrUrl && <p className="text-sm text-gray-600 mt-2 break-all">{page.qrUrl}</p>}
+      </div>
+      <p className="text-xs text-gray-500 whitespace-pre-wrap mt-4">{page.pageText}</p>
+    </div>
+  );
+}
+// --- End New ---
+
+
+/**
+ * The main editor view for reviewing and modifying the book.
+
+ */
+// ... (EditorView remains unchanged) ...
+function EditorView({ pages, setPages, onRegenerateImage, onRegenerateText, artStyle, printSettings, onGoToSetup }) {
+  const [currentPageIndex, setCurrentPageIndex] = useState(0);
+  const [singleImageLoading, setSingleImageLoading] = useState(null);
+
+  const [singleTextLoading, setSingleTextLoading] = useState(null);
+
+  const [pageError, setPageError] = useState(null); // For inline page errors
+  const [imageEditPrompt, setImageEditPrompt] = useState("");
+  const [textEditPrompt, setTextEditPrompt] = useState("");
+  
+  // --- Drag-and-Drop State ---
+  const [draggedItemIndex, setDraggedItemIndex] = useState(null);
+  const [dragOverItemIndex, setDragOverItemIndex] = useState(null);
+  
+  // --- NEW: State for delete confirmation ---
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [pageToDelete, setPageToDelete] = useState(null); // This will store the index
+  // --- End New ---
+  
+  // --- FIX: Define the handlePrint function ---
+  const handlePrint = () => {
+    window.print();
+  };
+  // --- End Fix ---
+
+  const aspectRatio = printSettings.trimWidth / printSettings.trimHeight;
+
+  const handlePageDataChange = (field, value) => {
+    setPages(currentPages =>
+      currentPages.map((page, index) =>
+        index === currentPageIndex ? { ...page, [field]: value } : page
+      )
+    );
+  };
+
+  
+  const handleRegenImage = async () => {
+
+    if (!imageEditPrompt.trim()) return; 
+
+    setSingleImageLoading(currentPageIndex);
+
+    setPageError(null); // Clear previous errors
+
+    try {
+
+      const newImageUrl = await onRegenerateImage(currentPageIndex, imageEditPrompt);
+
+      setPages(currentPages =>
+
+        currentPages.map((page, index) => {
+
+          if (index === currentPageIndex) {
+
+            const newImageUrls = [...page.imageUrls];
+
+            newImageUrls[page.selectedImageIndex] = newImageUrl;
+
+            return { ...page, imageUrls: newImageUrls };
+
+          }
+
+          return page;
+
+        })
+
+      );
+
+      setImageEditPrompt("");
+
+    } catch (e) {
+
+      setPageError(e.message);
+    }
+    setSingleImageLoading(null);
+  };
+  
+  const handleRetryImage = async () => {
+    setSingleImageLoading(currentPageIndex);
+    setPageError(null);
+    // --- FIX: Call onRegenerateImage with null prompt to trigger retry ---
+    try {
+      await onRegenerateImage(currentPageIndex, null); // Pass null to signal retry
+    } catch (e) {
+      setPageError(e.message);
+    }
+    setSingleImageLoading(null); // This might be set by the callback, but let's be safe
+    // --- End Fix ---
+  };
+
+  // --- NEW: Define handleRegenText ---
+  const handleRegenText = async () => {
+    if (!textEditPrompt.trim()) return;
+
+    setSingleTextLoading(currentPageIndex);
+    setPageError(null);
+    try {
+      // Call the prop function from App
+      await onRegenerateText(currentPageIndex, textEditPrompt);
+      setTextEditPrompt(""); // Clear the prompt
+    } catch (e) {
+      setPageError(e.message);
+    }
+    setSingleTextLoading(null);
+  };
+  // --- End New ---
+
+  // --- NEW: Define handleRegenCover ---
+  const handleRegenCover = async () => {
+    if (!textEditPrompt.trim()) return; 
+
+    setSingleImageLoading(currentPageIndex);
+    setPageError(null); 
+
+    try {
+      // We use `onRegenerateImage` for this, passing the `textEditPrompt`
+      const newImageUrl = await onRegenerateImage(currentPageIndex, textEditPrompt);
+
+      // The prop in App.js updates state, so this component will re-render.
+      // We can clear the prompt.
+      setTextEditPrompt(""); // Clear the text prompt
+    } catch (e) {
+      setPageError(e.message);
+    }
+    setSingleImageLoading(null);
+  };
+  // --- End New ---
+
+  // --- Page Management Handlers ---
+
+  // NEW: This function just sets state to show the modal
+  const promptDeletePage = (e, indexToDelete) => {
+    e.stopPropagation(); // Prevent the click from selecting the page
+    e.preventDefault();
+
+    // Do not allow deleting the cover page
+    if (pages[indexToDelete].pageType === 'cover') {
+      return; 
+    }
+    
+    // Do not allow deleting the last page
+    if (pages.length <= 1) {
+      return;
+    }
+
+    setPageToDelete(indexToDelete);
+    setShowDeleteModal(true);
+  };
+  
+  // NEW: This function holds the original delete logic
+  const confirmDeletePage = () => {
+    if (pageToDelete === null) return; // Should never happen, but good check
+
+    const indexToDelete = pageToDelete;
+
+    // Create a new pages array without the deleted page
+    const newPages = pages.filter((_, index) => index !== indexToDelete);
+    setPages(newPages);
+
+    // Adjust the current page index
+    if (currentPageIndex === indexToDelete) {
+      // If we deleted the selected page, move to the previous one
+      setCurrentPageIndex(Math.max(0, indexToDelete - 1));
+    } else if (currentPageIndex > indexToDelete) {
+      // If we deleted a page *before* the selected one, shift the index back
+      setCurrentPageIndex(currentPageIndex - 1);
+    }
+    // Otherwise, the current page index is fine
+    
+    // Reset modal state
+    setShowDeleteModal(false);
+    setPageToDelete(null);
+  };
+  
+  const handleDragStart = (index) => {
+    // --- MODIFICATION: Only prevent dragging the cover ---
+    if (pages[index].pageType === 'cover') {
+      return;
+    }
+    // --- End Modification ---
+    setDraggedItemIndex(index);
+  };
+
+  const handleDragOver = (e, index) => {
+    e.preventDefault(); // Necessary to allow drop
+    
+    // --- MODIFICATION: Only prevent dropping on the cover ---
+    if (pages[index].pageType === 'cover') {
+      setDragOverItemIndex(null);
+      return;
+    }
+    // --- End Modification ---
+
+    if (draggedItemIndex !== index) {
+      setDragOverItemIndex(index);
+    }
+  };
+
+  const handleDragLeave = () => {
+    setDragOverItemIndex(null);
+  };
+  
+  const handleDrop = () => {
+    if (draggedItemIndex === null || dragOverItemIndex === null || draggedItemIndex === dragOverItemIndex) {
+      setDraggedItemIndex(null);
+      setDragOverItemIndex(null);
+      return;
+    }
+
+    // --- FIX: Add missing drop logic ---
+    const newPages = [...pages];
+    const [draggedItem] = newPages.splice(draggedItemIndex, 1);
+    
+    // Adjust index for splice
+    const targetIndex = draggedItemIndex < dragOverItemIndex ? dragOverItemIndex : dragOverItemIndex;
+    
+    newPages.splice(targetIndex, 0, draggedItem);
+
+    setPages(newPages);
+    
+    // Update current page index to follow the moved page
+    if (currentPageIndex === draggedItemIndex) {
+      setCurrentPageIndex(targetIndex);
+    } else if (draggedItemIndex < currentPageIndex && targetIndex >= currentPageIndex) {
+      setCurrentPageIndex(currentPageIndex - 1);
+    } else if (draggedItemIndex > currentPageIndex && targetIndex <= currentPageIndex) {
+      setCurrentPageIndex(currentPageIndex + 1);
+    }
+
+    setDraggedItemIndex(null);
+    setDragOverItemIndex(null);
+    // --- End Fix ---
+  };
+
+  // --- NEW: Calculate Page Labels ---
+  let storyPageCounter = 1;
+  const pageLabels = useMemo(() => {
+    let counter = 1;
+    return pages.map(p => {
+      switch (p.pageType) {
+        case 'cover': return 'Cover';
+        case 'title': return 'Title Page';
+        case 'copyright': return 'Copyright';
+        case 'blank': return 'Blank Page';
+        default: return `Page ${counter++}`;
+      }
+    });
+  }, [pages]);
+  // --- End New ---
+
+  const currentPage = pages[currentPageIndex];
+  const currentImageUrl = currentPage.imageUrls[currentPage.selectedImageIndex];
+
+  
+
+  const isTextOnlyPage = currentPage.imageUrls.length === 0;
+
+  const isImageOnlyPage = currentPage.imageUrls.length > 0 && currentPage.pageType === 'image';
+
+  const isCoverPage = currentPage.pageType === 'cover';
+  const isSplitPage = !isTextOnlyPage && !isImageOnlyPage && !isCoverPage;
+  
+  // --- NEW: Check for special pages ---
+  const isTitlePage = currentPage.pageType === 'title';
+  const isCopyrightPage = currentPage.pageType === 'copyright';
+  const isBlankPage = currentPage.pageType === 'blank';
+  const isSpecialPage = isTitlePage || isCopyrightPage || isBlankPage;
+  // --- End New ---
+
+  const isFailedImage = currentImageUrl === ERROR_PLACEHOLDER;
+
+  const handleSelectVariation = (pageIndex, variationIndex) => {
+
+    setPages(currentPages => 
+
+      currentPages.map((page, index) => 
+
+        index === pageIndex ? { ...page, selectedImageIndex: variationIndex } : page
+
+      )
+
+    );
+
+  };
+
+
+
+  return (
+
+    <div className="flex-1 flex flex-col h-screen overflow-hidden">
+      
+      {/* --- NEW: Add Confirmation Modal --- */}
+      <ConfirmationModal
+        show={showDeleteModal}
+        onCancel={() => {
+          setShowDeleteModal(false);
+          setPageToDelete(null);
+        }}
+        onConfirm={confirmDeletePage}
+        title="Delete Page"
+        message={pageToDelete !== null ? `Are you sure you want to delete this page: "${pageLabels[pageToDelete]}"? This action cannot be undone.` : ""}
+      />
+      {/* --- End New --- */}
+
+      {/* Header */}
+      <header className="flex-shrink-0 bg-white border-b border-gray-200 p-4 flex justify-between items-center no-print">
+
+        <h1 className="text-2xl font-bold text-gray-800">Story Editor</h1>
+
+        <div className="flex space-x-2">
+          {/* NEW BUTTON */}
+          <button
+            onClick={onGoToSetup}
+            className="flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg shadow-sm hover:bg-gray-700 transition"
+          >
+            <icons.book className="h-5 w-5 mr-2" />
+            New Story (Setup)
+          </button>
+          {/* EXISTING BUTTON */}
+          <button
+            onClick={handlePrint}
+            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg shadow-sm hover:bg-blue-700 transition"
+          >
+            <icons.printer className="h-5 w-5 mr-2" />
+            Export to KDP (Print)
+          </button>
+        </div>
+
+      </header>
+
+
+
+      <div className="flex-1 flex overflow-hidden">
+
+        {/* Sidebar (Page Thumbnails) */}
+        {/* ... (EditorView Sidebar remains unchanged) ... */}
+        <aside className="w-1/4 bg-gray-50 border-r border-gray-200 overflow-y-auto p-4 space-y-3 no-print">
+          <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Pages</h2>
+          {pages.map((page, index) => {
+            // --- MODIFICATION: Use new page label ---
+            const pageLabel = pageLabels[index];
+            const isCover = page.pageType === 'cover';
+            // --- End Modification ---
+
+            const thumbUrl = page.imageUrls && page.imageUrls[page.selectedImageIndex];
+
+            const isThumbFailed = thumbUrl === ERROR_PLACEHOLDER;
+            // const isCover = page.pageType === 'cover'; // This was a duplicate declaration
+
+            return (
+              <div
+                key={page.id || index}
+                className="relative group" // Add group for delete button
+                draggable={!isCover} // Use new variable
+                onDragStart={() => handleDragStart(index)}
+                onDragOver={(e) => handleDragOver(e, index)}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+              >
+                <button
+                  onClick={() => setCurrentPageIndex(index)}
+                  className={`w-full p-2 rounded-lg border-2 transition ${
+                    index === currentPageIndex ? 'border-blue-500 bg-blue-50' : 'border-transparent hover:border-gray-300'
+                  } ${
+                    dragOverItemIndex === index ? 'border-blue-500 border-dashed bg-blue-50' : ''
+                  } ${
+                    draggedItemIndex === index ? 'opacity-50' : ''
+                  }`}
+                >
+                  <div className="flex items-center space-x-3">
+                    <div
+                      className="flex-shrink-0 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden w-16"
+                      style={{ height: `${(16 * (1/aspectRatio)) / 4}rem` }} 
+                    >
+                      {thumbUrl ? (
+                        <img src={thumbUrl} alt={`Page ${index + 1}`} className={`w-full h-full object-cover ${isThumbFailed ? 'opacity-50' : ''}`} />
+                    ) : (
+
+                      <div className="w-full h-full flex items-center justify-center">
+                        {page.imageUrls.length === 0 ? (
+                          // --- MODIFICATION: Show page type in thumbnail ---
+                          <span className="text-xs font-bold text-gray-500 uppercase">
+                            {page.pageType === 'text' ? 'Text' : page.pageType}
+                          </span>
+                          // --- End Modification ---
+                        ) : (
+                          <icons.loader className="h-5 w-5 text-gray-400" />
+
+                        )}
+
+                      </div>
+
+                    )}
+
+                    {isThumbFailed && (
+
+                      <div className="absolute inset-0 flex items-center justify-center bg-red-100 bg-opacity-75">
+
+                        <icons.alert className="h-5 w-5 text-red-600" />
+
+                      </div>
+
+                    )}
+
+                  </div>
+
+                  <div className="text-left overflow-hidden">
+
+                    <span className="font-medium text-gray-800">{pageLabel}</span>
+
+                    <p className="text-xs text-gray-500 truncate">{page.pageText || "..."}</p>
+                  </div>
+                </div>
+              </button>
+              
+              {!isCover && ( // Use new variable
+                <button
+                  onClick={(e) => promptDeletePage(e, index)} // MODIFIED: Use new prompt function
+                  className="absolute -top-2 -right-2 z-10 p-1 bg-red-600 text-white rounded-full shadow-md hover:bg-red-700 transition opacity-0 group-hover:opacity-100"
+                  style={{ opacity: 1 }} // Force opacity for now, styling can be refined
+                  title="Delete Page"
+                >
+                  <icons.x className="h-4 w-4" />
+                </button>
+              )}
+              </div>
+            )
+          })}
+        </aside>
+
+        {/* Main Editor Panel */}
+        {/* ... (EditorView Main Panel remains unchanged) ... */}
+        <main className="flex-1 overflow-y-auto p-8 bg-gray-100 flex flex-col items-center no-print">
+          <div className="w-full max-w-3xl">
+            {/* Book Page Preview */}
+
+            <div 
+
+              className="bg-white rounded-lg shadow-2xl overflow-hidden w-full relative" 
+
+              style={{ aspectRatio: `${aspectRatio}` }}
+
+            >
+
+              {/* Image Area */}
+
+              <div 
+                className="w-full bg-gray-200 flex items-center justify-center relative transition-all duration-300" 
+                style={{ height: isImageOnlyPage ? '100%' : (isTextOnlyPage || isSpecialPage ? '0%' : (isCoverPage ? '100%' : '70%')) }} // MODIFIED
+              >
+                {!isTextOnlyPage && !isSpecialPage && currentImageUrl ? ( // MODIFIED
+                  <img src={currentImageUrl} alt={`Illustration for page ${currentPageIndex + 1}`} className={`w-full h-full object-cover ${isFailedImage ? 'opacity-50' : ''}`} />
+                ) : !isTextOnlyPage && !isSpecialPage ? ( // MODIFIED
+                  <div className="flex flex-col items-center text-gray-500">
+
+                    <icons.loader className="h-12 w-12" />
+
+                    <span className="mt-2 text-lg">Generating image...</span>
+                  </div>
+                ) : null}
+                
+                {isFailedImage && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-red-100 bg-opacity-75 p-4">
+                  <icons.alert className="h-12 w-12 text-red-600" />
+                  <span className="mt-2 text-lg font-semibold text-red-700">Image Failed</span>
+                  <span className="text-sm text-red-600 text-center">The image could not be generated. Please try again.</span>
+                  <button
+                    onClick={handleRetryImage}
+                    disabled={singleImageLoading === currentPageIndex}
+                    className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg shadow-sm hover:bg-blue-700 transition text-sm font-semibold"
+                  >
+                    {singleImageLoading === currentPageIndex ? <icons.loader className="h-5 w-5" /> : 'Retry Generation'}
+                  </button>
+                </div>
+              )}
+              
+              {singleImageLoading === currentPageIndex && (
+
+                    <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center">
+
+                      <icons.loader className="h-12 w-12 text-blue-600" />
+
+                    </div>
+
+                )}
+
+                
+
+                {/* Image Variation Selector */}
+
+                {currentPage.imageUrls.length > 1 && !isFailedImage && (
+
+                  <div className="absolute bottom-2 left-2 flex space-x-2">
+
+                    {currentPage.imageUrls.map((_, varIndex) => (
+
+                      <button
+
+                        key={varIndex}
+
+                        onClick={() => handleSelectVariation(currentPageIndex, varIndex)}
+
+                        className={`w-10 h-10 rounded-full border-2 ${varIndex === currentPage.selectedImageIndex ? 'border-blue-500' : 'border-white'} overflow-hidden shadow-lg`}
+
+                      >
+
+                        <img src={currentPage.imageUrls[varIndex]} alt={`Variation ${varIndex + 1}`} className="w-full h-full object-cover" />
+
+                      </button>
+
+                    ))}
+
+                  </div>
+
+                )}
+
+              </div>
+
+              
+              {/* Text Area */}
+              <div 
+                className="w-full relative transition-all duration-300" 
+                style={{ 
+                  height: isImageOnlyPage ? '0%' : (isTextOnlyPage || isSpecialPage ? '100%' : (isCoverPage ? '0%' : '30%')),
+                  paddingTop: 0,
+                  paddingBottom: 0,
+                  paddingLeft: 0,
+                  paddingRight: 0,
+                }}
+              >
+                {(!isImageOnlyPage && !isCoverPage && !isSpecialPage) && (
+                  <textarea
+                    value={currentPage.pageText}
+                    onChange={(e) => handlePageDataChange('pageText', e.target.value)}
+                    className="w-full h-full p-6 box-border border-none rounded-none resize-none focus:ring-0 text-2xl leading-relaxed text-gray-800 whitespace-pre-wrap"
+                    style={{ 
+                      fontFamily: "'Inter', sans-serif",
+                      paddingLeft: `${(printSettings.margins.inside / printSettings.trimWidth) * 100}%`,
+                      paddingRight: `${(printSettings.margins.outside / printSettings.trimWidth) * 100}%`,
+                      fontSize: isTextOnlyPage ? '1.8rem' : '1.5rem', 
+                      textAlign: isTextOnlyPage ? 'center' : 'left',
+                    }}
+                    disabled={singleTextLoading === currentPageIndex}
+                  />
+                )}
+                
+                {/* --- NEW: Editable Title Page --- */}
+                {isTitlePage && (
+                  <div 
+                    className="w-full h-full flex flex-col items-center justify-center text-center p-8 box-border"
+                    style={{
+                      paddingTop: `${(printSettings.margins.top / printSettings.trimHeight) * 100}%`,
+                      paddingBottom: `${(printSettings.margins.bottom / printSettings.trimHeight) * 100}%`,
+                      paddingLeft: `${(printSettings.margins.inside / printSettings.trimWidth) * 100}%`,
+                      paddingRight: `${(printSettings.margins.outside / printSettings.trimWidth) * 100}%`,
+                    }}
+                  >
+                    <textarea
+                      value={currentPage.authorPresentsText || `${currentPage.authorName} Presents`}
+                      onChange={(e) => handlePageDataChange('authorPresentsText', e.target.value)}
+                      placeholder="Author Presents"
+                      className="w-full p-1 text-xl text-gray-700 text-center border-none resize-none focus:ring-0"
+                      rows="2"
+                    />
+                    <textarea
+                      value={currentPage.pageText}
+                      onChange={(e) => handlePageDataChange('pageText', e.target.value)}
+                      placeholder="Book Title"
+                      className="w-full p-1 text-4xl font-bold text-gray-900 text-center border-none resize-none focus:ring-0 mt-4"
+                      rows="3"
+                    />
+                  </div>
+                )}
+                
+                {/* --- FIX: Was `isTitlePage`, changed to `isCopyrightPage` --- */}
+                {isCopyrightPage && (
+                  <div 
+                    className="w-full h-full flex flex-col items-center justify-start text-center p-8 box-border"
+                    style={{
+                      paddingTop: `${(printSettings.margins.top / printSettings.trimHeight) * 100}%`,
+                      paddingBottom: `${(printSettings.margins.bottom / printSettings.trimHeight) * 100}%`,
+                      paddingLeft: `${(printSettings.margins.inside / printSettings.trimWidth) * 100}%`,
+                      paddingRight: `${(printSettings.margins.outside / printSettings.trimWidth) * 100}%`,
+                    }}
+                  >
+                    <div className="w-full flex-grow flex flex-col items-center justify-center">
+                      <textarea
+                        value={currentPage.promoText}
+                        onChange={(e) => handlePageDataChange('promoText', e.target.value)}
+                        placeholder="Promo text"
+                        className="w-full p-1 text-sm text-gray-700 text-center border-none resize-none focus:ring-0 mb-2"
+                        rows="2"
+                      />
+                      
+                      <img 
+                        src={currentPage.qrUrl ? `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(currentPage.qrUrl)}` : `https://placehold.co/240x240/eee/ccc?text=QR+Code`} 
+                        alt="QR Code" 
+                        className="w-48 h-48 rounded-lg"
+                        onError={(e) => e.target.src = `https://placehold.co/240x240/eee/ccc?text=QR+Code`}
+                      />
+                      <input
+                        type="text"
+                        value={currentPage.qrUrl}
+                        onChange={(e) => handlePageDataChange('qrUrl', e.target.value)}
+                        placeholder="https://your-website.com"
+                        className="w-full p-1 text-sm text-gray-600 text-center border-none focus:ring-0 outline-none mt-2"
+                      />
+                    </div>
+                    <textarea
+                      value={currentPage.pageText}
+                      onChange={(e) => handlePageDataChange('pageText', e.target.value)}
+                      placeholder="Copyright text"
+                      className="w-full p-1 text-xs text-gray-500 text-center border-none resize-none focus:ring-0 mt-4 whitespace-pre-wrap"
+                      rows="5"
+                    />
+                  </div>
+                )}
+                
+                {/* --- NEW: Truly Blank Page --- */}
+                {isBlankPage && (
+                  <div className="w-full h-full flex items-center justify-center bg-white">
+                    {/* Intentionally blank. Sidebar shows (Blank Page). */}
+                  </div>
+                )}
+                {/* --- End New --- */}
+
+                {singleTextLoading === currentPageIndex && (
+                    <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center">
+
+                      <icons.loader className="h-10 w-10 text-blue-600" />
+
+                    </div>
+
+                )}
+
+              </div>
+
+            </div>
+
+
+
+            {/* Page Error Display */}
+            {/* ... (Page Error Display remains unchanged) ... */}
+            {pageError && (
+
+              <div className="mt-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg flex justify-between items-center" role="alert">
+
+                <div>
+
+                  <h4 className="font-bold">Edit Failed</h4>
+
+                  <p className="text-sm">{pageError}</p>
+
+                </div>
+
+                <button
+
+                  type="button"
+
+                  onClick={() => setPageError(null)}
+
+                  className="p-1 text-red-700 hover:text-red-900"
+
+                  aria-label="Close"
+
+                >
+
+                  <icons.x className="h-6 w-6" />
+
+                </button>
+
+              </div>
+
+            )}
+
+
+            {/* --- Advanced Editing Controls --- */}
+            {/* ... (Advanced Editing Controls remain unchanged) ... */}
+            <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Image Editing (Hidden on Cover Page) */}
+              {!isTextOnlyPage && !isCoverPage && !isSpecialPage && ( // MODIFIED
+                <div className="bg-white p-4 rounded-lg shadow">
+                  <label htmlFor="imageEdit" className="block text-sm font-medium text-gray-700 mb-2">
+
+                    Edit Image (Variation {currentPage.selectedImageIndex + 1})
+
+                  </label>
+
+                  <div className="flex space-x-2">
+
+                    <input
+
+                      id="imageEdit"
+
+                      type="text"
+
+                      value={imageEditPrompt}
+
+                      onChange={(e) => setImageEditPrompt(e.target.value)}
+
+                      className="flex-1 p-2 border border-gray-300 rounded-lg shadow-sm"
+
+                      placeholder="e.g., 'Make the rabbit's jacket red'"
+
+                      disabled={singleImageLoading !== null || isFailedImage}
+
+                    />
+
+                    <button
+
+                      onClick={handleRegenImage}
+
+                      disabled={singleImageLoading !== null || !imageEditPrompt.trim() || isFailedImage}
+
+                      className="flex items-center justify-center px-4 py-2 bg-gray-700 text-white rounded-lg shadow-sm hover:bg-gray-800 transition disabled:opacity-50"
+
+                    >
+
+                      {singleImageLoading === currentPageIndex ? <icons.loader className="h-5 w-5" /> : <icons.image className="h-5 w-5" />}
+
+                    </button>
+
+                  </div>
+
+                </div>
+
+              )}
+
+
+
+              {/* Text Editing (Hidden on Cover and Image-Only Pages) */}
+              {!isImageOnlyPage && !isCoverPage && !isSpecialPage && ( // MODIFIED
+                <div className="bg-white p-4 rounded-lg shadow">
+                  <label htmlFor="textEdit" className="block text-sm font-medium text-gray-700 mb-2">
+
+                    Edit Text
+
+                  </label>
+
+                  <div className="flex space-x-2">
+
+                    <input
+
+                      id="textEdit"
+
+                      type="text"
+
+                      value={textEditPrompt}
+
+                      onChange={(e) => setTextEditPrompt(e.target.value)}
+
+                      className="flex-1 p-2 border border-gray-300 rounded-lg shadow-sm"
+
+                      placeholder={"e.g., 'Make this text rhyme'"}
+
+                      disabled={singleTextLoading !== null}
+
+                    />
+
+                    <button
+
+                      onClick={handleRegenText}
+
+                      disabled={singleTextLoading !== null || !textEditPrompt.trim()}
+
+                      className="flex items-center justify-center px-4 py-2 bg-gray-700 text-white rounded-lg shadow-sm hover:bg-gray-800 transition disabled:opacity-50"
+
+                    >
+
+                      {singleTextLoading === currentPageIndex ? <icons.loader className="h-5 w-5" /> : <icons.wand className="h-5 w-5" />}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* --- FIX: Removing 4 lines of stray/duplicated code --- */}
+              {/*
+                    </Button>
+                  </div>
+                </div>
+              )}
+              */}
+              {/* --- End Fix --- */}
+
+
+              {/* Unified Cover Editing (Only on Cover Page) */}
+              {isCoverPage && (
+                <div className="bg-white p-4 rounded-lg shadow md:col-span-2">
+                  <label htmlFor="coverEdit" className="block text-sm font-medium text-gray-700 mb-2">
+                    Edit Cover
+                  </label>
+                  <div className="flex space-x-2">
+                    <input
+                      id="coverEdit"
+                      type="text"
+                      value={textEditPrompt} // Uses the same state as text editing
+                      onChange={(e) => setTextEditPrompt(e.target.value)}
+                      className="flex-1 p-2 border border-gray-300 rounded-lg shadow-sm"
+                      placeholder="e.g., 'Make the title bigger' or 'Add a small fox'"
+                      disabled={singleImageLoading !== null}
+                    />
+                    {/* --- FIX: Added correct cover regen button and closing tags --- */}
+                    <button
+                      onClick={handleRegenCover}
+                      disabled={singleImageLoading !== null || !textEditPrompt.trim()}
+                      className="flex items-center justify-center px-4 py-2 bg-gray-700 text-white rounded-lg shadow-sm hover:bg-gray-800 transition disabled:opacity-50"
+                    >
+                      {singleImageLoading === currentPageIndex ? <icons.loader className="h-5 w-5" /> : <icons.image className="h-5 w-5" />}
+                    </button>
+                  </div>
+                </div>
+              )}
+              {/* --- End Fix --- */}
+            </div>
+
+            {/* Pagination */}
+            {/* ... (Pagination remains unchanged) ... */}
+            <div className="mt-6 flex justify-center items-center space-x-4">
+                <button
+                  onClick={() => setCurrentPageIndex(i => Math.max(0, i - 1))}
+                  disabled={currentPageIndex === 0}
+                  className="p-2 rounded-full hover:bg-gray-200 transition disabled:opacity-50"
+                >
+                  <icons.chevronLeft className="h-6 w-6 text-gray-700" />
+                </button>
+                <span className="text-lg font-medium text-gray-700">
+                  {/* --- MODIFICATION: Use new page label --- */}
+                  {`${pageLabels[currentPageIndex]} (of ${pages.length})`}
+                  {/* --- End Modification --- */}
+                </span>
+                <button
+
+                  onClick={() => setCurrentPageIndex(i => Math.min(pages.length - 1, i + 1))}
+
+                  disabled={currentPageIndex === pages.length - 1}
+                  className="p-2 rounded-full hover:bg-gray-200 transition disabled:opacity-50"
+                >
+                  <icons.chevronRight className="h-6 w-6 text-gray-700" />
+                </button>
+            </div>
+          </div>
+        </main>
+
+      </div>
+
+    </div>
+
+  );
+
+}
+
+
+/**
+ * Component to dynamically generate print styles based on settings
+ */
+// ... (DynamicPrintStyles remains unchanged) ...
+function DynamicPrintStyles({ settings }) {
+  if (!settings) return null;
+
+  const { trimWidth, trimHeight, hasBleed, margins, includePageNumbers } = settings; // MODIFIED
+
+  const pageWidth = hasBleed ? trimWidth + 0.125 : trimWidth;
+  const pageHeight = hasBleed ? trimHeight + 0.25 : trimHeight;
+
+  
+
+  const printCSS = `
+
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    
+
+    body {
+
+      font-family: 'Inter', sans-serif;
+
+    }
+
+    
+
+    @media print {
+
+      .no-print { display: none !important; }
+
+      .print-container { display: block !important; }
+
+
+
+      @page {
+
+        size: ${trimWidth}in ${trimHeight}in;
+
+        margin: 0;
+
+      }
+
+      
+
+      body {
+
+        margin: 0;
+
+        padding: 0;
+
+        -webkit-print-color-adjust: exact;
+
+        print-color-adjust: exact;
+
+      }
+
+
+
+      .print-page {
+
+        width: ${pageWidth}in;
+
+        height: ${pageHeight}in;
+
+        box-sizing: border-box;
+
+        page-break-after: always;
+
+        overflow: hidden;
+
+        position: relative;
+
+        background-color: white;
+
+      }
+
+      
+
+      .print-page:last-child {
+
+        page-break-after: auto;
+
+      }
+
+      
+
+      /* Default (Split Page) Layout */
+
+      .print-page.split-page .print-page-image {
+
+        position: absolute;
+
+        top: 0;
+
+        left: 0;
+
+        width: 100%;
+
+        height: 70%;
+
+        object-fit: cover;
+
+      }
+
+      
+
+      .print-page.split-page .print-page-text {
+
+        position: absolute;
+
+        top: 70%;
+
+        height: 30%;
+
+        left: ${margins.inside}in; 
+
+        right: ${margins.outside}in;
+
+        box-sizing: border-box;
+
+        font-size: 24pt; 
+
+        line-height: 1.4;
+
+        color: #333;
+
+        font-family: 'Inter', sans-serif;
+
+        text-align: center;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        white-space: pre-wrap;
+      }
+
+      /* --- NEW: Text-Only Page Layout --- */
+      .print-page.text-only .print-page-text {
+        position: absolute;
+        top: ${margins.top}in;
+        bottom: ${margins.bottom}in;
+        left: ${margins.inside}in; 
+        right: ${margins.outside}in;
+        height: calc(100% - ${margins.top}in - ${margins.bottom}in);
+        box-sizing: border-box;
+        font-size: 28pt; 
+        line-height: 1.5;
+        color: #333;
+        font-family: 'Inter', sans-serif;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        white-space: pre-wrap;
+      }
+      
+      /* --- NEW: Image-Only Page Layout --- */
+      .print-page.image-only .print-page-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      
+
+      /* --- NEW: Front Matter Styles --- */
+      .print-page.title-page {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        text-align: center;
+        padding: ${margins.top}in ${margins.outside}in ${margins.bottom}in ${margins.inside}in;
+      }
+      .print-page.title-page .title-author {
+        font-size: 20pt;
+        color: #555;
+      }
+      .print-page.title-page .title-text {
+        font-size: 36pt;
+        font-weight: bold;
+        color: #000;
+        margin-top: 0.5em;
+      }
+
+      .print-page.copyright-page {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        text-align: center;
+        padding: ${margins.top}in ${margins.outside}in ${margins.bottom}in ${margins.inside}in;
+        box-sizing: border-box;
+      }
+      .print-page.copyright-page .qr-block {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .print-page.copyright-page .qr-text {
+        font-size: 12pt;
+        margin-bottom: 0.5em;
+      }
+      .print-page.copyright-page .qr-image {
+        width: 2.5in;
+        height: 2.5in;
+        margin-bottom: 0.25em;
+      }
+      .print-page.copyright-page .qr-url {
+        font-size: 10pt;
+        color: #333;
+      }
+      .print-page.copyright-page .copyright-text {
+        font-size: 9pt;
+        color: #666;
+        white-space: pre-wrap;
+        flex-shrink: 0;
+      }
+
+      .print-page.blank-page {
+        background-color: white !important;
+      }
+      /* --- End New --- */
+
+
+      /* Cover Page Layout (Image only) */
+
+      .print-page.cover-page {
+
+        background-color: #000;
+
+      }
+
+      .print-page.cover-page .print-page-image {
+
+        position: absolute;
+
+        top: 0;
+
+        left: 0;
+
+        width: 100%;
+
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* --- NEW: Page Number Styles --- */
+      ${includePageNumbers ? `
+      .print-page.story-page {
+        position: relative;
+      }
+      .print-page.story-page .page-number {
+        position: absolute;
+        bottom: 0.25in; /* Place it low on the page */
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 10pt;
+        color: #333;
+      }
+      /* Ensure page number is clear of bottom margin */
+      .print-page.text-only .print-page-text {
+        bottom: ${Math.max(margins.bottom, 0.5)}in;
+        height: calc(100% - ${margins.top}in - ${Math.max(margins.bottom, 0.5)}in);
+      }
+      ` : ''}
+      /* --- End New --- */
+    }
+  `;
+
+  
+
+  return <style>{printCSS}</style>;
+
+}
+
+
+
+/**
+ * Main Application Component
+ */
+// ... (App component remains unchanged) ...
+export default function App() {
+  const [view, setView] = useState('setup'); // 'setup', 'creating', 'editor'
+
+  const [pages, setPages] = useState([]);
+
+  const [artStyle, setArtStyle] = useState("");
+
+  const [printSettings, setPrintSettings] = useState(DEFAULT_PRINT_SETTINGS);
+
+  const [isLoadingStory, setIsLoadingStory] = useState(false);
+
+  const [imageStatus, setImageStatus] = useState("Waiting...");
+
+  const [error, setError] = useState(null);
+
+  // --- MODIFICATION ---
+  // Add characters state to App component
+  const [characters, setCharacters] = useState([]);
+  const [ageRange, setAgeRange] = useState("Preschool (3-5)"); // NEW: Add ageRange state
+  // --- END MODIFICATION ---
+
+  // --- NEW HANDLERS ---
+  const handleGoToSetup = () => {
+    setError(null); // Clear any old errors
+    setView('setup');
+  };
+
+  const handleGoToEditor = () => {
+    setView('editor');
+  };
+  // --- END NEW HANDLERS ---
+
+  const handleStartCreation = useCallback(async (options) => {
+    setView('creating');
+    setIsLoadingStory(true);
+    setImageStatus('Waiting for story...');
+    setError(null);
+    setArtStyle(options.artStyle);
+    // --- MODIFICATION: Store includePageNumbers in printSettings state ---
+    setPrintSettings({
+      ...options.printSettings,
+      includePageNumbers: options.includePageNumbers 
+    }); 
+    // --- End Modification ---
+    setCharacters(options.characters);
+    setAgeRange(options.ageRange); // NEW: Store ageRange in App state
+    // --- END MODIFICATION ---
+
+    try {
+
+      let allNewPages = [];
+
+      // 1. Generate Cover (if selected)
+
+      if (options.genCover) {
+
+        setImageStatus("Generating cover...");
+
+        const coverImageUrls = await generateFrontCoverFromAPI(options);
+
+        const coverPage = {
+
+          id: 'cover',
+
+          pageText: options.titleOnCover ? options.bookTitle : "", // Keep for sidebar display
+
+          authorName: options.authorOnCover ? options.authorName : "", // Keep for sidebar display
+
+          imagePrompt: "Cover Image Prompt", // This will be the prompt used to gen the cover
+
+          pageType: 'cover', 
+
+          imageUrls: coverImageUrls,
+
+          selectedImageIndex: 0
+
+        };
+
+        allNewPages.push(coverPage);
+        
+        setPages([...allNewPages]); // Show cover page immediately
+      }
+
+      // 2. Generate Story
+      setImageStatus("Generating story text...");
+      const storyPages = await generateStoryFromAPI(options);
+
+      // 3. Process Pages (Front Matter & Unroll Spreads)
+      let finalPages = [...allNewPages]; // Start with cover
+      
+      // Add Title Page
+      if (options.includeTitlePage) {
+        finalPages.push({
+          id: crypto.randomUUID(),
+          pageType: 'title',
+          pageText: options.bookTitle,
+          authorName: options.authorName,
+          authorPresentsText: `${options.authorName} Presents`, // NEW
+          imageUrls: [],
+          selectedImageIndex: 0
+        });
+      }
+      
+      // Add Copyright Page
+      if (options.includeCopyrightPage) {
+        finalPages.push({
+          id: crypto.randomUUID(),
+          pageType: 'copyright',
+          pageText: `© ${new Date().getFullYear()} ${options.authorName}. All Rights Reserved.\nNo part of this publication may be reproduced, distributed, or transmitted in any form or by any means, including photocopying, recording, or other electronic or mechanical methods, without the prior written permission of the publisher, except in the case of brief quotations embodied in critical reviews and certain other noncommercial uses permitted by copyright law.`,
+          promoText: `For more fun and educational Children's Books, please visit the QR code below`,
+          qrUrl: options.copyrightUrl, // NEW
+          imageUrls: [],
+          selectedImageIndex: 0
+        });
+        
+        // --- NEW: Always add a blank page after the copyright page ---
+         finalPages.push({
+          id: crypto.randomUUID(),
+          pageType: 'blank',
+          pageText: '',
+          imageUrls: [],
+          selectedImageIndex: 0
+        });
+        // --- END NEW ---
+      }
+
+      // --- REMOVED: Old blank page logic ---
+      /*
+      // Add Blank Page (KDP requires books to start on a right-hand page)
+      // We count the interior pages *only*.
+      const interiorFrontMatterCount = (options.includeTitlePage ? 1 : 0) + (options.includeCopyrightPage ? 1 : 0);
+      
+      // If the front matter count is odd (e.g., just Title), the next page (story)
+      // would land on an even page number (left/verso). We add a blank to fix this
+      // so the story starts on a right-hand (recto) page.
+      if (interiorFrontMatterCount > 0 && interiorFrontMatterCount % 2 !== 0) {
+         finalPages.push({
+          id: crypto.randomUUID(),
+          pageType: 'blank',
+          pageText: '',
+          imageUrls: [],
+          selectedImageIndex: 0
+        });
+      }
+      */
+      // --- END REMOVAL ---
+
+
+      // Unroll Spreads or add pages
+      storyPages.forEach(page => {
+        if (options.pictureFrequency === 'other_page') {
+          // Facing Pages: Image, then Text
+          finalPages.push({
+            id: crypto.randomUUID(),
+            pageType: 'image',
+            pageText: '', // Will be blank
+            imagePrompt: page.imagePrompt,
+            imageUrls: [],
+            selectedImageIndex: 0
+          });
+          finalPages.push({
+            id: crypto.randomUUID(),
+            pageType: 'text',
+            pageText: page.pageText,
+            imagePrompt: page.imagePrompt, // Store for context
+            imageUrls: [],
+            selectedImageIndex: 0
+          });
+        } else if (options.pictureFrequency === 'no_pictures') {
+          // Text Only
+          finalPages.push({
+            id: crypto.randomUUID(),
+            pageType: 'text',
+            pageText: page.pageText,
+            imagePrompt: '', // No image prompt
+            imageUrls: [],
+            selectedImageIndex: 0
+          });
+        } else {
+          // Default: Picture on each page
+          finalPages.push({
+            id: crypto.randomUUID(),
+            pageType: 'split',
+            pageText: page.pageText,
+            imagePrompt: page.imagePrompt,
+            imageUrls: [],
+            selectedImageIndex: 0
+          });
+        }
+      });
+      
+      // --- REMOVED: Final blank page logic ---
+      /*
+      // Add a final blank page if total *interior* page count is odd, for KDP pairing
+      const totalInteriorPages = finalPages.length - (options.genCover ? 1 : 0);
+      if (totalInteriorPages % 2 !== 0) {
+        finalPages.push({
+          id: crypto.randomUUID(),
+          pageType: 'blank',
+          pageText: '',
+          imageUrls: [],
+          selectedImageIndex: 0
+        });
+      }
+      */
+      // --- END REMOVAL ---
+
+      setPages(finalPages); // Update pages with text
+
+      // 4. Generate Images
+      setImageStatus("Generating images (0%)...");
+      const totalImages = finalPages.filter(p => p.imageUrls.length === 0 && p.imagePrompt).length;
+      let imagesDone = 0;
+
+      for (let i = 0; i < finalPages.length; i++) {
+        if (finalPages[i].imageUrls.length === 0 && finalPages[i].imagePrompt) {
+          let imageUrls;
+          // --- MODIFICATION ---
+          // Pass the App-level characters state to the generator
+          imageUrls = await generateImageFromAPI(finalPages[i].imagePrompt, options.artStyle, options.imageVariations, options.characters, options.ageRange);
+          // --- END MODIFICATION ---
+          
+          finalPages[i].imageUrls = imageUrls;
+          finalPages[i].selectedImageIndex = 0; // Default to first image
+          
+          imagesDone++;
+          setImageStatus(`Generating images (${Math.round((imagesDone / totalImages) * 100)}%)...`);
+          
+          setPages([...finalPages]); // Update state with the new image
+        }
+      }
+
+      setImageStatus("Complete!");
+      setIsLoadingStory(false);
+      setView('editor');
+
+    } catch (e) {
+      console.error("Generation failed:", e);
+      setError(e.message || "An unknown error occurred during generation.");
+      setView('setup'); // Go back to setup on error
+    } finally {
+      setIsLoadingStory(false);
+    }
+  }, []); // Removed `characters` from here, it's sourced from options
+  
+  const handleRegenerateImage = useCallback(async (pageIndex, editPrompt) => {
+    const page = pages[pageIndex];
+    const currentImageUrl = page.imageUrls[page.selectedImageIndex];
+    const base64Data = currentImageUrl === ERROR_PLACEHOLDER ? null : getBase64Data(currentImageUrl);
+    
+    let newImageUrl;
+    // --- FIX: Check for retry *first* ---
+    const isRetry = editPrompt === null;
+    
+    if (isRetry) {
+      // --- RETRY ---
+      // Always generate a new image from the *original* prompt.
+      // This is the new logic for the "Retry" button.
+      const promptToUse = page.imagePrompt; 
+      const newImageUrls = await generateImageFromAPI(promptToUse, artStyle, 1, characters, ageRange);
+      newImageUrl = newImageUrls[0];
+    } else {
+      // --- EDIT --- (existing logic)
+      
+      // --- FIX: Check for empty prompt *after* retry check ---
+      if (!editPrompt || editPrompt.trim().length === 0) return; 
+
+      if (base64Data) {
+        // We have an image to edit
+        newImageUrl = await regenerateImageFromAPI(base64Data, editPrompt);
+      } else {
+        // We have a failed image, so we generate new from original + edit prompt
+        const promptToUse = page.pageType === 'cover' ? editPrompt : `${page.imagePrompt}. ${editPrompt}`;
+        const newImageUrls = await generateImageFromAPI(promptToUse, artStyle, 1, characters, ageRange);
+        newImageUrl = newImageUrls[0];
+      }
+    }
+    
+    // Update the pages state, replacing only the selected variation
+    setPages(currentPages =>
+
+      currentPages.map((p, i) => {
+
+        if (i === pageIndex) {
+
+          const newImageUrls = [...p.imageUrls];
+
+          newImageUrls[p.selectedImageIndex] = newImageUrl;
+
+          return { ...p, imageUrls: newImageUrls };
+
+        }
+
+        return p;
+
+      })
+
+    );
+
+    return newImageUrl;
+
+  }, [pages, artStyle, characters, ageRange]); // This is now valid
+
+  
+  const handleRegenerateText = useCallback(async (pageIndex, editPrompt) => {
+
+    const page = pages[pageIndex];
+
+    const newText = await regenerateTextFromAPI(page.pageText, page.imagePrompt, editPrompt);
+
+    
+
+    setPages(currentPages =>
+      currentPages.map((p, i) => i === pageIndex ? { ...p, pageText: newText } : p)
+    );
+
+    return newText;
+    // --- FIX: Removed duplicate return statement ---
+    //    return newText;
+    // --- END FIX ---
+
+  }, [pages]);
+
+  
+
+
+
+  const storyStatus = isLoadingStory ? 'loading' : 'complete';
+
+
+
+  return (
+
+    <>
+
+      <DynamicPrintStyles settings={printSettings} />
+
+      
+
+      <div className="flex flex-col h-screen bg-white no-print">
+
+        
+
+        {view === 'setup' && (
+
+          <SetupView 
+            onStart={handleStartCreation} 
+            isLoading={isLoadingStory} 
+            error={error}
+            onDismissError={() => setError(null)}
+            // --- NEW PROPS ---
+            onGoToEditor={handleGoToEditor}
+            hasExistingStory={pages.length > 0}
+            // --- END NEW PROPS ---
+          />
+
+        )}
+
+        {view === 'creating' && (
+
+          <CreatingView storyStatus={storyStatus} imageStatus={imageStatus} />
+
+        )}
+
+        {view === 'editor' && (
+
+          <EditorView 
+
+            pages={pages} 
+
+            setPages={setPages} 
+
+            onRegenerateImage={handleRegenerateImage}
+
+            onRegenerateText={handleRegenerateText}
+            artStyle={artStyle}
+            printSettings={printSettings}
+            // --- NEW PROP ---
+            onGoToSetup={handleGoToSetup}
+            // --- END NEW PROP ---
+          />
+
+        )}
+
+      </div>
+
+
+
+      {/* This is the hidden, print-only version of the book */}
+      {/* ... (Print Container remains unchanged) ... */}
+      <div className="print-container hidden">
+        {/* --- MODIFICATION: Updated print rendering logic --- */}
+        {(() => {
+          let storyPageCounter = 1;
+          const qrPlaceholder = `https://placehold.co/300x300/eee/ccc?text=QR+Code`;
+
+          return pages.map((page, index) => {
+            let pageClass = "";
+            let isStoryPage = false;
+            
+            switch (page.pageType) {
+              case 'split':
+                pageClass = 'story-page split-page';
+                isStoryPage = true;
+                break;
+              case 'image':
+                pageClass = 'story-page image-only'; // FIX: Match CSS
+                isStoryPage = true;
+                break;
+              case 'text':
+                pageClass = 'story-page text-only'; // FIX: Match CSS
+                isStoryPage = true;
+                break;
+              case 'cover':
+                pageClass = 'cover-page';
+                break;
+              case 'title':
+                pageClass = 'title-page';
+                break;
+              case 'copyright':
+                pageClass = 'copyright-page';
+                break;
+              case 'blank':
+                pageClass = 'blank-page';
+                break;
+            }
+
+            const currentImageUrl = page.imageUrls && page.imageUrls[page.selectedImageIndex];
+            const qrApi = page.qrUrl ? `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(page.qrUrl)}` : qrPlaceholder;
+
+            return (
+              <div key={page.id || index} className={`print-page ${pageClass}`}>
+                
+                {/* Image (for Cover, Split, Image-Only) */}
+                {(page.pageType === 'cover' || page.pageType === 'split' || page.pageType === 'image') &&
+                  currentImageUrl && currentImageUrl !== ERROR_PLACEHOLDER && (
+                  <img 
+                    src={currentImageUrl} 
+                    alt=""
+                    className="print-page-image" 
+                  />
+                )}
+                
+                {/* Text (for Split, Text-Only) */}
+                {(page.pageType === 'split' || page.pageType === 'text') && page.pageText && (
+                  <div className="print-page-text">
+                    <p>{page.pageText}</p>
+                  </div>
+                )}
+                
+                {/* Title Page Content */}
+                {page.pageType === 'title' && (
+                  <>
+                    <div className="title-author">{page.authorPresentsText}</div>
+                    <div className="title-text">{page.pageText}</div>
+                  </>
+                )}
+                
+                {/* Copyright Page Content */}
+                {page.pageType === 'copyright' && (
+                  <>
+                    <div className="qr-block">
+                      <p className="qr-text">{page.promoText}</p>
+                      <img 
+                        src={qrApi} 
+                        alt="QR Code" 
+                        className="qr-image"
+                      />
+                      {page.qrUrl && <p className="qr-url">{page.qrUrl}</p>}
+                    </div>
+                    <p className="copyright-text">{page.pageText}</p>
+                  </>
+                )}
+                
+                {/* Blank Page Content (empty) */}
+                {page.pageType === 'blank' && (
+                  <span></span>
+                )}
+
+                {/* Page Number */}
+                {isStoryPage && printSettings.includePageNumbers && (
+                  <div className="page-number">{storyPageCounter++}</div>
+                )}
+                
+              </div>
+            );
+          });
+        })()}
+        {/* --- End Modification --- */}
+      </div>
+    </>
+  );
+}

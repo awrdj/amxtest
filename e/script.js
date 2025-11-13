@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const customizableCheckbox = document.getElementById('customizable');
     const nonCustomizableCheckbox = document.getElementById('nonCustomizable');
     const presetsSelect = document.getElementById('presetsSelect');
+    const pageNumberInput = document.getElementById('pageNumber');
     
     let useMarketPage = false;
 
@@ -271,6 +272,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 params.push('is_best_seller=true');
             }
 
+            const pageNumber = parseInt(pageNumberInput.value);
+            if (!isNaN(pageNumber) && pageNumber > 1) {
+                params.push(`page=${pageNumber}`);
+                params.push(`ref=pagination`);
+            }
+
             // Construct market URL with parameters
             finalUrl = params.length > 0 ? `${baseMarketUrl}?${params.join('&')}` : baseMarketUrl;
             
@@ -363,6 +370,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 params.push('is_best_seller=true');
             }
 
+            const pageNumber = parseInt(pageNumberInput.value);
+            if (!isNaN(pageNumber) && pageNumber > 1) {
+                params.push(`page=${pageNumber}`);
+                params.push(`ref=pagination`);
+            }
+
+
             // Construct final URL
             finalUrl = params.length > 0 ? `${baseUrl}?${params.join('&')}` : baseUrl;
         }
@@ -375,7 +389,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const filterElements = [
         'shipToSelect', 'locationQuerySelect', 'sortOrder', 'minPrice', 'maxPrice',
         'customizable', 'starSeller', 'bestSeller',
-        'explicitAuto', 'explicitSafe', 'explicitAll'
+        'explicitAuto', 'explicitSafe', 'explicitAll',
+        'pageNumber'
     ];
 
     // Add optional elements if they exist

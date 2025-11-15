@@ -1,0 +1,3591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POD Design Studio - AI Generator</title>
+    <meta name="description" content="Generate professional Print-on-Demand designs with AI-powered style transfer, variations, and editing.">
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /*
+        ================================================================================
+        |   POD DESIGN STUDIO - MERCHGHOST ENHANCEMENT STYLES                         |
+        ================================S================================================
+        */
+
+        :root {
+            /* Design Tokens */
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-primary-start: #667eea;
+            --gradient-primary-end: #764ba2;
+            --color-accent: #F093FB;
+            --color-success: #4ade80;
+            --color-error: #f87171;
+            --color-warning: #facc15;
+            --color-bg-light: #fafbfc;
+            --color-bg-dark: #1e293b;
+            --color-card-light: #ffffff;
+            --color-card-dark: #2d3748;
+            --color-text-light-primary: #111827;
+            --color-text-light-secondary: #4b5563;
+            --color-text-light-tertiary: #9ca3af;
+            --color-text-dark-primary: #f8fafc;
+            --color-text-dark-secondary: #cbd5e1;
+            --color-text-dark-tertiary: #94a3b8;
+            --color-border-light: #e0e7ff;
+            --color-border-dark: #475569;
+            --shadow-card: 0 4px 12px rgba(0,0,0,0.06);
+            --shadow-card-hover: 0 8px 16px rgba(0,0,0,0.08);
+            --shadow-btn: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-btn-hover: 0 4px 8px rgba(0,0,0,0.1);
+            --border-radius-card: 12px;
+            --border-radius-btn: 8px;
+            --border-radius-thumb: 6px;
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            
+            /* Transitions */
+            --transition-fast: all 0.15s ease-out;
+            --transition-medium: all 0.25s ease-out;
+            --transition-slow: all 0.4s ease-out;
+
+            /* Sizing */
+            --header-height: 80px;
+            --container-max-width: 1600px;
+        }
+
+        /* ----------------------------------
+        |   1. BASE & RESET STYLES       |
+        ----------------------------------
+        */
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            background-color: var(--color-bg-light);
+            color: var(--color-text-light-primary);
+            line-height: 1.6;
+            transition: var(--transition-medium);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            background-color: var(--color-bg-dark);
+            color: var(--color-text-dark-primary);
+        }
+        
+        body.dark-mode .card {
+            background-color: var(--color-card-dark);
+            border-color: var(--color-border-dark);
+        }
+
+        body.dark-mode .upload-zone {
+            background-color: var(--color-card-dark);
+            border-color: var(--color-border-dark);
+        }
+        
+        body.dark-mode .upload-zone:hover {
+            background-color: #374151; /* Darker hover for dark mode */
+            border-color: var(--gradient-primary-start);
+        }
+        
+        body.dark-mode .prompt-textarea,
+        body.dark-mode .api-input {
+            background-color: #374151;
+            color: var(--color-text-dark-primary);
+            border-color: var(--color-border-dark);
+        }
+        
+        body.dark-mode .prompt-textarea:focus {
+            border-color: var(--gradient-primary-start);
+        }
+        
+        body.dark-mode .nav-tab {
+            color: var(--color-text-dark-secondary);
+        }
+        
+        body.dark-mode .nav-tab.active {
+            color: var(--color-text-dark-primary);
+        }
+        
+        body.dark-mode .modal-content {
+            background-color: var(--color-card-dark);
+            border-color: var(--color-border-dark);
+        }
+        
+        body.dark-mode .modal-close-btn:not(.btn) {
+            color: var(--color-text-dark-tertiary);
+        }
+        
+        body.dark-mode .modal-close-btn:not(.btn):hover {
+            color: var(--color-text-dark-primary);
+        }
+
+        body.dark-mode .num-control-btn {
+            background-color: #374151;
+            color: var(--color-text-dark-secondary);
+        }
+        
+        body.dark-mode .num-control-btn:hover {
+            background-color: #4b5563;
+        }
+        
+        body.dark-mode .num-control-input {
+            background-color: transparent;
+            color: var(--color-text-dark-primary);
+        }
+
+        /* Remove default input styles */
+        input, textarea, button, select {
+            font-family: inherit;
+        }
+
+        /* Hide number input arrows */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        img, video {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        h1 { font-size: 2.25rem; } /* 36px */
+        h2 { font-size: 1.875rem; } /* 30px */
+        h3 { font-size: 1.5rem; } /* 24px */
+        h4 { font-size: 1.25rem; } /* 20px */
+        
+        p {
+            margin-bottom: 1rem;
+            color: var(--color-text-light-secondary);
+        }
+        
+        body.dark-mode p {
+            color: var(--color-text-dark-secondary);
+        }
+
+        /* ----------------------------------
+        |   2. LAYOUT & CONTAINER        |
+        ----------------------------------
+        */
+
+        .app-container {
+            width: 100%;
+            max-width: var(--container-max-width);
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .page-content {
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+        
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .control-panel-sticky {
+            position: sticky;
+            top: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* ----------------------------------
+        |   3. HEADER & NAVIGATION       |
+        ----------------------------------
+        */
+
+        .app-header {
+            padding: 1.5rem 0 2rem;
+            background: linear-gradient(to bottom, #ffffff 0%, var(--color-bg-light) 100%);
+            border-bottom: 1px solid var(--color-border-light);
+            margin-bottom: 2rem;
+        }
+        
+        body.dark-mode .app-header {
+            background: linear-gradient(to bottom, #2d3748 0%, var(--color-bg-dark) 100%);
+            border-bottom-color: var(--color-border-dark);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo-title {
+            font-size: 1.75rem; /* 28px */
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+        
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background-color: var(--color-bg-light);
+            border-radius: var(--border-radius-btn);
+            border: 1px solid var(--color-border-light);
+        }
+        
+        body.dark-mode .nav-tabs {
+            background-color: #374151;
+            border-color: var(--color-border-dark);
+        }
+
+        .nav-tab {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-text-light-secondary);
+            padding: 0.5rem 1rem;
+            border: none;
+            background-color: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition-medium);
+        }
+
+        .nav-tab:hover {
+            color: var(--color-text-light-primary);
+        }
+        
+        body.dark-mode .nav-tab:hover {
+            color: var(--color-text-dark-primary);
+        }
+
+        .nav-tab.active {
+            color: var(--color-text-light-primary);
+            background-color: var(--color-card-light);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        body.dark-mode .nav-tab.active {
+            color: var(--color-text-dark-primary);
+            background-color: var(--color-card-dark);
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--color-card-light);
+            border: 1px solid var(--color-border-light);
+            color: var(--color-text-light-secondary);
+            cursor: pointer;
+            transition: var(--transition-medium);
+        }
+        
+        .btn-icon:hover {
+            background-color: #f5f7ff;
+            color: var(--gradient-primary-start);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-btn-hover);
+        }
+        
+        body.dark-mode .btn-icon {
+            background-color: var(--color-card-dark);
+            border-color: var(--color-border-dark);
+            color: var(--color-text-dark-secondary);
+        }
+        
+        body.dark-mode .btn-icon:hover {
+            background-color: #374151;
+            color: var(--color-text-dark-primary);
+        }
+
+        .btn-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        #api-settings-tab {
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.6rem 1rem;
+            gap: 0.5rem;
+            background: var(--color-card-light);
+            border: 1px solid var(--color-border-light);
+            color: var(--color-text-light-secondary);
+            box-shadow: var(--shadow-btn);
+        }
+        
+        #api-settings-tab:hover {
+            background: #f5f7ff;
+            color: var(--gradient-primary-start);
+        }
+        
+        body.dark-mode #api-settings-tab {
+            background: var(--color-card-dark);
+            border-color: var(--color-border-dark);
+            color: var(--color-text-dark-secondary);
+        }
+        
+        body.dark-mode #api-settings-tab:hover {
+            background: #374151;
+            color: var(--color-text-dark-primary);
+        }
+
+
+        /* ----------------------------------
+        |   4. CARDS & PANELS            |
+        ----------------------------------
+        */
+
+        .card {
+            background-color: var(--color-card-light);
+            border-radius: var(--border-radius-card);
+            border: 1px solid #f0f3f8;
+            box-shadow: var(--shadow-card);
+            padding: 1.5rem;
+            transition: var(--transition-medium);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem; /* 20px */
+            font-weight: 600;
+        }
+        
+        .upload-zones-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        .upload-zone-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* ----------------------------------
+        |   5. UPLOAD ZONES & THUMBNAILS |
+        ----------------------------------
+        */
+        
+        .upload-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            border: 3px dashed var(--color-border-light);
+            border-radius: var(--border-radius-card);
+            background-color: #fcfdff;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition-medium);
+            position: relative;
+        }
+        
+        .upload-zone:hover {
+            border-color: var(--gradient-primary-start);
+            background-color: #f5f7ff;
+            animation: pulse-border 1.5s infinite ease-in-out;
+        }
+        
+        .upload-zone.dragover {
+            border-color: var(--gradient-primary-start);
+            background-color: #f5f7ff;
+            transform: scale(1.02);
+            box-shadow: var(--shadow-card-hover);
+        }
+        
+        @keyframes pulse-border {
+            0% { border-color: var(--gradient-primary-start); }
+            50% { border-color: var(--gradient-primary-end); }
+            100% { border-color: var(--gradient-primary-start); }
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            stroke-width: 1.5;
+            color: var(--gradient-primary-start);
+            margin-bottom: 1rem;
+        }
+        
+        .upload-text {
+            font-weight: 600;
+            color: var(--color-text-light-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        body.dark-mode .upload-text {
+             color: var(--color-text-dark-primary);
+        }
+        
+        .upload-hint {
+            font-size: 0.875rem;
+            color: var(--color-text-light-secondary);
+            line-height: 1.4;
+        }
+        
+        body.dark-mode .upload-hint {
+             color: var(--color-text-dark-secondary);
+        }
+        
+        .upload-file-types {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .file-type-badge {
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            background-color: var(--color-border-light);
+            color: var(--color-text-light-secondary);
+        }
+        
+        body.dark-mode .file-type-badge {
+            background-color: #475569;
+            color: var(--color-text-dark-secondary);
+        }
+        
+        .upload-count-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.6rem;
+            border-radius: 99px;
+            background-color: var(--color-border-light);
+            color: var(--color-text-light-secondary);
+        }
+        
+        body.dark-mode .upload-count-badge {
+            background-color: #475569;
+            color: var(--color-text-dark-secondary);
+        }
+        
+        .thumbnail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 0.75rem;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 0.5rem;
+            background-color: var(--color-bg-light);
+            border-radius: var(--border-radius-btn);
+            border: 1px solid var(--color-border-light);
+        }
+        
+        body.dark-mode .thumbnail-grid {
+            background-color: var(--color-bg-dark);
+            border-color: var(--color-border-dark);
+        }
+        
+        .thumbnail-item {
+            position: relative;
+            aspect-ratio: 1 / 1;
+            border-radius: var(--border-radius-thumb);
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: var(--transition-fast);
+            animation: fadeIn 0.3s ease-out;
+            cursor: grab;
+        }
+        
+        .thumbnail-item:active {
+            cursor: grabbing;
+            transform: scale(1.05);
+            opacity: 0.8;
+        }
+        
+        .thumbnail-item.dragging {
+            opacity: 0.5;
+        }
+
+        .thumbnail-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-medium);
+        }
+        
+        .thumbnail-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        .thumbnail-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 50%);
+            opacity: 0;
+            transition: var(--transition-fast);
+        }
+        
+        .thumbnail-item:hover .thumbnail-overlay {
+            opacity: 1;
+        }
+        
+        .thumbnail-index {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: white;
+            background-color: rgba(0,0,0,0.6);
+            border-radius: 50%;
+        }
+        
+        .thumbnail-remove-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: white;
+            background-color: var(--color-error);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transform: scale(0.9);
+            opacity: 0.8;
+            transition: var(--transition-fast);
+        }
+        
+        .thumbnail-item:hover .thumbnail-remove-btn {
+            transform: scale(1);
+            opacity: 1;
+        }
+        
+        .thumbnail-remove-btn:hover {
+            background-color: #c0392b; /* Darker red */
+        }
+        
+        .thumbnail-tooltip {
+            position: absolute;
+            bottom: 4px;
+            left: 4px;
+            right: 4px;
+            font-size: 0.7rem;
+            color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            opacity: 0;
+            transform: translateY(5px);
+            transition: var(--transition-fast);
+        }
+        
+        .thumbnail-item:hover .thumbnail-tooltip {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .file-management-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .file-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-link {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--gradient-primary-start);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+        }
+        
+        .btn-link:hover {
+            text-decoration: underline;
+        }
+        
+        .file-size-counter {
+            font-size: 0.875rem;
+            color: var(--color-text-light-secondary);
+        }
+        
+        body.dark-mode .file-size-counter {
+            color: var(--color-text-dark-secondary);
+        }
+
+
+        /* ----------------------------------
+        |   6. CONTROL PANEL & FORMS     |
+        ----------------------------------
+        */
+        
+        .control-panel .card-title {
+            margin-bottom: 0; /* Title is on its own, no margin needed */
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .form-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .prompt-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            border-radius: var(--border-radius-btn);
+            border: 2px solid var(--color-border-light);
+            background-color: #fcfdff;
+            resize: vertical;
+            transition: var(--transition-fast);
+        }
+        
+        .prompt-textarea:focus {
+            outline: none;
+            border-color: var(--gradient-primary-start);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+        
+        .prompt-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.25rem;
+        }
+        
+        .prompt-suggestions {
+            position: relative;
+        }
+        
+        .btn-magic {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--gradient-primary-start);
+            background: #f0f3ff;
+            border: none;
+            border-radius: 6px;
+            padding: 0.3rem 0.6rem;
+            cursor: pointer;
+            gap: 0.25rem;
+        }
+        
+        body.dark-mode .btn-magic {
+            background-color: #374151;
+            color: #a7b5ff;
+        }
+        
+        .char-counter {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-text-light-tertiary);
+        }
+        
+        .char-counter.warn { color: var(--color-warning); }
+        .char-counter.error { color: var(--color-error); }
+        
+        .num-control-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .num-control {
+            display: flex;
+            align-items: center;
+            border: 2px solid var(--color-border-light);
+            border-radius: var(--border-radius-btn);
+            overflow: hidden;
+        }
+        
+        body.dark-mode .num-control {
+            border-color: var(--color-border-dark);
+        }
+        
+        .num-control-btn {
+            width: 40px;
+            height: 40px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            line-height: 1;
+            border: none;
+            background-color: #fcfdff;
+            color: var(--color-text-light-secondary);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .num-control-btn:hover {
+            background-color: #f5f7ff;
+            color: var(--gradient-primary-start);
+        }
+        
+        .num-control-input {
+            width: 60px;
+            height: 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+            border: none;
+            padding: 0;
+            background-color: transparent;
+            color: var(--color-text-light-primary);
+        }
+        
+        .num-control-input:focus {
+            outline: none;
+        }
+        
+        .num-control-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 8px;
+            background: var(--color-border-light);
+            border-radius: 4px;
+        }
+        
+        body.dark-mode .num-control-slider {
+            background: var(--color-border-dark);
+        }
+
+        .num-control-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--gradient-primary-start);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .num-control-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--gradient-primary-start);
+            cursor: pointer;
+            border: none;
+            transition: var(--transition-fast);
+        }
+        
+        .num-control-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 6px rgba(102, 126, 234, 0.2);
+        }
+        
+        .num-control-slider::-moz-range-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 6px rgba(102, 126, 234, 0.2);
+        }
+        
+        .generation-mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background-color: #f5f7ff;
+            border-radius: var(--border-radius-btn);
+        }
+        
+        body.dark-mode .generation-mode-toggle {
+            background-color: #374151;
+        }
+        
+        .btn-generate {
+            width: 100%;
+            padding: 1.25rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: var(--border-radius-btn);
+            cursor: pointer;
+            transition: var(--transition-medium);
+            box-shadow: var(--shadow-btn);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+        
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-btn-hover);
+            opacity: 0.95;
+        }
+        
+        .btn-generate:disabled {
+            background: #d1d5db;
+            color: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        body.dark-mode .btn-generate:disabled {
+            background: #4b5563;
+            color: #94a3b8;
+        }
+        
+        .btn-generate.ready {
+            animation: pulse-ready 1.5s infinite;
+        }
+        
+        @keyframes pulse-ready {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+            100% { transform: translateY(0); }
+        }
+        
+        .generation-time-estimate {
+            font-size: 0.875rem;
+            color: var(--color-text-light-secondary);
+            text-align: center;
+            margin-top: -0.5rem; /* Pull up under button */
+        }
+        
+        body.dark-mode .generation-time-estimate {
+            color: var(--color-text-dark-secondary);
+        }
+        
+        /* ----------------------------------
+        |   7. RESULTS GALLERY           |
+        ----------------------------------
+        */
+        
+        .results-gallery-wrapper {
+            position: relative;
+        }
+        
+        .results-gallery {
+            --gap: 1.5rem;
+            --min-col-width: 280px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(var(--min-col-width), 1fr));
+            gap: var(--gap);
+            width: 100%;
+        }
+        
+        .gallery-card {
+            display: flex;
+            flex-direction: column;
+            border-radius: var(--border-radius-card);
+            box-shadow: var(--shadow-card);
+            background-color: var(--color-card-light);
+            overflow: hidden;
+            transition: var(--transition-medium);
+            animation: fadeIn 0.5s ease-out;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+        
+        .gallery-card:hover {
+            transform: scale(1.02);
+            box-shadow: var(--shadow-card-hover);
+        }
+        
+        .gallery-card-image {
+            position: relative;
+            background-color: #f3f4f6;
+            cursor: pointer;
+        }
+        
+        body.dark-mode .gallery-card-image {
+            background-color: #374151;
+        }
+        
+        .gallery-card-image img {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+        
+        .gallery-card-actions {
+            position: absolute;
+            bottom: 0.75rem;
+            right: 0.75rem;
+            display: flex;
+            gap: 0.5rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: var(--transition-fast);
+        }
+        
+        .gallery-card-image:hover .gallery-card-actions {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .gallery-action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: var(--color-text-light-secondary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        
+        .gallery-action-btn:hover {
+            background-color: white;
+            color: var(--gradient-primary-start);
+            transform: scale(1.1);
+        }
+        
+        .gallery-action-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .gallery-card-footer {
+            padding: 1rem;
+            border-top: 1px solid var(--color-border-light);
+        }
+        
+        body.dark-mode .gallery-card-footer {
+            border-top-color: var(--color-border-dark);
+        }
+        
+        .gallery-card-prompt {
+            font-size: 0.875rem;
+            color: var(--color-text-light-secondary);
+            margin-bottom: 0.5rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        body.dark-mode .gallery-card-prompt {
+            color: var(--color-text-dark-secondary);
+        }
+        
+        .gallery-card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .gallery-card-timestamp {
+            font-size: 0.75rem;
+            color: var(--color-text-light-tertiary);
+        }
+        
+        .gallery-card-star {
+            color: var(--color-text-light-tertiary);
+            cursor: pointer;
+        }
+        
+        .gallery-card-star.favorited {
+            color: var(--color-warning);
+        }
+        
+        /* Loading/Error states for card */
+        .gallery-card-status {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255,255,255,0.8);
+            z-index: 5;
+        }
+        
+        body.dark-mode .gallery-card-status {
+            background-color: rgba(45, 55, 72, 0.8);
+        }
+        
+        .gallery-card-status .spinner {
+            width: 32px;
+            height: 32px;
+            border-width: 3px;
+            border-color: var(--color-text-light-tertiary);
+            border-top-color: var(--gradient-primary-start);
+        }
+
+        .gallery-card-status-text {
+            margin-top: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-text-light-secondary);
+        }
+        
+        body.dark-mode .gallery-card-status-text {
+            color: var(--color-text-dark-secondary);
+        }
+        
+        .gallery-card-status.error {
+            background-color: rgba(254, 242, 242, 0.9);
+        }
+        
+        body.dark-mode .gallery-card-status.error {
+            background-color: rgba(72, 29, 29, 0.9);
+        }
+        
+        .gallery-card-status.error .gallery-card-status-text {
+            color: var(--color-error);
+        }
+        
+        /* ----------------------------------
+        |   8. MODALS                    |
+        ----------------------------------
+        */
+        
+        .modal {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-medium);
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--color-card-light);
+            border-radius: var(--border-radius-card);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            transform: scale(0.95);
+            transition: var(--transition-medium);
+        }
+        
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--color-border-light);
+        }
+        
+        body.dark-mode .modal-header {
+            border-bottom-color: var(--color-border-dark);
+        }
+        
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .modal-body {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--color-border-light);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            background-color: #fcfdff;
+            border-bottom-left-radius: var(--border-radius-card);
+            border-bottom-right-radius: var(--border-radius-card);
+        }
+        
+        body.dark-mode .modal-footer {
+            border-top-color: var(--color-border-dark);
+            background-color: #283141;
+        }
+        
+        .modal-close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: none;
+            color: var(--color-text-light-tertiary);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .modal-close-btn:not(.btn):hover {
+            background-color: #f3f4f6;
+            color: var(--color-text-light-primary);
+            transform: rotate(90deg);
+        }
+        
+        body.dark-mode .modal-close-btn:not(.btn):hover {
+            background-color: #374151;
+            color: var(--color-text-dark-primary);
+        }
+
+        .modal-close-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+        
+        /* Full Image Modal */
+        #full-image-modal .modal-content {
+            background: none;
+            box-shadow: none;
+            width: auto;
+            max-width: 95vw;
+            max-height: 95vh;
+        }
+        
+        #full-image-modal {
+            background-color: rgba(0,0,0,0.95);
+        }
+        
+        #full-image-modal-img {
+            max-width: 100%;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: var(--border-radius-btn);
+        }
+        
+        .image-zoom-controls {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+            background-color: rgba(0,0,0,0.5);
+            padding: 0.5rem;
+            border-radius: var(--border-radius-btn);
+        }
+        
+        .zoom-btn {
+            width: 36px;
+            height: 36px;
+            background-color: white;
+            color: black;
+            border: none;
+            border-radius: 50%;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        #full-image-modal-download {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            z-index: 10;
+        }
+        
+        /* Edit Modal */
+        .edit-preview-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .edit-preview {
+            aspect-ratio: 1 / 1;
+            border-radius: var(--border-radius-btn);
+            background-color: #f3f4f6;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        body.dark-mode .edit-preview {
+            background-color: #374151;
+        }
+        
+        .edit-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .edit-preview-label {
+            position: absolute;
+            top: 0.5rem;
+            left: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            background-color: rgba(0,0,0,0.5);
+            color: white;
+        }
+        
+        .edit-skeleton {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: skeleton-load 1.5s infinite linear;
+        }
+        
+        body.dark-mode .edit-skeleton {
+            background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+            background-size: 200% 100%;
+        }
+
+        /* API Settings Modal */
+        .api-input-wrapper {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        .api-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            padding-right: 3rem;
+            border: 2px solid var(--color-border-light);
+            border-radius: var(--border-radius-btn);
+            background-color: #fcfdff;
+        }
+        
+        .api-input:focus {
+            outline: none;
+            border-color: var(--gradient-primary-start);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+        
+        .api-input-icon {
+            position: absolute;
+            right: 1rem;
+            width: 20px;
+            height: 20px;
+        }
+        
+        .api-input-icon.valid { color: var(--color-success); }
+        .api-input-icon.invalid { color: var(--color-error); }
+        
+        .api-setup-guide {
+            font-size: 0.875rem;
+            color: var(--color-text-light-secondary);
+            background-color: #f5f7ff;
+            padding: 1rem;
+            border-radius: var(--border-radius-btn);
+        }
+        
+        body.dark-mode .api-setup-guide {
+            background-color: #374151;
+            color: var(--color-text-dark-secondary);
+        }
+
+        /* ----------------------------------
+        |   9. BUTTONS & CONTROLS        |
+        ----------------------------------
+        */
+        
+        .btn {
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.75rem 1.25rem;
+            border-radius: var(--border-radius-btn);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition-medium);
+            box-shadow: var(--shadow-btn);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-btn-hover);
+        }
+        
+        .btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .btn.btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+        
+        .btn.btn-secondary {
+            background-color: var(--color-card-light);
+            color: var(--color-text-light-primary);
+            border: 1px solid var(--color-border-light);
+        }
+        
+        body.dark-mode .btn.btn-secondary {
+            background-color: var(--color-card-dark);
+            color: var(--color-text-dark-primary);
+            border-color: var(--color-border-dark);
+        }
+        
+        .btn.btn-secondary:hover {
+            background-color: #f5f7ff;
+        }
+        
+        body.dark-mode .btn.btn-secondary:hover {
+            background-color: #374151;
+        }
+        
+        /* Toggle Switch */
+        .toggle-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .toggle-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: var(--transition-fast);
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: var(--transition-fast);
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background: var(--gradient-primary);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(22px);
+        }
+        
+        /* ----------------------------------
+        |   10. LOADING & FEEDBACK       |
+        ----------------------------------
+        */
+        
+        #global-loading-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 9998;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-medium);
+            backdrop-filter: blur(4px);
+        }
+        
+        #global-loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .loading-content {
+            text-align: center;
+            color: white;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        .loading-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+        }
+        
+        .loading-progress {
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            color: #e0e7ff;
+        }
+        
+        .loading-queue {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .queue-thumb-preview {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--border-radius-thumb);
+            background-color: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            animation: skeleton-load 1.5s infinite linear;
+        }
+        
+        #toast-container {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .toast {
+            min-width: 300px;
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius-btn);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            animation: slideIn 0.3s ease-out, fadeOut 0.3s ease-in 3.7s;
+            transform: translateX(100%);
+        }
+        
+        .toast.success { background-color: var(--color-success); }
+        .toast.error { background-color: var(--color-error); }
+        .toast.info { background-color: var(--gradient-primary-start); }
+        
+        .toast-icon {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .toast-message {
+            flex: 1;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* ----------------------------------
+        |   11. UTILITY & ANIMATIONS     |
+        ----------------------------------
+        */
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; transform: translateX(100%); }
+        }
+        
+        @keyframes skeleton-load {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* ----------------------------------
+        |   12. RESPONSIVE DESIGN        |
+        ----------------------------------
+        */
+        
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            .control-panel-sticky {
+                position: relative;
+                top: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 0 1rem;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .header-nav {
+                width: 100%;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-tabs {
+                width: 100%;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            #api-settings-tab {
+                flex: 1;
+            }
+            
+            .upload-zones-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .thumbnail-grid {
+                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            }
+            
+            .btn {
+                padding: 0.8rem 1rem; /* Larger touch targets */
+            }
+            
+            .btn-generate {
+                padding: 1.25rem;
+            }
+            
+            .modal-body {
+                padding: 1rem;
+            }
+            
+            .modal-header, .modal-footer {
+                padding: 1rem;
+            }
+            
+            .edit-preview-wrapper {
+                grid-template-columns: 1fr;
+            }
+            
+            #toast-container {
+                top: 1rem;
+                right: 1rem;
+                left: 1rem;
+                width: auto;
+            }
+        }
+        
+    </style>
+</head>
+<body class=""> <!-- 'dark-mode' class added here by JS -->
+
+    <!-- ============================================== -->
+    <!-- |           HEADER & NAVIGATION              | -->
+    <!-- ============================================== -->
+    <header class="app-header">
+        <div class="app-container header-content">
+            <h1 class="logo-title">POD Design Studio</h1>
+            <nav class="header-nav">
+                <div class="nav-tabs">
+                    <button class="nav-tab active" data-page="style-transfer">Style Transfer</button>
+                    <button class="nav-tab" data-page="variations">Variations</button>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-icon" id="dark-mode-toggle" title="Toggle Dark Mode" aria-label="Toggle Dark Mode">
+                        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v.01M6.31 6.31l.01-.01M3 12h.01M6.31 17.69l-.01.01M12 20.99v.01M17.69 17.69l-.01-.01M21 12h-.01M17.69 6.31l.01.01M12 18a6 6 0 110-12 6 6 0 010 12z" />
+                        </svg>
+                        <svg class="moon-icon hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                        </svg>
+                    </button>
+                    <button class="btn btn-secondary" id="api-settings-tab">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="18" height="18">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-$.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.931l.908.381c.513.215.828.768.828 1.316v1.093c0 .548-.315 1.101-.828 1.316l-.908.381c-.396.167-.71.507-.78.931l-.149.894c-.09.542-.56.94-1.11.94h-1.093c-.55 0-1.02-.398-1.11-.94l-.149-.894c-.07-.424-.384-.764-.78-.931l-.908-.381c-.513-.215-.828-.768-.828-1.316v-1.093c0-.548.315-1.101.828-1.316l.908-.381c.396-.167.71-.507.78-.931l.149-.894z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        API Settings
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ============================================== -->
+    <!-- |                MAIN APP BODY               | -->
+    <!-- ============================================== -->
+    <main id="app" class="app-container">
+
+        <!-- ============================================== -->
+        <!-- |           PAGE 1: STYLE TRANSFER           | -->
+        <!-- ============================================== -->
+        <div id="style-transfer" class="page-content active">
+            <div class="main-layout">
+                
+                <!-- Main Content Column -->
+                <div class="main-content">
+                    
+                    <!-- Upload Zones -->
+                    <div class="card">
+                        <div class="upload-zones-grid">
+                            
+                            <!-- Art Style References -->
+                            <div class="upload-zone-wrapper">
+                                <h3 class="card-title">Art Style References</h3>
+                                <div id="style-upload-zone" class="upload-zone" data-upload-type="style">
+                                    <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 3.75H4.5a2.25 2.25 0 00-2.25 2.25v13.5a2.25 2.25 0 002.25 2.25h13.5a2.25 2.25 0 002.25-2.25V9.75M9 3.75V9.75m0-6v6h6m-6 0H3.75m16.5 0v6.75c0 1.28-1.04 2.31-2.318 2.318H9.75" />
+                                    </svg>
+                                    <span class="upload-text">Upload Art Styles</span>
+                                    <span class="upload-hint">Drag & drop or click to upload<br>(Max 50 images, 5MB each)</span>
+                                    <div class="upload-file-types">
+                                        <span class="file-type-badge">JPG</span>
+                                        <span class="file-type-badge">PNG</span>
+                                        <span class="file-type-badge">WEBP</span>
+                                    </div>
+                                    <div id="style-upload-count" class="upload-count-badge">0/50</div>
+                                </div>
+                                <div id="style-thumbnail-grid" class="thumbnail-grid hidden"></div>
+                                <div id="style-file-bar" class="file-management-bar hidden">
+                                    <div class="file-actions">
+                                        <button class="btn-link" data-action="select-all" data-type="style">Select All</button>
+                                        <button class="btn-link" data-action="delete-selected" data-type="style">Delete Selected</button>
+                                    </div>
+                                    <span id="style-file-size" class="file-size-counter">Total: 0 MB</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Niche Design Concepts -->
+                            <div class="upload-zone-wrapper">
+                                <h3 class="card-title">Niche Design Concepts</h3>
+                                <div id="concept-upload-zone" class="upload-zone" data-upload-type="concept">
+                                    <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18V7.5c0-.621.504-1.125 1.125-1.125H6.75" />
+                                    </svg>
+                                    <span class="upload-text">Upload Concepts</span>
+                                    <span class="upload-hint">Drag & drop or click to upload<br>(Max 50 images, 5MB each)</span>
+                                    <div class="upload-file-types">
+                                        <span class="file-type-badge">JPG</span>
+                                        <span class="file-type-badge">PNG</span>
+                                        <span class="file-type-badge">WEBP</span>
+                                    </div>
+                                    <div id="concept-upload-count" class="upload-count-badge">0/50</div>
+                                </div>
+                                <div id="concept-thumbnail-grid" class="thumbnail-grid hidden"></div>
+                                <div id="concept-file-bar" class="file-management-bar hidden">
+                                    <div class="file-actions">
+                                        <button class="btn-link" data-action="select-all" data-type="concept">Select All</button>
+                                        <button class="btn-link" data-action="delete-selected" data-type="concept">Delete Selected</button>
+                                    </div>
+                                    <span id="concept-file-size" class="file-size-counter">Total: 0 MB</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Results Gallery -->
+                    <div class="card results-gallery-wrapper">
+                        <div class="card-header">
+                            <h3 class="card-title">Generated Designs</h3>
+                            <!-- Add filters here later -->
+                        </div>
+                        <div id="style-results-gallery" class="results-gallery">
+                            <!-- Placeholder -->
+                            <p id="style-gallery-placeholder" class="gallery-placeholder">Your generated designs will appear here. Upload some files and start creating!</p>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <!-- Sticky Control Panel -->
+                <aside class="control-panel-sticky">
+                    <div class="card control-panel">
+                        <div class="form-group">
+                            <label for="style-prompt" class="form-label">Add Your Ideas (Optional)</label>
+                            <textarea id="style-prompt" class="prompt-textarea" rows="4" placeholder="e.g., 'Combine the dog from concept 1 with the watercolor style...'"></textarea>
+                            <div class="prompt-footer">
+                                <div class="prompt-suggestions">
+                                    <button class="btn-magic btn-link" id="style-magic-prompt">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M18 6l-6 6-6-6"/></svg>
+                                        Magic
+                                    </button>
+                                    <!-- Add history/suggestions dropdown here -->
+                                </div>
+                                <span id="style-char-counter" class="char-counter">0/500</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="style-num" class="form-label">Number of Designs</label>
+                            <div class="num-control-wrapper">
+                                <div class="num-control">
+                                    <button class="num-control-btn" data-action="decrement" data-target="style-num-input">-</button>
+                                    <input id="style-num-input" class="num-control-input" type="number" value="10" min="1" max="50">
+                                    <button class="num-control-btn" data-action="increment" data-target="style-num-input">+</button>
+                                </div>
+                                <input id="style-num-slider" class="num-control-slider" type="range" value="10" min="1" max="50">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="generation-mode-toggle">
+                                <label for="style-batch-mode" class="toggle-label">Batch Mode</label>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="style-batch-mode">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <span class="upload-hint"><b>Batch Mode:</b> Apply 1st style to ALL concepts. (Default: Random pairs)</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button id="style-generate-btn" class="btn btn-primary btn-generate" disabled>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M18 6l-6 6-6-6"/></svg>
+                                Generate Designs
+                            </button>
+                            <span id="style-time-estimate" class="generation-time-estimate"></span>
+                        </div>
+                    </div>
+                </aside>
+
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- |         PAGE 2: VARIATIONS GENERATOR         | -->
+        <!-- ============================================== -->
+        <div id="variations" class="page-content">
+            <div class="main-layout">
+                
+                <!-- Main Content Column -->
+                <div class="main-content">
+                    
+                    <!-- Upload Zone -->
+                    <div class="card">
+                        <div class="upload-zones-grid" style="grid-template-columns: 1fr;">
+                            <div class="upload-zone-wrapper">
+                                <h3 class="card-title">Design to Create Variations Of</h3>
+                                <div id="variation-upload-zone" class="upload-zone" data-upload-type="variation">
+                                    <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l-2.25-2.25a2.25 2.25 0 00-3.182 0l-2.25 2.25m10.5 6H5.25a2.25 2.25 0 01-2.25-2.25V6.75a2.25 2.25 0 012.25-2.25h13.5a2.25 2.25 0 012.25 2.25v6.75a2.25 2.25 0 01-2.25 2.25z" />
+                                    </svg>
+                                    <span class="upload-text">Upload Your Design</span>
+                                    <span class="upload-hint">Drag & drop or click to upload<br>(Max 1 image, 5MB each)</span>
+                                    <div class="upload-file-types">
+                                        <span class="file-type-badge">JPG</span>
+                                        <span class="file-type-badge">PNG</span>
+                                        <span class="file-type-badge">WEBP</span>
+                                    </div>
+                                    <div id="variation-upload-count" class="upload-count-badge">0/1</div>
+                                </div>
+                                <div id="variation-thumbnail-grid" class="thumbnail-grid hidden"></div>
+                                <div id="variation-file-bar" class="file-management-bar hidden">
+                                    <div class="file-actions">
+                                        <!-- Placeholder for consistency -->
+                                    </div>
+                                    <span id="variation-file-size" class="file-size-counter">Total: 0 MB</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Results Gallery -->
+                    <div class="card results-gallery-wrapper">
+                        <div class="card-header">
+                            <h3 class="card-title">Generated Variations</h3>
+                        </div>
+                        <div id="variation-results-gallery" class="results-gallery">
+                            <p id="variation-gallery-placeholder" class="gallery-placeholder">Your generated variations will appear here.</p>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <!-- Sticky Control Panel -->
+                <aside class="control-panel-sticky">
+                    <div class="card control-panel">
+                        <div class="form-group">
+                            <label for="variation-prompt" class="form-label">Add Your Ideas (Optional)</label>
+                            <textarea id="variation-prompt" class="prompt-textarea" rows="4" placeholder="e.g., 'Create versions with different animals - cat, dog, rabbit...'"></textarea>
+                            <div class="prompt-footer">
+                                <div class="prompt-suggestions">
+                                    <button class="btn-magic btn-link" id="variation-magic-prompt">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M18 6l-6 6-6-6"/></svg>
+                                        Magic
+                                    </button>
+                                </div>
+                                <span id="variation-char-counter" class="char-counter">0/500</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="variation-num" class="form-label">Number of Variations</label>
+                            <div class="num-control-wrapper">
+                                <div class="num-control">
+                                    <button class="num-control-btn" data-action="decrement" data-target="variation-num-input">-</button>
+                                    <input id="variation-num-input" class="num-control-input" type="number" value="10" min="1" max="50">
+                                    <button class="num-control-btn" data-action="increment" data-target="variation-num-input">+</button>
+                                </div>
+                                <input id="variation-num-slider" class="num-control-slider" type="range" value="10" min="1" max="50">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button id="variation-generate-btn" class="btn btn-primary btn-generate" disabled>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M18 6l-6 6-6-6"/></svg>
+                                Generate Variations
+                            </button>
+                            <span id="variation-time-estimate" class="generation-time-estimate"></span>
+                        </div>
+                    </div>
+                </aside>
+                
+            </div>
+        </div>
+        
+        <!-- File Input (Hidden) -->
+        <input type="file" id="file-input" class="visually-hidden" multiple accept="image/jpeg,image/png,image/webp">
+    </main>
+
+    <!-- ============================================== -->
+    <!-- |                  MODALS                    | -->
+    <!-- ============================================== -->
+
+    <!-- API Settings Modal -->
+    <div id="api-settings-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close-btn" data-action="close-modal" aria-label="Close API Settings">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+            <div class="modal-header">
+                <h3 class="modal-title">API Settings</h3>
+            </div>
+            <div class="modal-body">
+                <div class="toggle-wrapper">
+                    <label class="toggle-label" for="global-api-toggle">Use Internal API</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="global-api-toggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div id="global-api-key-wrapper" class="form-group hidden">
+                    <label for="global-api-key-input" class="form-label">Your Gemini API Key</label>
+                    <div class="api-input-wrapper">
+                        <input type="password" id="global-api-key-input" class="api-input" placeholder="Enter your AIza... API key">
+                        <svg id="global-api-valid-icon" class="api-input-icon valid hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                        <svg id="global-api-invalid-icon" class="api-input-icon invalid hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </div>
+                </div>
+                
+                <div class="api-setup-guide">
+                    💡 <b>Tip:</b> Get your free API key from Google AI Studio. The free tier is very generous.
+                    With Google Cloud's free trial, you could generate 9,000+ designs.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="test-api-key-btn" class="btn btn-secondary" disabled>Test Key</button>
+                <button class="btn btn-primary modal-close-btn" data-action="close-modal">Save & Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Full Image View Modal -->
+    <div id="full-image-modal" class="modal">
+        <button class="modal-close-btn" data-action="close-modal" aria-label="Close full image view" style="color: white; background: rgba(0,0,0,0.5); top: 1rem; right: 1rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+        <button id="full-image-modal-download" class="btn btn-primary" data-action="download-full-image">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+            Download
+        </button>
+        <div class="modal-content">
+            <img id="full-image-modal-img" src="" alt="Full size generated design">
+        </div>
+        <div class="image-zoom-controls">
+            <button class="zoom-btn" id="zoom-out-btn">-</button>
+            <button class="zoom-btn" id="zoom-in-btn">+</button>
+        </div>
+    </div>
+
+    <!-- Edit Design Modal -->
+    <div id="edit-design-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close-btn" data-action="close-modal" aria-label="Close edit dialog">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Design</h3>
+            </div>
+            <div class="modal-body">
+                <div class="edit-preview-wrapper">
+                    <div class="edit-preview">
+                        <img id="edit-original-img" src="" alt="Original design">
+                        <span class="edit-preview-label">Original</span>
+                    </div>
+                    <div class="edit-preview">
+                        <img id="edit-new-img" src="" alt="Edited design" class="hidden">
+                        <div id="edit-skeleton-loader" class="edit-skeleton hidden"></div>
+                        <span class="edit-preview-label">Edited</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-prompt-input" class="form-label">Describe your edit:</label>
+                    <textarea id="edit-prompt-input" class="prompt-textarea" rows="3" placeholder="e.g., 'Change the text to 'Hello World'' or 'Remove the small star'"></textarea>
+                    <div class="prompt-footer">
+                        <div></div>
+                        <span id="edit-char-counter" class="char-counter">0/200</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-close-btn" data-action="close-modal">Cancel</button>
+                <button id="apply-edit-btn" class="btn btn-primary">Apply Edit</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ============================================== -->
+    <!-- |         LOADING & TOAST CONTAINERS         | -->
+    <!-- ============================================== -->
+    
+    <!-- Global Loading Overlay -->
+    <div id="global-loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div id="loading-text" class="loading-text">Generating Designs...</div>
+            <div id="loading-progress" class="loading-progress">Initializing...</div>
+            <div id="loading-queue" class="loading-queue">
+                <!-- Preview thumbs go here -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Notifications -->
+    <div id="toast-container"></div>
+    
+
+    <!-- =im============================================ -->
+    <!-- |              JAVASCRIPT LOGIC               | -->
+    <!-- ============================================== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            /**
+             * ----------------------------------------------------------------
+             * |                     CONSTANTS & STATE                       |
+             * ----------------------------------------------------------------
+             */
+
+            // API Endpoints
+            const API_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent';
+            const INTERNAL_API_PROXY = '/api/generate'; // Placeholder
+            
+            // File Limits
+            const MAX_FILES = 50;
+            const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+            
+            // Prompts
+            const PROMPT_PREAMBLE = "You are an expert POD (Print-on-Demand) design AI. Create designs optimized for printing on products like t-shirts, mugs, and stickers. Ensure high contrast, vibrant colors, clean edges, and commercial-ready quality.";
+            const CYCLING_PROMPTS = [
+                "e.g., 'A vintage sunset with a golden retriever in a watercolor style'",
+                "e.g., 'A cute cartoon cat in a groovy 70s art style'",
+                "e.g., 'A minimalist line art of a mountain range, merged with a floral pattern'",
+                "e.g., 'A skeleton drinking coffee, in a detailed woodcut print style'"
+            ];
+
+            // App State
+            let state = {
+                currentPage: 'style-transfer',
+                useInternalApi: true,
+                apiKey: '',
+                files: {
+                    style: [],
+                    concept: [],
+                    variation: []
+                },
+                generatedDesigns: {
+                    style: [],
+                    variation: []
+                },
+                generationQueue: [],
+                isGenerating: false,
+                promptHistory: [],
+                darkMode: false,
+                autoSaveInterval: null
+            };
+            
+            // DOM Element Cache
+            const $ = (selector) => document.getElementById(selector);
+            const $$ = (selector) => document.querySelectorAll(selector);
+            
+            const elements = {
+                app: $('app'),
+                body: document.body,
+                navTabs: $$('.nav-tab'),
+                pageContents: $$('.page-content'),
+                fileInput: $('file-input'),
+                
+                // Style Transfer Page
+                styleUploadZone: $('style-upload-zone'),
+                conceptUploadZone: $('concept-upload-zone'),
+                styleThumbGrid: $('style-thumbnail-grid'),
+                conceptThumbGrid: $('concept-thumbnail-grid'),
+                styleFileBar: $('style-file-bar'),
+                conceptFileBar: $('concept-file-bar'),
+                styleUploadCount: $('style-upload-count'),
+                conceptUploadCount: $('concept-upload-count'),
+                styleFileSize: $('style-file-size'),
+                conceptFileSize: $('concept-file-size'),
+                stylePrompt: $('style-prompt'),
+                styleCharCounter: $('style-char-counter'),
+                styleNumInput: $('style-num-input'),
+                styleNumSlider: $('style-num-slider'),
+                styleBatchMode: $('style-batch-mode'),
+                styleGenerateBtn: $('style-generate-btn'),
+                styleTimeEstimate: $('style-time-estimate'),
+                styleGallery: $('style-results-gallery'),
+                styleGalleryPlaceholder: $('style-gallery-placeholder'),
+                styleMagicPrompt: $('style-magic-prompt'),
+                
+                // Variations Page
+                variationUploadZone: $('variation-upload-zone'),
+                variationThumbGrid: $('variation-thumbnail-grid'),
+                variationFileBar: $('variation-file-bar'),
+                variationUploadCount: $('variation-upload-count'),
+                variationFileSize: $('variation-file-size'),
+                variationPrompt: $('variation-prompt'),
+                variationCharCounter: $('variation-char-counter'),
+                variationNumInput: $('variation-num-input'),
+                variationNumSlider: $('variation-num-slider'),
+                variationGenerateBtn: $('variation-generate-btn'),
+                variationTimeEstimate: $('variation-time-estimate'),
+                variationGallery: $('variation-results-gallery'),
+                variationGalleryPlaceholder: $('variation-gallery-placeholder'),
+                variationMagicPrompt: $('variation-magic-prompt'),
+                
+                // Modals
+                apiSettingsModal: $('api-settings-modal'),
+                globalApiToggle: $('global-api-toggle'),
+                globalApiKeyWrapper: $('global-api-key-wrapper'),
+                globalApiKeyInput: $('global-api-key-input'),
+                globalApiValidIcon: $('global-api-valid-icon'),
+                globalApiInvalidIcon: $('global-api-invalid-icon'),
+                testApiKeyBtn: $('test-api-key-btn'),
+                
+                fullImageModal: $('full-image-modal'),
+                fullImageModalImg: $('full-image-modal-img'),
+                fullImageDownloadBtn: $('full-image-modal-download'),
+                zoomInBtn: $('zoom-in-btn'),
+                zoomOutBtn: $('zoom-out-btn'),
+                
+                editDesignModal: $('edit-design-modal'),
+                editOriginalImg: $('edit-original-img'),
+                editNewImg: $('edit-new-img'),
+                editSkeletonLoader: $('edit-skeleton-loader'),
+                editPromptInput: $('edit-prompt-input'),
+                editCharCounter: $('edit-char-counter'),
+                applyEditBtn: $('apply-edit-btn'),
+                
+                // Loading & Feedback
+                globalLoadingOverlay: $('global-loading-overlay'),
+                loadingText: $('loading-text'),
+                loadingProgress: $('loading-progress'),
+                loadingQueue: $('loading-queue'),
+                toastContainer: $('toast-container'),
+                
+                // Header
+                darkModeToggle: $('dark-mode-toggle'),
+                sunIcon: $$('.sun-icon')[0],
+                moonIcon: $$('.moon-icon')[0],
+            };
+
+            
+            /**
+             * ----------------------------------------------------------------
+             * |                  API & GENERATION LOGIC                     |
+             * ----------------------------------------------------------------
+             */
+
+            /**
+             * Gets the current API configuration (key and URL)
+             * @returns {{apiKey: string, apiUrl: string}}
+             */
+            function getApiConfig() {
+                const apiKey = state.useInternalApi ? 'INTERNAL_PROXY' : state.apiKey;
+                const apiUrl = state.useInternalApi ? INTERNAL_API_PROXY : `${API_ENDPOINT}?key=${apiKey}`;
+                return { apiKey, apiUrl };
+            }
+
+            /**
+             * Creates the full prompt with the required preamble.
+             * @param {string} taskPrompt - The specific prompt for the task.
+             * @returns {string} The complete prompt.
+             */
+            function createFullPrompt(taskPrompt) {
+                return `${PROMPT_PREAMBLE}\n\n${taskPrompt}`;
+            }
+
+            /**
+             * Fetches from the API with exponential backoff.
+             * @param {string} apiUrl - The API endpoint to fetch.
+             * @param {object} payload - The request payload.
+             * @param {number} retries - Number of retries left.
+             * @param {number} delay - Current delay in ms.
+             * @returns {Promise<object>} The JSON response from the API.
+             */
+            async function fetchWithBackoff(apiUrl, payload, retries = 3, delay = 1000) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 429 && retries > 0) {
+                            // Rate limit, retry
+                            showToast(`Rate limited. Retrying in ${delay / 1000}s...`, 'info');
+                            await new Promise(res => setTimeout(res, delay));
+                            return fetchWithBackoff(apiUrl, payload, retries - 1, delay * 2);
+                        }
+                        const errorData = await response.json();
+                        throw new Error(errorData.error?.message || `HTTP error! status: ${response.status}`);
+                    }
+                    
+                    return await response.json();
+                    
+                } catch (error) {
+                    console.error('API Fetch Error:', error);
+                    throw error;
+                }
+            }
+            
+            /**
+             * Extracts image data from the API response.
+             * @param {object} apiResponse - The raw response from the Gemini API.
+             * @returns {{base64: string, dataUrl: string}}
+             */
+            function extractImageData(apiResponse) {
+                const base64Data = apiResponse?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+                if (!base64Data) {
+                    throw new Error('No image data found in API response.');
+                }
+                const mimeType = apiResponse.candidates[0].content.parts[0].inlineData.mimeType || 'image/png';
+                return {
+                    base64: base64Data,
+                    dataUrl: `data:${mimeType};base64,${base64Data}`
+                };
+            }
+            
+            /**
+             * Builds and runs the generation queue.
+             */
+            async function processGenerationQueue() {
+                if (state.isGenerating || state.generationQueue.length === 0) {
+                    return;
+                }
+                
+                state.isGenerating = true;
+                const totalTasks = state.generationQueue.length;
+                updateLoadingOverlay(true, 'Starting generation...', `0 / ${totalTasks}`, state.generationQueue.map(t => t.placeholderId));
+                
+                let completedTasks = 0;
+                
+                while (state.generationQueue.length > 0) {
+                    const task = state.generationQueue.shift();
+                    completedTasks++;
+                    const progress = `${completedTasks} / ${totalTasks}`;
+                    updateLoadingOverlay(true, `Generating design ${completedTasks} of ${totalTasks}...`, progress);
+                    
+                    let card = $(task.placeholderId);
+                    if (card) {
+                        card.querySelector('.gallery-card-status-text').textContent = 'Generating...';
+                        card.querySelector('.spinner').style.borderColor = 'var(--color-text-light-tertiary)';
+                        card.querySelector('.spinner').style.borderTopColor = 'var(--gradient-primary-start)';
+                    }
+                    
+                    try {
+                        const { apiKey, apiUrl } = getApiConfig();
+                        let apiResponse;
+                        
+                        switch (task.type) {
+                            case 'style-transfer':
+                                apiResponse = await generateStyleTransfer(apiKey, apiUrl, task.styleFile, task.conceptFile, task.prompt);
+                                break;
+                            case 'variation':
+                                apiResponse = await generateVariations(apiKey, apiUrl, task.designFile, task.prompt);
+                                break;
+                            case 'edit':
+                                // Edit tasks are handled separately, but included for completeness
+                                break;
+                        }
+                        
+                        const imageData = extractImageData(apiResponse);
+                        const newDesign = {
+                            id: `design-${Date.now()}-${Math.random()}`,
+                            dataUrl: imageData.dataUrl,
+                            prompt: task.prompt,
+                            timestamp: new Date().toLocaleString(),
+                            isFavorite: false
+                        };
+                        
+                        // Update the UI
+                        updateGalleryCard(task.placeholderId, newDesign, task.page);
+                        
+                    } catch (error) {
+                        console.error(`Failed to generate task:`, task, error);
+                        showToast(`Generation failed: ${error.message}`, 'error');
+                        updateGalleryCard(task.placeholderId, null, task.page, error.message);
+                    }
+                }
+                
+                state.isGenerating = false;
+                updateLoadingOverlay(false);
+                showToast(`Generation complete! ${totalTasks} designs created.`, 'success');
+                saveStateToLocalStorage();
+            }
+
+            /**
+             * API call for Style Transfer.
+             */
+            async function generateStyleTransfer(apiKey, apiUrl, styleFile, conceptFile, prompt) {
+                const textPrompt = createFullPrompt(`Create a professional Print-on-Demand design combining two images:
+STYLE REFERENCE (Image 1): Extract and apply the complete artistic style including art technique, color palette, texture, shading, and line quality.
+CONCEPT REFERENCE (Image 2): Use the subject matter and composition including the main subject, layout, and key elements.
+TASK: Generate a new, high-quality POD design that renders the subject from Image 2 in the complete artistic style of Image 1. The result should look like the concept was originally created in that art style.
+${prompt ? `ADDITIONAL GUIDANCE: ${prompt}` : ''}
+REQUIREMENTS:
+- Highest possible resolution and quality
+- Solid gray background (hex #f0f0f0)
+- Clean, professional, and print-ready with vibrant colors and crisp details.
+- No watermarks or text unless requested.`);
+                
+                const payload = {
+                    contents: [{
+                        role: "user",
+                        parts: [
+                            { text: textPrompt },
+                            { inlineData: { mimeType: styleFile.type, data: styleFile.base64.split(',')[1] } },
+                            { inlineData: { mimeType: conceptFile.type, data: conceptFile.base64.split(',')[1] } }
+                        ]
+                    }],
+                    generationConfig: {
+                        responseModalities: ['IMAGE'],
+                        temperature: 0.9
+                    }
+                };
+                
+                return fetchWithBackoff(apiUrl, payload);
+            }
+
+            /**
+             * API call for Variations.
+             */
+            async function generateVariations(apiKey, apiUrl, designFile, prompt) {
+                const textPrompt = createFullPrompt(`Create a creative variation of the provided design while maintaining its core artistic style and quality.
+PRESERVE from original: Overall artistic style, technique, composition, and print-quality.
+VARY these elements: ${prompt || 'Main subject or character (try different animals, objects, or themes that fit the style), specific details, and decorative elements.'}
+REQUIREMENTS:
+- Highest possible resolution and quality
+- Solid gray background (hex #f0f0f0)
+- Maintain POD-ready quality suitable for products.
+- Create a fresh variation that feels like part of the same design family.`);
+
+                const payload = {
+                    contents: [{
+                        role: "user",
+                        parts: [
+                            { text: textPrompt },
+                            { inlineData: { mimeType: designFile.type, data: designFile.base64.split(',')[1] } }
+                        ]
+                    }],
+                    generationConfig: {
+                        responseModalities: ['IMAGE'],
+                        temperature: 1.0
+                    }
+                };
+                
+                return fetchWithBackoff(apiUrl, payload);
+            }
+
+            /**
+             * API call for Editing.
+             */
+            async function editDesign(originalDesign, editInstruction) {
+                elements.editSkeletonLoader.classList.remove('hidden');
+                elements.editNewImg.classList.add('hidden');
+                elements.applyEditBtn.disabled = true;
+                elements.applyEditBtn.textContent = 'Applying...';
+                
+                try {
+                    const { apiKey, apiUrl } = getApiConfig();
+                    const base64Data = originalDesign.dataUrl.split(',')[1];
+                    const mimeType = originalDesign.dataUrl.match(/data:(.*);/)[1];
+                    
+                    const textPrompt = createFullPrompt(`Edit the provided Print-on-Demand design with the following modification:
+EDIT INSTRUCTION: ${editInstruction}
+REQUIREMENTS:
+- Make ONLY the requested change.
+- Preserve the original artistic style completely.
+- Maintain design quality and print-readiness.
+- Solid gray background (hex #f0f0f0)
+- Ensure edited areas blend naturally.`);
+                    
+                    const payload = {
+                        contents: [{
+                            role: "user",
+                            parts: [
+                                { text: textPrompt },
+                                { inlineData: { mimeType: mimeType, data: base64Data } }
+                            ]
+                        }],
+                        generationConfig: {
+                            responseModalities: ['IMAGE'],
+                            temperature: 0.4
+                        }
+                    };
+                    
+                    const apiResponse = await fetchWithBackoff(apiUrl, payload);
+                    const imageData = extractImageData(apiResponse);
+                    
+                    // Show "After" preview
+                    elements.editNewImg.src = imageData.dataUrl;
+                    elements.editNewImg.classList.remove('hidden');
+                    
+                    // Find and update the original design in the state and gallery
+                    const page = state.currentPage;
+                    const designIndex = state.generatedDesigns[page].findIndex(d => d.id === originalDesign.id);
+                    if (designIndex > -1) {
+                        const newDesign = {
+                            ...originalDesign,
+                            dataUrl: imageData.dataUrl,
+                            prompt: editInstruction,
+                            timestamp: new Date().toLocaleString(),
+                            history: [...(originalDesign.history || []), originalDesign.dataUrl] // Save old version
+                        };
+                        state.generatedDesigns[page][designIndex] = newDesign;
+                        
+                        // Update the card in the gallery
+                        const card = $(newDesign.id);
+                        if (card) {
+                            card.querySelector('.gallery-card-image img').src = newDesign.dataUrl;
+                            card.querySelector('.gallery-card-prompt').textContent = newDesign.prompt;
+                            card.querySelector('.gallery-card-timestamp').textContent = newDesign.timestamp;
+                            card.dataset.design = JSON.stringify(newDesign);
+                        }
+                        showToast('Edit applied successfully!', 'success');
+                    }
+                    
+                    saveStateToLocalStorage();
+                    
+                } catch (error) {
+                    console.error('Edit failed:', error);
+                    showToast(`Edit failed: ${error.message}`, 'error');
+                    elements.editNewImg.classList.add('hidden');
+                } finally {
+                    elements.editSkeletonLoader.classList.add('hidden');
+                    elements.applyEditBtn.disabled = false;
+                    elements.applyEditBtn.textContent = 'Apply Edit';
+                }
+            }
+
+
+            /**
+             * ----------------------------------------------------------------
+             * |                  FILE HANDLING & UPLOAD                     |
+             * ----------------------------------------------------------------
+             */
+
+            /**
+             * @param {'style' | 'concept' | 'variation'} uploadType
+             * @param {FileList} fileList
+             */
+            async function handleFiles(uploadType, fileList) {
+                const filesToProcess = Array.from(fileList);
+                const maxAllowed = (uploadType === 'variation') ? 1 : MAX_FILES;
+                
+                for (const file of filesToProcess) {
+                    if (state.files[uploadType].length >= maxAllowed) {
+                        showToast(`Max ${maxAllowed} files allowed for this section.`, 'error');
+                        break;
+                    }
+                    
+                    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+                        showToast(`Invalid file type: ${file.name}`, 'error');
+                        continue;
+                    }
+                    
+                    if (file.size > MAX_FILE_SIZE) {
+                        showToast(`File too large: ${file.name} (Max 5MB)`, 'error');
+                        continue;
+                    }
+                    
+                    // Check for duplicates
+                    if (state.files[uploadType].some(f => f.name === file.name && f.size === file.size)) {
+                        showToast(`Duplicate file: ${file.name}`, 'warn');
+                        continue;
+                    }
+
+                    try {
+                        const fileData = await readFileAsBase64(file);
+                        state.files[uploadType].push(fileData);
+                    } catch (error) {
+                        console.error('File read error:', error);
+                        showToast(`Could not read file: ${file.name}`, 'error');
+                    }
+                }
+                
+                renderThumbnails(uploadType);
+                validateAllForms();
+            }
+
+            /**
+             * @param {File} file
+             * @returns {Promise<{id: string, name: string, type: string, size: number, base64: string}>}
+             */
+            function readFileAsBase64(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        resolve({
+                            id: `file-${Date.now()}-${Math.random()}`,
+                            name: file.name,
+                            type: file.type,
+                            size: file.size,
+                            base64: reader.result
+                        });
+                    };
+                    reader.onerror = (error) => reject(error);
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            /**
+             * Renders the thumbnail grid for a given upload type.
+             * @param {'style' | 'concept' | 'variation'} uploadType
+             */
+            function renderThumbnails(uploadType) {
+                const grid = elements[`${uploadType}ThumbGrid`];
+                const fileBar = elements[`${uploadType}FileBar`];
+                const uploadCount = elements[`${uploadType}UploadCount`];
+                const fileSize = elements[`${uploadType}FileSize`];
+                
+                const files = state.files[uploadType];
+                
+                if (files.length === 0) {
+                    grid.classList.add('hidden');
+                    fileBar.classList.add('hidden');
+                    grid.innerHTML = '';
+                } else {
+                    grid.classList.remove('hidden');
+                    fileBar.classList.remove('hidden');
+                    
+                    // Sync grid with state (simple way)
+                    grid.innerHTML = files.map((file, index) => `
+                        <div class="thumbnail-item" data-file-id="${file.id}" data-upload-type="${uploadType}" title="${file.name}" draggable="true">
+                            <img src="${file.base64}" alt="${file.name}">
+                            <div class="thumbnail-overlay"></div>
+                            <span class="thumbnail-index">${index + 1}</span>
+                            <button class="thumbnail-remove-btn" data-action="remove-file" aria-label="Remove ${file.name}">&times;</button>
+                            <span class="thumbnail-tooltip">${file.name}</span>
+                        </div>
+                    `).join('');
+                }
+                
+                // Update counters
+                const max = (uploadType === 'variation') ? 1 : MAX_FILES;
+                uploadCount.textContent = `${files.length}/${max}`;
+                
+                const totalSize = files.reduce((acc, file) => acc + file.size, 0);
+                fileSize.textContent = `Total: ${(totalSize / 1024 / 1024).toFixed(2)} MB`;
+            }
+
+            /**
+             * Handles drag-and-drop for file uploads.
+             */
+            function initDragAndDrop() {
+                ['style', 'concept', 'variation'].forEach(uploadType => {
+                    const zone = elements[`${uploadType}UploadZone`];
+                    
+                    zone.addEventListener('click', () => {
+                        elements.fileInput.dataset.uploadType = uploadType;
+                        elements.fileInput.click();
+                    });
+                    
+                    zone.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        zone.classList.add('dragover');
+                    });
+                    
+                    zone.addEventListener('dragleave', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        zone.classList.remove('dragover');
+                    });
+                    
+                    zone.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        zone.classList.remove('dragover');
+                        handleFiles(uploadType, e.dataTransfer.files);
+                    });
+                });
+                
+                elements.fileInput.addEventListener('change', (e) => {
+                    const uploadType = e.target.dataset.uploadType;
+                    if (uploadType) {
+                        handleFiles(uploadType, e.target.files);
+                    }
+                    // Reset input
+                    e.target.value = null;
+                });
+            }
+            
+            /**
+             * Handles drag-to-reorder for thumbnails.
+             */
+            function initDragToReorder() {
+                let dragSrcEl = null;
+                
+                elements.app.addEventListener('dragstart', (e) => {
+                    if (e.target.classList.contains('thumbnail-item')) {
+                        dragSrcEl = e.target;
+                        e.dataTransfer.effectAllowed = 'move';
+                        e.dataTransfer.setData('text/html', e.target.innerHTML); // Not really used, but necessary
+                        e.target.classList.add('dragging');
+                    }
+                });
+                
+                elements.app.addEventListener('dragover', (e) => {
+                    if (e.target.closest('.thumbnail-item')) {
+                        e.preventDefault(); // Allow drop
+                        const targetItem = e.target.closest('.thumbnail-item');
+                        if (targetItem !== dragSrcEl) {
+                            // Basic visual feedback (can be improved)
+                            targetItem.style.borderRight = '2px solid var(--gradient-primary-start)';
+                        }
+                    }
+                });
+                
+                elements.app.addEventListener('dragleave', (e) => {
+                    if (e.target.closest('.thumbnail-item')) {
+                        e.target.closest('.thumbnail-item').style.borderRight = '';
+                    }
+                });
+                
+                elements.app.addEventListener('drop', (e) => {
+                    if (e.target.closest('.thumbnail-item')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        const targetEl = e.target.closest('.thumbnail-item');
+                        targetEl.style.borderRight = '';
+                        
+                        if (dragSrcEl && targetEl !== dragSrcEl) {
+                            const uploadType = dragSrcEl.dataset.uploadType;
+                            const files = state.files[uploadType];
+                            
+                            const srcId = dragSrcEl.dataset.fileId;
+                            const targetId = targetEl.dataset.fileId;
+                            
+                            const srcIndex = files.findIndex(f => f.id === srcId);
+                            const targetIndex = files.findIndex(f => f.id === targetId);
+                            
+                            if (srcIndex > -1 && targetIndex > -1) {
+                                // Remove and re-insert
+                                const [draggedFile] = files.splice(srcIndex, 1);
+                                files.splice(targetIndex, 0, draggedFile);
+                                
+                                renderThumbnails(uploadType);
+                            }
+                        }
+                    }
+                });
+                
+                elements.app.addEventListener('dragend', (e) => {
+                    if (e.target.classList.contains('thumbnail-item')) {
+                        e.target.classList.remove('dragging');
+                    }
+                    dragSrcEl = null;
+                });
+            }
+
+
+            /**
+             * ----------------------------------------------------------------
+             * |                      UI & EVENT HANDLERS                    |
+             * ----------------------------------------------------------------
+             */
+
+            /**
+             * Main click event handler for the entire app.
+             */
+            function handleAppClick(e) {
+                const target = e.target;
+                const actionTarget = target.closest('[data-action]');
+                
+                if (actionTarget) {
+                    const action = actionTarget.dataset.action;
+                    
+                    switch (action) {
+                        case 'close-modal':
+                            target.closest('.modal').classList.remove('active');
+                            break;
+                            
+                        case 'remove-file':
+                            const thumb = target.closest('.thumbnail-item');
+                            const fileId = thumb.dataset.fileId;
+                            const uploadType = thumb.dataset.uploadType;
+                            state.files[uploadType] = state.files[uploadType].filter(f => f.id !== fileId);
+                            renderThumbnails(uploadType);
+                            validateAllForms();
+                            break;
+                            
+                        case 'select-all':
+                            // To-do: Implement selection state
+                            showToast('"Select All" not yet implemented.', 'info');
+                            break;
+                            
+                        case 'delete-selected':
+                            // To-do: Implement selection state
+                            showToast('"Delete Selected" not yet implemented.', 'info');
+                            break;
+                            
+                        case 'decrement':
+                        case 'increment':
+                            const input = $(actionTarget.dataset.target);
+                            if (input) {
+                                let val = parseInt(input.value);
+                                val = action === 'increment' ? val + 1 : val - 1;
+                                val = Math.max(parseInt(input.min), Math.min(parseInt(input.max), val));
+                                input.value = val;
+                                // Dispatch input event to sync slider
+                                input.dispatchEvent(new Event('input'));
+                            }
+                            break;
+                            
+                        case 'view-full':
+                            const card = target.closest('.gallery-card');
+                            const design = JSON.parse(card.dataset.design);
+                            openFullImageModal(design);
+                            break;
+                            
+                        case 'edit':
+                            const editCard = target.closest('.gallery-card');
+                            const designToEdit = JSON.parse(editCard.dataset.design);
+                            openEditModal(designToEdit);
+                            break;
+                            
+                        case 'download':
+                            const downloadCard = target.closest('.gallery-card');
+                            const designToDownload = JSON.parse(downloadCard.dataset.design);
+                            downloadImage(designToDownload.dataUrl, `pod-design-${Date.now()}.png`);
+                            break;
+                            
+                        case 'delete':
+                            const deleteCard = target.closest('.gallery-card');
+                            const designToDelete = JSON.parse(deleteCard.dataset.design);
+                            if (confirm('Are you sure you want to delete this design?')) {
+                                const page = state.currentPage;
+                                state.generatedDesigns[page] = state.generatedDesigns[page].filter(d => d.id !== designToDelete.id);
+                                deleteCard.remove();
+                                showToast('Design deleted.', 'info');
+                                saveStateToLocalStorage();
+                            }
+                            break;
+                            
+                        case 'download-full-image':
+                            downloadImage(elements.fullImageModalImg.src, `pod-design-full-${Date.now()}.png`);
+                            break;
+                            
+                        case 'toggle-favorite':
+                            toggleFavorite(target.closest('.gallery-card'));
+                            break;
+                    }
+                }
+                
+                // Modal background click
+                if (target.classList.contains('modal') && target.classList.contains('active')) {
+                    target.classList.remove('active');
+                }
+            }
+
+            /**
+             * Initializes all event listeners.
+             */
+            function initEventListeners() {
+                // Main click delegation
+                document.addEventListener('click', handleAppClick);
+                
+                // Page Navigation
+                elements.navTabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        state.currentPage = tab.dataset.page;
+                        updateActivePage();
+                    });
+                });
+                
+                // File Uploads
+                initDragAndDrop();
+                
+                // Header Actions
+                elements.darkModeToggle.addEventListener('click', toggleDarkMode);
+                $('api-settings-tab').addEventListener('click', () => openModal('api-settings-modal'));
+                
+                // API Settings Modal
+                elements.globalApiToggle.addEventListener('change', handleApiToggle);
+                elements.globalApiKeyInput.addEventListener('input', handleApiKeyInput);
+                elements.testApiKeyBtn.addEventListener('click', testApiKey);
+                
+                // Form Validations & Syncing
+                initFormControls();
+                
+                // Generation Buttons
+                elements.styleGenerateBtn.addEventListener('click', prepareStyleGeneration);
+                elements.variationGenerateBtn.addEventListener('click', prepareVariationGeneration);
+                
+                // Edit Modal
+                elements.applyEditBtn.addEventListener('click', () => {
+                    const design = JSON.parse(elements.editDesignModal.dataset.design);
+                    const prompt = elements.editPromptInput.value;
+                    if (prompt) {
+                        editDesign(design, prompt);
+                    }
+                });
+                elements.editPromptInput.addEventListener('input', () => {
+                    updateCharCounter(elements.editPromptInput, elements.editCharCounter, 200);
+                });
+                
+                // Full Image Modal Zoom
+                initImageZoom();
+                
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        $$('.modal.active').forEach(modal => modal.classList.remove('active'));
+                    }
+                });
+                
+                // Auto-save
+                state.autoSaveInterval = setInterval(saveStateToLocalStorage, 30000);
+            }
+            
+            /**
+             * Initializes form controls (sliders, inputs, textareas).
+             */
+            function initFormControls() {
+                // Style Transfer Page
+                elements.styleNumInput.addEventListener('input', () => {
+                    elements.styleNumSlider.value = elements.styleNumInput.value;
+                    validateStyleForm();
+                });
+                elements.styleNumSlider.addEventListener('input', () => {
+                    elements.styleNumInput.value = elements.styleNumSlider.value;
+                    validateStyleForm();
+                });
+                elements.stylePrompt.addEventListener('input', () => {
+                    updateCharCounter(elements.stylePrompt, elements.styleCharCounter, 500);
+                });
+                
+                // Variations Page
+                elements.variationNumInput.addEventListener('input', () => {
+                    elements.variationNumSlider.value = elements.variationNumInput.value;
+                    validateVariationForm();
+                });
+                elements.variationNumSlider.addEventListener('input', () => {
+                    elements.variationNumInput.value = elements.variationNumInput.value;
+                    validateVariationForm();
+                });
+                elements.variationPrompt.addEventListener('input', () => {
+                    updateCharCounter(elements.variationPrompt, elements.variationCharCounter, 500);
+                });
+                
+                // Start cycling placeholders
+                cyclePromptPlaceholders(elements.stylePrompt, CYCLING_PROMPTS);
+                cyclePromptPlaceholders(elements.variationPrompt, [
+                    "e.g., 'Make versions with different dog breeds'",
+                    "e.g., 'Change the colors to pastel tones'",
+                    "e.g., 'Add a Santa hat for a Christmas version'",
+                    "e.g., 'Create a version with a cat instead of a dog'"
+                ]);
+            }
+
+            /**
+             * ----------------------------------------------------------------
+             * |                     GENERATION PREP                       |
+             * ----------------------------------------------------------------
+             */
+
+            function prepareStyleGeneration() {
+                const prompt = elements.stylePrompt.value;
+                const numToGenerate = parseInt(elements.styleNumInput.value);
+                const isBatchMode = elements.styleBatchMode.checked;
+                
+                const styles = state.files.style;
+                const concepts = state.files.concept;
+                
+                if (styles.length === 0 || concepts.length === 0) {
+                    showToast('Upload at least one Style and one Concept image.', 'error');
+                    return;
+                }
+                
+                // Clear placeholder
+                elements.styleGalleryPlaceholder.classList.add('hidden');
+                
+                if (isBatchMode) {
+                    // Batch Mode: 1st style x ALL concepts
+                    const styleFile = styles[0];
+                    for (let i = 0; i < concepts.length; i++) {
+                        const conceptFile = concepts[i];
+                        const placeholderId = addPlaceholderCard('style', `Batch ${i+1}: ${styleFile.name} + ${conceptFile.name}`);
+                        state.generationQueue.push({
+                            type: 'style-transfer',
+                            styleFile,
+                            conceptFile,
+                            prompt,
+                            page: 'style',
+                            placeholderId
+                        });
+                    }
+                } else {
+                    // Normal Mode: Random pairs
+                    for (let i = 0; i < numToGenerate; i++) {
+                        const styleFile = styles[Math.floor(Math.random() * styles.length)];
+                        const conceptFile = concepts[Math.floor(Math.random() * concepts.length)];
+                        const placeholderId = addPlaceholderCard('style', `Pair ${i+1}: ${styleFile.name} + ${conceptFile.name}`);
+                        state.generationQueue.push({
+                            type: 'style-transfer',
+                            styleFile,
+                            conceptFile,
+                            prompt,
+                            page: 'style',
+                            placeholderId
+                        });
+                    }
+                }
+                
+                processGenerationQueue();
+            }
+            
+            function prepareVariationGeneration() {
+                const prompt = elements.variationPrompt.value;
+                const numToGenerate = parseInt(elements.variationNumInput.value);
+                const designFile = state.files.variation[0];
+                
+                if (!designFile) {
+                    showToast('Upload a design to create variations of.', 'error');
+                    return;
+                }
+                
+                // Clear placeholder
+                elements.variationGalleryPlaceholder.classList.add('hidden');
+                
+                for (let i = 0; i < numToGenerate; i++) {
+                    const placeholderId = addPlaceholderCard('variation', `Variation ${i+1} of ${designFile.name}`);
+                    state.generationQueue.push({
+                        type: 'variation',
+                        designFile,
+                        prompt,
+                        page: 'variation',
+                        placeholderId
+                    });
+                }
+                
+                processGenerationQueue();
+            }
+
+            
+            /**
+             * ----------------------------------------------------------------
+             * |                     UI/STATE UPDATERS                     |
+             * ----------------------------------------------------------------
+             */
+
+            /**
+             * Updates the active page view.
+             */
+            function updateActivePage() {
+                elements.pageContents.forEach(page => {
+                    page.classList.toggle('active', page.id === state.currentPage);
+                });
+                elements.navTabs.forEach(tab => {
+                    tab.classList.toggle('active', tab.dataset.page === state.currentPage);
+                });
+            }
+            
+            /**
+             * Updates the character counter for a textarea.
+             * @param {HTMLTextAreaElement} textarea - The textarea element.
+             * @param {HTMLElement} counter - The span element for the counter.
+             * @param {number} max - The max character limit.
+             */
+            function updateCharCounter(textarea, counter, max) {
+                const len = textarea.value.length;
+                counter.textContent = `${len}/${max}`;
+                counter.classList.toggle('warn', len > max * 0.9 && len <= max);
+                counter.classList.toggle('error', len > max);
+            }
+            
+            /**
+             * Cycles placeholder text for a textarea.
+             * @param {HTMLTextAreaElement} textarea - The textarea element.
+             * @param {string[]} prompts - An array of placeholder strings.
+             */
+            function cyclePromptPlaceholders(textarea, prompts) {
+                let index = 0;
+                setInterval(() => {
+                    index = (index + 1) % prompts.length;
+                    textarea.placeholder = prompts[index];
+                }, 3000);
+            }
+            
+            /**
+             * Toggles between light and dark mode.
+             */
+            function toggleDarkMode() {
+                state.darkMode = !state.darkMode;
+                elements.body.classList.toggle('dark-mode', state.darkMode);
+                elements.sunIcon.classList.toggle('hidden', state.darkMode);
+                elements.moonIcon.classList.toggle('hidden', !state.darkMode);
+                localStorage.setItem('podStudioDarkMode', state.darkMode);
+            }
+            
+            /**
+             * Opens a modal by its ID.
+             * @param {string} modalId - The ID of the modal to open.
+             */
+            function openModal(modalId) {
+                const modal = $(modalId);
+                if (modal) {
+                    modal.classList.add('active');
+                }
+            }
+            
+            /**
+             * @param {object} design - The design object.
+             */
+            function openFullImageModal(design) {
+                elements.fullImageModalImg.src = design.dataUrl;
+                elements.fullImageModal.dataset.designId = design.id; // Store for download
+                openModal('full-image-modal');
+            }
+            
+            /**
+             * @param {object} design - The design object.
+             */
+            function openEditModal(design) {
+                elements.editDesignModal.dataset.design = JSON.stringify(design);
+                elements.editOriginalImg.src = design.dataUrl;
+                elements.editNewImg.src = '';
+                elements.editNewImg.classList.add('hidden');
+                elements.editSkeletonLoader.classList.add('hidden');
+                elements.editPromptInput.value = '';
+                updateCharCounter(elements.editPromptInput, elements.editCharCounter, 200);
+                openModal('edit-design-modal');
+            }
+
+            /**
+             * Shows a toast notification.
+             * @param {string} message - The message to display.
+             * @param {'info' | 'success' | 'error'} type - The type of toast.
+             */
+            function showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                
+                const icons = {
+                    info: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>',
+                    success: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>',
+                    error: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 013.598 6A11.99 11.99 0 003 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.249-8.25-3.286zm0 13.036h.008v.008H12v-.008z" /></svg>'
+                };
+                
+                toast.innerHTML = `
+                    <span class="toast-icon">${icons[type]}</span>
+                    <span class="toast-message">${message}</span>
+                `;
+                
+                elements.toastContainer.appendChild(toast);
+                
+                setTimeout(() => {
+                    toast.remove();
+                }, 4000);
+            }
+            
+            /**
+             * @param {boolean} isActive - Show or hide the overlay.
+             * @param {string} [text] - Main loading text.
+             * @param {string} [progress] - Progress text (e.g., "1/10").
+             * @param {string[]} [placeholderIds] - Array of placeholder card IDs for queue display.
+             */
+            function updateLoadingOverlay(isActive, text = '', progress = '', placeholderIds = []) {
+                if (isActive) {
+                    elements.loadingText.textContent = text;
+                    elements.loadingProgress.textContent = progress;
+                    
+                    // Update queue visualization
+                    elements.loadingQueue.innerHTML = placeholderIds.map(id => 
+                        `<div class="queue-thumb-preview" data-queue-id="${id}"></div>`
+                    ).join('');
+                    
+                    elements.globalLoadingOverlay.classList.add('active');
+                } else {
+                    elements.globalLoadingOverlay.classList.remove('active');
+                }
+            }
+            
+            /**
+             * Toggles the favorite status of a design.
+             * @param {HTMLElement} card - The gallery card element.
+             */
+            function toggleFavorite(card) {
+                const design = JSON.parse(card.dataset.design);
+                design.isFavorite = !design.isFavorite;
+                
+                const page = state.currentPage;
+                const designIndex = state.generatedDesigns[page].findIndex(d => d.id === design.id);
+                if (designIndex > -1) {
+                    state.generatedDesigns[page][designIndex] = design;
+                }
+                
+                card.dataset.design = JSON.stringify(design);
+                card.querySelector('.gallery-card-star').classList.toggle('favorited', design.isFavorite);
+                saveStateToLocalStorage();
+            }
+
+            
+            /**
+             * ----------------------------------------------------------------
+             * |                      GALLERY RENDERING                    |
+             * ----------------------------------------------------------------
+             */
+
+            /**
+             * Adds a placeholder card to the gallery.
+             * @param {'style' | 'variation'} page - The page to add to.
+             * @param {string} title - The title for the placeholder.
+             * @returns {string} The ID of the created placeholder card.
+             */
+            function addPlaceholderCard(page, title) {
+                const gallery = elements[`${page}Gallery`];
+                const placeholderId = `placeholder-${Date.now()}-${Math.random()}`;
+                
+                const card = document.createElement('div');
+                card.className = 'gallery-card';
+                card.id = placeholderId;
+                card.style.animationDelay = `${(gallery.children.length % 10) * 100}ms`;
+                
+                card.innerHTML = `
+                    <div class="gallery-card-image">
+                        <div class="gallery-card-status">
+                            <div class="spinner"></div>
+                            <span class="gallery-card-status-text">Queued...</span>
+                        </div>
+                    </div>
+                    <div class="gallery-card-footer">
+                        <p class="gallery-card-prompt" title="${title}">${title}</p>
+                        <div class="gallery-card-meta">
+                            <span class="gallery-card-timestamp">Waiting...</span>
+                            <span class="gallery-card-star" data-action="toggle-favorite">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            </span>
+                        </div>
+                    </div>
+                `;
+                
+                gallery.prepend(card);
+                return placeholderId;
+            }
+
+            /**
+             * Updates a placeholder card with the final design or an error.
+             * @param {string} placeholderId - The ID of the card to update.
+             * @param {object | null} design - The new design object, or null on error.
+             * @param {'style' | 'variation'} page - The page context.
+             * @param {string} [errorMessage] - An error message if generation failed.
+             */
+            function updateGalleryCard(placeholderId, design, page, errorMessage) {
+                const card = $(placeholderId);
+                if (!card) return;
+                
+                if (design) {
+                    // Success
+                    state.generatedDesigns[page].push(design);
+                    card.id = design.id;
+                    card.dataset.design = JSON.stringify(design);
+                    
+                    card.innerHTML = `
+                        <div class="gallery-card-image">
+                            <img src="${design.dataUrl}" alt="Generated POD Design" loading="lazy">
+                            <div class="gallery-card-actions">
+                                <button class="gallery-action-btn" data-action="view-full" title="View Full">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.5 7.5v6m3-3h-6" /></svg>
+                                </button>
+                                <button class="gallery-action-btn" data-action="edit" title="Edit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z" /></svg>
+                                </button>
+                                <button class="gallery-action-btn" data-action="download" title="Download">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                                </button>
+                                <button class="gallery-action-btn" data-action="delete" title="Delete">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12.548 0c-.01.03-.02.06-.03.09a48.46 48.46 0 01-3.46-.397m12.548 0c-.01.03-.02.06-.03.09a48.46 48.46 0 01-3.46-.397m12.548 0c-.01.03-.02.06-.03.09a48.46 48.46 0 01-3.46-.397M3.75 5.625h16.5" /></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="gallery-card-footer">
+                            <p class="gallery-card-prompt" title="${design.prompt || 'No prompt'}">${design.prompt || 'No prompt'}</p>
+                            <div class="gallery-card-meta">
+                                <span class="gallery-card-timestamp">${design.timestamp}</span>
+                                <span class="gallery-card-star" data-action="toggle-favorite">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // Error
+                    card.querySelector('.gallery-card-status').classList.add('error');
+                    card.querySelector('.gallery-card-status-text').textContent = `Failed: ${errorMessage.substring(0, 30)}...`;
+                    card.querySelector('.spinner').style.display = 'none';
+                    // Add retry button
+                    const retryBtn = document.createElement('button');
+                    retryBtn.className = 'btn-link';
+                    retryBtn.textContent = 'Retry';
+                    // ... (Retry logic not fully implemented yet)
+                    card.querySelector('.gallery-card-status').appendChild(retryBtn);
+                }
+            }
+
+
+            /**
+             * ----------------------------------------------------------------
+             * |                     VALIDATION                            |
+             * ----------------------------------------------------------------
+             */
+
+            function validateAllForms() {
+                validateStyleForm();
+                validateVariationForm();
+            }
+            
+            function isApiValid() {
+                const key = state.apiKey;
+                const isValid = !state.useInternalApi && key && key.startsWith('AIza') && key.length > 30;
+                return state.useInternalApi || isValid;
+            }
+
+            function validateApiKey(key) {
+                const isValid = !state.useInternalApi && key && key.startsWith('AIza') && key.length > 30;
+                const isInternal = state.useInternalApi;
+                
+                elements.globalApiValidIcon.classList.toggle('hidden', !isValid);
+                elements.globalApiInvalidIcon.classList.toggle('hidden', isValid || isInternal);
+                
+                elements.testApiKeyBtn.disabled = isInternal || !key;
+                
+                return isInternal || isValid;
+            }
+            
+            function handleApiToggle() {
+                state.useInternalApi = elements.globalApiToggle.checked;
+                elements.globalApiKeyWrapper.classList.toggle('hidden', state.useInternalApi);
+                validateApiKey(state.apiKey);
+                validateAllForms();
+                localStorage.setItem('podStudioUseInternalApi', state.useInternalApi);
+            }
+            
+            function handleApiKeyInput() {
+                state.apiKey = elements.globalApiKeyInput.value;
+                validateApiKey(state.apiKey);
+                validateAllForms();
+                localStorage.setItem('podStudioApiKey', state.apiKey);
+            }
+            
+            async function testApiKey() {
+                const { apiKey, apiUrl } = getApiConfig();
+                if (state.useInternalApi) {
+                    showToast('Internal API is active (no key to test).', 'info');
+                    return;
+                }
+                
+                elements.testApiKeyBtn.disabled = true;
+                elements.testApiKeyBtn.textContent = 'Testing...';
+                
+                try {
+                    // Send a simple, non-generating request (e.g., list models)
+                    // For this simple case, we'll just check if the key *looks* valid
+                    // A real test would ping a different endpoint
+                    if (validateApiKey(apiKey)) {
+                        showToast('API key format is valid.', 'success');
+                    } else {
+                        throw new Error('API key format is invalid.');
+                    }
+                    
+                } catch (error) {
+                    showToast(`API Key Test Failed: ${error.message}`, 'error');
+                } finally {
+                    elements.testApiKeyBtn.disabled = false;
+                    elements.testApiKeyBtn.textContent = 'Test Key';
+                }
+            }
+
+            function validateStyleForm() {
+                const filesOk = state.files.style.length > 0 && state.files.concept.length > 0;
+                const numOk = parseInt(elements.styleNumInput.value) > 0;
+                const apiOk = isApiValid();
+                
+                const canGenerate = filesOk && numOk && apiOk;
+                elements.styleGenerateBtn.disabled = !canGenerate;
+                elements.styleGenerateBtn.classList.toggle('ready', canGenerate);
+                
+                if (canGenerate) {
+                    const num = parseInt(elements.styleNumInput.value);
+                    const time = Math.ceil((num * 5) / 60); // ~5 sec per image
+                    elements.styleTimeEstimate.textContent = `Est: ~${time} min`;
+                } else {
+                    elements.styleTimeEstimate.textContent = '';
+                }
+            }
+
+            function validateVariationForm() {
+                const filesOk = state.files.variation.length > 0;
+                const numOk = parseInt(elements.variationNumInput.value) > 0;
+                const apiOk = isApiValid();
+                
+                const canGenerate = filesOk && numOk && apiOk;
+                elements.variationGenerateBtn.disabled = !canGenerate;
+                elements.variationGenerateBtn.classList.toggle('ready', canGenerate);
+                
+                if (canGenerate) {
+                    const num = parseInt(elements.variationNumInput.value);
+                    const time = Math.ceil((num * 5) / 60); // ~5 sec per image
+                    elements.variationTimeEstimate.textContent = `Est: ~${time} min`;
+                } else {
+                    elements.variationTimeEstimate.textContent = '';
+                }
+            }
+
+            
+            /**
+             * ----------------------------------------------------------------
+             * |                     UTILITY FUNCTIONS                     |
+             * ----------------------------------------------------------------
+             */
+
+            /**
+             * Triggers a browser download.
+             * @param {string} dataUrl - The base64 data URL of the image.
+             * @param {string} filename - The desired filename.
+             */
+            function downloadImage(dataUrl, filename) {
+                const link = document.createElement('a');
+                link.href = dataUrl;
+                link.download = filename;
+                link.click();
+                showToast(`Downloading ${filename}`, 'success');
+            }
+            
+            /**
+             * Initializes zoom functionality for the full image modal.
+             */
+            function initImageZoom() {
+                let scale = 1;
+                const img = elements.fullImageModalImg;
+                
+                elements.zoomInBtn.addEventListener('click', () => {
+                    scale = Math.min(3, scale + 0.2);
+                    img.style.transform = `scale(${scale})`;
+                });
+                
+                elements.zoomOutBtn.addEventListener('click', () => {
+                    scale = Math.max(1, scale - 0.2);
+                    img.style.transform = `scale(${scale})`;
+                });
+                
+                // Reset on close
+                elements.fullImageModal.addEventListener('click', (e) => {
+                    if (!e.target.closest('.modal-content') && !e.target.closest('.zoom-btn')) {
+                        scale = 1;
+                        img.style.transform = 'scale(1)';
+                    }
+                });
+            }
+
+            /**
+             * ----------------------------------------------------------------
+             * |                  LOCAL STORAGE & INIT                     |
+             * ----------------------------------------------------------------
+             */
+             
+            /**
+             * Saves the relevant app state to local storage.
+             */
+            function saveStateToLocalStorage() {
+                try {
+                    const stateToSave = {
+                        apiKey: state.apiKey,
+                        useInternalApi: state.useInternalApi,
+                        darkMode: state.darkMode,
+                        promptHistory: state.promptHistory,
+                        generatedDesigns: state.generatedDesigns
+                        // We don't save 'files' as they are session-specific
+                    };
+                    localStorage.setItem('podStudioState', JSON.stringify(stateToSave));
+                    // console.log('State saved to localStorage');
+                } catch (error) {
+                    console.warn('Could not save state to localStorage:', error);
+                }
+            }
+            
+            /**
+             * Loads and applies state from local storage.
+             */
+            function loadStateFromLocalStorage() {
+                try {
+                    const savedState = localStorage.getItem('podStudioState');
+                    if (savedState) {
+                        const parsedState = JSON.parse(savedState);
+                        
+                        // Load API settings
+                        state.apiKey = parsedState.apiKey || '';
+                        state.useInternalApi = parsedState.useInternalApi !== false; // Default true
+                        elements.globalApiKeyInput.value = state.apiKey;
+                        elements.globalApiToggle.checked = state.useInternalApi;
+                        handleApiToggle(); // Apply settings to UI
+                        
+                        // Load Dark Mode
+                        state.darkMode = parsedState.darkMode || false;
+                        if (state.darkMode) {
+                            toggleDarkMode(); // This flips it, so call once if true
+                        }
+                        
+                        // Load History
+                        state.promptHistory = parsedState.promptHistory || [];
+                        
+                        // Load Generated Designs
+                        state.generatedDesigns = parsedState.generatedDesigns || { style: [], variation: [] };
+                        
+                        // Render loaded designs
+                        if (state.generatedDesigns.style.length > 0) {
+                            elements.styleGalleryPlaceholder.classList.add('hidden');
+                            state.generatedDesigns.style.forEach(design => renderLoadedDesign(design, 'style'));
+                        }
+                        if (state.generatedDesigns.variation.length > 0) {
+                            elements.variationGalleryPlaceholder.classList.add('hidden');
+                            state.generatedDesigns.variation.forEach(design => renderLoadedDesign(design, 'variation'));
+                        }
+                        
+                        showToast('Welcome back! Your previous session has been loaded.', 'info');
+                    }
+                } catch (error) {
+                    console.error('Could not load state from localStorage:', error);
+                    localStorage.removeItem('podStudioState'); // Clear corrupted state
+                }
+            }
+            
+            /**
+             * Renders a single design card from loaded state.
+             * @param {object} design - The design object.
+             * @param {'style' | 'variation'} page - The page to render on.
+             */
+            function renderLoadedDesign(design, page) {
+                const gallery = elements[`${page}Gallery`];
+                const card = document.createElement('div');
+                card.className = 'gallery-card';
+                card.id = design.id;
+                card.dataset.design = JSON.stringify(design);
+                card.style.animationDelay = `${(gallery.children.length % 10) * 100}ms`;
+                
+                card.innerHTML = `
+                    <div class="gallery-card-image">
+                        <img src="${design.dataUrl}" alt="Generated POD Design" loading="lazy">
+                        <div class="gallery-card-actions">
+                            <button class="gallery-action-btn" data-action="view-full" title="View Full">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.5 7.5v6m3-3h-6" /></svg>
+                            </button>
+                            <button class="gallery-action-btn" data-action="edit" title="Edit">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z" /></svg>
+                            </button>
+                            <button class="gallery-action-btn" data-action="download" title="Download">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                            </button>
+                            <button class="gallery-action-btn" data-action="delete" title="Delete">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12.548 0c-.01.03-.02.06-.03.09a48.46 48.46 0 01-3.46-.397m12.548 0c-.01.03-.02.06-.03.09a48.46 48.46 0 01-3.46-.397m12.548 0c-.01.03-.02.06-.03.09a48.46 48.46 0 01-3.46-.397M3.75 5.625h16.5" /></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="gallery-card-footer">
+                        <p class="gallery-card-prompt" title="${design.prompt || 'No prompt'}">${design.prompt || 'No prompt'}</p>
+                        <div class="gallery-card-meta">
+                            <span class="gallery-card-timestamp">${design.timestamp}</span>
+                            <span class="gallery-card-star ${design.isFavorite ? 'favorited' : ''}" data-action="toggle-favorite">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            </span>
+                        </div>
+                    </div>
+                `;
+                
+                gallery.appendChild(card);
+            }
+
+            /**
+             * Initializes the application.
+             */
+            function init() {
+                loadStateFromLocalStorage();
+                initEventListeners();
+                validateAllForms();
+            }
+
+            // Run the app
+            init();
+
+        });
+    </script>
+</body>
+</html>

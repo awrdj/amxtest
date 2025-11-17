@@ -1,16 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Design Generator</title>
-    <!-- Google Font: Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Embedded CSS -->
-    <style>
+<style>
         /* CSS Reset */
         *, *::before, *::after {
             box-sizing: border-box;
@@ -45,16 +33,16 @@
             --text-secondary: #6b7280;
             --text-light: #ffffff;
             --border-color: #e5e7eb;
-            --modal-backdrop: rgba(0, 0, 0, 0.75);
+            --modal-backdrop: rgba(0, 0, 0, 0.8);
         }
 
         /* Dark Mode Variables */
         html.dark {
-            --background: #111827;
-            --card-bg: #1f2937;
-            --card-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            --card-shadow-hover: 0 8px 24px rgba(0,0,0,0.3);
-            --text-primary: #f9fafb;
+            --background: #0f172a;
+            --card-bg: #1e293b;
+            --card-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            --card-shadow-hover: 0 8px 24px rgba(0,0,0,0.6);
+            --text-primary: #f1f5f9;
             --text-secondary: #9ca3af;
             --border-color: #374151;
             --upload-border: 3px dashed #374151;
@@ -69,6 +57,13 @@
         */
         html {
             scroll-behavior: smooth;
+            scroll-padding-top: 100px; /* For scrolling to anchors */
+        }
+
+        /* Accessibility: Focus visible */
+        *:focus-visible {
+            outline: 2px solid #667eea;
+            outline-offset: 2px;
         }
 
         body {
@@ -76,6 +71,11 @@
             background: var(--background);
             color: var(--text-primary);
             transition: background 0.3s, color 0.3s;
+            /* Added subtle background pattern */
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(102, 126, 234, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(118, 75, 162, 0.03) 0%, transparent 50%);
+            background-attachment: fixed;
         }
 
         h1, h2, h3, h4 {
@@ -107,7 +107,7 @@
         ========================================
         */
         .app-header {
-            background: var(--card-bg);
+            background: linear-gradient(to bottom, var(--card-bg), rgba(102, 126, 234, 0.02));
             border-bottom: 1px solid var(--border-color);
             padding: 1.25rem 2rem;
             position: sticky;
@@ -118,6 +118,13 @@
         }
         html.dark .app-header {
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .app-header.scrolled { 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+        }
+        html.dark .app-header.scrolled {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
         }
 
         .header-content {
@@ -211,14 +218,15 @@
         }
 
         .api-status {
-            width: 10px;
-            height: 10px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             background: var(--error-red);
             margin-left: -0.25rem;
         }
         .api-status.configured {
             background: var(--success-green);
+            box-shadow: 0 0 8px var(--success-green);
         }
 
         .theme-toggle {
@@ -266,6 +274,16 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        @keyframes border-pulse {
+            0%, 100% { border-color: #e0e7ff; }
+            50% { border-color: #667eea; }
+        }
+        
+        html.dark @keyframes border-pulse {
+            0%, 100% { border-color: #374151; }
+            50% { border-color: #667eea; }
+        }
+
         .upload-panels-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -309,8 +327,8 @@
             box-shadow: 0 0 15px rgba(102, 126, 234, 0.2);
         }
         .upload-zone:hover {
-            border-color: var(--upload-border-hover);
             background: var(--upload-bg-hover);
+            animation: border-pulse 2s infinite;
         }
 
         .upload-zone-content {
@@ -322,8 +340,8 @@
             pointer-events: none; /* Allows click to pass to input */
         }
         .upload-zone-content svg {
-            width: 48px;
-            height: 48px;
+            width: 64px;
+            height: 64px;
             color: #9ca3af;
         }
         .upload-zone h3 {
@@ -332,6 +350,22 @@
         .upload-zone p {
             font-size: 0.875rem;
         }
+        .upload-zone .file-types {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Style for the "click to browse" text to look like a button */
+        .upload-zone-content p:not(.file-types) {
+            background: var(--primary-gradient);
+            color: var(--text-light);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius-button);
+            display: inline-block;
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+
         .upload-zone input[type="file"] {
             display: none;
         }
@@ -407,9 +441,9 @@
             left: 4px;
             background: rgba(0,0,0,0.6);
             color: white;
-            font-size: 0.75rem;
-            font-weight: 700;
-            padding: 2px 5px;
+            font-size: 0.875rem;
+            font-weight: 800;
+            padding: 3px 6px;
             border-radius: 4px;
             line-height: 1;
         }
@@ -418,15 +452,15 @@
             position: absolute;
             top: 4px;
             right: 4px;
-            background: rgba(255, 0, 0, 0.7);
+            background: rgba(239, 68, 68, 0.9);
             color: white;
             border: none;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 1rem;
+            width: 24px;
+            height: 24px;
+            font-size: 1.125rem;
             font-weight: 700;
-            line-height: 18px;
+            line-height: 22px;
             text-align: center;
             cursor: pointer;
             opacity: 0;
@@ -441,6 +475,28 @@
             background: rgba(255, 0, 0, 1);
             transform: scale(1.1);
         }
+
+        .thumbnail:nth-child(1) { animation-delay: 0ms; }
+        .thumbnail:nth-child(2) { animation-delay: 100ms; }
+        .thumbnail:nth-child(3) { animation-delay: 200ms; }
+        .thumbnail:nth-child(4) { animation-delay: 300ms; }
+        .thumbnail:nth-child(5) { animation-delay: 400ms; }
+        .thumbnail:nth-child(6) { animation-delay: 500ms; }
+        .thumbnail:nth-child(7) { animation-delay: 600ms; }
+        .thumbnail:nth-child(8) { animation-delay: 700ms; }
+        .thumbnail:nth-child(9) { animation-delay: 800ms; }
+        .thumbnail:nth-child(10) { animation-delay: 900ms; }
+        .thumbnail:nth-child(11) { animation-delay: 1000ms; }
+        .thumbnail:nth-child(12) { animation-delay: 1100ms; }
+        .thumbnail:nth-child(13) { animation-delay: 1200ms; }
+        .thumbnail:nth-child(14) { animation-delay: 1300ms; }
+        .thumbnail:nth-child(15) { animation-delay: 1400ms; }
+        .thumbnail:nth-child(16) { animation-delay: 1500ms; }
+        .thumbnail:nth-child(17) { animation-delay: 1600ms; }
+        .thumbnail:nth-child(18) { animation-delay: 1700ms; }
+        .thumbnail:nth-child(19) { animation-delay: 1800ms; }
+        .thumbnail:nth-child(20) { animation-delay: 1900ms; }
+        
 
         /* ========================================
         CONTROL PANEL & GENERATION
@@ -463,6 +519,16 @@
             font-weight: 600;
             cursor: pointer;
             list-style: none; /* Remove default triangle */
+            user-select: none;
+            transition: color 0.2s;
+            color: var(--text-primary);
+        }
+        .optional-prompt summary:hover {
+            color: #667eea;
+        }
+        .optional-prompt details[open] summary {
+            color: #667eea;
+            font-weight: 600;
         }
         .optional-prompt summary::-webkit-details-marker {
             display: none; /* Chrome */
@@ -499,9 +565,11 @@
         .char-counter {
             font-size: 0.875rem;
             color: var(--text-secondary);
+            transition: color 0.2s;
         }
+        .char-counter.good { color: var(--success-green); }
         .char-counter.warning { color: var(--warning-yellow); }
-        .char-counter.error { color: var(--error-red); }
+        .char-counter.danger { color: var(--error-red); }
 
         .generation-controls {
             display: flex;
@@ -519,8 +587,9 @@
             color: var(--text-primary);
         }
         .generation-info {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
+            font-size: 0.9375rem;
+            color: var(--text-primary);
+            font-weight: 500;
         }
 
         /* ========================================
@@ -541,6 +610,25 @@
             justify-content: center;
             gap: 0.5rem;
             text-decoration: none;
+            position: relative; /* Added for ripple */
+            overflow: hidden; /* Added for ripple */
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+            pointer-events: none; /* So it doesn't block clicks */
+        }
+        .btn:active::after {
+            width: 300px; /* Large enough to cover button */
+            height: 300px;
         }
         .btn svg {
             width: 18px;
@@ -550,11 +638,11 @@
         .btn-primary {
             background: var(--primary-gradient);
             color: var(--text-light);
-            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+            box-shadow: 0 3px 8px rgba(102, 126, 234, 0.3);
         }
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
         }
         .btn-primary:disabled {
             background: #9ca3af;
@@ -563,13 +651,13 @@
             transform: none;
             box-shadow: none;
         }
-        .btn-primary.pulsing {
-            animation: pulse-animation 2s infinite;
+        .btn-primary.ready {
+            animation: pulse-glow 2s infinite;
         }
 
-        @keyframes pulse-animation {
+        @keyframes pulse-glow {
             0% { box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); }
-            50% { box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5); }
+            50% { box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6), 0 0 30px rgba(102, 126, 234, 0.3); }
             100% { box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); }
         }
         
@@ -665,8 +753,11 @@
             animation: fadeIn 0.5s ease-out forwards;
         }
         .result-card:hover {
-            transform: scale(1.02);
-            box-shadow: var(--card-shadow-hover);
+            transform: scale(1.03);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+        }
+        html.dark .result-card:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
         }
 
         .result-card-image {
@@ -687,8 +778,8 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -697,7 +788,7 @@
             transition: opacity 0.3s;
         }
         html.dark .action-buttons-overlay {
-            background: rgba(31, 41, 55, 0.9);
+            background: rgba(31, 41, 55, 0.95);
         }
         .result-card:hover .action-buttons-overlay {
             opacity: 1;
@@ -747,6 +838,10 @@
             border: none;
             cursor: pointer;
             color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+        .result-card-fav:hover {
+            transform: scale(1.15);
         }
         .result-card-fav svg {
             width: 20px;
@@ -754,6 +849,8 @@
         }
         .result-card-fav.favorited {
             color: var(--warning-yellow);
+            filter: drop-shadow(0 0 4px var(--warning-yellow));
+            transform: scale(1.1);
         }
         .result-card-fav.favorited svg {
             fill: var(--warning-yellow);
@@ -845,12 +942,18 @@
             font-size: 1rem;
         }
         .modal-body .info-box {
-            background: var(--background);
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
             border-radius: var(--border-radius-button);
             padding: 1rem;
             font-size: 0.875rem;
             color: var(--text-secondary);
-            border: 1px solid var(--border-color);
+            border: 1px solid #93c5fd;
+            border-left: 4px solid #3b82f6;
+        }
+        html.dark .modal-body .info-box {
+            background: linear-gradient(135deg, #1e3a5f 0%, #1e293b 100%);
+            border-color: #334155;
+            border-left-color: #3b82f6;
         }
         .modal-body .info-box p {
             margin-bottom: 0.5rem;
@@ -1021,10 +1124,10 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
         .spinner {
-            width: 48px;
-            height: 48px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #667eea;
+            width: 56px;
+            height: 56px;
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #667eea;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -1032,9 +1135,15 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        @keyframes shimmer {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
         #loading-status {
             font-size: 1rem;
             font-weight: 500;
+            animation: shimmer 2s infinite;
         }
         #loading-progress {
             font-size: 1.25rem;
@@ -1055,14 +1164,15 @@
             color: var(--text-primary);
             border-radius: var(--border-radius-button);
             padding: 1rem 1.5rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            border-left: 5px solid;
+            border-left: 6px solid;
             opacity: 0;
             transform: translateX(100%);
             animation: slideIn 0.3s ease-out forwards;
+            min-width: 300px;
         }
         @keyframes slideIn {
             to { opacity: 1; transform: translateX(0); }
@@ -1077,6 +1187,9 @@
 
         .toast-icon {
             font-size: 1.25rem;
+            background: var(--background);
+            border-radius: 50%;
+            padding: 0.5rem;
         }
         .toast.success .toast-icon { color: var(--success-green); }
         .toast.error .toast-icon { color: var(--error-red); }
@@ -1128,11 +1241,15 @@
             .upload-panels-container {
                 grid-template-columns: 1fr;
             }
+            .upload-zone { padding: 1.5rem 1rem; }
+            .upload-zone-content svg { width: 40px; height: 40px; }
+            .control-panel { padding: 1.25rem; }
             .mode-toggle {
                 width: 100%;
             }
             .mode-toggle-btn {
                 flex-grow: 1;
+                padding: 0.625rem 1.25rem;
             }
             .results-grid {
                 grid-template-columns: 1fr;
@@ -1140,6 +1257,10 @@
             .thumbnail-grid {
                 grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
                 max-height: 250px;
+            }
+            .thumbnail-remove {
+                width: 28px;
+                height: 28px;
             }
             .modal-content {
                 width: 95%;
@@ -1154,6 +1275,9 @@
             }
             .edit-preview {
                 grid-template-columns: 1fr;
+            }
+            .btn {
+                min-height: 44px;
             }
         }
 
@@ -1175,7 +1299,7 @@
             <div class="header-content">
                 <div class="logo">
                     <div class="logo-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M9.405 1.05c.42-.42 1.14-.42 1.56 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25ZM3.5 12.5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5a.75.75 0 0 1 .75-.75Zm11.5 0a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 15 12.5Z"/></svg>
+                        ✨
                     </div>
                     <h1>AI Design Generator</h1>
                 </div>
@@ -1216,10 +1340,7 @@
                         <div class="upload-zone" id="style-drop-zone">
                             <input type="file" id="style-file-input" multiple accept="image/png, image/jpeg, image/webp">
                             <div class="upload-zone-content">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                  <path d="M9.25 13.25a.75.75 0 0 0 1.5 0V4.636l2.955 3.129a.75.75 0 0 0 1.09-1.03l-4.25-4.5a.75.75 0 0 0-1.09 0l-4.25 4.5a.75.75 0 0 0 1.09 1.03L9.25 4.636v8.614Z" />
-                                  <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5a1.25 1.25 0 0 1-1.25 1.25H4.75A1.25 1.25 0 0 1 3.5 15.25v-2.5Z" />
-                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="m5.25 10.25.037.037a.75.75 0 0 1 0 1.061l-3.5 3.5a.75.75 0 0 1-1.061 0l-1.5-1.5a.75.75 0 1 1 1.06-1.06l.97.97 3.007-3.007a.75.75 0 0 1 1.053-.008ZM10 .25a.75.75 0 0 1 .75.75v.512l1.378-.8a.75.75 0 0 1 1.002.12l1.5 2.598a.75.75 0 0 1-.363 1.03l-1.125.65v1.278l1.125.65a.75.75 0 0 1 .363 1.03l-1.5 2.598a.75.75 0 0 1-1.002.12l-1.378-.8V14a.75.75 0 0 1-1.5 0v-.512l-1.378.8a.75.75 0 0 1-1.002-.12l-1.5-2.598a.75.75 0 0 1 .363-1.03l1.125-.65V7.122l-1.125-.65a.75.75 0 0 1-.363-1.03l1.5-2.598a.75.75 0 0 1 1.002-.12l1.378.8V1a.75.75 0 0 1 .75-.75Zm-5.25 9a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5a.75.75 0 0 1 .75-.75Zm10 0a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5a.75.75 0 0 1 .75-.75Z" /></svg>
                                 <h3>Drag & Drop Art Styles</h3>
                                 <p>or click to browse (max 50)</p>
                                 <p class="file-types">PNG, JPG, WEBP</p>
@@ -1240,10 +1361,7 @@
                         <div class="upload-zone" id="niche-drop-zone">
                             <input type="file" id="niche-file-input" multiple accept="image/png, image/jpeg, image/webp">
                             <div class="upload-zone-content">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                  <path d="M9.25 13.25a.75.75 0 0 0 1.5 0V4.636l2.955 3.129a.75.75 0 0 0 1.09-1.03l-4.25-4.5a.75.75 0 0 0-1.09 0l-4.25 4.5a.75.75 0 0 0 1.09 1.03L9.25 4.636v8.614Z" />
-                                  <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5a1.25 1.25 0 0 1-1.25 1.25H4.75A1.25 1.25 0 0 1 3.5 15.25v-2.5Z" />
-                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M5.25 10.25.037.037a.75.75 0 0 1 0 1.061l-3.5 3.5a.75.75 0 0 1-1.061 0l-1.5-1.5a.75.75 0 1 1 1.06-1.06l.97.97 3.007-3.007a.75.75 0 0 1 1.053-.008ZM10 .25a.75.75 0 0 1 .75.75v.512l1.378-.8a.75.75 0 0 1 1.002.12l1.5 2.598a.75.75 0 0 1-.363 1.03l-1.125.65v1.278l1.125.65a.75.75 0 0 1 .363 1.03l-1.5 2.598a.75.75 0 0 1-1.002.12l-1.378-.8V14a.75.75 0 0 1-1.5 0v-.512l-1.378.8a.75.75 0 0 1-1.002-.12l-1.5-2.598a.75.75 0 0 1 .363-1.03l1.125-.65V7.122l-1.125-.65a.75.75 0 0 1-.363-1.03l1.5-2.598a.75.75 0 0 1 1.002-.12l1.378.8V1a.75.75 0 0 1 .75-.75Zm-5.25 9a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5a.75.75 0 0 1 .75-.75Zm10 0a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5a.75.75 0 0 1 .75-.75Z" /></svg>
                                 <h3>Drag & Drop Niche Designs</h3>
                                 <p>or click to browse (max 50)</p>
                                 <p class="file-types">PNG, JPG, WEBP</p>
@@ -1291,10 +1409,7 @@
                     <div class="upload-zone" id="variation-drop-zone">
                         <input type="file" id="variation-file-input" accept="image/png, image/jpeg, image/webp">
                         <div class="upload-zone-content">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                              <path d="M9.25 13.25a.75.75 0 0 0 1.5 0V4.636l2.955 3.129a.75.75 0 0 0 1.09-1.03l-4.25-4.5a.75.75 0 0 0-1.09 0l-4.25 4.5a.75.75 0 0 0 1.09 1.03L9.25 4.636v8.614Z" />
-                              <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5a1.25 1.25 0 0 1-1.25 1.25H4.75A1.25 1.25 0 0 1 3.5 15.25v-2.5Z" />
-                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="m5.25 10.25.037.037a.75.75 0 0 1 0 1.061l-3.5 3.5a.75.75 0 0 1-1.061 0l-1.5-1.5a.75.75 0 1 1 1.06-1.06l.97.97 3.007-3.007a.75.75 0 0 1 1.053-.008ZM10 .25a.75.75 0 0 1 .75.75v.512l1.378-.8a.75.75 0 0 1 1.002.12l1.5 2.598a.75.75 0 0 1-.363 1.03l-1.125.65v1.278l1.125.65a.75.75 0 0 1 .363 1.03l-1.5 2.598a.75.75 0 0 1-1.002.12l-1.378-.8V14a.75.75 0 0 1-1.5 0v-.512l-1.378.8a.75.75 0 0 1-1.002-.12l-1.5-2.598a.75.75 0 0 1 .363-1.03l1.125-.65V7.122l-1.125-.65a.75.75 0 0 1-.363-1.03l1.5-2.598a.75.75 0 0 1 1.002-.12l1.378.8V1a.75.75 0 0 1 .75-.75Zm-5.25 9a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5a.75.75 0 0 1 .75-.75Zm10 0a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5a.75.75 0 0 1 .75-.75Z" /></svg>
                             <h3>Drag & Drop Source Design</h3>
                             <p>or click to browse</p>
                         </div>
@@ -1460,10 +1575,7 @@
         <div class="modal-content" style="max-width: 450px;">
             <button class="modal-close" data-dismiss="modal">&times;</button>
             <div class="modal-header">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" style="color: var(--error-red);">
-                    <path fill-rule="evenodd" d="M8.485 2.495c.646-1.119 2.384-1.119 3.03 0l6.29 10.894c.646 1.119-.28 2.505-1.515 2.505H3.71c-1.235 0-2.16-1.386-1.515-2.505l6.29-10.894ZM10 12.5a.75.75 0 0 1 .75.75v.008a.75.75 0 0 1-1.5 0v-.008a.75.75 0 0 1 .75-.75Zm.002-4a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0v-2.25a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" />
-                </svg>
-                <h2>Confirm Deletion</h2>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.22 1.754a.75.75 0 0 1 1.06 0l1.72 1.72V6a.75.75 0 0 1 1.5 0v-.827l1.72 1.72a.75.75 0 1 1-1.06 1.06L12 6.889V14.5a.75.75 0 0 1-1.5 0V6.889l-1.06 1.06a.75.75 0 0 1-1.06-1.06l1.72-1.72V6a.75.75 0 0 1 1.5 0v-.827l1.72 1.72a.75.75 0 1 1-1.06 1.06L12 6.889V14.5a.75.75 0 0 1-1.5 0V6.889l-1.06 1.06a.75.75 0 0 1-1.06-1.06l1.72-1.72V6a.75.75 0 0 1 1.5 0v-.827l1.72 1.72a.75.75 0 1 1-1.06 1.06L12 6.889V14.5a.75.75 0 0 1-1.5 0V6.889l-1.06 1.06a.75.75 0 0 1-1.06-1.06l1.72-1.72V6a.75.75 0 0 1 1.5 0v-.827l1.72 1.72a.75.75 0 1 1-1.06 1.06L12 6.889V14.5a.75.75 0 0 1-1.5 0V6.889l-1.06 1.06a.75.75 0 0 1-1.06-1.06l1.72-1.72V6a.75.75 0 0 1 1.5 0v-.827l1.72 1.72a.75.75 0 1 1-1.06 1.06L12 6.889V14.5a.75.75 0 0 1-1.5 0V6.889l-1.06 1.06a.75.75 0 0 1-1.06-1.06l1.72-1.72V6a.75.75 0 0 1 1.5 0v-.827l1.72 1.72a.75.75 0 1 1-1.06 1.06L12 6.889V14.5a.75.75 0 0 1-1.5 0V6.889l-1.06 1.06a.75.75 0 0 1-1.06-1.06L11.173 4H8.91l-1.06 1.06a.75.75 0 0 1-1.06-1.06l1.72-1.72V3.172L6.79 4.893a.75.75 0 0 1-1.06-1.06l1.72-1.72V1.285a.75.75 0 0 1 0-1.06l1.72-1.72a.75.75 0 0 1 1.06 0l1.72 1.72V.225a.75.75 0 0 1 1.5 0v.827L13.21.33a.75.75 0 1 1 1.06 1.06L12.55 3.11V4h2.264l1.06-1.06a.75.75 0 1 1 1.06 1.06l-1.72 1.72v.827l1.72-1.72a.75.75 0 1 1 1.06 1.06L15.22 6.89v7.61a.75.75 0 0 1-1.5 0V6.889l-1.06 1.06a.75.75 0 1 1-1.06-1.06l1.72-1.72V3.172L13.21 4.893a.75.75 0 1 1-1.06-1.06l1.72-1.72V1.285a.75.75 0 0 1 0-1.06l-1.72-1.72a.75.75 0 0 1-1.06 0l-1.72 1.72V.225a.75.75 0 0 1 1.5 0v.827L12 2.773l.72-.72a.75.75 0 0 1 1.06 0l1.72 1.72v.827l-1.72-1.72a.75.75 0 0 1-1.06 0l-.72.72V6h2.264l1.06-1.06a.75.75 0 1 1 1.06 1.06l-1.72 1.72v.827l1.72-1.72a.75.75 0 1 1 1.06 1.06L15.22 6.89v7.61a.75.75 0 0 1-1.5 0V6.889l-1.06 1.06a.75.75 0 1 1-1.06-1.06l1.72-1.72V3.172L13.21 4.893a.75.75 0 1 1-1.06-1.06l1.72-1.72V1.285a.75.75 0 0 1 0-1.06l-1.72-1.72a.75.75 0 0 1-1.06 0l-1.72 1.72V.225a.75.75 0 0 1 1.5 0v.827L12 2.773l.72-.72a.75.75 0 0 1 1.06 0l1.72 1.72v.827l-1.72-1.72a.75.75 0 0 1-1.06 0l-.72.72V6h2.264l1.06-1.06a.75.75 0 1 1 1.06 1.06l-1.72 1.72v.827l1.72-1.72a.75.75 0 1 1 1.06 1.06L15.22 6.89v7.61a.75.75 0 0 1-1.5 0V6.889l-1.06 1.06a.75.75 0 1 1-1.06-1.06l1.72-1.72V3.172L13.21 4.893a.75.75 0 1 1-1.06-1.06l1.72-1.72V1.285a.75.75 0 0 1 0-1.06l-1.72-1.72a.75.75 0 0 1-1.06 0l-1.72 1.72V.225a.75.75 0 0 1 1.5 0v.827L12 2.773l.72-.72a.75.75 0 0 1 1.06 0l1.72 1.72v.827l-1.72-1.72a.75.75 0 0 1-1.06 0l-.72.72V6h2.264l1.06-1.06a.75.75 0 1 1 1.06 1.06l-1.72 1.72v.827l1.72-1.72a.75.75 0 1 1 1.06 1.06L15.22 6.89v7.61a.75.75 0 0 1-1.5 0V6.889l-1.06 1.06a.75.75 0 1 1-1.06-1.06l1.72-1.72V3.172L13.21 4.893a.75.75 0 1 1-1.06-1.06l1.72-1.72V1.285a.75.75 0 0 1 0-1.06l-1.72-1.72a.75.75 0 0 1-1.06 0l-1.72 1.72V.225a.75.75 0 0 1 1.5 0v.827L12 2.773l.72-.72a.75.75 0 0 1 1.06 0l1.72 1.72v.827l-1.72-1.72a.75.75 0 0 1-1.06 0l-.72.72V6h2.264l1.06-1.06a.75.75 0 1 1 1.06 1.06l-1.72 1.72v.827l1.72-1.72a.75.75 0 1 1 1.06 1.06L15.22 6.89v7.61a.75.75 0 0 1-1.5 0V6.889l-1.06 1.06a.75.75 0 1 1-1.06-1.06l1.72-1.72V3.172L13.21 4.893a.75.75 0 1 1-1.06-1.06l1.72-1.72V1.285a.75.75 0 0 1 0-1.06l-1.72-1.72a.75.75 0 0 1-1.06 0l-1.72 1.72V.225a.75.75 0 0 1 1.5 0v.827L12 2.773l.72-.72a.75.75 0 0 1 1.06 0l1.72 1.72v.827l-1.72-1.72a.75.75 0 0 1-1.06 0l-.72.72V6h2.264l1.06-1.06a.75.75 0 1 1 1.06 1.06l-1.72 1.72v.827l1.72-1.72a.75.75 0 1 1 1.06 1.06L15.22 6.89v7.61a.75.75 0 0 1-1.5 0V6.889l-1.06 1.06a.75.75 0 1 1-1.06-1.06l1.72-1.72V3.172L13.21 4.893a.75.75 0 1 1-1.06-1.06l1.72-1.72V1.285a.75.75 0 0 1 0-1.06l-1.72-1.72a.75.75 0 0 1-1.06 0l-1.72 1.72V.225a.75.75 0 0 1 1.5 0v.827L12 2.773l.72-.72a.75.75 0 0 1 1.06 0l1.72 1.72v.827l-1.72-1.72a.75.75 0 0 1-1.06 0l-.72.72V6h2.264l1.06-1.06a.75.75 0 1 1 1.06 1.06l-1.72 1.72v.827l1.72-1.72a.75.75 0 1 1 1.06 1.06L15.22 6.89v7.61a.75.75 0 0 1-1.5 0V6.889l-1.06 1.06a.75.75 0 1 1-1.06-1.06l1.72-1.72V3.172L13.21 4.893a.75.75 0 1 1-1.06-1.06l1.72-1.72V1.285a.75.75 0 0 1 0-1.06l-1.72-1.72a.75.75 0 0 1-1.06 0l-1.72 1.72V.225a.75.75 0 0 1 1.5 0v.827L12 2.773l.72-.72a.75.75 0 0 1 1.06 0l1.72 1.72v.827l-1.72-1.72a.75.75 0 0 1-1.06 0l-.72.72V6h2.264l1.06-1.06a.75.75 0 1 1 1.06 1.06l-1.72 1.72v.827l1.72-1.72a.75.75 0 1 1 1.06 1.06L15.22 6.89v7.61a.75.75 0 0 1-1.5 0V6.889l-1.06 1.06a.75.75 0 1 1-1.06-1.06l1.72-1.72V3.172L13.21 4.893a.75.75 0 1 1-1.06-1.06l1.72-1.72V1.285a.75.75 0 0 1 0-1.06l-1.72-1.72a.75.75 0 0 1-1.06 0l-1.72 1.72V.225a.75.75 0 0 1 1.5 0v.827L12 2.773l.72-.72a.75.75 0 0 1 1.06 0l1.72 1.72v.827l-1.72-1.72a.75.75 0 0 1-1.06 0l-.72.72V6h2.264l1.06-1.06a.75.75 0 1 1 1.06 1.06l-1.72 1.72v.827l1.72-1.72a.75.75 0 1 1 1.06 1.06L15.22 6.89v7.61a.75.75 0 0 1-1.5 0V6.889l-1.06 1.06a.75.75 0 1 1-1.06-1.06l1.72-1.72V3.172L13.21 4.893a.75.75 0 1 1-1.06-1.06l1.72-1.72V1.285a.75.75 0 0 1 0-1.06l-1.72-1.72a.75.75 0 0 1-1.06 0l-1.72 1.72V.225a.75.75 0 0 1 1.5 0v.827L12 2.773l.72-.72a.75.75 0 0 1 1.06 0l1.72 1.72v.827l-1.72-1.72a.75.75 0 0 1-1.06 0l-.72.72V6h2.264l1.06-1.06a.75.75 0 1 1 1.06 1.06l-1.72 1.72v.827l1.72-1.72a.75.75 0 1 1 1.06 1.06L15.22 6.89v7.61a.75.75 0 0 1-1.5 0V6.889l-1.06 1.06a.75.75 0 1 1-1.06-1.06l1.72-1.72V3.172L13.21 4.893a.75.75 0 1 1-1.06-1.06l1.72-1.72V1.285a.75.75 0 0 1 0-1.06l-1.72-1.72a.75.75 0 0 1-1.06 0l-1.72 1.72V.225a.75.75 0 0 1 1.5 0v.827L12 2.773l.72-.72a.75.75 0 0 1 1.06 0l1.72 1.72v.827l-1.72-1.72a.75.75 0 0 1-1.06 0l-.72.72V6h2.264l1.06-1.06a.75.75 0 1 1 1.06 1.06l-1.72 1.72v.827l1.72-1.72a.75.75 0 1 1 1.06 1.06L15.22 6.89v7.61a.75.75 0 0 1-1.5 0V6.889l-1.06 1.06a.75.75 0 1 1-1.06-1.06l1.72-1.72V3.172L13.21 4.893a.75.75 0 1 1-1.06-1.06l1.72-1.72V1.285a.75.75 0 0 1 0-1.06l-1.72-1.72a.75.75 0 0 1-1.06 0l-1.72 1.72V.225a.75.75 0 0 1 1.5 0v.827L12 2.773l.72-.72a.75.75 0 0 1 1.06 0l1.72 1.72v.827l-1.72-1.72a.75.75 0 0 1-1.06 0l-.72.72V6h2.264l1.06-1.06a.75.75 0 1 1 1.06 1.06l-1.72 1.72v.827l1.72-1.72a.75.75 0 1 1 1.06 1.06L15.22 6.89v7.61a.75.75 0 0 1-1.5 0V6.889l-1.06 1.06a.75.75 0 1 1-1.06-1.06l1.72-1.72V3.172L13.21 4.893a.75.75 0 1 1-1.06-1.06l1.72-1.72V1.285a.75.75 0 0 1 0-1.06l-1.72-1.72a.75.75 0 0 1-1.06 0l-1.T-Shirt Design Variations</label>
             </div>
             <div class="modal-body">
                 <p>Are you sure you want to permanently delete this design? This action cannot be undone.</p>
@@ -2051,11 +2163,13 @@ Format: "You are an expert POD (Print-on-Demand) design AI. Create designs optim
             const count = textarea.value.length;
             const max = 500;
             counterElement.textContent = `${count}/${max}`;
-            counterElement.classList.remove('warning', 'error');
+            counterElement.classList.remove('good', 'warning', 'danger');
             if (count > max) {
-                counterElement.classList.add('error');
+                counterElement.classList.add('danger');
             } else if (count > max * 0.8) {
                 counterElement.classList.add('warning');
+            } else if (count > 0) {
+                counterElement.classList.add('good');
             }
         };
         
@@ -3038,9 +3152,9 @@ Format: "You are an expert POD (Print-on-Demand) design AI. Create designs optim
             const canGenNormal = hasStyles && hasNiches; // Removed 'hasApiKey' check
             DOMElements.normalGenBtn.disabled = !canGenNormal;
             if (canGenNormal) {
-                DOMElements.normalGenBtn.classList.add('pulsing');
+                DOMElements.normalGenBtn.classList.add('ready');
             } else {
-                DOMElements.normalGenBtn.classList.remove('pulsing');
+                DOMElements.normalGenBtn.classList.remove('ready');
             }
             const normalCount = appState.styleFiles.length * appState.nicheFiles.length;
             DOMElements.normalGenStatus.innerHTML = `Ready to generate <strong>${normalCount} design${normalCount !== 1 ? 's' : ''}</strong>`;
@@ -3050,9 +3164,9 @@ Format: "You are an expert POD (Print-on-Demand) design AI. Create designs optim
             const canGenVariation = hasVariationFile; // Removed 'hasApiKey' check
             DOMElements.variationGenBtn.disabled = !canGenVariation;
             if (canGenVariation) {
-                DOMElements.variationGenBtn.classList.add('pulsing');
+                DOMElements.variationGenBtn.classList.add('ready');
             } else {
-                DOMElements.variationGenBtn.classList.remove('pulsing');
+                DOMElements.variationGenBtn.classList.remove('ready');
             }
             const variationCount = parseInt(DOMElements.variationCountInput.value, 10) || 0;
             DOMElements.variationGenStatus.innerHTML = `Ready to generate <strong>${variationCount} variation${variationCount !== 1 ? 's' : ''}</strong>`;
@@ -3736,6 +3850,15 @@ DOMElements.viewerZoomOutBtn.click();
                 toggleTheme(false);
             }
             DOMElements.themeToggleBtn.addEventListener('click', () => toggleTheme());
+
+            // 1.5. Setup Header Scroll Shadow
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 10) {
+                    DOMElements.header.classList.add('scrolled');
+                } else {
+                    DOMElements.header.classList.remove('scrolled');
+                }
+            }, { passive: true });
 
             // 2. Setup Modals
             initModalListeners();

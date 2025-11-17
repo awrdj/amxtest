@@ -1,1 +1,2753 @@
-<div class="flex-1 overflow-y-auto bg-white p-4 dark:bg-black" style="transform:translateZ(0);backface-visibility:hidden;contain:layout style paint;will-change:scroll-position;isolation:isolate"><!--$--><!--/$--><div class="space-y-6"><div class="space-y-4"><div class="flex items-center justify-between"><div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles h-8 w-8 text-primary" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg><h1 class="text-3xl font-bold">AI Design Generator</h1></div><div class="flex items-center gap-2"><button class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-transparent shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"><svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>Back to Normal Mode</button><button class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-transparent shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-open mr-2 h-4 w-4" aria-hidden="true"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"></path></svg>My AI Designs</button></div></div></div><div class="rounded-lg border text-card-foreground shadow-sm border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950/30"><div class="p-6 pt-6"><div class="flex items-start justify-between"><div class="flex-1"><h3 class="mb-2 text-lg font-semibold text-blue-900 dark:text-blue-100">🔑 Setup Required</h3><p class="mb-4 text-sm text-blue-800 dark:text-blue-200">Please enter your Gemini API key to start generating AI designs. Your key is stored securely in your browser only.</p></div><button class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2">Enter API Key</button></div></div></div><div class="rounded-lg border text-card-foreground shadow-sm border-purple-200 bg-purple-50/50 dark:border-purple-800 dark:bg-purple-950/20"><div class="flex flex-col space-y-1.5 p-6"><h3 class="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2 text-purple-900 dark:text-purple-100"><svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>Generate Niche Variations</h3><p class="text-sm text-muted-foreground">Upload one design and AI will generate multiple profitable variations for different niches</p></div><div class="p-6 pt-0 space-y-6"><div class="space-y-4"><label class="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-base font-semibold" for="variation-upload">Upload Your Design</label><div><div class="rounded-lg border-2 border-dashed border-purple-300 bg-white p-8 text-center transition-all hover:border-purple-500 hover:bg-purple-50 dark:border-purple-700 dark:bg-gray-900 dark:hover:bg-purple-950/30"><label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer" for="variation-upload"><div class="space-y-3"><div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-upload h-8 w-8 text-purple-600 dark:text-purple-400" aria-hidden="true"><path d="M12 3v12"></path><path d="m17 8-5-5-5 5"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path></svg></div><div><p class="text-lg font-semibold text-purple-900 dark:text-purple-100">Click to upload or drag &amp; drop</p><p class="mt-1 text-sm text-purple-600 dark:text-purple-400">AI will analyze and create variations</p></div></div></label></div></div><input class="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 hidden" id="variation-upload" accept="image/*" type="file"></div><div class="space-y-3"><div class="flex items-center justify-between"><label class="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-base font-semibold" for="variation-count">Number of Variations</label><button class="inline-flex items-center justify-center font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 rounded-md px-3 text-xs" type="button">💡 Add Your Ideas</button></div><div class="flex items-center gap-4"><input class="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 w-24" id="variation-count" min="1" max="50" type="number" value="5"><span class="text-sm text-muted-foreground">(1-50)</span></div></div><div class="flex items-center justify-between border-t pt-6"><p class="text-sm text-muted-foreground">Upload a design to start</p><button class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-primary-foreground shadow h-9 px-4 py-2 bg-purple-600 hover:bg-purple-700" disabled=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles mr-2 h-4 w-4" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg>Generate Variations</button></div></div></div></div></div>
+(self.webpackChunk_N_E = self.webpackChunk_N_E || []).push([[7337], {
+    10517: (e, t, a) => {
+        "use strict";
+        a.d(t, {
+            A: () => r
+        });
+        let r = (0,
+        a(2766).A)("arrow-right", [["path", {
+            d: "M5 12h14",
+            key: "1ays0h"
+        }], ["path", {
+            d: "m12 5 7 7-7 7",
+            key: "xquz4c"
+        }]])
+    }
+    ,
+    11122: (e, t, a) => {
+        "use strict";
+        a.r(t),
+        a.d(t, {
+            default: () => H
+        });
+        var r = a(34783)
+          , s = a(57591);
+        class n {
+            static detect() {
+                let e = Math.abs(window.outerWidth - window.innerWidth)
+                  , t = Math.abs(window.outerHeight - window.innerHeight)
+                  , a = window.outerWidth > 0 && window.innerWidth > 0 && e > Math.max(300, .25 * window.innerWidth)
+                  , r = window.outerHeight > 0 && window.innerHeight > 0 && t > Math.max(300, .25 * window.innerHeight)
+                  , s = window.Firebug && window.Firebug.chrome && window.Firebug.chrome.isInitialized
+                  , n = !1;
+                Object.defineProperty(new Image, "id", {
+                    get: function() {
+                        return n = !0,
+                        "devtools-detector"
+                    }
+                });
+                let i = a || r || s || n;
+                return i !== this.isDevToolsOpen && (this.isDevToolsOpen = i,
+                this.notifyListeners(i)),
+                i
+            }
+            static startMonitoring() {
+                let e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : 1e3
+                  , t = setInterval( () => {
+                    this.detect()
+                }
+                , e);
+                this.detect();
+                let a = e => {
+                    var t;
+                    let a = null == (t = e.key) ? void 0 : t.toLowerCase()
+                      , r = navigator.platform.toUpperCase().includes("MAC")
+                      , s = r ? e.metaKey : e.ctrlKey;
+                    e.shiftKey || e.altKey,
+                    ("f12" === a || s && e.shiftKey && ["i", "j", "c"].includes(a) || r && e.metaKey && e.altKey && "i" === a) && (e.preventDefault(),
+                    e.stopPropagation())
+                }
+                  , r = e => {
+                    e.preventDefault()
+                }
+                ;
+                return window.addEventListener("keydown", a, !0),
+                window.addEventListener("contextmenu", r, !0),
+                () => {
+                    clearInterval(t),
+                    window.removeEventListener("keydown", a, !0),
+                    window.removeEventListener("contextmenu", r, !0)
+                }
+            }
+            static addListener(e) {
+                return this.listeners.push(e),
+                () => {
+                    this.listeners = this.listeners.filter(t => t !== e)
+                }
+            }
+            static notifyListeners(e) {
+                this.listeners.forEach(t => t(e))
+            }
+            static isOpen() {
+                return this.isDevToolsOpen
+            }
+            static blockRequests() {
+                if (this.isOpen()) {
+                    let e = window.fetch;
+                    window.fetch = function() {
+                        for (var t = arguments.length, a = Array(t), r = 0; r < t; r++)
+                            a[r] = arguments[r];
+                        return n.isOpen() ? Promise.reject(Error("DevTools detected - requests blocked")) : e.apply(this, a)
+                    }
+                }
+            }
+        }
+        n.isDevToolsOpen = !1,
+        n.listeners = [];
+        var i = a(32366)
+          , l = a(85396)
+          , o = a(51462)
+          , c = a(70412)
+          , d = a(20271)
+          , h = a(66858)
+          , u = a(81856)
+          , m = a(95186)
+          , g = a(45706)
+          , p = a(2766);
+        let x = (0,
+        p.A)("folder-open", [["path", {
+            d: "m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2",
+            key: "usdka0"
+        }]]);
+        var f = a(91393)
+          , y = a(1591)
+          , v = a(70292)
+          , w = a(52465)
+          , b = a(24e3);
+        let N = (0,
+        p.A)("square-pen", [["path", {
+            d: "M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7",
+            key: "1m0v6g"
+        }], ["path", {
+            d: "M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z",
+            key: "ohrbg2"
+        }]]);
+        var j = a(47710)
+          , A = a(71594)
+          , E = a(44639)
+          , T = a(28596)
+          , D = a(68646)
+          , I = a(60056)
+          , k = a(23874);
+        let C = null;
+        async function S() {
+            if (C)
+                return C;
+            try {
+                let e = "".concat(window.location.hostname, "_").concat(navigator.userAgent.slice(0, 100), "_merchghost_ai_api")
+                  , t = new TextEncoder().encode(e)
+                  , a = await crypto.subtle.digest("SHA-256", t)
+                  , r = await crypto.subtle.importKey("raw", a, {
+                    name: "PBKDF2"
+                }, !1, ["deriveKey"]);
+                return C = await crypto.subtle.deriveKey({
+                    name: "PBKDF2",
+                    salt: new TextEncoder().encode("merchghost_api_key_salt_v1"),
+                    iterations: 1e5,
+                    hash: "SHA-256"
+                }, r, {
+                    name: "AES-GCM",
+                    length: 256
+                }, !1, ["encrypt", "decrypt"])
+            } catch (e) {
+                throw Error("Failed to initialize secure storage")
+            }
+        }
+        async function R(e) {
+            let t = await S()
+              , a = crypto.getRandomValues(new Uint8Array(12))
+              , r = new TextEncoder().encode(e);
+            return {
+                encrypted: btoa(String.fromCharCode(...new Uint8Array(await crypto.subtle.encrypt({
+                    name: "AES-GCM",
+                    iv: a
+                }, t, r)))),
+                iv: btoa(String.fromCharCode(...a))
+            }
+        }
+        async function L(e, t) {
+            let a = await S()
+              , r = Uint8Array.from(atob(e), e => e.charCodeAt(0))
+              , s = Uint8Array.from(atob(t), e => e.charCodeAt(0))
+              , n = await crypto.subtle.decrypt({
+                name: "AES-GCM",
+                iv: s
+            }, a, r);
+            return new TextDecoder().decode(n)
+        }
+        async function O() {
+            return new Promise( (e, t) => {
+                let a = indexedDB.open("MerchGhostAPIStorage", 1);
+                a.onerror = () => t(a.error),
+                a.onsuccess = () => e(a.result),
+                a.onupgradeneeded = e => {
+                    let t = e.target.result;
+                    t.objectStoreNames.contains("api_keys") || t.createObjectStore("api_keys", {
+                        keyPath: "id"
+                    }).createIndex("created_at", "created_at", {
+                        unique: !1
+                    })
+                }
+            }
+            )
+        }
+        async function P(e) {
+            try {
+                if (!e || 0 === e.trim().length)
+                    throw Error("API key cannot be empty");
+                if (!e.startsWith("AI"))
+                    throw Error("Invalid Gemini API key format");
+                let {encrypted: t, iv: a} = await R(e)
+                  , r = (await O()).transaction(["api_keys"], "readwrite").objectStore("api_keys");
+                await r.put({
+                    id: "gemini_api_key",
+                    encrypted: t,
+                    iv: a,
+                    created_at: Date.now()
+                })
+            } catch (e) {
+                throw Error("Failed to store API key: ".concat(e.message))
+            }
+        }
+        async function M() {
+            try {
+                let e = (await O()).transaction(["api_keys"], "readonly").objectStore("api_keys").get("gemini_api_key");
+                return new Promise( (t, a) => {
+                    e.onsuccess = async () => {
+                        if (e.result)
+                            try {
+                                let a = await L(e.result.encrypted, e.result.iv);
+                                t(a)
+                            } catch (e) {
+                                await F(),
+                                t(null)
+                            }
+                        else
+                            t(null)
+                    }
+                    ,
+                    e.onerror = () => a(e.error)
+                }
+                )
+            } catch (e) {
+                return null
+            }
+        }
+        async function F() {
+            try {
+                let e = (await O()).transaction(["api_keys"], "readwrite").objectStore("api_keys");
+                await e.delete("gemini_api_key")
+            } catch (e) {
+                throw Error("Failed to clear API key: ".concat(e.message))
+            }
+        }
+        async function U() {
+            let e = await M();
+            return null !== e && e.length > 0
+        }
+        var Y = a(18126);
+        function G() {
+            let[e,t] = (0,
+            s.useState)([])
+              , [p,C] = (0,
+            s.useState)([])
+              , [S,R] = (0,
+            s.useState)([])
+              , [L,O] = (0,
+            s.useState)(!1)
+              , [Y,G] = (0,
+            s.useState)("")
+              , [H,W] = (0,
+            s.useState)(!1)
+              , [z,B] = (0,
+            s.useState)(null)
+              , [q,V] = (0,
+            s.useState)(!1)
+              , [X,_] = (0,
+            s.useState)(null)
+              , [$,K] = (0,
+            s.useState)(!1)
+              , [Z,J] = (0,
+            s.useState)(null)
+              , [Q,ee] = (0,
+            s.useState)(!1)
+              , [et,ea] = (0,
+            s.useState)(!1)
+              , [er,es] = (0,
+            s.useState)(null)
+              , [en,ei] = (0,
+            s.useState)("")
+              , [el,eo] = (0,
+            s.useState)(!1)
+              , [ec,ed] = (0,
+            s.useState)(!1)
+              , [eh,eu] = (0,
+            s.useState)(null)
+              , [em,eg] = (0,
+            s.useState)(5)
+              , [ep,ex] = (0,
+            s.useState)("")
+              , [ef,ey] = (0,
+            s.useState)(!1)
+              , [ev,ew] = (0,
+            s.useState)(!1)
+              , [eb,eN] = (0,
+            s.useState)([])
+              , [ej,eA] = (0,
+            s.useState)([])
+              , [eE,eT] = (0,
+            s.useState)("")
+              , [eD,eI] = (0,
+            s.useState)("")
+              , [ek,eC] = (0,
+            s.useState)(!1)
+              , [eS,eR] = (0,
+            s.useState)(!1)
+              , [eL,eO] = (0,
+            s.useState)(!1)
+              , [eP,eM] = (0,
+            s.useState)("")
+              , [eF,eU] = (0,
+            s.useState)(!1)
+              , [eY,eG] = (0,
+            s.useState)(1)
+              , [eH,eW] = (0,
+            s.useState)({
+                x: 0,
+                y: 0
+            })
+              , [ez,eB] = (0,
+            s.useState)(!1)
+              , [eq,eV] = (0,
+            s.useState)({
+                x: 0,
+                y: 0
+            })
+              , {user: eX, isAuthenticated: e_} = (0,
+            D.A)();
+            (0,
+            s.useEffect)( () => {
+                let e = n.startMonitoring(500)
+                  , t = n.addListener(e => {
+                    W(e),
+                    e ? (O(!1),
+                    G(""),
+                    T.oR.error("⚠️ Developer Tools Detected", {
+                        description: "Please close DevTools (F12) to use this feature.",
+                        duration: 1 / 0
+                    })) : T.oR.dismiss()
+                }
+                );
+                return () => {
+                    e(),
+                    t()
+                }
+            }
+            , []),
+            (0,
+            s.useEffect)( () => {
+                (async () => {
+                    try {
+                        await (0,
+                        k.N0)()
+                    } catch (e) {}
+                }
+                )(),
+                (async () => {
+                    try {
+                        let e = await U();
+                        eO(e)
+                    } catch (e) {}
+                }
+                )()
+            }
+            , []);
+            let e$ = async e => {
+                try {
+                    await (0,
+                    k.OQ)(e),
+                    R(t => t.filter(t => t.id !== e)),
+                    eA(t => t.filter(t => t.id !== e)),
+                    T.oR.success("Design deleted")
+                } catch (e) {
+                    T.oR.error("Failed to delete design")
+                }
+            }
+              , eK = e => {
+                B(e),
+                V(!0)
+            }
+              , eZ = e => {
+                _(e),
+                K(!0)
+            }
+              , eJ = () => {
+                null !== z && z > 0 && B(z - 1)
+            }
+              , eQ = () => {
+                null !== z && z < S.length - 1 && B(z + 1)
+            }
+              , e0 = () => {
+                null !== X && X > 0 && _(X - 1)
+            }
+              , e2 = () => {
+                null !== X && X < ej.length - 1 && _(X + 1)
+            }
+              , e1 = (e, t) => {
+                J({
+                    image: e,
+                    name: t
+                }),
+                ee(!0)
+            }
+            ;
+            (0,
+            s.useEffect)( () => {
+                let e = e => {
+                    if (q || Q || $)
+                        switch (e.key) {
+                        case "Escape":
+                            q ? (V(!1),
+                            B(null),
+                            eG(1),
+                            eW({
+                                x: 0,
+                                y: 0
+                            })) : $ ? (K(!1),
+                            _(null),
+                            eG(1),
+                            eW({
+                                x: 0,
+                                y: 0
+                            })) : Q && (ee(!1),
+                            J(null),
+                            eG(1),
+                            eW({
+                                x: 0,
+                                y: 0
+                            }));
+                            break;
+                        case "ArrowLeft":
+                            q ? eJ() : $ && e0();
+                            break;
+                        case "ArrowRight":
+                            q ? eQ() : $ && e2();
+                            break;
+                        case "0":
+                            eG(1),
+                            eW({
+                                x: 0,
+                                y: 0
+                            })
+                        }
+                }
+                ;
+                return document.addEventListener("keydown", e),
+                () => document.removeEventListener("keydown", e)
+            }
+            , [q, $, Q, z, X, S.length, ej.length]),
+            (0,
+            s.useEffect)( () => {
+                eG(1),
+                eW({
+                    x: 0,
+                    y: 0
+                })
+            }
+            , [z]);
+            let e8 = async e => {
+                if (n.isOpen())
+                    throw Error("Security: DevTools detected");
+                try {
+                    let t = await fetch("/api/v2-analytics", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            action: "analyze"
+                        })
+                    });
+                    if (!t.ok)
+                        throw Error("Failed to get analysis prompt");
+                    let {data: r} = await t.json()
+                      , s = atob(r)
+                      , n = await M();
+                    if (!n)
+                        throw Error("Please enter your Gemini API key in the setup section above");
+                    let {GoogleGenerativeAI: i} = await a.e(8026).then(a.bind(a, 78026))
+                      , l = new i(n).getGenerativeModel({
+                        model: "gemini-2.0-flash-exp"
+                    })
+                      , o = e.replace(/^data:image\/[a-z]+;base64,/, "")
+                      , c = await l.generateContent([s, {
+                        inlineData: {
+                            data: o,
+                            mimeType: "image/jpeg"
+                        }
+                    }]);
+                    return (await c.response).text()
+                } catch (e) {
+                    throw Error("Something went wrong. Please try again.")
+                }
+            }
+              , e5 = async (e, t) => {
+                if (n.isOpen())
+                    throw Error("Security: DevTools detected");
+                try {
+                    let r = await M();
+                    if (!r)
+                        throw Error("Please enter your Gemini API key in the setup section above");
+                    let {GoogleGenerativeAI: s} = await a.e(8026).then(a.bind(a, 78026))
+                      , n = new s(r).getGenerativeModel({
+                        model: "gemini-2.5-flash-image"
+                    })
+                      , i = t.replace(/^data:image\/[a-z]+;base64,/, "")
+                      , l = await n.generateContent([e, {
+                        inlineData: {
+                            data: i,
+                            mimeType: "image/jpeg"
+                        }
+                    }])
+                      , o = (await l.response).candidates;
+                    if (!o || 0 === o.length)
+                        throw Error("No candidates in response");
+                    let c = o[0];
+                    if (!c.content || !c.content.parts)
+                        throw Error("No content parts in candidate");
+                    let d = null;
+                    for (let e of c.content.parts)
+                        if (e.inlineData && e.inlineData.data) {
+                            d = e.inlineData.data;
+                            break
+                        }
+                    if (!d) {
+                        if (c.content.parts.find(e => e.text))
+                            throw Error("Image generation failed. Model returned text response instead of image.");
+                        throw Error("No image data found in response")
+                    }
+                    return "data:image/png;base64,".concat(d)
+                } catch (e) {
+                    throw Error("Something went wrong. Please try again.")
+                }
+            }
+              , e3 = e => new Promise( (t, a) => {
+                let r = new FileReader;
+                r.onload = () => {
+                    let e = new Image;
+                    e.onload = () => {
+                        let r = (e => {
+                            let t = document.createElement("canvas");
+                            t.width = e.width,
+                            t.height = e.height;
+                            let a = t.getContext("2d");
+                            if (!a)
+                                return t;
+                            a.drawImage(e, 0, 0);
+                            let r = a.getImageData(0, 0, t.width, t.height).data
+                              , s = [{
+                                x: 0,
+                                y: 0
+                            }, {
+                                x: t.width - 1,
+                                y: 0
+                            }, {
+                                x: 0,
+                                y: t.height - 1
+                            }, {
+                                x: t.width - 1,
+                                y: t.height - 1
+                            }, {
+                                x: Math.floor(t.width / 2),
+                                y: 0
+                            }, {
+                                x: Math.floor(t.width / 2),
+                                y: t.height - 1
+                            }, {
+                                x: 0,
+                                y: Math.floor(t.height / 2)
+                            }, {
+                                x: t.width - 1,
+                                y: Math.floor(t.height / 2)
+                            }]
+                              , n = 0
+                              , i = 0
+                              , l = 0;
+                            s.forEach(e => {
+                                let {x: a, y: s} = e
+                                  , o = (s * t.width + a) * 4;
+                                n += r[o],
+                                i += r[o + 1],
+                                l += r[o + 2]
+                            }
+                            ),
+                            n = Math.round(n / s.length),
+                            i = Math.round(i / s.length),
+                            l = Math.round(l / s.length);
+                            let o = t.height
+                              , c = 0
+                              , d = t.width
+                              , h = 0;
+                            for (let e = 0; e < t.height; e++)
+                                for (let a = 0; a < t.width; a++) {
+                                    let s = (e * t.width + a) * 4
+                                      , u = r[s + 3]
+                                      , m = r[s]
+                                      , g = r[s + 1]
+                                      , p = r[s + 2]
+                                      , x = Math.abs(m - n) + Math.abs(g - i) + Math.abs(p - l);
+                                    u > 10 && x > 30 && (e < o && (o = e),
+                                    e > c && (c = e),
+                                    a < d && (d = a),
+                                    a > h && (h = a))
+                                }
+                            if (o >= c || d >= h)
+                                return t;
+                            let u = Math.min(Math.floor(.05 * (h - d)), Math.floor(.05 * (c - o)), 20);
+                            o = Math.max(0, o - u),
+                            d = Math.max(0, d - u),
+                            c = Math.min(t.height - 1, c + u);
+                            let m = (h = Math.min(t.width - 1, h + u)) - d + 1
+                              , g = c - o + 1
+                              , p = document.createElement("canvas");
+                            p.width = m,
+                            p.height = g;
+                            let x = p.getContext("2d");
+                            return x ? (x.drawImage(t, d, o, m, g, 0, 0, m, g),
+                            p) : t
+                        }
+                        )(e)
+                          , s = document.createElement("canvas");
+                        s.width = r.width,
+                        s.height = r.height;
+                        let n = s.getContext("2d");
+                        if (!n)
+                            return void a(Error("Failed to get canvas context"));
+                        n.fillStyle = "#808080",
+                        n.fillRect(0, 0, s.width, s.height),
+                        n.drawImage(r, 0, 0),
+                        t(s.toDataURL("image/png"))
+                    }
+                    ,
+                    e.onerror = a,
+                    e.src = r.result
+                }
+                ,
+                r.onerror = a,
+                r.readAsDataURL(e)
+            }
+            )
+              , e6 = async () => {
+                if (H || n.isOpen())
+                    return void T.oR.error("⚠️ Developer Tools Detected", {
+                        description: "Please close DevTools (F12) to generate designs.",
+                        duration: 5e3
+                    });
+                if (0 === e.length)
+                    return void T.oR.error("Please upload at least one art style image");
+                if (0 === p.length)
+                    return void T.oR.error("Please upload at least one niche design image");
+                O(!0),
+                R([]),
+                B(null);
+                let t = [];
+                try {
+                    G("Analyzing your designs...");
+                    let a = [];
+                    for (let e = 0; e < p.length; e++) {
+                        if (n.isOpen())
+                            throw Error("Security: DevTools opened during generation");
+                        let t = p[e];
+                        G("Analyzing design ".concat(e + 1, " of ").concat(p.length, "..."));
+                        let r = await e3(t.file)
+                          , s = await e8(r);
+                        a.push(s)
+                    }
+                    G("Creating your designs...");
+                    let r = a.length * e.length
+                      , s = 0
+                      , i = a.flatMap( (t, a) => e.map(async (e, i) => {
+                        try {
+                            if (n.isOpen())
+                                throw Error("Security: DevTools opened during generation");
+                            let l = await e3(e.file)
+                              , o = t;
+                            eP && (o += "\n\n--- Additional User Instructions ---\n".concat(eP));
+                            let c = await e5(o, l)
+                              , d = {
+                                id: "design-".concat(Date.now(), "-").concat(a, "-").concat(i, "-").concat(Math.random()),
+                                image: c,
+                                niche: "Niche ".concat(a + 1, " - Art Style ").concat(i + 1),
+                                createdAt: Date.now()
+                            };
+                            try {
+                                await (0,
+                                k.s0)(d)
+                            } catch (e) {}
+                            return s++,
+                            G("Completed ".concat(s, " of ").concat(r, " designs...")),
+                            d
+                        } catch (e) {
+                            return s++,
+                            G("Completed ".concat(s, " of ").concat(r, " designs (1 failed)...")),
+                            null
+                        }
+                    }
+                    ))
+                      , l = (await Promise.all(i)).filter(e => null !== e);
+                    t.push(...l),
+                    R(l),
+                    G("Complete!"),
+                    T.oR.success("Successfully generated ".concat(t.length, " design(s)!")),
+                    t.length > 0 && B(0)
+                } catch (e) {
+                    T.oR.error(e.message || "Failed to generate designs")
+                } finally {
+                    O(!1),
+                    G("")
+                }
+            }
+              , e4 = (e, t) => {
+                let a = document.createElement("a");
+                a.href = e,
+                a.download = "ai-design-".concat(t + 1, ".png"),
+                document.body.appendChild(a),
+                a.click(),
+                document.body.removeChild(a),
+                T.oR.success("Design downloaded!")
+            }
+              , e7 = e => {
+                es(e),
+                ei(""),
+                ea(!0)
+            }
+              , e9 = async () => {
+                if (!er)
+                    return void T.oR.error("No design selected");
+                if (!en.trim())
+                    return void T.oR.error("Please enter a modification prompt");
+                eo(!0);
+                try {
+                    let e = "Modify this design: ".concat(en, ". Keep the same style but apply the changes.")
+                      , t = await e5(e, er.image)
+                      , a = {
+                        ...er,
+                        image: t,
+                        createdAt: Date.now()
+                    };
+                    await (0,
+                    k.s0)(a),
+                    R(e => e.map(e => e.id === er.id ? a : e)),
+                    eA(e => e.map(e => e.id === er.id ? a : e)),
+                    T.oR.success("Design updated successfully!"),
+                    ea(!1),
+                    ei("")
+                } catch (e) {
+                    T.oR.error(e.message || "Failed to regenerate design")
+                } finally {
+                    eo(!1)
+                }
+            }
+              , te = async e => {
+                var t;
+                let a = null == (t = e.target.files) ? void 0 : t[0];
+                if (!a)
+                    return;
+                let r = await e3(a);
+                eu({
+                    file: a,
+                    preview: r
+                })
+            }
+              , tt = async e => {
+                var t;
+                e.preventDefault();
+                let a = null == (t = e.dataTransfer.files) ? void 0 : t[0];
+                if (!a || !a.type.startsWith("image/"))
+                    return void T.oR.error("Please upload an image file");
+                try {
+                    let e = await e3(a);
+                    eu({
+                        file: a,
+                        preview: e
+                    })
+                } catch (e) {
+                    T.oR.error("Failed to process image")
+                }
+            }
+              , ta = async () => {
+                if (!eh)
+                    return void T.oR.error("Please upload an image first");
+                if (em < 1 || em > 50)
+                    return void T.oR.error("Please select between 1-50 variations");
+                ew(!0),
+                eN([]),
+                eA([]),
+                eT("Analyzing design...");
+                try {
+                    let e = await tr(eh.preview, em, ep);
+                    eN(e),
+                    eT("Creating ".concat(e.length, " unique variations..."));
+                    let t = e.map(async (t, a) => {
+                        try {
+                            let r = await ts(eh.preview, t, ep)
+                              , s = t.length > 100 ? t.substring(0, 100).split(".")[0] + "..." : t.split(".")[0]
+                              , n = {
+                                id: "variation-".concat(Date.now(), "-").concat(a),
+                                image: r,
+                                niche: s,
+                                createdAt: Date.now()
+                            };
+                            return await (0,
+                            k.s0)(n),
+                            eT("Completed ".concat(a + 1, " of ").concat(e.length, " designs...")),
+                            n
+                        } catch (e) {
+                            return null
+                        }
+                    }
+                    )
+                      , a = (await Promise.all(t)).filter(e => null !== e);
+                    eA(a),
+                    a.length === e.length ? T.oR.success("Successfully generated all ".concat(e.length, " variations!")) : T.oR.warning("Generated ".concat(a.length, " of ").concat(e.length, " variations. Some failed.")),
+                    eT("")
+                } catch (e) {
+                    T.oR.error(e.message || "Failed to generate variations")
+                } finally {
+                    ew(!1)
+                }
+            }
+              , tr = async (e, t, r) => {
+                try {
+                    let s = await M();
+                    if (!s)
+                        throw Error("Please set your Gemini API key first");
+                    let {GoogleGenerativeAI: n} = await a.e(8026).then(a.bind(a, 78026))
+                      , i = new n(s).getGenerativeModel({
+                        model: "gemini-2.0-flash-exp"
+                    })
+                      , l = r && r.trim() ? '\n\n\uD83D\uDEA8\uD83D\uDEA8\uD83D\uDEA8 CRITICAL USER REQUIREMENTS - HIGHEST PRIORITY \uD83D\uDEA8\uD83D\uDEA8\uD83D\uDEA8\n\nThe user has specified MANDATORY requirements that you MUST follow EXACTLY:\n\n"'.concat(r.trim(), '"\n\n⚠️ IMPORTANT RULES:\n1. These user requirements are MORE IMPORTANT than any other instructions below\n2. If user wants to keep something unchanged (like hand gestures, pose, etc.), you MUST keep it EXACTLY the same in ALL variations\n3. If user specifies what should change, ONLY change those elements\n4. If user says "without character reference", do NOT change the character at all - only change what they explicitly ask for\n5. User requirements OVERRIDE the default variation strategy below\n\nYou MUST read and understand the user\'s requirements carefully before proceeding with ANY analysis or variation generation.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n') : ""
+                      , o = "You are a PROFESSIONAL t-shirt design market analyst with 10+ years of experience. Your expertise is understanding WHY designs sell and creating profitable variations.".concat(l, '\n\n\uD83D\uDD0D PHASE 1: DEEP MARKET ANALYSIS (CRITICAL FIRST STEP!)\n\n**STEP 1: INITIAL OBSERVATION (LOOK AT THE ACTUAL DESIGN!)**\n- \uD83D\uDEA8 CRITICAL FIRST: Does this design have TEXT or is it IMAGE-ONLY? (Look carefully!)\n- If it has TEXT: What EXACTLY is the text? (read it word by word)\n- If it has NO TEXT: You MUST ensure ALL variations are also text-free (no job titles, no labels, nothing!)\n- What is the main subject/symbol in the image? (state name, animal, object, etc.)\n- What is the visual style? (cartoon, realistic, vintage, minimalist, etc.)\n- What colors dominate?\n- What is the overall mood? (funny, emotional, motivational, celebratory, etc.)\n- If text exists, how many words are in it? Count them!\n\n**STEP 2: UNDERSTAND WHY IT SELLS**\nAsk yourself as a market expert:\n- WHO is the target customer? (age, interests, lifestyle, values)\n- WHAT emotional need does this fulfill? (pride, love, humor, identity, belonging)\n- WHY would someone pay money for THIS specific design?\n- WHAT makes it special or relatable?\n- Is there a SECRET to its appeal? (nostalgia, inside joke, community pride, personal milestone)\n\n**STEP 3: IDENTIFY THE CORE SELLING POINT**\nWhat is the ONE thing that makes people buy this?\n- Is it about IDENTITY? (profession, hobby, personality trait)\n- Is it about RELATIONSHIPS? (family, friends, pets)\n- Is it about ACHIEVEMENTS? (milestones, age, success)\n- Is it about PASSION? (sports, food, activities)\n- Is it about HUMOR? (sarcasm, wordplay, relatable situations)\n\n**STEP 4: DISCOVER THE VARIABLES (CRITICAL!)**\nNow analyze what CAN change while keeping the same selling power:\n- Look at the ACTUAL design image - what is the main subject/symbol?\n- Look at the ACTUAL text - which words identify the niche?\n- How many VARIABLES exist? (1, 2, 3, or more?)\n- What are they SPECIFICALLY in THIS design? (not general examples!)\n- Which variables are SAFE to change? (won\'t break the design\'s appeal)\n- Which variables are DANGEROUS to change? (will ruin the meaning)\n\nIMPORTANT: Don\'t use generic examples! Analyze THIS specific design!\n\n**STEP 5: IDENTIFY THE CONSTANTS**\nWhat MUST stay identical for the design to remain strong?\n- Sentence structure and word count\n- Emotional tone and message\n- Visual style and layout\n- The relationship between elements\n- The "formula" that makes it work\n\n**STEP 6: FIND HIGH-DEMAND NICHES**\nBased on market statistics and customer behavior:\n- What OTHER audiences have the SAME emotional needs?\n- What OTHER subjects create the SAME level of passion?\n- What OTHER niches have PROVEN buying power?\n- Which variations will have the LARGEST potential market?\n- Which variations target UNDERSERVED but profitable niches?\n\n**STEP 7: PREDICT SUCCESS RATE**\nFor each potential variation idea:\n- Will this variation sell as well as the original? (market demand)\n- Is there statistical evidence this niche buys t-shirts?\n- Does this variation tap into the SAME emotional trigger?\n- Will the target audience instantly "get it" and feel connected?\n\n---\n\n\uD83C\uDFAF PHASE 2: CREATING WINNING VARIATIONS\n\nNow that you understand WHY the design sells, create variations that will ALSO sell:\n\n**GOLDEN RULES:**\n1. **PRESERVE THE FORMULA** - Keep what makes it work (structure, emotion, style)\n2. **CHANGE ONLY VARIABLES** - Swap subjects/words that target different niches\n3. **MAINTAIN QUALITY** - Each variation must be as strong as the original\n4. **TARGET REAL MARKETS** - Choose niches with proven buying power\n5. **LOGICAL CONSISTENCY** - Every element must make sense together\n\n**TEXT HANDLING (CRITICAL!):**\n- FIRST: Read the ACTUAL text in the design image carefully!\n- Count EXACTLY how many words are in the original text\n- If original HAS text → ALL variations MUST have text (SAME word count, perfect spelling, NO repetition)\n- \uD83D\uDEA8 IF ORIGINAL HAS NO TEXT → ALL VARIATIONS MUST BE COMPLETELY TEXT-FREE \uD83D\uDEA8\n  * ABSOLUTELY NO text, words, letters, or typography of ANY kind\n  * Do NOT add job titles, names, labels, captions, or ANY written text\n  * The design must be 100% visual/graphic only - like the original\n  * If you add ANY text when original has none → YOU FAILED\n- Each word appears ONLY ONCE (no repetition!)\n- Keep same grammar structure (verb→verb, noun→noun)\n- IMPORTANT: Don\'t assume text from examples - READ the actual design!\n\n**VISUAL CONSISTENCY:**\n- Keep EXACT same art style (cartoon→cartoon, realistic→realistic)\n- Keep EXACT same colors and layout\n- Keep EXACT same mood and tone\n- Background MUST be #808080\n- Only change the subject/variable elements\n\n**MARKET VALIDATION:**\nBefore finalizing each variation, ask:\n- Would someone actually buy this?\n- Is this niche large enough?\n- Does this make logical sense?\n- Will the target audience relate to it?\n\nIf answer is NO to any → REJECT and try a better variation!\n\n---\n\n\uD83D\uDCE4 OUTPUT FORMAT (STRICT - NO EXCEPTIONS!):\n\nYou MUST return ONLY a valid JSON array. Nothing else. No explanations, no markdown, no comments.\n\n**MANDATORY JSON STRUCTURE:**\n\nYour response must be EXACTLY in this format:\n[\n  "description 1",\n  "description 2",\n  "description 3"\n]\n\n**STRICT JSON RULES:**\n1. Start with [ and end with ]\n2. Each item is a STRING in double quotes: "text here"\n3. Separate items with commas\n4. NO single quotes (\'), ONLY double quotes (")\n5. NO special characters like • ✓ → ➜ etc.\n6. NO line breaks inside strings\n7. NO trailing comma after last item\n8. Use only plain ASCII text\n\n**EXACT FORMAT YOU MUST FOLLOW:**\n\n\uD83D\uDEA8 **IF ORIGINAL HAS TEXT:**\n\nEach description must be a COMPLETE READY-TO-USE PROMPT that includes:\n\n1. Visual description of the subject\n2. Art style and color instructions\n3. EXACT text to be used (same word count as original)\n4. Text styling instructions\n5. Technical requirements (background, flat design, etc.)\n\nFormat: "A [subject] in the same art style and colors as the reference image, [details]. Use EXACT same visual style, colors, rendering technique, and composition from reference. Include text \'[EXACT TEXT - SAME WORD COUNT AS ORIGINAL]\' in the same font style and text layout as the original. CRITICAL: Create ONLY flat design graphic (NO mockup, NO product). Background must be solid #808080. Use ONLY the specified text above, ignore any text in reference image. Do NOT repeat words. ENLARGE the design to create a bold, prominent visual impact with enhanced clarity and detail - make it LARGE and fill 70-90% of the canvas area."\n\n\uD83D\uDEA8 **CRITICAL TEXT RULES:**\n- Count the words in the original text\n- Your variation text MUST have the SAME number of words\n- Each word appears ONLY ONCE (no repetition!)\n\n✅ REQUIRED in each prompt:\n- Complete visual description\n- EXACT text to include (with word count matching original)\n- Art style copying instructions\n- Technical specifications (background, flat design)\n- Explicit instruction to ignore reference text\n- SIZE REQUIREMENT: Instruction to enlarge design and make it prominent (70-90% of canvas)\n\n⚠️ CRITICAL: Each item in the JSON array must be a COMPLETE self-contained prompt ready to be sent directly to image generation AI without any modifications.\n\n\uD83D\uDEA8 **IF ORIGINAL HAS NO TEXT:**\n\n⚠️ CRITICAL: The original design is TEXT-FREE, so ALL variations MUST be TEXT-FREE!\n\nEach description must be a COMPLETE READY-TO-USE PROMPT that includes:\n\n1. Visual description of the subject\n2. Art style and color instructions\n3. Clear "NO TEXT" instruction\n4. Technical requirements (background, flat design, etc.)\n\nFormat: "A [subject] in the same art style and colors as the reference image, [pose/action]. Use EXACT same visual style, colors, rendering technique, and composition from reference. CRITICAL: Create ONLY flat design graphic (NO mockup, NO product). Background must be solid #808080. ABSOLUTELY NO TEXT, WORDS, LETTERS, or TYPOGRAPHY of any kind - pure visual design only. Do NOT add labels, captions, or written text. ENLARGE the design to create a bold, prominent visual impact with enhanced clarity and detail - make it LARGE and fill 70-90% of the canvas area."\n\n\uD83D\uDEAB FORBIDDEN when original has no text:\n- Do NOT include ANY instructions to add text\n- Do NOT mention professions or titles in text form\n- Each prompt must explicitly state NO TEXT\n\n✅ REQUIRED in each prompt:\n- Complete instructions for visual elements\n- Explicit "NO TEXT" requirement\n- Technical specifications (background color, flat design)\n- Reference to copy art style from reference image\n- SIZE REQUIREMENT: Instruction to enlarge design and make it prominent (70-90% of canvas)\n\n⚠️ CRITICAL: Each item in the JSON array must be a COMPLETE self-contained prompt ready to be sent directly to image generation AI without any modifications.\n\n---\n\n\uD83D\uDEA8 FINAL QUALITY CHECK (BEFORE SUBMITTING):\n\nFor EACH variation, verify:\n✅ Does it target a DIFFERENT profitable niche?\n✅ Will real people actually BUY this?\n✅ TEXT CHECK - Is the text handling CORRECT?\n   - If original HAS text → Does variation have SAME word count? NO repetition?\n   - If original has NO text → Is variation COMPLETELY text-free? ZERO words?\n✅ Is the visual style IDENTICAL? (same art style, colors, layout)\n✅ Does every element make LOGICAL sense together?\n✅ Have you spelled everything PERFECTLY?\n\n⚠️ CRITICAL TEXT VERIFICATION:\n- Look at the original design image\n- Does it have text? YES or NO?\n- If NO → ALL your variations MUST be text-free\n- If you added ANY text when original has none → DELETE that variation and create a new one\n\nIf ANY answer is NO → REJECT and create a better variation!\n\n---\n\n').concat(r && r.trim() ? "\n\uD83D\uDEA8\uD83D\uDEA8\uD83D\uDEA8 REMINDER: USER'S REQUIREMENTS MUST BE FOLLOWED \uD83D\uDEA8\uD83D\uDEA8\uD83D\uDEA8\n\nBefore you generate the variations, re-read the user's requirements at the top:\n\n\"".concat(r.trim(), '"\n\nMake ABSOLUTELY SURE that ALL variations follow these requirements EXACTLY!\n\nIf user said to keep hand gestures → ALL variations must have THE SAME hand gestures\nIf user said "without character reference" → Do NOT change the character, ONLY change what they asked for\nIf user specified what to keep → KEEP IT in all variations\nIf user specified what to change → ONLY change that element\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n') : "", '\n\uD83D\uDEA8\uD83D\uDEA8\uD83D\uDEA8 FINAL WARNING BEFORE YOU START \uD83D\uDEA8\uD83D\uDEA8\uD83D\uDEA8\n\nBefore generating ANY variations, answer this question:\n\n❓ Does the original design have TEXT? (Look at the image NOW!)\n\nIf answer is NO:\n✅ ALL variations must be COMPLETELY text-free\n✅ Do NOT write "A DOCTOR", "CHEF", or ANY words\n✅ Pure visual design only - ZERO text elements\n✅ If you add ANY text → You FAILED this task\n\nIf answer is YES:\n✅ Count the words\n✅ ALL variations must have SAME number of words\n✅ No repetition of words\n\nNow use your expert analysis skills to create ').concat(t, " HIGH-SELLING variations of this design:")
+                      , c = (await i.generateContent([o, {
+                        inlineData: {
+                            data: e.split(",")[1],
+                            mimeType: "image/png"
+                        }
+                    }])).response.text()
+                      , d = (c = c.replace(/```json\s*/g, "").replace(/```\s*/g, "")).match(/\[[\s\S]*\]/);
+                    if (!d)
+                        throw Error("AI did not return a valid JSON array. Please try again.");
+                    let h = d[0].replace(/[\u201C\u201D]/g, '"').replace(/[\u2018\u2019]/g, "'").trim();
+                    try {
+                        let e = JSON.parse(h);
+                        if (!Array.isArray(e))
+                            throw Error("AI response is not an array");
+                        if (0 === e.length)
+                            throw Error("AI returned empty array. Please try again.");
+                        return e
+                    } catch (e) {
+                        throw Error("AI returned invalid format. Please try generating again.")
+                    }
+                } catch (e) {
+                    throw Error(e.message || "Failed to generate variation ideas")
+                }
+            }
+              , ts = async (e, t, r) => {
+                try {
+                    let s = await M();
+                    if (!s)
+                        throw Error("Please set your Gemini API key first");
+                    let {GoogleGenerativeAI: n} = await a.e(8026).then(a.bind(a, 78026))
+                      , i = new n(s).getGenerativeModel({
+                        model: "gemini-2.5-flash-image"
+                    })
+                      , l = r && r.trim() ? "\uD83D\uDEA8 USER'S CRITICAL REQUIREMENTS - HIGHEST PRIORITY \uD83D\uDEA8\n\n\"".concat(r.trim(), '"\n\nThese requirements OVERRIDE any conflicting instructions below.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n') : ""
+                      , o = (await i.generateContent([l + t, {
+                        inlineData: {
+                            data: e.split(",")[1],
+                            mimeType: "image/png"
+                        }
+                    }])).response.candidates;
+                    if (!o || 0 === o.length)
+                        throw Error("No image generated");
+                    let c = o[0].content.parts.find(e => e.inlineData);
+                    if (!c || !c.inlineData)
+                        throw Error("No image data in response");
+                    return "data:image/png;base64,".concat(c.inlineData.data)
+                } catch (e) {
+                    throw Error(e.message || "Failed to generate variation design")
+                }
+            }
+              , tn = async () => {
+                let e = eD && 0 !== eD.trim().length ? eD.startsWith("AI") ? eD.length < 30 || eD.length > 100 ? {
+                    valid: !1,
+                    error: "API key length seems invalid"
+                } : {
+                    valid: !0
+                } : {
+                    valid: !1,
+                    error: 'Invalid Gemini API key format. Must start with "AI"'
+                } : {
+                    valid: !1,
+                    error: "API key cannot be empty"
+                };
+                if (!e.valid)
+                    return void T.oR.error(e.error || "Invalid API key");
+                eR(!0);
+                try {
+                    await P(eD.trim()),
+                    eO(!0),
+                    eC(!1),
+                    eI(""),
+                    T.oR.success("API key saved securely!")
+                } catch (e) {
+                    T.oR.error(e.message || "Failed to save API key")
+                } finally {
+                    eR(!1)
+                }
+            }
+              , ti = async () => {
+                try {
+                    await F(),
+                    eO(!1),
+                    T.oR.success("API key cleared")
+                } catch (e) {
+                    T.oR.error("Failed to clear API key")
+                }
+            }
+            ;
+            return (0,
+            r.jsxs)("div", {
+                className: "space-y-6",
+                children: [H && (0,
+                r.jsx)("div", {
+                    className: "fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-sm",
+                    children: (0,
+                    r.jsxs)("div", {
+                        className: "mx-4 max-w-md rounded-lg border border-red-500 bg-gradient-to-br from-red-950/90 to-gray-900/90 p-8 shadow-2xl",
+                        children: [(0,
+                        r.jsx)("div", {
+                            className: "mb-4 flex justify-center",
+                            children: (0,
+                            r.jsx)(m.A, {
+                                className: "h-16 w-16 text-red-500"
+                            })
+                        }), (0,
+                        r.jsx)("h2", {
+                            className: "mb-4 text-center text-2xl font-bold text-white",
+                            children: "⚠️ Developer Tools Detected"
+                        }), (0,
+                        r.jsx)("p", {
+                            className: "mb-6 text-center text-gray-300",
+                            children: "For security reasons, this feature is disabled when Developer Tools (F12) are open."
+                        }), (0,
+                        r.jsxs)("div", {
+                            className: "space-y-3 text-sm text-gray-400",
+                            children: [(0,
+                            r.jsxs)("p", {
+                                className: "flex items-center gap-2",
+                                children: [(0,
+                                r.jsx)("span", {
+                                    className: "text-red-500",
+                                    children: "•"
+                                }), "Close DevTools to continue"]
+                            }), (0,
+                            r.jsxs)("p", {
+                                className: "flex items-center gap-2",
+                                children: [(0,
+                                r.jsx)("span", {
+                                    className: "text-red-500",
+                                    children: "•"
+                                }), "Press F12 or Ctrl+Shift+I to close"]
+                            }), (0,
+                            r.jsxs)("p", {
+                                className: "flex items-center gap-2",
+                                children: [(0,
+                                r.jsx)("span", {
+                                    className: "text-red-500",
+                                    children: "•"
+                                }), "Or close the developer panel manually"]
+                            })]
+                        }), (0,
+                        r.jsx)("div", {
+                            className: "mt-6 text-center text-xs text-gray-500",
+                            children: "This page will automatically resume when DevTools is closed"
+                        })]
+                    })
+                }), (0,
+                r.jsx)("div", {
+                    className: "space-y-4",
+                    children: (0,
+                    r.jsxs)("div", {
+                        className: "flex items-center justify-between",
+                        children: [(0,
+                        r.jsxs)("div", {
+                            className: "flex items-center gap-2",
+                            children: [(0,
+                            r.jsx)(g.A, {
+                                className: "h-8 w-8 text-primary"
+                            }), (0,
+                            r.jsx)("h1", {
+                                className: "text-3xl font-bold",
+                                children: "AI Design Generator"
+                            })]
+                        }), (0,
+                        r.jsxs)("div", {
+                            className: "flex items-center gap-2",
+                            children: [!ec && (0,
+                            r.jsxs)(i.$, {
+                                variant: "outline",
+                                onClick: () => ed(!0),
+                                className: "border-purple-500 text-purple-600 hover:bg-purple-50 dark:border-purple-400 dark:text-purple-400 dark:hover:bg-purple-950/30",
+                                children: [(0,
+                                r.jsx)("svg", {
+                                    className: "mr-2 h-4 w-4",
+                                    fill: "none",
+                                    stroke: "currentColor",
+                                    viewBox: "0 0 24 24",
+                                    children: (0,
+                                    r.jsx)("path", {
+                                        strokeLinecap: "round",
+                                        strokeLinejoin: "round",
+                                        strokeWidth: 2,
+                                        d: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                    })
+                                }), "Generate Variations"]
+                            }), ec && (0,
+                            r.jsxs)(i.$, {
+                                variant: "outline",
+                                onClick: () => {
+                                    ed(!1),
+                                    eu(null),
+                                    eA([]),
+                                    eN([])
+                                }
+                                ,
+                                children: [(0,
+                                r.jsx)("svg", {
+                                    className: "mr-2 h-4 w-4",
+                                    fill: "none",
+                                    stroke: "currentColor",
+                                    viewBox: "0 0 24 24",
+                                    children: (0,
+                                    r.jsx)("path", {
+                                        strokeLinecap: "round",
+                                        strokeLinejoin: "round",
+                                        strokeWidth: 2,
+                                        d: "M10 19l-7-7m0 0l7-7m-7 7h18"
+                                    })
+                                }), "Back to Normal Mode"]
+                            }), (0,
+                            r.jsxs)(i.$, {
+                                variant: "outline",
+                                onClick: () => window.location.href = "/dashboard/my-ai-designs",
+                                children: [(0,
+                                r.jsx)(x, {
+                                    className: "mr-2 h-4 w-4"
+                                }), "My AI Designs"]
+                            })]
+                        })]
+                    })
+                }), !eL && !ek && (0,
+                r.jsx)(l.Zp, {
+                    className: "border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950/30",
+                    children: (0,
+                    r.jsx)(l.Wu, {
+                        className: "pt-6",
+                        children: (0,
+                        r.jsxs)("div", {
+                            className: "flex items-start justify-between",
+                            children: [(0,
+                            r.jsxs)("div", {
+                                className: "flex-1",
+                                children: [(0,
+                                r.jsx)("h3", {
+                                    className: "mb-2 text-lg font-semibold text-blue-900 dark:text-blue-100",
+                                    children: "\uD83D\uDD11 Setup Required"
+                                }), (0,
+                                r.jsx)("p", {
+                                    className: "mb-4 text-sm text-blue-800 dark:text-blue-200",
+                                    children: "Please enter your Gemini API key to start generating AI designs. Your key is stored securely in your browser only."
+                                })]
+                            }), (0,
+                            r.jsx)(i.$, {
+                                onClick: () => eC(!0),
+                                variant: "default",
+                                children: "Enter API Key"
+                            })]
+                        })
+                    })
+                }), ek && (0,
+                r.jsx)(l.Zp, {
+                    className: "border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950/30",
+                    children: (0,
+                    r.jsx)(l.Wu, {
+                        className: "pt-6",
+                        children: (0,
+                        r.jsxs)("div", {
+                            className: "space-y-4",
+                            children: [(0,
+                            r.jsxs)("div", {
+                                children: [(0,
+                                r.jsx)("h3", {
+                                    className: "mb-2 text-lg font-semibold text-green-900 dark:text-green-100",
+                                    children: "\uD83D\uDD10 Enter Your Gemini API Key"
+                                }), (0,
+                                r.jsxs)("p", {
+                                    className: "mb-4 text-sm text-green-800 dark:text-green-200",
+                                    children: ["Get your API key from", " ", (0,
+                                    r.jsx)("a", {
+                                        href: "https://makersuite.google.com/app/apikey",
+                                        target: "_blank",
+                                        rel: "noopener noreferrer",
+                                        className: "font-medium underline hover:text-green-600",
+                                        children: "Google AI Studio"
+                                    }), ". Your key is encrypted and stored securely in your browser."]
+                                })]
+                            }), (0,
+                            r.jsxs)("div", {
+                                className: "flex gap-2",
+                                children: [(0,
+                                r.jsx)(o.p, {
+                                    type: "password",
+                                    placeholder: "AIxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                                    value: eD,
+                                    onChange: e => eI(e.target.value),
+                                    className: "flex-1"
+                                }), (0,
+                                r.jsx)(i.$, {
+                                    onClick: tn,
+                                    disabled: eS,
+                                    children: eS ? (0,
+                                    r.jsxs)(r.Fragment, {
+                                        children: [(0,
+                                        r.jsx)(f.A, {
+                                            className: "mr-2 h-4 w-4 animate-spin"
+                                        }), "Saving..."]
+                                    }) : "Save"
+                                }), (0,
+                                r.jsx)(i.$, {
+                                    variant: "outline",
+                                    onClick: () => {
+                                        eC(!1),
+                                        eI("")
+                                    }
+                                    ,
+                                    children: "Cancel"
+                                })]
+                            })]
+                        })
+                    })
+                }), eL && (0,
+                r.jsx)(l.Zp, {
+                    className: "border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950/30",
+                    children: (0,
+                    r.jsx)(l.Wu, {
+                        className: "pt-6",
+                        children: (0,
+                        r.jsxs)("div", {
+                            className: "flex items-center justify-between",
+                            children: [(0,
+                            r.jsxs)("div", {
+                                className: "flex items-center gap-3",
+                                children: [(0,
+                                r.jsx)("div", {
+                                    className: "flex h-10 w-10 items-center justify-center rounded-full bg-green-500 text-white",
+                                    children: "✓"
+                                }), (0,
+                                r.jsxs)("div", {
+                                    children: [(0,
+                                    r.jsx)("h3", {
+                                        className: "text-sm font-semibold text-green-900 dark:text-green-100",
+                                        children: "API Key Configured"
+                                    }), (0,
+                                    r.jsx)("p", {
+                                        className: "text-xs text-green-700 dark:text-green-300",
+                                        children: "Ready to generate AI designs"
+                                    })]
+                                })]
+                            }), (0,
+                            r.jsx)(i.$, {
+                                variant: "outline",
+                                size: "sm",
+                                onClick: ti,
+                                children: "Clear"
+                            })]
+                        })
+                    })
+                }), ec ? (0,
+                r.jsxs)(r.Fragment, {
+                    children: [(0,
+                    r.jsxs)(l.Zp, {
+                        className: "border-purple-200 bg-purple-50/50 dark:border-purple-800 dark:bg-purple-950/20",
+                        children: [(0,
+                        r.jsxs)(l.aR, {
+                            children: [(0,
+                            r.jsxs)(l.ZB, {
+                                className: "flex items-center gap-2 text-purple-900 dark:text-purple-100",
+                                children: [(0,
+                                r.jsx)("svg", {
+                                    className: "h-6 w-6",
+                                    fill: "none",
+                                    stroke: "currentColor",
+                                    viewBox: "0 0 24 24",
+                                    children: (0,
+                                    r.jsx)("path", {
+                                        strokeLinecap: "round",
+                                        strokeLinejoin: "round",
+                                        strokeWidth: 2,
+                                        d: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                    })
+                                }), "Generate Niche Variations"]
+                            }), (0,
+                            r.jsx)(l.BT, {
+                                children: "Upload one design and AI will generate multiple profitable variations for different niches"
+                            })]
+                        }), (0,
+                        r.jsxs)(l.Wu, {
+                            className: "space-y-6",
+                            children: [(0,
+                            r.jsxs)("div", {
+                                className: "space-y-4",
+                                children: [(0,
+                                r.jsx)(c.J, {
+                                    htmlFor: "variation-upload",
+                                    className: "text-base font-semibold",
+                                    children: "Upload Your Design"
+                                }), (0,
+                                r.jsx)("div", {
+                                    onDrop: tt,
+                                    onDragOver: e => {
+                                        e.preventDefault()
+                                    }
+                                    ,
+                                    children: (0,
+                                    r.jsx)("div", {
+                                        className: "rounded-lg border-2 border-dashed border-purple-300 bg-white p-8 text-center transition-all hover:border-purple-500 hover:bg-purple-50 dark:border-purple-700 dark:bg-gray-900 dark:hover:bg-purple-950/30",
+                                        children: eh ? (0,
+                                        r.jsxs)("div", {
+                                            className: "relative mx-auto w-fit",
+                                            children: [(0,
+                                            r.jsx)("img", {
+                                                src: eh.preview,
+                                                alt: "Variation source",
+                                                className: "max-h-64 rounded-lg shadow-lg"
+                                            }), (0,
+                                            r.jsx)(i.$, {
+                                                size: "sm",
+                                                variant: "destructive",
+                                                className: "absolute -right-2 -top-2",
+                                                onClick: e => {
+                                                    e.stopPropagation(),
+                                                    e.preventDefault(),
+                                                    eu(null)
+                                                }
+                                                ,
+                                                children: (0,
+                                                r.jsx)(y.A, {
+                                                    className: "h-4 w-4"
+                                                })
+                                            })]
+                                        }) : (0,
+                                        r.jsx)(c.J, {
+                                            htmlFor: "variation-upload",
+                                            className: "cursor-pointer",
+                                            children: (0,
+                                            r.jsxs)("div", {
+                                                className: "space-y-3",
+                                                children: [(0,
+                                                r.jsx)("div", {
+                                                    className: "mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900",
+                                                    children: (0,
+                                                    r.jsx)(v.A, {
+                                                        className: "h-8 w-8 text-purple-600 dark:text-purple-400"
+                                                    })
+                                                }), (0,
+                                                r.jsxs)("div", {
+                                                    children: [(0,
+                                                    r.jsx)("p", {
+                                                        className: "text-lg font-semibold text-purple-900 dark:text-purple-100",
+                                                        children: "Click to upload or drag & drop"
+                                                    }), (0,
+                                                    r.jsx)("p", {
+                                                        className: "mt-1 text-sm text-purple-600 dark:text-purple-400",
+                                                        children: "AI will analyze and create variations"
+                                                    })]
+                                                })]
+                                            })
+                                        })
+                                    })
+                                }), (0,
+                                r.jsx)(o.p, {
+                                    id: "variation-upload",
+                                    type: "file",
+                                    accept: "image/*",
+                                    onChange: te,
+                                    className: "hidden"
+                                })]
+                            }), (0,
+                            r.jsxs)("div", {
+                                className: "space-y-3",
+                                children: [(0,
+                                r.jsxs)("div", {
+                                    className: "flex items-center justify-between",
+                                    children: [(0,
+                                    r.jsx)(c.J, {
+                                        htmlFor: "variation-count",
+                                        className: "text-base font-semibold",
+                                        children: "Number of Variations"
+                                    }), (0,
+                                    r.jsx)(i.$, {
+                                        type: "button",
+                                        variant: "ghost",
+                                        size: "sm",
+                                        onClick: () => ey(!ef),
+                                        className: "text-xs",
+                                        children: ef ? "✕ Hide" : "\uD83D\uDCA1 Add Your Ideas"
+                                    })]
+                                }), (0,
+                                r.jsxs)("div", {
+                                    className: "flex items-center gap-4",
+                                    children: [(0,
+                                    r.jsx)(o.p, {
+                                        id: "variation-count",
+                                        type: "number",
+                                        min: 1,
+                                        max: 50,
+                                        value: em,
+                                        onChange: e => eg(Number(e.target.value)),
+                                        className: "w-24"
+                                    }), (0,
+                                    r.jsx)("span", {
+                                        className: "text-sm text-muted-foreground",
+                                        children: "(1-50)"
+                                    })]
+                                })]
+                            }), ef && (0,
+                            r.jsxs)("div", {
+                                className: "space-y-2 rounded-lg border border-purple-200 bg-purple-50/50 p-4 dark:border-purple-800 dark:bg-purple-950/20",
+                                children: [(0,
+                                r.jsx)(c.J, {
+                                    htmlFor: "user-ideas",
+                                    className: "text-sm font-medium",
+                                    children: "\uD83D\uDCA1 Your Ideas"
+                                }), (0,
+                                r.jsx)(u.T, {
+                                    id: "user-ideas",
+                                    placeholder: "Tell AI what you want. Leave empty for automatic.",
+                                    value: ep,
+                                    onChange: e => ex(e.target.value),
+                                    rows: 2,
+                                    className: "resize-none text-sm"
+                                })]
+                            }), (0,
+                            r.jsxs)("div", {
+                                className: "flex items-center justify-between border-t pt-6",
+                                children: [ev ? (0,
+                                r.jsxs)("div", {
+                                    className: "flex items-center gap-2 text-sm text-muted-foreground",
+                                    children: [(0,
+                                    r.jsx)(f.A, {
+                                        className: "h-4 w-4 animate-spin"
+                                    }), eE || "Generating variations..."]
+                                }) : (0,
+                                r.jsx)("p", {
+                                    className: "text-sm text-muted-foreground",
+                                    children: eh ? "Ready to generate ".concat(em, " variation(s)") : "Upload a design to start"
+                                }), (0,
+                                r.jsx)(i.$, {
+                                    onClick: ta,
+                                    disabled: !eh || ev,
+                                    className: "bg-purple-600 hover:bg-purple-700",
+                                    children: ev ? (0,
+                                    r.jsxs)(r.Fragment, {
+                                        children: [(0,
+                                        r.jsx)(f.A, {
+                                            className: "mr-2 h-4 w-4 animate-spin"
+                                        }), "Generating..."]
+                                    }) : (0,
+                                    r.jsxs)(r.Fragment, {
+                                        children: [(0,
+                                        r.jsx)(g.A, {
+                                            className: "mr-2 h-4 w-4"
+                                        }), "Generate Variations"]
+                                    })
+                                })]
+                            })]
+                        })]
+                    }), ej.length > 0 && (0,
+                    r.jsxs)(l.Zp, {
+                        children: [(0,
+                        r.jsxs)(l.aR, {
+                            children: [(0,
+                            r.jsxs)(l.ZB, {
+                                className: "flex items-center justify-between",
+                                children: [(0,
+                                r.jsxs)("div", {
+                                    className: "flex items-center gap-2",
+                                    children: [(0,
+                                    r.jsx)(w.A, {
+                                        className: "h-6 w-6 text-primary"
+                                    }), "Generated Variations"]
+                                }), (0,
+                                r.jsxs)(d.E, {
+                                    variant: "secondary",
+                                    children: [ej.length, " Created"]
+                                })]
+                            }), (0,
+                            r.jsx)(l.BT, {
+                                children: "AI-generated niche variations of your design"
+                            })]
+                        }), (0,
+                        r.jsx)(l.Wu, {
+                            children: (0,
+                            r.jsx)("div", {
+                                className: "grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5",
+                                children: ej.map( (e, t) => (0,
+                                r.jsx)("div", {
+                                    className: "group relative",
+                                    children: (0,
+                                    r.jsxs)("div", {
+                                        className: "relative cursor-pointer overflow-hidden rounded-xl border bg-background shadow-sm transition-all hover:border-primary hover:shadow-lg",
+                                        onClick: () => eZ(t),
+                                        children: [(0,
+                                        r.jsx)("div", {
+                                            className: "aspect-square bg-muted",
+                                            children: (0,
+                                            r.jsx)("img", {
+                                                src: e.image,
+                                                alt: e.niche,
+                                                className: "h-full w-full object-cover"
+                                            })
+                                        }), (0,
+                                        r.jsx)("div", {
+                                            className: "absolute right-2 top-2 rounded-full bg-black/60 p-1.5 text-white opacity-0 transition-opacity group-hover:opacity-100",
+                                            children: (0,
+                                            r.jsx)(b.A, {
+                                                className: "h-4 w-4"
+                                            })
+                                        }), (0,
+                                        r.jsx)("div", {
+                                            className: "absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition-opacity group-hover:opacity-100",
+                                            children: (0,
+                                            r.jsxs)("div", {
+                                                className: "flex gap-1.5",
+                                                children: [(0,
+                                                r.jsxs)(i.$, {
+                                                    size: "sm",
+                                                    onClick: e => {
+                                                        e.stopPropagation(),
+                                                        eZ(t)
+                                                    }
+                                                    ,
+                                                    className: "h-8 bg-background px-2 text-xs text-foreground hover:bg-muted",
+                                                    children: [(0,
+                                                    r.jsx)(b.A, {
+                                                        className: "mr-1 h-3 w-3"
+                                                    }), "View"]
+                                                }), (0,
+                                                r.jsxs)(i.$, {
+                                                    size: "sm",
+                                                    onClick: t => {
+                                                        t.stopPropagation(),
+                                                        e7(e)
+                                                    }
+                                                    ,
+                                                    className: "h-8 bg-green-600 px-2 text-xs text-white hover:bg-green-700",
+                                                    children: [(0,
+                                                    r.jsx)(N, {
+                                                        className: "mr-1 h-3 w-3"
+                                                    }), "Edit"]
+                                                }), (0,
+                                                r.jsxs)(i.$, {
+                                                    size: "sm",
+                                                    onClick: a => {
+                                                        a.stopPropagation(),
+                                                        e4(e.image, t)
+                                                    }
+                                                    ,
+                                                    className: "h-8 bg-primary px-2 text-xs text-primary-foreground hover:bg-primary/90",
+                                                    children: [(0,
+                                                    r.jsx)(w.A, {
+                                                        className: "mr-1 h-3 w-3"
+                                                    }), "Download"]
+                                                }), (0,
+                                                r.jsx)(i.$, {
+                                                    size: "sm",
+                                                    variant: "destructive",
+                                                    onClick: t => {
+                                                        t.stopPropagation(),
+                                                        e$(e.id)
+                                                    }
+                                                    ,
+                                                    className: "h-8 px-2",
+                                                    children: (0,
+                                                    r.jsx)(j.A, {
+                                                        className: "h-3 w-3"
+                                                    })
+                                                })]
+                                            })
+                                        }), (0,
+                                        r.jsx)("div", {
+                                            className: "absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white opacity-0 transition-opacity group-hover:opacity-100",
+                                            children: (0,
+                                            r.jsx)("p", {
+                                                className: "truncate text-xs font-medium",
+                                                children: e.niche
+                                            })
+                                        })]
+                                    })
+                                }, t))
+                            })
+                        })]
+                    })]
+                }) : (0,
+                r.jsxs)(r.Fragment, {
+                    children: [(0,
+                    r.jsxs)(l.Zp, {
+                        children: [(0,
+                        r.jsx)(l.aR, {
+                            children: (0,
+                            r.jsxs)(l.ZB, {
+                                className: "flex items-center gap-2",
+                                children: [(0,
+                                r.jsx)(A.A, {
+                                    className: "h-6 w-6 text-primary"
+                                }), "Upload Images"]
+                            })
+                        }), (0,
+                        r.jsxs)(l.Wu, {
+                            className: "space-y-6",
+                            children: [(0,
+                            r.jsxs)("div", {
+                                className: "grid gap-8 lg:grid-cols-2",
+                                children: [(0,
+                                r.jsxs)("div", {
+                                    className: "space-y-4",
+                                    children: [(0,
+                                    r.jsxs)("div", {
+                                        className: "mb-2 flex items-center justify-between",
+                                        children: [(0,
+                                        r.jsx)("h3", {
+                                            className: "font-semibold",
+                                            children: "\uD83C\uDFA8 Art Style (max 50)"
+                                        }), (0,
+                                        r.jsxs)(d.E, {
+                                            variant: "secondary",
+                                            children: [e.length, "/50"]
+                                        })]
+                                    }), (0,
+                                    r.jsx)("div", {
+                                        onDrop: a => {
+                                            a.preventDefault();
+                                            let r = Array.from(a.dataTransfer.files || []);
+                                            if (0 === r.length)
+                                                return;
+                                            let s = r.filter(e => e.type.startsWith("image/"));
+                                            if (0 === s.length)
+                                                return;
+                                            let n = 50 - e.length;
+                                            s.slice(0, n).forEach(e => {
+                                                let a = new FileReader;
+                                                a.onload = () => {
+                                                    t(t => [...t, {
+                                                        file: e,
+                                                        preview: a.result,
+                                                        name: e.name
+                                                    }])
+                                                }
+                                                ,
+                                                a.readAsDataURL(e)
+                                            }
+                                            )
+                                        }
+                                        ,
+                                        onDragOver: e => {
+                                            e.preventDefault()
+                                        }
+                                        ,
+                                        children: (0,
+                                        r.jsx)("div", {
+                                            className: "rounded-lg border-2 border-dashed border-muted-foreground/30 p-6 text-center transition-all hover:border-primary/60 hover:bg-muted/30 hover:shadow-md",
+                                            children: e.length > 0 ? (0,
+                                            r.jsxs)("div", {
+                                                className: "space-y-3",
+                                                children: [(0,
+                                                r.jsx)("div", {
+                                                    className: "grid grid-cols-5 gap-2",
+                                                    children: e.map( (e, a) => (0,
+                                                    r.jsxs)("div", {
+                                                        className: "group relative",
+                                                        children: [(0,
+                                                        r.jsxs)("div", {
+                                                            className: "relative aspect-square h-20 w-full cursor-pointer overflow-hidden rounded-lg border bg-muted shadow-sm transition-all hover:shadow-md",
+                                                            onClick: () => e1(e.preview, e.name),
+                                                            children: [(0,
+                                                            r.jsx)("img", {
+                                                                src: e.preview,
+                                                                alt: e.name,
+                                                                className: "h-full w-full object-cover"
+                                                            }), (0,
+                                                            r.jsx)("div", {
+                                                                className: "absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100",
+                                                                children: (0,
+                                                                r.jsx)(b.A, {
+                                                                    className: "h-4 w-4 text-white"
+                                                                })
+                                                            })]
+                                                        }), (0,
+                                                        r.jsx)(i.$, {
+                                                            size: "sm",
+                                                            variant: "destructive",
+                                                            className: "absolute -right-1 -top-1 z-10 h-5 w-5 rounded-full p-0 opacity-0 shadow-lg transition-opacity group-hover:opacity-100",
+                                                            onClick: e => {
+                                                                e.stopPropagation(),
+                                                                e.preventDefault(),
+                                                                t(e => e.filter( (e, t) => t !== a))
+                                                            }
+                                                            ,
+                                                            children: (0,
+                                                            r.jsx)(y.A, {
+                                                                className: "h-3 w-3"
+                                                            })
+                                                        })]
+                                                    }, a))
+                                                }), e.length < 50 && (0,
+                                                r.jsx)(c.J, {
+                                                    htmlFor: "art-upload",
+                                                    className: "cursor-pointer",
+                                                    children: (0,
+                                                    r.jsxs)("div", {
+                                                        className: "flex items-center justify-center gap-2 rounded-lg border border-dashed border-primary/50 bg-primary/5 py-2 transition-colors hover:border-primary hover:bg-primary/10",
+                                                        children: [(0,
+                                                        r.jsx)(v.A, {
+                                                            className: "h-4 w-4 text-primary"
+                                                        }), (0,
+                                                        r.jsx)("span", {
+                                                            className: "text-sm font-medium text-primary",
+                                                            children: "Add More Images"
+                                                        })]
+                                                    })
+                                                })]
+                                            }) : (0,
+                                            r.jsx)(c.J, {
+                                                htmlFor: "art-upload",
+                                                className: "cursor-pointer",
+                                                children: (0,
+                                                r.jsxs)("div", {
+                                                    className: "flex flex-col items-center gap-3",
+                                                    children: [(0,
+                                                    r.jsx)("div", {
+                                                        className: "rounded-full bg-muted p-3",
+                                                        children: (0,
+                                                        r.jsx)(v.A, {
+                                                            className: "h-8 w-8 text-muted-foreground"
+                                                        })
+                                                    }), (0,
+                                                    r.jsx)("p", {
+                                                        className: "text-sm text-muted-foreground",
+                                                        children: "Click to upload or drag & drop"
+                                                    })]
+                                                })
+                                            })
+                                        })
+                                    }), (0,
+                                    r.jsx)(o.p, {
+                                        id: "art-upload",
+                                        type: "file",
+                                        multiple: !0,
+                                        accept: "image/*",
+                                        onChange: a => {
+                                            Array.from(a.target.files || []).slice(0, 50 - e.length).forEach(e => {
+                                                let a = new FileReader;
+                                                a.onload = () => {
+                                                    t(t => [...t, {
+                                                        file: e,
+                                                        preview: a.result,
+                                                        name: e.name
+                                                    }])
+                                                }
+                                                ,
+                                                a.readAsDataURL(e)
+                                            }
+                                            )
+                                        }
+                                        ,
+                                        className: "hidden",
+                                        disabled: e.length >= 50
+                                    })]
+                                }), (0,
+                                r.jsxs)("div", {
+                                    className: "space-y-4",
+                                    children: [(0,
+                                    r.jsxs)("div", {
+                                        className: "mb-2 flex items-center justify-between",
+                                        children: [(0,
+                                        r.jsx)("h3", {
+                                            className: "font-semibold",
+                                            children: "\uD83D\uDCA1 Niche Designs (max 50)"
+                                        }), (0,
+                                        r.jsxs)(d.E, {
+                                            variant: "secondary",
+                                            children: [p.length, "/50"]
+                                        })]
+                                    }), (0,
+                                    r.jsx)("div", {
+                                        onDrop: e => {
+                                            e.preventDefault();
+                                            let t = Array.from(e.dataTransfer.files || []);
+                                            if (0 === t.length)
+                                                return;
+                                            let a = t.filter(e => e.type.startsWith("image/"));
+                                            if (0 === a.length)
+                                                return void T.oR.error("Please drop valid image files");
+                                            if (p.length + a.length > 50)
+                                                return void T.oR.error("You can only upload up to 50 images. You currently have ".concat(p.length, "."));
+                                            let r = []
+                                              , s = 0;
+                                            a.forEach(e => {
+                                                let t = new FileReader;
+                                                t.onload = () => {
+                                                    r.push({
+                                                        file: e,
+                                                        preview: t.result,
+                                                        name: e.name
+                                                    }),
+                                                    ++s === a.length && (C(e => [...e, ...r]),
+                                                    T.oR.success("Added ".concat(r.length, " niche image(s)")))
+                                                }
+                                                ,
+                                                t.readAsDataURL(e)
+                                            }
+                                            )
+                                        }
+                                        ,
+                                        onDragOver: e => {
+                                            e.preventDefault()
+                                        }
+                                        ,
+                                        children: (0,
+                                        r.jsx)("div", {
+                                            className: "rounded-lg border-2 border-dashed border-muted-foreground/30 p-6 text-center transition-all hover:border-primary/60 hover:bg-muted/30 hover:shadow-md",
+                                            children: p.length > 0 ? (0,
+                                            r.jsxs)("div", {
+                                                className: "space-y-3",
+                                                children: [(0,
+                                                r.jsx)("div", {
+                                                    className: "grid grid-cols-5 gap-2",
+                                                    children: p.map( (e, t) => (0,
+                                                    r.jsxs)("div", {
+                                                        className: "group relative",
+                                                        children: [(0,
+                                                        r.jsxs)("div", {
+                                                            className: "relative aspect-square h-20 w-full cursor-pointer overflow-hidden rounded-lg border bg-muted shadow-sm transition-all hover:shadow-md",
+                                                            onClick: () => e1(e.preview, e.name),
+                                                            children: [(0,
+                                                            r.jsx)("img", {
+                                                                src: e.preview,
+                                                                alt: e.name,
+                                                                className: "h-full w-full object-cover"
+                                                            }), (0,
+                                                            r.jsx)("div", {
+                                                                className: "absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100",
+                                                                children: (0,
+                                                                r.jsx)(b.A, {
+                                                                    className: "h-4 w-4 text-white"
+                                                                })
+                                                            })]
+                                                        }), (0,
+                                                        r.jsx)(i.$, {
+                                                            size: "sm",
+                                                            variant: "destructive",
+                                                            className: "absolute -right-1 -top-1 z-10 h-5 w-5 rounded-full p-0 opacity-0 shadow-lg transition-opacity group-hover:opacity-100",
+                                                            onClick: e => {
+                                                                e.stopPropagation(),
+                                                                e.preventDefault(),
+                                                                C(e => e.filter( (e, a) => a !== t))
+                                                            }
+                                                            ,
+                                                            children: (0,
+                                                            r.jsx)(y.A, {
+                                                                className: "h-3 w-3"
+                                                            })
+                                                        })]
+                                                    }, t))
+                                                }), p.length < 50 && (0,
+                                                r.jsx)(c.J, {
+                                                    htmlFor: "niche-upload",
+                                                    className: "cursor-pointer",
+                                                    children: (0,
+                                                    r.jsxs)("div", {
+                                                        className: "flex items-center justify-center gap-2 rounded-lg border border-dashed border-primary/50 bg-primary/5 py-2 transition-colors hover:border-primary hover:bg-primary/10",
+                                                        children: [(0,
+                                                        r.jsx)(v.A, {
+                                                            className: "h-4 w-4 text-primary"
+                                                        }), (0,
+                                                        r.jsx)("span", {
+                                                            className: "text-sm font-medium text-primary",
+                                                            children: "Add More Images"
+                                                        })]
+                                                    })
+                                                })]
+                                            }) : (0,
+                                            r.jsx)(c.J, {
+                                                htmlFor: "niche-upload",
+                                                className: "cursor-pointer",
+                                                children: (0,
+                                                r.jsxs)("div", {
+                                                    className: "flex flex-col items-center gap-3",
+                                                    children: [(0,
+                                                    r.jsx)("div", {
+                                                        className: "rounded-full bg-muted p-3",
+                                                        children: (0,
+                                                        r.jsx)(v.A, {
+                                                            className: "h-8 w-8 text-muted-foreground"
+                                                        })
+                                                    }), (0,
+                                                    r.jsx)("p", {
+                                                        className: "text-sm text-muted-foreground",
+                                                        children: "Click to upload or drag & drop"
+                                                    })]
+                                                })
+                                            })
+                                        })
+                                    }), (0,
+                                    r.jsx)(o.p, {
+                                        id: "niche-upload",
+                                        type: "file",
+                                        multiple: !0,
+                                        accept: "image/*",
+                                        onChange: e => {
+                                            let t = Array.from(e.target.files || []);
+                                            if (0 === t.length)
+                                                return;
+                                            let a = t.filter(e => e.type.startsWith("image/"));
+                                            if (0 === a.length)
+                                                return void T.oR.error("Please select valid image files");
+                                            if (p.length + a.length > 50)
+                                                return void T.oR.error("You can only upload up to 50 images. You currently have ".concat(p.length, "."));
+                                            let r = []
+                                              , s = 0;
+                                            a.forEach(e => {
+                                                let t = new FileReader;
+                                                t.onload = () => {
+                                                    r.push({
+                                                        file: e,
+                                                        preview: t.result,
+                                                        name: e.name
+                                                    }),
+                                                    ++s === a.length && (C(e => [...e, ...r]),
+                                                    T.oR.success("Added ".concat(r.length, " niche image(s)")))
+                                                }
+                                                ,
+                                                t.readAsDataURL(e)
+                                            }
+                                            ),
+                                            e.target.value = ""
+                                        }
+                                        ,
+                                        className: "hidden",
+                                        disabled: p.length >= 50
+                                    })]
+                                })]
+                            }), (0,
+                            r.jsx)("div", {
+                                className: "mt-4",
+                                children: eF ? (0,
+                                r.jsxs)("div", {
+                                    className: "space-y-2",
+                                    children: [(0,
+                                    r.jsxs)("div", {
+                                        className: "flex items-center justify-between",
+                                        children: [(0,
+                                        r.jsx)(c.J, {
+                                            htmlFor: "custom-instructions",
+                                            className: "text-sm font-semibold",
+                                            children: "✍️ Your Custom Instructions"
+                                        }), (0,
+                                        r.jsxs)(i.$, {
+                                            variant: "ghost",
+                                            size: "sm",
+                                            onClick: () => {
+                                                eU(!1),
+                                                eM("")
+                                            }
+                                            ,
+                                            className: "h-6 px-2 text-xs",
+                                            children: [(0,
+                                            r.jsx)(y.A, {
+                                                className: "mr-1 h-3 w-3"
+                                            }), "Hide"]
+                                        })]
+                                    }), (0,
+                                    r.jsx)(u.T, {
+                                        id: "custom-instructions",
+                                        placeholder: "Tell AI what you want. Leave empty for automatic.",
+                                        value: eP,
+                                        onChange: e => eM(e.target.value),
+                                        className: "min-h-[80px] resize-none",
+                                        disabled: L
+                                    })]
+                                }) : (0,
+                                r.jsxs)(i.$, {
+                                    variant: "outline",
+                                    size: "sm",
+                                    onClick: () => eU(!0),
+                                    disabled: L,
+                                    className: "w-full",
+                                    children: [(0,
+                                    r.jsx)(g.A, {
+                                        className: "mr-2 h-4 w-4"
+                                    }), "✍️ Add Your Ideas (Optional)"]
+                                })
+                            }), (0,
+                            r.jsxs)("div", {
+                                className: "mt-6 flex items-center justify-between gap-4 border-t pt-6",
+                                children: [L ? (0,
+                                r.jsxs)("div", {
+                                    className: "flex items-center gap-2 text-sm text-muted-foreground",
+                                    children: [(0,
+                                    r.jsx)(f.A, {
+                                        className: "h-4 w-4 animate-spin"
+                                    }), Y || "Generating designs..."]
+                                }) : (0,
+                                r.jsx)("p", {
+                                    className: "text-sm text-muted-foreground",
+                                    children: e.length > 0 && p.length > 0 ? "Ready to generate ".concat(e.length * p.length, " design(s) (").concat(e.length, " \xd7 ").concat(p.length, ")") : "Upload images to start generating"
+                                }), (0,
+                                r.jsx)(i.$, {
+                                    onClick: e6,
+                                    disabled: L || 0 === e.length || 0 === p.length,
+                                    size: "sm",
+                                    children: L ? (0,
+                                    r.jsxs)(r.Fragment, {
+                                        children: [(0,
+                                        r.jsx)(f.A, {
+                                            className: "mr-2 h-4 w-4 animate-spin"
+                                        }), "Generating..."]
+                                    }) : (0,
+                                    r.jsxs)(r.Fragment, {
+                                        children: [(0,
+                                        r.jsx)(E.A, {
+                                            className: "mr-2 h-4 w-4"
+                                        }), "Generate"]
+                                    })
+                                })]
+                            })]
+                        })]
+                    }), S.length > 0 && (0,
+                    r.jsxs)(l.Zp, {
+                        children: [(0,
+                        r.jsxs)(l.aR, {
+                            children: [(0,
+                            r.jsxs)(l.ZB, {
+                                className: "flex items-center justify-between",
+                                children: [(0,
+                                r.jsxs)("div", {
+                                    className: "flex items-center gap-2",
+                                    children: [(0,
+                                    r.jsx)(w.A, {
+                                        className: "h-6 w-6 text-primary"
+                                    }), "Newly Generated Designs"]
+                                }), (0,
+                                r.jsxs)(d.E, {
+                                    variant: "secondary",
+                                    children: [S.length, " Created"]
+                                })]
+                            }), (0,
+                            r.jsxs)(l.BT, {
+                                children: ["Your new designs are saved! View all your designs in", " ", (0,
+                                r.jsx)("a", {
+                                    href: "/dashboard/my-ai-designs",
+                                    className: "text-primary hover:underline",
+                                    children: "My AI Designs"
+                                }), " ", "page."]
+                            })]
+                        }), (0,
+                        r.jsxs)(l.Wu, {
+                            children: [(0,
+                            r.jsx)("div", {
+                                className: "grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5",
+                                children: S.map( (e, t) => (0,
+                                r.jsxs)("div", {
+                                    className: "group relative",
+                                    children: [(0,
+                                    r.jsxs)("div", {
+                                        className: "relative cursor-pointer overflow-hidden rounded-xl border bg-background shadow-sm transition-all hover:border-primary hover:shadow-lg",
+                                        onClick: () => eK(t),
+                                        children: [(0,
+                                        r.jsx)("div", {
+                                            className: "aspect-square bg-muted",
+                                            children: (0,
+                                            r.jsx)("img", {
+                                                src: e.image,
+                                                alt: e.niche,
+                                                className: "h-full w-full object-cover"
+                                            })
+                                        }), (0,
+                                        r.jsx)("div", {
+                                            className: "absolute right-2 top-2 rounded-full bg-black/60 p-1.5 text-white opacity-0 transition-opacity group-hover:opacity-100",
+                                            children: (0,
+                                            r.jsx)(b.A, {
+                                                className: "h-4 w-4"
+                                            })
+                                        }), (0,
+                                        r.jsx)("div", {
+                                            className: "absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition-opacity group-hover:opacity-100",
+                                            children: (0,
+                                            r.jsxs)("div", {
+                                                className: "flex gap-1.5",
+                                                children: [(0,
+                                                r.jsxs)(i.$, {
+                                                    size: "sm",
+                                                    onClick: e => {
+                                                        e.stopPropagation(),
+                                                        eK(t)
+                                                    }
+                                                    ,
+                                                    className: "h-8 bg-background px-2 text-xs text-foreground hover:bg-muted",
+                                                    children: [(0,
+                                                    r.jsx)(b.A, {
+                                                        className: "mr-1 h-3 w-3"
+                                                    }), "View"]
+                                                }), (0,
+                                                r.jsxs)(i.$, {
+                                                    size: "sm",
+                                                    onClick: t => {
+                                                        t.stopPropagation(),
+                                                        e7(e)
+                                                    }
+                                                    ,
+                                                    className: "h-8 bg-green-600 px-2 text-xs text-white hover:bg-green-700",
+                                                    children: [(0,
+                                                    r.jsx)(N, {
+                                                        className: "mr-1 h-3 w-3"
+                                                    }), "Edit"]
+                                                }), (0,
+                                                r.jsxs)(i.$, {
+                                                    size: "sm",
+                                                    onClick: a => {
+                                                        a.stopPropagation(),
+                                                        e4(e.image, t)
+                                                    }
+                                                    ,
+                                                    className: "h-8 bg-primary px-2 text-xs text-primary-foreground hover:bg-primary/90",
+                                                    children: [(0,
+                                                    r.jsx)(w.A, {
+                                                        className: "mr-1 h-3 w-3"
+                                                    }), "Download"]
+                                                }), (0,
+                                                r.jsx)(i.$, {
+                                                    size: "sm",
+                                                    variant: "destructive",
+                                                    onClick: t => {
+                                                        t.stopPropagation(),
+                                                        e$(e.id)
+                                                    }
+                                                    ,
+                                                    className: "h-8 px-2",
+                                                    children: (0,
+                                                    r.jsx)(j.A, {
+                                                        className: "h-3 w-3"
+                                                    })
+                                                })]
+                                            })
+                                        }), (0,
+                                        r.jsx)("div", {
+                                            className: "absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white opacity-0 transition-opacity group-hover:opacity-100",
+                                            children: (0,
+                                            r.jsx)("p", {
+                                                className: "truncate text-xs font-medium",
+                                                children: e.niche
+                                            })
+                                        })]
+                                    }), (0,
+                                    r.jsx)("div", {
+                                        className: "absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-green-500 text-xs font-bold text-white",
+                                        children: t + 1
+                                    })]
+                                }, t))
+                            }), (0,
+                            r.jsx)("div", {
+                                className: "mt-6 rounded-lg border p-4",
+                                children: (0,
+                                r.jsxs)("div", {
+                                    className: "flex items-center justify-between gap-4",
+                                    children: [(0,
+                                    r.jsxs)("div", {
+                                        className: "flex items-center gap-2 text-sm",
+                                        children: [(0,
+                                        r.jsx)("div", {
+                                            className: "h-2 w-2 rounded-full bg-primary"
+                                        }), (0,
+                                        r.jsxs)("span", {
+                                            className: "font-medium",
+                                            children: [S.length, " saved design(s)"]
+                                        })]
+                                    }), (0,
+                                    r.jsx)("div", {
+                                        className: "flex gap-2",
+                                        children: (0,
+                                        r.jsxs)(i.$, {
+                                            variant: "outline",
+                                            size: "sm",
+                                            onClick: () => {
+                                                S.forEach( (e, t) => {
+                                                    setTimeout( () => e4(e.image, t), 500 * t)
+                                                }
+                                                )
+                                            }
+                                            ,
+                                            children: [(0,
+                                            r.jsx)(w.A, {
+                                                className: "mr-2 h-4 w-4"
+                                            }), "Download All"]
+                                        })
+                                    })]
+                                })
+                            })]
+                        })]
+                    }), Z && (0,
+                    r.jsx)(I.W, {
+                        isOpen: Q,
+                        onClose: () => ee(!1),
+                        imageUrl: Z.image,
+                        imageName: Z.name,
+                        showNavigation: !1,
+                        showDownload: !1
+                    })]
+                }), null !== z && S[z] && (0,
+                r.jsx)(I.W, {
+                    isOpen: q,
+                    onClose: () => V(!1),
+                    imageUrl: S[z].image,
+                    imageName: S[z].niche || "Design ".concat(z + 1),
+                    currentIndex: z,
+                    totalImages: S.length,
+                    onNext: eQ,
+                    onPrevious: eJ,
+                    showNavigation: !0,
+                    showDownload: !0
+                }), null !== X && ej[X] && (0,
+                r.jsx)(I.W, {
+                    isOpen: $,
+                    onClose: () => K(!1),
+                    imageUrl: ej[X].image,
+                    imageName: ej[X].niche || "Variation ".concat(X + 1),
+                    currentIndex: X,
+                    totalImages: ej.length,
+                    onNext: e2,
+                    onPrevious: e0,
+                    showNavigation: !0,
+                    showDownload: !0
+                }), (0,
+                r.jsx)(h.lG, {
+                    open: et,
+                    onOpenChange: ea,
+                    children: (0,
+                    r.jsxs)(h.Cf, {
+                        className: "max-h-[90vh] max-w-4xl overflow-y-auto",
+                        children: [(0,
+                        r.jsx)(h.c7, {
+                            children: (0,
+                            r.jsxs)(h.L3, {
+                                className: "flex items-center gap-2 text-xl font-bold",
+                                children: [(0,
+                                r.jsx)(N, {
+                                    className: "h-5 w-5 text-green-600"
+                                }), "Edit Design"]
+                            })
+                        }), er && (0,
+                        r.jsxs)("div", {
+                            className: "space-y-6",
+                            children: [(0,
+                            r.jsxs)("div", {
+                                className: "rounded-lg bg-muted p-4",
+                                children: [(0,
+                                r.jsx)("h3", {
+                                    className: "mb-2 text-sm font-semibold",
+                                    children: "Current Design"
+                                }), (0,
+                                r.jsx)("div", {
+                                    className: "relative h-64 w-full overflow-hidden rounded-lg bg-white",
+                                    children: (0,
+                                    r.jsx)("img", {
+                                        src: er.image,
+                                        alt: er.niche,
+                                        className: "h-full w-full object-contain"
+                                    })
+                                })]
+                            }), (0,
+                            r.jsxs)("div", {
+                                className: "space-y-2",
+                                children: [(0,
+                                r.jsx)("label", {
+                                    className: "text-sm font-medium",
+                                    children: "What would you like to change?"
+                                }), (0,
+                                r.jsx)(u.T, {
+                                    placeholder: "e.g., Change the color to blue, add a circle, make it bigger...",
+                                    value: en,
+                                    onChange: e => ei(e.target.value),
+                                    rows: 3,
+                                    className: "resize-none"
+                                }), (0,
+                                r.jsx)("p", {
+                                    className: "text-xs text-muted-foreground",
+                                    children: "Describe the changes you want to make to this design. 1 token will be consumed."
+                                })]
+                            }), (0,
+                            r.jsxs)("div", {
+                                className: "flex justify-end gap-2 border-t pt-4",
+                                children: [(0,
+                                r.jsx)(i.$, {
+                                    variant: "outline",
+                                    onClick: () => {
+                                        ea(!1),
+                                        ei("")
+                                    }
+                                    ,
+                                    disabled: el,
+                                    children: "Cancel"
+                                }), (0,
+                                r.jsx)(i.$, {
+                                    onClick: e9,
+                                    disabled: !en.trim() || el,
+                                    className: "bg-green-600 hover:bg-green-700",
+                                    children: el ? (0,
+                                    r.jsxs)(r.Fragment, {
+                                        children: [(0,
+                                        r.jsx)(f.A, {
+                                            className: "mr-2 h-4 w-4 animate-spin"
+                                        }), "Regenerating..."]
+                                    }) : (0,
+                                    r.jsxs)(r.Fragment, {
+                                        children: [(0,
+                                        r.jsx)(N, {
+                                            className: "mr-2 h-4 w-4"
+                                        }), "Apply Changes"]
+                                    })
+                                })]
+                            })]
+                        })]
+                    })
+                })]
+            })
+        }
+        function H() {
+            return (0,
+            r.jsx)(Y.default, {
+                requiredPlatforms: ["ai-design-generator"],
+                fallbackTitle: "AI Design Generator Access Required",
+                fallbackDescription: "Subscribe to the AI Design Generator plan to access this feature.",
+                children: (0,
+                r.jsx)(G, {})
+            })
+        }
+    }
+    ,
+    17033: (e, t, a) => {
+        Promise.resolve().then(a.bind(a, 11122))
+    }
+    ,
+    18126: (e, t, a) => {
+        "use strict";
+        a.d(t, {
+            default: () => N
+        });
+        var r = a(34783)
+          , s = a(68646)
+          , n = a(52331)
+          , i = a(32366)
+          , l = a(85396)
+          , o = a(20271)
+          , c = a(96771)
+          , d = a(95186)
+          , h = a(42757)
+          , u = a(36822)
+          , m = a(84204)
+          , g = a(71441)
+          , p = a(10517)
+          , x = a(29767)
+          , f = a.n(x);
+        let y = () => (0,
+        r.jsxs)("div", {
+            className: "space-y-4",
+            children: [(0,
+            r.jsx)(c.E, {
+                className: "h-8 w-64"
+            }), (0,
+            r.jsx)(c.E, {
+                className: "h-20 w-full"
+            }), (0,
+            r.jsx)(c.E, {
+                className: "h-10 w-32"
+            })]
+        })
+          , v = e => {
+            let {error: t, onRetry: a} = e;
+            return (0,
+            r.jsxs)(l.Zp, {
+                className: "border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950",
+                children: [(0,
+                r.jsx)(l.aR, {
+                    children: (0,
+                    r.jsxs)(l.ZB, {
+                        className: "flex items-center gap-2 text-red-800 dark:text-red-200",
+                        children: [(0,
+                        r.jsx)(d.A, {
+                            className: "h-5 w-5"
+                        }), "Connection Error"]
+                    })
+                }), (0,
+                r.jsxs)(l.Wu, {
+                    className: "space-y-4",
+                    children: [(0,
+                    r.jsx)("p", {
+                        className: "text-red-700 dark:text-red-300",
+                        children: t
+                    }), (0,
+                    r.jsxs)(i.$, {
+                        onClick: a,
+                        variant: "outline",
+                        size: "sm",
+                        children: [(0,
+                        r.jsx)(h.A, {
+                            className: "mr-2 h-4 w-4"
+                        }), "Try Again"]
+                    })]
+                })]
+            })
+        }
+          , w = e => {
+            let {showUpgrade: t} = e;
+            return (0,
+            r.jsxs)(l.Zp, {
+                className: "border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950",
+                children: [(0,
+                r.jsx)(l.aR, {
+                    children: (0,
+                    r.jsxs)(l.ZB, {
+                        className: "flex items-center gap-2 text-amber-800 dark:text-amber-200",
+                        children: [(0,
+                        r.jsx)(u.A, {
+                            className: "h-5 w-5"
+                        }), "Premium Feature"]
+                    })
+                }), (0,
+                r.jsxs)(l.Wu, {
+                    className: "space-y-4",
+                    children: [(0,
+                    r.jsx)("p", {
+                        className: "text-amber-700 dark:text-amber-300",
+                        children: "This feature requires an active subscription to access."
+                    }), t && (0,
+                    r.jsx)("div", {
+                        className: "flex gap-2",
+                        children: (0,
+                        r.jsx)(i.$, {
+                            asChild: !0,
+                            className: "bg-amber-600 hover:bg-amber-700",
+                            children: (0,
+                            r.jsxs)(f(), {
+                                href: "/pricing",
+                                children: [(0,
+                                r.jsx)(m.A, {
+                                    className: "mr-2 h-4 w-4"
+                                }), "View Plans"]
+                            })
+                        })
+                    })]
+                })]
+            })
+        }
+          , b = e => {
+            let {requiredPlatforms: t, userPermissions: a, currentPlan: s} = e
+              , n = {
+                "amazon-normal": "Amazon Merch (Normal)",
+                "amazon-pro": "Amazon Merch (Pro)",
+                redbubble: "Redbubble",
+                teepublic: "TeePublic",
+                "ai-design-generator": "AI Design Generator"
+            }
+              , c = t.filter(e => !a[e]);
+            return (0,
+            r.jsxs)(l.Zp, {
+                className: "border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950",
+                children: [(0,
+                r.jsx)(l.aR, {
+                    children: (0,
+                    r.jsxs)(l.ZB, {
+                        className: "flex items-center gap-2 text-blue-800 dark:text-blue-200",
+                        children: [(0,
+                        r.jsx)(g.A, {
+                            className: "h-5 w-5"
+                        }), "Upgrade Required"]
+                    })
+                }), (0,
+                r.jsxs)(l.Wu, {
+                    className: "space-y-4",
+                    children: [s && (0,
+                    r.jsxs)("div", {
+                        className: "flex items-center gap-2",
+                        children: [(0,
+                        r.jsx)("span", {
+                            className: "text-sm text-blue-700 dark:text-blue-300",
+                            children: "Current Plan:"
+                        }), (0,
+                        r.jsx)(o.E, {
+                            variant: "secondary",
+                            children: s
+                        })]
+                    }), (0,
+                    r.jsxs)("div", {
+                        children: [(0,
+                        r.jsx)("p", {
+                            className: "mb-2 text-blue-700 dark:text-blue-300",
+                            children: "This feature requires access to:"
+                        }), (0,
+                        r.jsx)("ul", {
+                            className: "list-inside list-disc space-y-1 text-sm text-blue-600 dark:text-blue-400",
+                            children: c.map(e => (0,
+                            r.jsx)("li", {
+                                children: n[e] || e
+                            }, e))
+                        })]
+                    }), (0,
+                    r.jsx)("div", {
+                        className: "flex gap-2",
+                        children: (0,
+                        r.jsx)(i.$, {
+                            asChild: !0,
+                            className: "bg-blue-600 hover:bg-blue-700",
+                            children: (0,
+                            r.jsxs)(f(), {
+                                href: "/pricing",
+                                children: [(0,
+                                r.jsx)(p.A, {
+                                    className: "mr-2 h-4 w-4"
+                                }), "Upgrade Plan"]
+                            })
+                        })
+                    })]
+                })]
+            })
+        }
+        ;
+        function N(e) {
+            let {children: t, requiredPlatforms: a=[], fallbackTitle: i, fallbackDescription: l, showUpgrade: o=!0} = e
+              , {subscription: c, permissions: d, hasActiveSubscription: h, isLoading: u, error: m, refresh: g} = (0,
+            n.R)()
+              , {user: p} = (0,
+            s.A)();
+            return u ? (0,
+            r.jsx)(y, {}) : m ? (0,
+            r.jsx)(v, {
+                error: m,
+                onRetry: g
+            }) : p ? 0 === a.length ? h ? (0,
+            r.jsx)(r.Fragment, {
+                children: t
+            }) : (0,
+            r.jsx)(w, {
+                showUpgrade: o
+            }) : a.every(e => !0 === d[e]) ? (0,
+            r.jsx)(r.Fragment, {
+                children: t
+            }) : (0,
+            r.jsx)(b, {
+                requiredPlatforms: a,
+                userPermissions: d,
+                currentPlan: null == c ? void 0 : c.planId
+            }) : (0,
+            r.jsx)(w, {
+                showUpgrade: o
+            })
+        }
+    }
+    ,
+    20271: (e, t, a) => {
+        "use strict";
+        a.d(t, {
+            E: () => l
+        });
+        var r = a(34783);
+        a(57591);
+        var s = a(17503)
+          , n = a(56893);
+        let i = (0,
+        s.F)("inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2", {
+            variants: {
+                variant: {
+                    default: "border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80",
+                    secondary: "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+                    destructive: "border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80",
+                    outline: "text-foreground"
+                }
+            },
+            defaultVariants: {
+                variant: "default"
+            }
+        });
+        function l(e) {
+            let {className: t, variant: a, ...s} = e;
+            return (0,
+            r.jsx)("div", {
+                className: (0,
+                n.cn)(i({
+                    variant: a
+                }), t),
+                ...s
+            })
+        }
+    }
+    ,
+    23325: (e, t, a) => {
+        "use strict";
+        a.d(t, {
+            b: () => l
+        });
+        var r = a(57591)
+          , s = a(14771)
+          , n = a(34783)
+          , i = r.forwardRef( (e, t) => (0,
+        n.jsx)(s.sG.label, {
+            ...e,
+            ref: t,
+            onMouseDown: t => {
+                var a;
+                t.target.closest("button, input, select, textarea") || (null == (a = e.onMouseDown) || a.call(e, t),
+                !t.defaultPrevented && t.detail > 1 && t.preventDefault())
+            }
+        }));
+        i.displayName = "Label";
+        var l = i
+    }
+    ,
+    36822: (e, t, a) => {
+        "use strict";
+        a.d(t, {
+            A: () => r
+        });
+        let r = (0,
+        a(2766).A)("lock", [["rect", {
+            width: "18",
+            height: "11",
+            x: "3",
+            y: "11",
+            rx: "2",
+            ry: "2",
+            key: "1w4ew1"
+        }], ["path", {
+            d: "M7 11V7a5 5 0 0 1 10 0v4",
+            key: "fwvmzm"
+        }]])
+    }
+    ,
+    42757: (e, t, a) => {
+        "use strict";
+        a.d(t, {
+            A: () => r
+        });
+        let r = (0,
+        a(2766).A)("refresh-cw", [["path", {
+            d: "M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8",
+            key: "v9h5vc"
+        }], ["path", {
+            d: "M21 3v5h-5",
+            key: "1q7to0"
+        }], ["path", {
+            d: "M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16",
+            key: "3uifl3"
+        }], ["path", {
+            d: "M8 16H3v5",
+            key: "1cv678"
+        }]])
+    }
+    ,
+    44639: (e, t, a) => {
+        "use strict";
+        a.d(t, {
+            A: () => r
+        });
+        let r = (0,
+        a(2766).A)("play", [["polygon", {
+            points: "6 3 20 12 6 21 6 3",
+            key: "1oa8hb"
+        }]])
+    }
+    ,
+    51462: (e, t, a) => {
+        "use strict";
+        a.d(t, {
+            p: () => i
+        });
+        var r = a(34783)
+          , s = a(57591)
+          , n = a(56893);
+        let i = s.forwardRef( (e, t) => {
+            let {className: a, type: s, ...i} = e;
+            return (0,
+            r.jsx)("input", {
+                type: s,
+                className: (0,
+                n.cn)("flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50", a),
+                ref: t,
+                ...i
+            })
+        }
+        );
+        i.displayName = "Input"
+    }
+    ,
+    70292: (e, t, a) => {
+        "use strict";
+        a.d(t, {
+            A: () => r
+        });
+        let r = (0,
+        a(2766).A)("upload", [["path", {
+            d: "M12 3v12",
+            key: "1x0j5s"
+        }], ["path", {
+            d: "m17 8-5-5-5 5",
+            key: "7q97r8"
+        }], ["path", {
+            d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4",
+            key: "ih7n3h"
+        }]])
+    }
+    ,
+    70412: (e, t, a) => {
+        "use strict";
+        a.d(t, {
+            J: () => c
+        });
+        var r = a(34783)
+          , s = a(57591)
+          , n = a(23325)
+          , i = a(17503)
+          , l = a(56893);
+        let o = (0,
+        i.F)("text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70")
+          , c = s.forwardRef( (e, t) => {
+            let {className: a, ...s} = e;
+            return (0,
+            r.jsx)(n.b, {
+                ref: t,
+                className: (0,
+                l.cn)(o(), a),
+                ...s
+            })
+        }
+        );
+        c.displayName = n.b.displayName
+    }
+    ,
+    71441: (e, t, a) => {
+        "use strict";
+        a.d(t, {
+            A: () => r
+        });
+        let r = (0,
+        a(2766).A)("credit-card", [["rect", {
+            width: "20",
+            height: "14",
+            x: "2",
+            y: "5",
+            rx: "2",
+            key: "ynyp8z"
+        }], ["line", {
+            x1: "2",
+            x2: "22",
+            y1: "10",
+            y2: "10",
+            key: "1b3vmo"
+        }]])
+    }
+    ,
+    81856: (e, t, a) => {
+        "use strict";
+        a.d(t, {
+            T: () => i
+        });
+        var r = a(34783)
+          , s = a(57591)
+          , n = a(56893);
+        let i = s.forwardRef( (e, t) => {
+            let {className: a, ...s} = e;
+            return (0,
+            r.jsx)("textarea", {
+                className: (0,
+                n.cn)("flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50", a),
+                ref: t,
+                ...s
+            })
+        }
+        );
+        i.displayName = "Textarea"
+    }
+    ,
+    84204: (e, t, a) => {
+        "use strict";
+        a.d(t, {
+            A: () => r
+        });
+        let r = (0,
+        a(2766).A)("crown", [["path", {
+            d: "M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z",
+            key: "1vdc57"
+        }], ["path", {
+            d: "M5 21h14",
+            key: "11awu3"
+        }]])
+    }
+    ,
+    95186: (e, t, a) => {
+        "use strict";
+        a.d(t, {
+            A: () => r
+        });
+        let r = (0,
+        a(2766).A)("circle-alert", [["circle", {
+            cx: "12",
+            cy: "12",
+            r: "10",
+            key: "1mglay"
+        }], ["line", {
+            x1: "12",
+            x2: "12",
+            y1: "8",
+            y2: "12",
+            key: "1pkeuh"
+        }], ["line", {
+            x1: "12",
+            x2: "12.01",
+            y1: "16",
+            y2: "16",
+            key: "4dfq90"
+        }]])
+    }
+    ,
+    96771: (e, t, a) => {
+        "use strict";
+        a.d(t, {
+            E: () => n
+        });
+        var r = a(34783)
+          , s = a(56893);
+        function n(e) {
+            let {className: t, ...a} = e;
+            return (0,
+            r.jsx)("div", {
+                className: (0,
+                s.cn)("animate-pulse rounded-md bg-primary/10", t),
+                ...a
+            })
+        }
+    }
+}, e => {
+    e.O(0, [2038, 9767, 5725, 3899, 3828, 6457, 3968, 4719, 8986, 1798, 5199, 7358], () => e(e.s = 17033)),
+    _N_E = e.O()
+}
+]);

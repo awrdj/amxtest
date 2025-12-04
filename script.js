@@ -151,21 +151,21 @@ customHiddenKeywords: (String) - New - Sets the custom hidden keywords input val
 productTypeOverrides: (Object) - New - Contains nested objects where keys are product type strings (e.g., 'hoodie') and values are objects that can contain searchKeywords and/or customHiddenKeywords to override the base settings for that specific product type.*/
         // Presets config US
         'com': [
-            { value: 'last30-fashion-com', text: 'Last 30 Days Fashion', 
+            { value: 'last30-fashion-com', text: '⏱ Last 30 Days Fashion', 
               settings: { timeFilter: 'timeFilter30Days', sortOrder: 'custom', department: 'fashion', category: '7141123011', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
-            { value: 'last90-fashion-com', text: 'Last 90 Days Fashion', 
+            { value: 'last90-fashion-com', text: '⏱ Last 90 Days Fashion', 
               settings: { timeFilter: 'timeFilter90Days', sortOrder: 'custom', department: 'fashion', category: '7141123011', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
-            { value: 'most-purchased-com', text: 'Most Purchased Fashion', 
+            { value: 'most-purchased-com', text: '⭐️ Most Purchased Fashion', 
               settings: { sortOrder: 'most-purchased-rank', department: 'fashion', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
-            { value: 'most-purchased-com-men-novelty', text: '    Most Purchased Fashion Mens Novelty T-Shirts', 
+            { value: 'most-purchased-com-men-novelty', text: '⭐️ Most Purchased Fashion Mens Novelty T-Shirts', 
               settings: { sortOrder: 'most-purchased-rank', department: 'fashion', category: '9056985011', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
-            { value: 'most-purchased-com-men-novelty', text: '    Most Purchased Fashion Novelty & More', 
+            { value: 'most-purchased-com-men-novelty', text: '⭐️ Most Purchased Fashion Novelty & More', 
               settings: { sortOrder: 'most-purchased-rank', department: 'fashion-novelty', category: '9056985011', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             /*{ value: 'the-trends-com', text: 'Trends Fashion Novelty', 
               settings: { sortOrder: 'date-desc-rank', department: 'fashion-novelty', productType: 'custom', suppressDefaultProductTypeKeywords: false} },*/
-            { value: 'archive-view-com', text: 'Trends/Archive Fashion Novelty', 
+            { value: 'archive-view-com', text: '📈 Trends/Archive Fashion Novelty', 
               settings: { sortOrder: 'date-desc-rank', department: 'fashion-novelty', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
-            { value: 'competition-checker-com', text: 'Competition Checker',
+            { value: 'competition-checker-com', text: '📊 Competition Checker',
               settings: {
                 // Base Settings
                 sortOrder: 'custom', /*department: 'fashion-novelty',*/ productType: 'tshirt', /*searchKeywords: 'funny graphic',*/ customHiddenKeywords: 'Lightweight, Classic fit, Double-needle sleeve and bottom hem -Longsleeve -Raglan -Vneck -Tanktop', suppressDefaultProductTypeKeywords: true,

@@ -157,6 +157,10 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
               settings: { timeFilter: 'timeFilter90Days', sortOrder: 'custom', department: 'fashion', category: '7141123011', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'most-purchased-com', text: 'Most Purchased Fashion', 
               settings: { sortOrder: 'most-purchased-rank', department: 'fashion', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
+            { value: 'most-purchased-com-men-novelty', text: '    Most Purchased Fashion Mens Novelty T-Shirts', 
+              settings: { sortOrder: 'most-purchased-rank', department: 'fashion', category: '9056985011', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
+            { value: 'most-purchased-com-men-novelty', text: '    Most Purchased Fashion Novelty & More', 
+              settings: { sortOrder: 'most-purchased-rank', department: 'fashion-novelty', category: '9056985011', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             /*{ value: 'the-trends-com', text: 'Trends Fashion Novelty', 
               settings: { sortOrder: 'date-desc-rank', department: 'fashion-novelty', productType: 'custom', suppressDefaultProductTypeKeywords: false} },*/
             { value: 'archive-view-com', text: 'Trends/Archive Fashion Novelty', 

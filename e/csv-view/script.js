@@ -241,7 +241,18 @@ function parseCSV(text) {
         listing.Price = parseFloat(listing.Price?.replace('$', '') || 0);
         listing.Reviews = parseInt(listing.Reviews || 0);
         listing.Rating = parseFloat(listing.Rating || 0);
-        listing.Is_Ad = listing.Is_Ad?.toLowerCase() === 'true';
+        
+        // FIXED: Parse Is_Ad correctly - check for string "TRUE" or "True" or boolean
+        const isAdValue = listing.Is_Ad;
+        if (typeof isAdValue === 'boolean') {
+            listing.Is_Ad = isAdValue;
+        } else if (typeof isAdValue === 'string') {
+            listing.Is_Ad = isAdValue.toLowerCase() === 'true';
+        } else {
+            listing.Is_Ad = false;
+        }
+        
+        console.log('Parsed listing ad status:', listing.Title, 'Is_Ad:', listing.Is_Ad); // Debug
         
         // Parse badges
         const badges = listing.Badges?.split('|').filter(b => b) || [];
@@ -344,7 +355,7 @@ function applyFilters() {
     const priceMax = parseFloat(elements.priceMaxSlider.value);
     const reviewMin = parseInt(elements.reviewMinSlider.value);
     const reviewMax = parseInt(elements.reviewMaxSlider.value);
-    const ratingMin = parseFloat(elements.ratingMinSlider.value) / 10;  // Convert 0-50 to 0-5.0
+    const ratingMin = parseFloat(elements.ratingMinSlider.value) / 10;
     const ratingMax = parseFloat(elements.ratingMaxSlider.value) / 10;
     
     const excludedBrands = getExcludedBrands();
@@ -483,6 +494,9 @@ function createListingCard(listing) {
     card.className = 'listing-card';
     card.onclick = () => window.open(listing.URL, '_blank');
     
+    // Debug log
+    console.log('Creating card:', listing.Title, 'Is_Ad:', listing.Is_Ad);
+    
     // Badges
     const badges = [];
     if (listing.Is_Ad) badges.push('<span class="badge badge-ad">SPONSORED</span>');
@@ -620,7 +634,7 @@ function showViewer() {
     elements.priceMaxSlider.value = maxPrice;
     elements.reviewMaxSlider.max = maxReviews;
     elements.reviewMaxSlider.value = maxReviews;
-    elements.ratingMaxSlider.value = 50; // 5.0 stars
+    elements.ratingMaxSlider.value = 50;
     
     updateRangeDisplay('price');
     updateRangeDisplay('review');

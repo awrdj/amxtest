@@ -234,9 +234,14 @@ function updateSliderFill(type) {
     const sliderMin = parseFloat(minSlider.min);
     const sliderMax = parseFloat(minSlider.max);
     
-    // Calculate percentages
-    const minPercent = ((min - sliderMin) / (sliderMax - sliderMin)) * 100;
-    const maxPercent = ((max - sliderMin) / (sliderMax - sliderMin)) * 100;
+    // Calculate percentages with proper thumb offset
+    // The thumb is 22px wide, so we need to account for 11px on each side
+    const thumbWidth = 22;
+    const containerWidth = container.offsetWidth;
+    const thumbOffset = (thumbWidth / containerWidth) * 100;
+    
+    const minPercent = ((min - sliderMin) / (sliderMax - sliderMin)) * (100 - thumbOffset);
+    const maxPercent = ((max - sliderMin) / (sliderMax - sliderMin)) * (100 - thumbOffset);
     
     // Find or create fill element
     let fill = container.querySelector('.slider-range-fill');
@@ -247,7 +252,7 @@ function updateSliderFill(type) {
     }
     
     // Set position and width
-    fill.style.left = minPercent + '%';
+    fill.style.left = (minPercent + (thumbOffset / 2)) + '%';
     fill.style.width = (maxPercent - minPercent) + '%';
 }
 

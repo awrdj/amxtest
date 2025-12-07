@@ -131,50 +131,52 @@ function setupEventListeners() {
     elements.filterBestseller.addEventListener('change', applyFilters);
     elements.filterPopular.addEventListener('change', applyFilters);
     elements.filterEtsysPick.addEventListener('change', applyFilters);
+
+    // Price Range Sliders
+    elements.priceMinSlider.addEventListener('input', () => {
+        updateRangeDisplay('price');
+        updateSliderFill('price');
+        debounce(applyFilters, 100)();
+    });
+    elements.priceMaxSlider.addEventListener('input', () => {
+        updateRangeDisplay('price');
+        updateSliderFill('price');
+        debounce(applyFilters, 100)();
+    });
     
-    // In setupEventListeners(), update the slider listeners:
-
-// Price Range Sliders
-elements.priceMinSlider.addEventListener('input', () => {
-    updateRangeDisplay('price');
-    updateSliderFill('price');
-    applyFilters();
-});
-elements.priceMaxSlider.addEventListener('input', () => {
-    updateRangeDisplay('price');
-    updateSliderFill('price');
-    applyFilters();
-});
-
-// Review Range Sliders
-elements.reviewMinSlider.addEventListener('input', () => {
-    updateRangeDisplay('review');
-    updateSliderFill('review');
-    applyFilters();
-});
-elements.reviewMaxSlider.addEventListener('input', () => {
-    updateRangeDisplay('review');
-    updateSliderFill('review');
-    applyFilters();
-});
-
-// Rating Range Sliders
-elements.ratingMinSlider.addEventListener('input', () => {
-    updateRangeDisplay('rating');
-    updateSliderFill('rating');
-    applyFilters();
-});
-elements.ratingMaxSlider.addEventListener('input', () => {
-    updateRangeDisplay('rating');
-    updateSliderFill('rating');
-    applyFilters();
-});
+    // Review Range Sliders
+    elements.reviewMinSlider.addEventListener('input', () => {
+        updateRangeDisplay('review');
+        updateSliderFill('review');
+        debounce(applyFilters, 100)();
+    });
+    elements.reviewMaxSlider.addEventListener('input', () => {
+        updateRangeDisplay('review');
+        updateSliderFill('review');
+        debounce(applyFilters, 100)();
+    });
+    
+    // Rating Range Sliders
+    elements.ratingMinSlider.addEventListener('input', () => {
+        updateRangeDisplay('rating');
+        updateSliderFill('rating');
+        debounce(applyFilters, 100)();
+    });
+    elements.ratingMaxSlider.addEventListener('input', () => {
+        updateRangeDisplay('rating');
+        updateSliderFill('rating');
+        debounce(applyFilters, 100)();
+    });
     
     // Brand Filter Collapsible
     elements.brandFilterToggle.addEventListener('click', toggleBrandFilter);
     elements.selectAllBrands.addEventListener('click', selectAllBrands);
     elements.clearAllBrands.addEventListener('click', clearAllBrands);
 }
+
+// ==========================================
+// Slider Range Fill Update
+// ==========================================
 
 // ==========================================
 // Slider Range Fill Update
@@ -199,8 +201,11 @@ function updateSliderFill(type) {
     
     const min = parseFloat(minSlider.value);
     const max = parseFloat(maxSlider.value);
-    const minPercent = ((min - minSlider.min) / (minSlider.max - minSlider.min)) * 100;
-    const maxPercent = ((max - minSlider.min) / (minSlider.max - minSlider.min)) * 100;
+    const sliderMin = parseFloat(minSlider.min);
+    const sliderMax = parseFloat(minSlider.max);
+    
+    const minPercent = ((min - sliderMin) / (sliderMax - sliderMin)) * 100;
+    const maxPercent = ((max - sliderMin) / (sliderMax - sliderMin)) * 100;
     
     // Find or create fill element
     let fill = container.querySelector('.slider-range-fill');
@@ -213,7 +218,6 @@ function updateSliderFill(type) {
     fill.style.left = minPercent + '%';
     fill.style.width = (maxPercent - minPercent) + '%';
 }
-
 
 // ==========================================
 // File Upload & Parsing
@@ -289,17 +293,18 @@ function parseCSV(text) {
         listing.Reviews = parseInt(listing.Reviews || 0);
         listing.Rating = parseFloat(listing.Rating || 0);
         
-        // FIXED: Parse Is_Ad correctly - check for string "TRUE" or "True" or boolean
+        // FIXED: Parse Is_Ad - check for "Yes" instead of "true"
         const isAdValue = listing.Is_Ad;
         if (typeof isAdValue === 'boolean') {
             listing.Is_Ad = isAdValue;
         } else if (typeof isAdValue === 'string') {
-            listing.Is_Ad = isAdValue.toLowerCase() === 'true';
+            // Check for "Yes", "YES", "yes", "True", "TRUE", "true"
+            listing.Is_Ad = ['yes', 'true', '1'].includes(isAdValue.toLowerCase());
         } else {
             listing.Is_Ad = false;
         }
         
-        console.log('Parsed listing ad status:', listing.Title, 'Is_Ad:', listing.Is_Ad); // Debug
+        console.log('Parsing:', listing.Title?.substring(0, 30), 'Is_Ad raw:', isAdValue, 'parsed:', listing.Is_Ad);
         
         // Parse badges
         const badges = listing.Badges?.split('|').filter(b => b) || [];
@@ -688,17 +693,21 @@ function showViewer() {
     updateRangeDisplay('rating');
     
     // Initialize slider fills
-    updateSliderFill('price');
-    updateSliderFill('review');
-    updateSliderFill('rating');
+    setTimeout(() => {
+        updateSliderFill('price');
+        updateSliderFill('review');
+        updateSliderFill('rating');
+    }, 100);
     
     applyFilters();
     
     // Debug: Count ads
     const adCount = allListings.filter(l => l.Is_Ad).length;
-    console.log(`Total ads in data: ${adCount} out of ${allListings.length}`);
+    console.log(`🎯 AD DEBUG: ${adCount} ads out of ${allListings.length} total listings`);
+    if (adCount > 0) {
+        console.log('Sample ad:', allListings.find(l => l.Is_Ad));
+    }
 }
-
 
 function updateFilesDisplay() {
     if (uploadedFiles.length === 0) {

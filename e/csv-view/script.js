@@ -199,8 +199,21 @@ function updateSliderFill(type) {
         container = minSlider.parentElement;
     }
     
-    const min = parseFloat(minSlider.value);
-    const max = parseFloat(maxSlider.value);
+    let min = parseFloat(minSlider.value);
+    let max = parseFloat(maxSlider.value);
+    
+    // FIXED: Prevent sliders from crossing
+    if (min > max) {
+        if (event && event.target === minSlider) {
+            minSlider.value = max;
+            min = max;
+        } else {
+            maxSlider.value = min;
+            max = min;
+        }
+        updateRangeDisplay(type);
+    }
+    
     const sliderMin = parseFloat(minSlider.min);
     const sliderMax = parseFloat(minSlider.max);
     
@@ -484,6 +497,9 @@ function applySorting() {
             break;
         case 'rating-desc':
             filteredListings.sort((a, b) => b.Rating - a.Rating);
+            break;
+        case 'rating-asc':
+            filteredListings.sort((a, b) => a.Rating - b.Rating);
             break;
         default:
             // Keep default order

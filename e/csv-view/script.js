@@ -624,30 +624,26 @@ function createListingCard(listing) {
     const adBorderHTML = listing.Is_Ad ? '<div class="card-ad-indicator"></div>' : '';
     
     card.innerHTML = `
-        ${adBorderHTML}
-        <div class="card-image-wrapper">
-            <img src="${listing.Thumbnail || 'placeholder.jpg'}" alt="${listing.Title}" class="card-image" loading="lazy">
-            <div class="card-badges">${badges.join('')}</div>
-            <div class="file-info-icon">
-                <i class="fas fa-info"></i>
-                <div class="file-info-tooltip">${fileName}</div>
-            </div>
+    ${adBorderHTML}
+    <div class="card-image-wrapper">
+        <img src="${listing.Thumbnail || 'placeholder.jpg'}" alt="${listing.Title}" class="card-image" loading="lazy">
+        <div class="card-badges">${badges.join('')}</div>
+        <div class="file-info-icon">
+            <i class="fas fa-info"></i>
+            <div class="file-info-tooltip">${fileName}</div>
         </div>
-        <div class="card-content">
-            <div class="card-title">${listing.Title || 'No Title'}</div>
-            <div class="card-details">
-                <span class="card-price">$${listing.Price.toFixed(2)}</span>
-                <span class="card-rating">
-                    <i class="fas fa-star star-icon"></i>
-                    ${listing.Rating.toFixed(1)}
-                </span>
-            </div>
-            <div class="card-reviews">
-                <i class="fas fa-comment-dots"></i>
-                ${formatNumber(listing.Reviews)} reviews
-            </div>
+    </div>
+    <div class="card-content">
+        <div class="card-title">${listing.Title || 'No Title'}</div>
+        <div class="card-details">
+            <span class="card-price">$${listing.Price.toFixed(2)}</span>
+            <span class="card-rating">
+                <i class="fas fa-star star-icon"></i>
+                ${listing.Rating.toFixed(1)} <span class="review-count">(${formatNumber(listing.Reviews)})</span>
+            </span>
         </div>
-    `;
+    </div>
+`;
     
     return card;
 }

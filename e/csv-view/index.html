@@ -72,7 +72,8 @@
                     </div>
                 </div>
 
-                <div class="filters-grid">
+                <!-- TOP ROW: Search + Quick Filters + Sort -->
+                <div class="filters-top-row">
                     <!-- Search Box -->
                     <div class="filter-box">
                         <label class="filter-label">
@@ -82,7 +83,7 @@
                     </div>
 
                     <!-- Quick Filters -->
-                    <div class="filter-box" style="grid-column: span 2;">
+                    <div class="filter-box">
                         <label class="filter-label">Quick Filters</label>
                         <div class="checkbox-group-inline">
                             <label class="checkbox-label">
@@ -118,7 +119,10 @@
                             <option value="rating-desc">Rating: High → Low</option>
                         </select>
                     </div>
+                </div>
 
+                <!-- BOTTOM ROW: Sliders + Export -->
+                <div class="filters-bottom-row">
                     <!-- Price Range -->
                     <div class="filter-box">
                         <label class="filter-label">
@@ -131,7 +135,7 @@
                         </div>
                         <div class="dual-slider">
                             <input type="range" id="priceMinSlider" class="range-slider" min="0" max="1000" value="0" step="1">
-                            <input type="range" id="priceMaxSlider" class="range-slider" min="0" max="1000" value="1000" step="1">
+                            <input type="range" id="priceMaxSlider" class="range-slider range-slider-max" min="0" max="1000" value="1000" step="1">
                         </div>
                     </div>
 
@@ -147,7 +151,7 @@
                         </div>
                         <div class="dual-slider">
                             <input type="range" id="reviewMinSlider" class="range-slider" min="0" max="10000" value="0" step="10">
-                            <input type="range" id="reviewMaxSlider" class="range-slider" min="0" max="10000" value="10000" step="10">
+                            <input type="range" id="reviewMaxSlider" class="range-slider range-slider-max" min="0" max="10000" value="10000" step="10">
                         </div>
                     </div>
 
@@ -163,12 +167,13 @@
                         </div>
                         <div class="dual-slider">
                             <input type="range" id="ratingMinSlider" class="range-slider" min="0" max="50" value="0" step="1">
-                            <input type="range" id="ratingMaxSlider" class="range-slider" min="0" max="50" value="50" step="1">
+                            <input type="range" id="ratingMaxSlider" class="range-slider range-slider-max" min="0" max="50" value="50" step="1">
                         </div>
                     </div>
 
                     <!-- Export Button -->
                     <div class="filter-box">
+                        <label class="filter-label" style="opacity: 0;">Export</label>
                         <button class="btn-export" id="exportBtn">
                             <i class="fas fa-download"></i> Export Refined Results
                         </button>

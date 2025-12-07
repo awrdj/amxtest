@@ -306,7 +306,15 @@ function handleDrop(e) {
 async function processFiles(files) {
     for (const file of files) {
         const text = await file.text();
+        
+        console.log(`\n📁 Processing file: ${file.name}`);
+        const rawLineCount = text.trim().split('\n').length - 1; // -1 for header
+        console.log(`   Raw lines in file: ${rawLineCount}`);
+        
         const listings = parseCSV(text);
+        
+        console.log(`   ✅ Successfully parsed: ${listings.length} listings`);
+        console.log(`   ❌ Skipped/Invalid: ${rawLineCount - listings.length} rows`);
         
         uploadedFiles.push({
             name: file.name,
@@ -320,8 +328,15 @@ async function processFiles(files) {
         })));
     }
     
+    const totalBeforeDedup = allListings.length;
+    console.log(`\n📊 Total listings before deduplication: ${totalBeforeDedup}`);
+    
     // Deduplicate
     allListings = deduplicateListings(allListings);
+    
+    const duplicatesRemoved = totalBeforeDedup - allListings.length;
+    console.log(`🔄 Duplicates removed: ${duplicatesRemoved}`);
+    console.log(`✅ Final unique listings: ${allListings.length}\n`);
     
     // Save to localStorage
     saveToLocalStorage();
@@ -335,10 +350,24 @@ function parseCSV(text) {
     const lines = text.trim().split('\n');
     const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
     
+    console.log(`   📋 CSV Headers (${headers.length}):`, headers.join(', '));
+    
     const listings = [];
+    let skippedRows = [];
+    
     for (let i = 1; i < lines.length; i++) {
         const values = parseCSVLine(lines[i]);
-        if (values.length !== headers.length) continue;
+        
+        // IMPORTANT: Log rows with mismatched column counts
+        if (values.length !== headers.length) {
+            skippedRows.push({
+                line: i + 1,
+                expected: headers.length,
+                got: values.length,
+                preview: lines[i].substring(0, 100)
+            });
+            continue;
+        }
         
         const listing = {};
         headers.forEach((header, index) => {
@@ -350,18 +379,15 @@ function parseCSV(text) {
         listing.Reviews = parseInt(listing.Reviews || 0);
         listing.Rating = parseFloat(listing.Rating || 0);
         
-        // FIXED: Parse Is_Ad - check for "Yes" instead of "true"
+        // Parse Is_Ad
         const isAdValue = listing.Is_Ad;
         if (typeof isAdValue === 'boolean') {
             listing.Is_Ad = isAdValue;
         } else if (typeof isAdValue === 'string') {
-            // Check for "Yes", "YES", "yes", "True", "TRUE", "true"
             listing.Is_Ad = ['yes', 'true', '1'].includes(isAdValue.toLowerCase());
         } else {
             listing.Is_Ad = false;
         }
-        
-        console.log('Parsing:', listing.Title?.substring(0, 30), 'Is_Ad raw:', isAdValue, 'parsed:', listing.Is_Ad);
         
         // Parse badges
         const badges = listing.Badges?.split('|').filter(b => b) || [];
@@ -370,6 +396,18 @@ function parseCSV(text) {
         listing.hasEtsysPick = badges.includes("Etsy's Pick");
         
         listings.push(listing);
+    }
+    
+    // Log skipped rows details
+    if (skippedRows.length > 0) {
+        console.warn(`   ⚠️ Skipped ${skippedRows.length} malformed rows:`);
+        skippedRows.slice(0, 5).forEach(row => {
+            console.warn(`      Line ${row.line}: Expected ${row.expected} columns, got ${row.got}`);
+            console.warn(`      Preview: "${row.preview}..."`);
+        });
+        if (skippedRows.length > 5) {
+            console.warn(`      ... and ${skippedRows.length - 5} more`);
+        }
     }
     
     return listings;
@@ -399,14 +437,28 @@ function parseCSVLine(line) {
 
 function deduplicateListings(listings) {
     const seen = new Map();
+    let duplicateCount = 0;
+    let adReplacements = 0;
     
     // First pass: prefer non-ad listings
     listings.forEach(listing => {
         const url = listing.URL;
-        if (!seen.has(url) || (seen.get(url).Is_Ad && !listing.Is_Ad)) {
+        
+        if (!seen.has(url)) {
             seen.set(url, listing);
+        } else {
+            duplicateCount++;
+            const existing = seen.get(url);
+            // Replace ad with non-ad version
+            if (existing.Is_Ad && !listing.Is_Ad) {
+                seen.set(url, listing);
+                adReplacements++;
+            }
         }
     });
+    
+    console.log(`   🔗 Duplicate URLs found: ${duplicateCount}`);
+    console.log(`   🔄 Ads replaced with non-ads: ${adReplacements}`);
     
     return Array.from(seen.values());
 }

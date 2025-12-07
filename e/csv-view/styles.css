@@ -431,14 +431,14 @@ body {
     background: #141822;
 }
 
-/* FIXED: Quick Filters - All in ONE ROW */
+/* Quick Filters - 4 in one row */
 .checkbox-group-inline {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 8px;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 900px) {
     .checkbox-group-inline {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -472,7 +472,7 @@ body {
     accent-color: var(--primary-orange);
 }
 
-/* COMPLETELY FIXED SLIDERS WITH FILLED RANGE */
+/* FIXED SLIDERS */
 .range-display {
     display: flex;
     justify-content: space-between;
@@ -490,7 +490,6 @@ body {
     align-items: center;
 }
 
-/* The background track */
 .dual-slider::before {
     content: '';
     position: absolute;
@@ -504,7 +503,6 @@ body {
     z-index: 0;
 }
 
-/* The filled range (will be updated via JS) */
 .slider-range-fill {
     position: absolute;
     top: 50%;
@@ -514,6 +512,7 @@ body {
     transform: translateY(-50%);
     z-index: 1;
     pointer-events: none;
+    transition: all 0.1s ease;
 }
 
 .range-slider {
@@ -646,7 +645,6 @@ body {
     padding-right: 10px;
 }
 
-/* Custom Scrollbar */
 .brand-checkbox-grid::-webkit-scrollbar {
     width: 8px;
 }
@@ -688,7 +686,7 @@ body {
     accent-color: var(--primary-orange);
 }
 
-/* FIXED: Cards Container - PROPERLY 6 COLUMNS */
+/* FIXED: 6 Cards - Lowered breakpoint */
 .cards-container {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
@@ -696,20 +694,19 @@ body {
     margin-bottom: 30px;
 }
 
-/* Responsive grid - adjust these values as needed */
-@media (max-width: 1700px) {
+@media (max-width: 1550px) {
     .cards-container {
         grid-template-columns: repeat(5, 1fr);
     }
 }
 
-@media (max-width: 1400px) {
+@media (max-width: 1300px) {
     .cards-container {
         grid-template-columns: repeat(4, 1fr);
     }
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1000px) {
     .cards-container {
         grid-template-columns: repeat(3, 1fr);
     }
@@ -745,7 +742,6 @@ body {
     border-color: var(--primary-orange);
 }
 
-/* FIXED: More visible ad indicator */
 .card-ad-indicator {
     position: absolute;
     top: 0;
@@ -793,7 +789,6 @@ body {
     transform: scale(1.1);
 }
 
-/* Card Badges */
 .card-badges {
     position: absolute;
     top: 8px;
@@ -839,7 +834,6 @@ body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
-/* File Info Icon */
 .file-info-icon {
     position: absolute;
     top: 8px;
@@ -878,7 +872,6 @@ body {
     display: block;
 }
 
-/* Card Content */
 .card-content {
     padding: 12px;
 }
@@ -931,13 +924,11 @@ body {
     gap: 4px;
 }
 
-/* Load More */
 .load-more-container {
     text-align: center;
     margin: 40px 0;
 }
 
-/* Footer */
 .footer {
     background: var(--darker-bg);
     padding: 20px 0;

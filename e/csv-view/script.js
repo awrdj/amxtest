@@ -738,27 +738,38 @@ function showViewer() {
     elements.resultsCount.textContent = `${allListings.length} listings`;
     elements.lastUpdated.textContent = `Last updated: ${new Date().toLocaleString()}`;
     
-    // Initialize price/review/rating ranges
-    const maxPrice = Math.max(...allListings.map(l => l.Price), 1000);
-    const maxReviews = Math.max(...allListings.map(l => l.Reviews), 10000);
+    // FIXED: Get actual max values from data (no fallbacks)
+    const prices = allListings.map(l => l.Price).filter(p => p > 0);
+    const reviews = allListings.map(l => l.Reviews).filter(r => r > 0);
     
-    // UPDATED: Set both min and max slider attributes
+    const maxPrice = prices.length > 0 ? Math.max(...prices) : 100;
+    const maxReviews = reviews.length > 0 ? Math.max(...reviews) : 1000;
+    
+    // Round up to nice numbers for better UX
+    const roundedMaxPrice = Math.ceil(maxPrice);
+    const roundedMaxReviews = Math.ceil(maxReviews);
+    
+    console.log(`📊 Data Range - Price: $0-$${roundedMaxPrice}, Reviews: 0-${roundedMaxReviews}`);
+    
+    // Set Price Range sliders
     elements.priceMinSlider.setAttribute('min', '0');
-    elements.priceMinSlider.setAttribute('max', maxPrice);
+    elements.priceMinSlider.setAttribute('max', roundedMaxPrice);
     elements.priceMinSlider.value = 0;
     
     elements.priceMaxSlider.setAttribute('min', '0');
-    elements.priceMaxSlider.setAttribute('max', maxPrice);
-    elements.priceMaxSlider.value = maxPrice;
+    elements.priceMaxSlider.setAttribute('max', roundedMaxPrice);
+    elements.priceMaxSlider.value = roundedMaxPrice;
     
+    // Set Review Range sliders
     elements.reviewMinSlider.setAttribute('min', '0');
-    elements.reviewMinSlider.setAttribute('max', maxReviews);
+    elements.reviewMinSlider.setAttribute('max', roundedMaxReviews);
     elements.reviewMinSlider.value = 0;
     
     elements.reviewMaxSlider.setAttribute('min', '0');
-    elements.reviewMaxSlider.setAttribute('max', maxReviews);
-    elements.reviewMaxSlider.value = maxReviews;
+    elements.reviewMaxSlider.setAttribute('max', roundedMaxReviews);
+    elements.reviewMaxSlider.value = roundedMaxReviews;
     
+    // Set Rating Range sliders (always 0-5.0)
     elements.ratingMinSlider.setAttribute('min', '0');
     elements.ratingMinSlider.setAttribute('max', '50');
     elements.ratingMinSlider.value = 0;

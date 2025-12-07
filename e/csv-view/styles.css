@@ -919,6 +919,12 @@ body {
     color: var(--text-secondary);
 }
 
+.review-count {
+    color: var(--text-secondary);
+    opacity: 0.8;
+    font-size: 12px;
+}
+
 .star-icon {
     color: #ffd700;
     font-size: 12px;

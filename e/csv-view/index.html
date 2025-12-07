@@ -82,7 +82,7 @@
                     </div>
 
                     <!-- Quick Filters -->
-                    <div class="filter-box">
+                    <div class="filter-box" style="grid-column: span 2;">
                         <label class="filter-label">Quick Filters</label>
                         <div class="checkbox-group-inline">
                             <label class="checkbox-label">
@@ -104,6 +104,21 @@
                         </div>
                     </div>
 
+                    <!-- Sort Options -->
+                    <div class="filter-box">
+                        <label class="filter-label">
+                            <i class="fas fa-sort"></i> Sort By
+                        </label>
+                        <select id="sortSelect" class="filter-select">
+                            <option value="default">Default Order</option>
+                            <option value="price-asc">Price: Low → High</option>
+                            <option value="price-desc">Price: High → Low</option>
+                            <option value="reviews-desc">Reviews: High → Low</option>
+                            <option value="reviews-asc">Reviews: Low → High</option>
+                            <option value="rating-desc">Rating: High → Low</option>
+                        </select>
+                    </div>
+
                     <!-- Price Range -->
                     <div class="filter-box">
                         <label class="filter-label">
@@ -123,7 +138,7 @@
                     <!-- Review Count Range -->
                     <div class="filter-box">
                         <label class="filter-label">
-                            <i class="fas fa-star"></i> Review Count Range
+                            <i class="fas fa-comment-dots"></i> Review Count Range
                         </label>
                         <div class="range-display">
                             <span id="reviewMin">0</span>
@@ -136,19 +151,20 @@
                         </div>
                     </div>
 
-                    <!-- Sort Options -->
+                    <!-- Rating Range -->
                     <div class="filter-box">
                         <label class="filter-label">
-                            <i class="fas fa-sort"></i> Sort By
+                            <i class="fas fa-star"></i> Rating Range
                         </label>
-                        <select id="sortSelect" class="filter-select">
-                            <option value="default">Default Order</option>
-                            <option value="price-asc">Price: Low → High</option>
-                            <option value="price-desc">Price: High → Low</option>
-                            <option value="reviews-desc">Reviews: High → Low</option>
-                            <option value="reviews-asc">Reviews: Low → High</option>
-                            <option value="rating-desc">Rating: High → Low</option>
-                        </select>
+                        <div class="range-display">
+                            <span id="ratingMin">0.0</span>
+                            <span>-</span>
+                            <span id="ratingMax">5.0</span>
+                        </div>
+                        <div class="dual-slider">
+                            <input type="range" id="ratingMinSlider" class="range-slider" min="0" max="50" value="0" step="1">
+                            <input type="range" id="ratingMaxSlider" class="range-slider" min="0" max="50" value="50" step="1">
+                        </div>
                     </div>
 
                     <!-- Export Button -->

@@ -488,6 +488,8 @@ body {
     height: 30px;
     display: flex;
     align-items: center;
+    overflow: hidden; /* ADD THIS LINE */
+    width: 100%; /* ADD THIS LINE */
 }
 
 .dual-slider::before {

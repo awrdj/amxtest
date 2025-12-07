@@ -229,14 +229,17 @@ function updateSliderFill(type) {
         container = minSlider.parentElement;
     }
     
-    const min = parseFloat(minSlider.value);
-    const max = parseFloat(maxSlider.value);
-    const sliderMin = parseFloat(minSlider.min);
-    const sliderMax = parseFloat(minSlider.max);
+    // Get actual values from sliders
+    const minValue = parseFloat(minSlider.value);
+    const maxValue = parseFloat(maxSlider.value);
     
-    // Calculate percentages
-    const minPercent = ((min - sliderMin) / (sliderMax - sliderMin)) * 100;
-    const maxPercent = ((max - sliderMin) / (sliderMax - sliderMin)) * 100;
+    // Get the slider's actual min/max attributes (these can be dynamic)
+    const sliderMin = parseFloat(minSlider.getAttribute('min'));
+    const sliderMax = parseFloat(minSlider.getAttribute('max'));
+    
+    // Calculate percentages based on actual range
+    const minPercent = ((minValue - sliderMin) / (sliderMax - sliderMin)) * 100;
+    const maxPercent = ((maxValue - sliderMin) / (sliderMax - sliderMin)) * 100;
     
     // Find or create fill element
     let fill = container.querySelector('.slider-range-fill');
@@ -246,14 +249,10 @@ function updateSliderFill(type) {
         container.appendChild(fill);
     }
     
-    // CLAMP to prevent overflow
-    const clampedLeft = Math.max(0, Math.min(100, minPercent));
-    const clampedWidth = Math.max(0, Math.min(100 - clampedLeft, maxPercent - minPercent));
-    
-    fill.style.left = clampedLeft + '%';
-    fill.style.width = clampedWidth + '%';
+    // Apply with safety clamps to prevent any overflow
+    fill.style.left = Math.max(0, Math.min(100, minPercent)) + '%';
+    fill.style.width = Math.max(0, Math.min(100, maxPercent - minPercent)) + '%';
 }
-
 
 // ==========================================
 // File Upload & Parsing

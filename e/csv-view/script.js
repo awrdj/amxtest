@@ -833,13 +833,33 @@ function updateRangeDisplay(type) {
     if (type === 'price') {
         const min = parseFloat(elements.priceMinSlider.value);
         const max = parseFloat(elements.priceMaxSlider.value);
-        elements.priceMin.textContent = `$${min}`;
-        elements.priceMax.textContent = max >= 1000 ? '$1K+' : `$${max}`;
+        const sliderMax = parseFloat(elements.priceMaxSlider.getAttribute('max'));
+        
+        // Format min value
+        elements.priceMin.textContent = min === 0 ? '$0' : `$${formatPrice(min)}`;
+        
+        // Format max value - show actual max if at the end
+        if (max >= sliderMax) {
+            elements.priceMax.textContent = `$${formatPrice(sliderMax)}`;
+        } else {
+            elements.priceMax.textContent = `$${formatPrice(max)}`;
+        }
+        
     } else if (type === 'review') {
         const min = parseInt(elements.reviewMinSlider.value);
         const max = parseInt(elements.reviewMaxSlider.value);
-        elements.reviewMin.textContent = formatNumber(min);
-        elements.reviewMax.textContent = max >= 10000 ? '10K+' : formatNumber(max);
+        const sliderMax = parseInt(elements.reviewMaxSlider.getAttribute('max'));
+        
+        // Format min value
+        elements.reviewMin.textContent = min === 0 ? '0' : formatNumber(min);
+        
+        // Format max value - show actual max if at the end
+        if (max >= sliderMax) {
+            elements.reviewMax.textContent = formatNumber(sliderMax);
+        } else {
+            elements.reviewMax.textContent = formatNumber(max);
+        }
+        
     } else if (type === 'rating') {
         const min = (parseFloat(elements.ratingMinSlider.value) / 10).toFixed(1);
         const max = (parseFloat(elements.ratingMaxSlider.value) / 10).toFixed(1);
@@ -913,6 +933,10 @@ function clearCache() {
 // Utility Functions
 // ==========================================
 
+// ==========================================
+// Utility Functions
+// ==========================================
+
 function debounce(func, delay) {
     let timeout;
     return function(...args) {
@@ -922,10 +946,21 @@ function debounce(func, delay) {
 }
 
 function formatNumber(num) {
+    if (num >= 1000000) {
+        return (num / 1000000).toFixed(1) + 'M';
+    }
     if (num >= 1000) {
         return (num / 1000).toFixed(1) + 'K';
     }
     return num.toString();
+}
+
+// NEW: Format price with K suffix for thousands
+function formatPrice(price) {
+    if (price >= 1000) {
+        return (price / 1000).toFixed(1) + 'K';
+    }
+    return price.toFixed(0);
 }
 
 function escapeCSV(str) {

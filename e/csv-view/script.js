@@ -229,17 +229,22 @@ function updateSliderFill(type) {
         container = minSlider.parentElement;
     }
     
-    // Get actual values from sliders
+    // Get current values
     const minValue = parseFloat(minSlider.value);
     const maxValue = parseFloat(maxSlider.value);
     
-    // Get the slider's actual min/max attributes (these can be dynamic)
-    const sliderMin = parseFloat(minSlider.getAttribute('min'));
-    const sliderMax = parseFloat(minSlider.getAttribute('max'));
+    // Get range from attributes (dynamically set)
+    const rangeMin = parseFloat(minSlider.getAttribute('min'));
+    const rangeMax = parseFloat(minSlider.getAttribute('max'));
     
-    // Calculate percentages based on actual range
-    const minPercent = ((minValue - sliderMin) / (sliderMax - sliderMin)) * 100;
-    const maxPercent = ((maxValue - sliderMin) / (sliderMax - sliderMin)) * 100;
+    // Prevent division by zero
+    if (rangeMax === rangeMin) {
+        return;
+    }
+    
+    // Calculate percentages
+    const minPercent = ((minValue - rangeMin) / (rangeMax - rangeMin)) * 100;
+    const maxPercent = ((maxValue - rangeMin) / (rangeMax - rangeMin)) * 100;
     
     // Find or create fill element
     let fill = container.querySelector('.slider-range-fill');
@@ -249,9 +254,26 @@ function updateSliderFill(type) {
         container.appendChild(fill);
     }
     
-    // Apply with safety clamps to prevent any overflow
-    fill.style.left = Math.max(0, Math.min(100, minPercent)) + '%';
-    fill.style.width = Math.max(0, Math.min(100, maxPercent - minPercent)) + '%';
+    // Clamp values between 0-100 to prevent overflow
+    const safeLeft = Math.max(0, Math.min(100, minPercent));
+    const safeWidth = Math.max(0, Math.min(100 - safeLeft, maxPercent - minPercent));
+    
+    fill.style.left = safeLeft + '%';
+    fill.style.width = safeWidth + '%';
+    
+    // Debug logging (remove after testing)
+    if (type === 'review') {
+        console.log(`Review Fill Debug:`, {
+            minValue,
+            maxValue,
+            rangeMin,
+            rangeMax,
+            minPercent: minPercent.toFixed(2),
+            maxPercent: maxPercent.toFixed(2),
+            safeLeft: safeLeft.toFixed(2),
+            safeWidth: safeWidth.toFixed(2)
+        });
+    }
 }
 
 // ==========================================

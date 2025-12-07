@@ -696,30 +696,36 @@ body {
 
 @media (max-width: 1550px) {
     .cards-container {
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(6, 1fr);
     }
 }
 
 @media (max-width: 1300px) {
     .cards-container {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(5, 1fr);
     }
 }
 
 @media (max-width: 1000px) {
     .cards-container {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
     }
 }
 
 @media (max-width: 768px) {
     .cards-container {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 12px;
     }
 }
 
 @media (max-width: 480px) {
+    .cards-container {
+        grid-template-columns: repeat(2, 1fr);;
+    }
+}
+
+@media (max-width: 300px) {
     .cards-container {
         grid-template-columns: 1fr;
     }

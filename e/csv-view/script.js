@@ -720,10 +720,29 @@ function showViewer() {
     const maxPrice = Math.max(...allListings.map(l => l.Price), 1000);
     const maxReviews = Math.max(...allListings.map(l => l.Reviews), 10000);
     
-    elements.priceMaxSlider.max = maxPrice;
+    // UPDATED: Set both min and max slider attributes
+    elements.priceMinSlider.setAttribute('min', '0');
+    elements.priceMinSlider.setAttribute('max', maxPrice);
+    elements.priceMinSlider.value = 0;
+    
+    elements.priceMaxSlider.setAttribute('min', '0');
+    elements.priceMaxSlider.setAttribute('max', maxPrice);
     elements.priceMaxSlider.value = maxPrice;
-    elements.reviewMaxSlider.max = maxReviews;
+    
+    elements.reviewMinSlider.setAttribute('min', '0');
+    elements.reviewMinSlider.setAttribute('max', maxReviews);
+    elements.reviewMinSlider.value = 0;
+    
+    elements.reviewMaxSlider.setAttribute('min', '0');
+    elements.reviewMaxSlider.setAttribute('max', maxReviews);
     elements.reviewMaxSlider.value = maxReviews;
+    
+    elements.ratingMinSlider.setAttribute('min', '0');
+    elements.ratingMinSlider.setAttribute('max', '50');
+    elements.ratingMinSlider.value = 0;
+    
+    elements.ratingMaxSlider.setAttribute('min', '0');
+    elements.ratingMaxSlider.setAttribute('max', '50');
     elements.ratingMaxSlider.value = 50;
     
     updateRangeDisplay('price');
@@ -740,10 +759,10 @@ function showViewer() {
     applyFilters();
     
     // Debug: Count ads
-    const adCount = allListings.filter(l => l.Is_Ad).length;
+    const adCount = allListings.filter(l => l.IsAd).length;
     console.log(`🎯 AD DEBUG: ${adCount} ads out of ${allListings.length} total listings`);
     if (adCount > 0) {
-        console.log('Sample ad:', allListings.find(l => l.Is_Ad));
+        console.log('Sample ad:', allListings.find(l => l.IsAd));
     }
 }
 

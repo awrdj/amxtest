@@ -74,6 +74,10 @@ const elements = {
     reviewMaxSlider: document.getElementById('reviewMaxSlider'),
     reviewMin: document.getElementById('reviewMin'),
     reviewMax: document.getElementById('reviewMax'),
+    ratingMinSlider: document.getElementById('ratingMinSlider'),
+    ratingMaxSlider: document.getElementById('ratingMaxSlider'),
+    ratingMin: document.getElementById('ratingMin'),
+    ratingMax: document.getElementById('ratingMax'),
     clearFiltersBtn: document.getElementById('clearFiltersBtn'),
     addMoreBtn: document.getElementById('addMoreBtn'),
     clearCacheBtn: document.getElementById('clearCacheBtn'),
@@ -145,6 +149,16 @@ function setupEventListeners() {
     });
     elements.reviewMaxSlider.addEventListener('input', () => {
         updateRangeDisplay('review');
+        applyFilters();
+    });
+    
+    // Rating Range Sliders
+    elements.ratingMinSlider.addEventListener('input', () => {
+        updateRangeDisplay('rating');
+        applyFilters();
+    });
+    elements.ratingMaxSlider.addEventListener('input', () => {
+        updateRangeDisplay('rating');
         applyFilters();
     });
     
@@ -330,6 +344,8 @@ function applyFilters() {
     const priceMax = parseFloat(elements.priceMaxSlider.value);
     const reviewMin = parseInt(elements.reviewMinSlider.value);
     const reviewMax = parseInt(elements.reviewMaxSlider.value);
+    const ratingMin = parseFloat(elements.ratingMinSlider.value) / 10;  // Convert 0-50 to 0-5.0
+    const ratingMax = parseFloat(elements.ratingMaxSlider.value) / 10;
     
     const excludedBrands = getExcludedBrands();
     
@@ -356,6 +372,11 @@ function applyFilters() {
         
         // Review Range
         if (listing.Reviews < reviewMin || listing.Reviews > reviewMax) {
+            return false;
+        }
+        
+        // Rating Range
+        if (listing.Rating < ratingMin || listing.Rating > ratingMax) {
             return false;
         }
         
@@ -419,9 +440,12 @@ function clearAllFilters() {
     elements.priceMaxSlider.value = 1000;
     elements.reviewMinSlider.value = 0;
     elements.reviewMaxSlider.value = 10000;
+    elements.ratingMinSlider.value = 0;
+    elements.ratingMaxSlider.value = 50;
     
     updateRangeDisplay('price');
     updateRangeDisplay('review');
+    updateRangeDisplay('rating');
     
     clearAllBrands();
     
@@ -461,7 +485,7 @@ function createListingCard(listing) {
     
     // Badges
     const badges = [];
-    if (listing.Is_Ad) badges.push('<span class="badge badge-ad">AD</span>');
+    if (listing.Is_Ad) badges.push('<span class="badge badge-ad">SPONSORED</span>');
     if (listing.hasBestseller) badges.push('<span class="badge badge-bestseller">Bestseller</span>');
     if (listing.hasPopular) badges.push('<span class="badge badge-popular">Popular</span>');
     if (listing.hasEtsysPick) badges.push('<span class="badge badge-etsyspick">Etsy\'s Pick</span>');
@@ -470,7 +494,11 @@ function createListingCard(listing) {
     const fileInfo = uploadedFiles[listing.fileIndex - 1];
     const fileName = fileInfo ? fileInfo.name : 'Unknown';
     
+    // Ad border indicator
+    const adBorderHTML = listing.Is_Ad ? '<div class="card-ad-indicator"></div>' : '';
+    
     card.innerHTML = `
+        ${adBorderHTML}
         <div class="card-image-wrapper">
             <img src="${listing.Thumbnail || 'placeholder.jpg'}" alt="${listing.Title}" class="card-image" loading="lazy">
             <div class="card-badges">${badges.join('')}</div>
@@ -531,6 +559,12 @@ function exportRefinedResults() {
         filterSummary += `_reviews${reviewMin}-${reviewMax}`;
     }
     
+    const ratingMin = (parseFloat(elements.ratingMinSlider.value) / 10).toFixed(1);
+    const ratingMax = (parseFloat(elements.ratingMaxSlider.value) / 10).toFixed(1);
+    if (ratingMin > 0 || ratingMax < 5.0) {
+        filterSummary += `_rating${ratingMin}-${ratingMax}`;
+    }
+    
     // Truncate to reasonable length
     if (filterSummary.length > 50) {
         filterSummary = filterSummary.substring(0, 50);
@@ -578,7 +612,7 @@ function showViewer() {
     elements.resultsCount.textContent = `${allListings.length} listings`;
     elements.lastUpdated.textContent = `Last updated: ${new Date().toLocaleString()}`;
     
-    // Initialize price/review ranges
+    // Initialize price/review/rating ranges
     const maxPrice = Math.max(...allListings.map(l => l.Price), 1000);
     const maxReviews = Math.max(...allListings.map(l => l.Reviews), 10000);
     
@@ -586,9 +620,11 @@ function showViewer() {
     elements.priceMaxSlider.value = maxPrice;
     elements.reviewMaxSlider.max = maxReviews;
     elements.reviewMaxSlider.value = maxReviews;
+    elements.ratingMaxSlider.value = 50; // 5.0 stars
     
     updateRangeDisplay('price');
     updateRangeDisplay('review');
+    updateRangeDisplay('rating');
     
     applyFilters();
 }
@@ -645,6 +681,11 @@ function updateRangeDisplay(type) {
         const max = parseInt(elements.reviewMaxSlider.value);
         elements.reviewMin.textContent = formatNumber(min);
         elements.reviewMax.textContent = max >= 10000 ? '10K+' : formatNumber(max);
+    } else if (type === 'rating') {
+        const min = (parseFloat(elements.ratingMinSlider.value) / 10).toFixed(1);
+        const max = (parseFloat(elements.ratingMaxSlider.value) / 10).toFixed(1);
+        elements.ratingMin.textContent = min;
+        elements.ratingMax.textContent = max;
     }
 }
 

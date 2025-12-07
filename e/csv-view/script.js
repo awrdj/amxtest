@@ -133,7 +133,7 @@ function setupEventListeners() {
     elements.filterEtsysPick.addEventListener('change', applyFilters);
 
     // Price Range Sliders
-elements.priceMinSlider.addEventListener('input', () => {
+elements.priceMinSlider.addEventListener('input', (e) => {
     let min = parseFloat(elements.priceMinSlider.value);
     let max = parseFloat(elements.priceMaxSlider.value);
     if (min >= max - 1) {
@@ -141,9 +141,8 @@ elements.priceMinSlider.addEventListener('input', () => {
     }
     updateRangeDisplay('price');
     updateSliderFill('price');
-    debounce(applyFilters, 100)();
 });
-elements.priceMaxSlider.addEventListener('input', () => {
+elements.priceMaxSlider.addEventListener('input', (e) => {
     let min = parseFloat(elements.priceMinSlider.value);
     let max = parseFloat(elements.priceMaxSlider.value);
     if (max <= min + 1) {
@@ -151,11 +150,14 @@ elements.priceMaxSlider.addEventListener('input', () => {
     }
     updateRangeDisplay('price');
     updateSliderFill('price');
-    debounce(applyFilters, 100)();
 });
 
+// Apply filters with debounce on change (when user releases slider)
+elements.priceMinSlider.addEventListener('change', () => applyFilters());
+elements.priceMaxSlider.addEventListener('change', () => applyFilters());
+
 // Review Range Sliders
-elements.reviewMinSlider.addEventListener('input', () => {
+elements.reviewMinSlider.addEventListener('input', (e) => {
     let min = parseInt(elements.reviewMinSlider.value);
     let max = parseInt(elements.reviewMaxSlider.value);
     if (min >= max - 10) {
@@ -163,9 +165,8 @@ elements.reviewMinSlider.addEventListener('input', () => {
     }
     updateRangeDisplay('review');
     updateSliderFill('review');
-    debounce(applyFilters, 100)();
 });
-elements.reviewMaxSlider.addEventListener('input', () => {
+elements.reviewMaxSlider.addEventListener('input', (e) => {
     let min = parseInt(elements.reviewMinSlider.value);
     let max = parseInt(elements.reviewMaxSlider.value);
     if (max <= min + 10) {
@@ -173,11 +174,13 @@ elements.reviewMaxSlider.addEventListener('input', () => {
     }
     updateRangeDisplay('review');
     updateSliderFill('review');
-    debounce(applyFilters, 100)();
 });
 
+elements.reviewMinSlider.addEventListener('change', () => applyFilters());
+elements.reviewMaxSlider.addEventListener('change', () => applyFilters());
+
 // Rating Range Sliders
-elements.ratingMinSlider.addEventListener('input', () => {
+elements.ratingMinSlider.addEventListener('input', (e) => {
     let min = parseInt(elements.ratingMinSlider.value);
     let max = parseInt(elements.ratingMaxSlider.value);
     if (min >= max - 1) {
@@ -185,9 +188,8 @@ elements.ratingMinSlider.addEventListener('input', () => {
     }
     updateRangeDisplay('rating');
     updateSliderFill('rating');
-    debounce(applyFilters, 100)();
 });
-elements.ratingMaxSlider.addEventListener('input', () => {
+elements.ratingMaxSlider.addEventListener('input', (e) => {
     let min = parseInt(elements.ratingMinSlider.value);
     let max = parseInt(elements.ratingMaxSlider.value);
     if (max <= min + 1) {
@@ -195,9 +197,10 @@ elements.ratingMaxSlider.addEventListener('input', () => {
     }
     updateRangeDisplay('rating');
     updateSliderFill('rating');
-    debounce(applyFilters, 100)();
 });
 
+elements.ratingMinSlider.addEventListener('change', () => applyFilters());
+elements.ratingMaxSlider.addEventListener('change', () => applyFilters());
     
     // Brand Filter Collapsible
     elements.brandFilterToggle.addEventListener('click', toggleBrandFilter);

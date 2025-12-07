@@ -436,31 +436,68 @@ function parseCSVLine(line) {
 }
 
 function deduplicateListings(listings) {
-    const seen = new Map();
-    let duplicateCount = 0;
-    let adReplacements = 0;
+    const urlGroups = new Map();
     
-    // First pass: prefer non-ad listings
+    // Group all listings by URL
     listings.forEach(listing => {
         const url = listing.URL;
+        if (!url || url.trim() === '') return;
         
-        if (!seen.has(url)) {
-            seen.set(url, listing);
-        } else {
-            duplicateCount++;
-            const existing = seen.get(url);
-            // Replace ad with non-ad version
-            if (existing.Is_Ad && !listing.Is_Ad) {
-                seen.set(url, listing);
-                adReplacements++;
-            }
+        if (!urlGroups.has(url)) {
+            urlGroups.set(url, []);
+        }
+        urlGroups.get(url).push(listing);
+    });
+    
+    const deduplicated = [];
+    let totalDuplicates = 0;
+    let keptBothVersions = 0;
+    
+    // Process each URL group
+    urlGroups.forEach((group, url) => {
+        if (group.length === 1) {
+            // No duplicates for this URL
+            deduplicated.push(group[0]);
+            return;
+        }
+        
+        totalDuplicates += (group.length - 1);
+        
+        // Separate ads and non-ads
+        const ads = group.filter(l => l.Is_Ad);
+        const nonAds = group.filter(l => !l.Is_Ad);
+        
+        // Keep the non-ad with smallest Page_Origin
+        if (nonAds.length > 0) {
+            const bestNonAd = nonAds.reduce((best, current) => {
+                const bestPage = parseInt(best.Page_Origin) || 999999;
+                const currentPage = parseInt(current.Page_Origin) || 999999;
+                return currentPage < bestPage ? current : best;
+            });
+            deduplicated.push(bestNonAd);
+        }
+        
+        // Keep the ad with smallest Page_Origin
+        if (ads.length > 0) {
+            const bestAd = ads.reduce((best, current) => {
+                const bestPage = parseInt(best.Page_Origin) || 999999;
+                const currentPage = parseInt(current.Page_Origin) || 999999;
+                return currentPage < bestPage ? current : best;
+            });
+            deduplicated.push(bestAd);
+        }
+        
+        // Track when we kept both versions
+        if (ads.length > 0 && nonAds.length > 0) {
+            keptBothVersions++;
         }
     });
     
-    console.log(`   🔗 Duplicate URLs found: ${duplicateCount}`);
-    console.log(`   🔄 Ads replaced with non-ads: ${adReplacements}`);
+    console.log(`   🔗 Total duplicate URLs: ${urlGroups.size - deduplicated.length + totalDuplicates}`);
+    console.log(`   📊 Kept both ad & non-ad versions: ${keptBothVersions}`);
+    console.log(`   ✅ Final deduplicated count: ${deduplicated.length}`);
     
-    return Array.from(seen.values());
+    return deduplicated;
 }
 
 // ==========================================
@@ -658,9 +695,6 @@ function createListingCard(listing) {
     card.className = 'listing-card';
     card.onclick = () => window.open(listing.URL, '_blank');
     
-    // Debug log
-    console.log('Creating card:', listing.Title, 'Is_Ad:', listing.Is_Ad);
-    
     // Badges
     const badges = [];
     if (listing.Is_Ad) badges.push('<span class="badge badge-ad">SPONSORED</span>');
@@ -672,30 +706,34 @@ function createListingCard(listing) {
     const fileInfo = uploadedFiles[listing.fileIndex - 1];
     const fileName = fileInfo ? fileInfo.name : 'Unknown';
     
+    // Page origin badge
+    const pageOrigin = listing.Page_Origin || '?';
+    
     // Ad border indicator
     const adBorderHTML = listing.Is_Ad ? '<div class="card-ad-indicator"></div>' : '';
     
     card.innerHTML = `
-    ${adBorderHTML}
-    <div class="card-image-wrapper">
-        <img src="${listing.Thumbnail || 'placeholder.jpg'}" alt="${listing.Title}" class="card-image" loading="lazy">
-        <div class="card-badges">${badges.join('')}</div>
-        <div class="file-info-icon">
-            <i class="fas fa-info"></i>
-            <div class="file-info-tooltip">${fileName}</div>
+        ${adBorderHTML}
+        <div class="card-image-wrapper">
+            <img src="${listing.Thumbnail || 'placeholder.jpg'}" alt="${listing.Title}" class="card-image" loading="lazy">
+            <div class="card-badges">${badges.join('')}</div>
+            <div class="file-info-icon">
+                <i class="fas fa-info"></i>
+                <div class="file-info-tooltip">${fileName}</div>
+            </div>
+            <div class="page-origin-badge">p. ${pageOrigin}</div>
         </div>
-    </div>
-    <div class="card-content">
-        <div class="card-title">${listing.Title || 'No Title'}</div>
-        <div class="card-details">
-            <span class="card-price">$${listing.Price.toFixed(2)}</span>
-            <span class="card-rating">
-                <i class="fas fa-star star-icon"></i>
-                ${listing.Rating.toFixed(1)} <span class="review-count">(${formatNumber(listing.Reviews)})</span>
-            </span>
+        <div class="card-content">
+            <div class="card-title">${listing.Title || 'No Title'}</div>
+            <div class="card-details">
+                <span class="card-price">$${listing.Price.toFixed(2)}</span>
+                <span class="card-rating">
+                    <i class="fas fa-star star-icon"></i>
+                    ${listing.Rating.toFixed(1)} <span class="review-count">(${formatNumber(listing.Reviews)})</span>
+                </span>
+            </div>
         </div>
-    </div>
-`;
+    `;
     
     return card;
 }

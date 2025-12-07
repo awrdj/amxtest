@@ -133,50 +133,77 @@ function setupEventListeners() {
     elements.filterEtsysPick.addEventListener('change', applyFilters);
 
     // Price Range Sliders
-    elements.priceMinSlider.addEventListener('input', () => {
-        updateRangeDisplay('price');
-        updateSliderFill('price');
-        debounce(applyFilters, 100)();
-    });
-    elements.priceMaxSlider.addEventListener('input', () => {
-        updateRangeDisplay('price');
-        updateSliderFill('price');
-        debounce(applyFilters, 100)();
-    });
-    
-    // Review Range Sliders
-    elements.reviewMinSlider.addEventListener('input', () => {
-        updateRangeDisplay('review');
-        updateSliderFill('review');
-        debounce(applyFilters, 100)();
-    });
-    elements.reviewMaxSlider.addEventListener('input', () => {
-        updateRangeDisplay('review');
-        updateSliderFill('review');
-        debounce(applyFilters, 100)();
-    });
-    
-    // Rating Range Sliders
-    elements.ratingMinSlider.addEventListener('input', () => {
-        updateRangeDisplay('rating');
-        updateSliderFill('rating');
-        debounce(applyFilters, 100)();
-    });
-    elements.ratingMaxSlider.addEventListener('input', () => {
-        updateRangeDisplay('rating');
-        updateSliderFill('rating');
-        debounce(applyFilters, 100)();
-    });
+elements.priceMinSlider.addEventListener('input', () => {
+    let min = parseFloat(elements.priceMinSlider.value);
+    let max = parseFloat(elements.priceMaxSlider.value);
+    if (min >= max - 1) {
+        elements.priceMinSlider.value = max - 1;
+    }
+    updateRangeDisplay('price');
+    updateSliderFill('price');
+    debounce(applyFilters, 100)();
+});
+elements.priceMaxSlider.addEventListener('input', () => {
+    let min = parseFloat(elements.priceMinSlider.value);
+    let max = parseFloat(elements.priceMaxSlider.value);
+    if (max <= min + 1) {
+        elements.priceMaxSlider.value = min + 1;
+    }
+    updateRangeDisplay('price');
+    updateSliderFill('price');
+    debounce(applyFilters, 100)();
+});
+
+// Review Range Sliders
+elements.reviewMinSlider.addEventListener('input', () => {
+    let min = parseInt(elements.reviewMinSlider.value);
+    let max = parseInt(elements.reviewMaxSlider.value);
+    if (min >= max - 10) {
+        elements.reviewMinSlider.value = max - 10;
+    }
+    updateRangeDisplay('review');
+    updateSliderFill('review');
+    debounce(applyFilters, 100)();
+});
+elements.reviewMaxSlider.addEventListener('input', () => {
+    let min = parseInt(elements.reviewMinSlider.value);
+    let max = parseInt(elements.reviewMaxSlider.value);
+    if (max <= min + 10) {
+        elements.reviewMaxSlider.value = min + 10;
+    }
+    updateRangeDisplay('review');
+    updateSliderFill('review');
+    debounce(applyFilters, 100)();
+});
+
+// Rating Range Sliders
+elements.ratingMinSlider.addEventListener('input', () => {
+    let min = parseInt(elements.ratingMinSlider.value);
+    let max = parseInt(elements.ratingMaxSlider.value);
+    if (min >= max - 1) {
+        elements.ratingMinSlider.value = max - 1;
+    }
+    updateRangeDisplay('rating');
+    updateSliderFill('rating');
+    debounce(applyFilters, 100)();
+});
+elements.ratingMaxSlider.addEventListener('input', () => {
+    let min = parseInt(elements.ratingMinSlider.value);
+    let max = parseInt(elements.ratingMaxSlider.value);
+    if (max <= min + 1) {
+        elements.ratingMaxSlider.value = min + 1;
+    }
+    updateRangeDisplay('rating');
+    updateSliderFill('rating');
+    debounce(applyFilters, 100)();
+});
+
     
     // Brand Filter Collapsible
     elements.brandFilterToggle.addEventListener('click', toggleBrandFilter);
     elements.selectAllBrands.addEventListener('click', selectAllBrands);
     elements.clearAllBrands.addEventListener('click', clearAllBrands);
 }
-
-// ==========================================
-// Slider Range Fill Update
-// ==========================================
 
 // ==========================================
 // Slider Range Fill Update
@@ -201,21 +228,17 @@ function updateSliderFill(type) {
     
     let min = parseFloat(minSlider.value);
     let max = parseFloat(maxSlider.value);
-    
-    // FIXED: Prevent sliders from crossing
-    if (min > max) {
-        if (event && event.target === minSlider) {
-            minSlider.value = max;
-            min = max;
-        } else {
-            maxSlider.value = min;
-            max = min;
-        }
-        updateRangeDisplay(type);
-    }
-    
     const sliderMin = parseFloat(minSlider.min);
     const sliderMax = parseFloat(minSlider.max);
+    
+    // CRITICAL FIX: Prevent sliders from crossing
+    if (min >= max) {
+        // Add small gap between sliders
+        const gap = type === 'rating' ? 1 : (type === 'review' ? 10 : 1);
+        min = max - gap;
+        minSlider.value = min;
+        updateRangeDisplay(type);
+    }
     
     const minPercent = ((min - sliderMin) / (sliderMax - sliderMin)) * 100;
     const maxPercent = ((max - sliderMin) / (sliderMax - sliderMin)) * 100;

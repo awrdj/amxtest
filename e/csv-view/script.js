@@ -229,20 +229,12 @@ function updateSliderFill(type) {
         container = minSlider.parentElement;
     }
     
-    let min = parseFloat(minSlider.value);
-    let max = parseFloat(maxSlider.value);
+    const min = parseFloat(minSlider.value);
+    const max = parseFloat(maxSlider.value);
     const sliderMin = parseFloat(minSlider.min);
     const sliderMax = parseFloat(minSlider.max);
     
-    // CRITICAL FIX: Prevent sliders from crossing
-    if (min >= max) {
-        // Add small gap between sliders
-        const gap = type === 'rating' ? 1 : (type === 'review' ? 10 : 1);
-        min = max - gap;
-        minSlider.value = min;
-        updateRangeDisplay(type);
-    }
-    
+    // Calculate percentages
     const minPercent = ((min - sliderMin) / (sliderMax - sliderMin)) * 100;
     const maxPercent = ((max - sliderMin) / (sliderMax - sliderMin)) * 100;
     
@@ -254,6 +246,7 @@ function updateSliderFill(type) {
         container.appendChild(fill);
     }
     
+    // Set position and width
     fill.style.left = minPercent + '%';
     fill.style.width = (maxPercent - minPercent) + '%';
 }

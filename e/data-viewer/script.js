@@ -721,19 +721,16 @@ function createListingCard(listing) {
         ? Math.round(((listing.originalPrice - listing.currentPrice) / listing.originalPrice) * 100)
         : 0;
     
-    // Badges
+    // FIXED: Badge order - AD first, then bestseller/popular/etsy's pick, then discount/shipping last
     const badgesArray = listing.badges.split(',').map(b => b.trim()).filter(b => b);
     let badgesHTML = '';
     
+    // 1. AD badge (first)
     if (listing.isAd) {
         badgesHTML += `<span class="badge badge-ad">AD</span>`;
     }
-    if (hasDiscount) {
-        badgesHTML += `<span class="badge badge-discount">-${discountPercent}%</span>`;
-    }
-    if (listing.freeShipping) {
-        badgesHTML += `<span class="badge badge-shipping">Free Ship</span>`;
-    }
+    
+    // 2. Etsy badges (middle)
     if (badgesArray.includes('Bestseller')) {
         badgesHTML += `<span class="badge badge-bestseller">Bestseller</span>`;
     }
@@ -742,6 +739,14 @@ function createListingCard(listing) {
     }
     if (badgesArray.some(b => b.toLowerCase().includes("etsy's pick"))) {
         badgesHTML += `<span class="badge badge-etsyspick">Etsy's Pick</span>`;
+    }
+    
+    // 3. Discount and shipping badges (last)
+    if (hasDiscount) {
+        badgesHTML += `<span class="badge badge-discount">-${discountPercent}%</span>`;
+    }
+    if (listing.freeShipping) {
+        badgesHTML += `<span class="badge badge-shipping">Free Ship</span>`;
     }
     
     // Shop URL
@@ -755,6 +760,20 @@ function createListingCard(listing) {
                 ? (listing.organicListingsCount / 1000).toFixed(1) + 'K'
                 : listing.organicListingsCount.toLocaleString())
         : '';
+    
+    // FIXED: Simplified product type (remove "Product" word)
+    const simplifiedProductType = listing.productType
+        .replace('Product', '')
+        .replace('Physical', 'Physical')
+        .replace('Digital', 'Digital')
+        .trim();
+    
+    // FIXED: Format reviews for inline display
+    const reviewsFormatted = listing.reviews >= 1000000 
+        ? (listing.reviews / 1000000).toFixed(1) + 'M'
+        : listing.reviews >= 1000
+            ? (listing.reviews / 1000).toFixed(1) + 'K'
+            : listing.reviews.toLocaleString();
     
     card.innerHTML = `
         ${listing.isAd ? '<div class="card-ad-indicator"></div>' : ''}
@@ -775,18 +794,22 @@ function createListingCard(listing) {
         <div class="card-content">
             <div class="card-title">${listing.title}</div>
             
-            ${listing.shopName ? `
-                <div class="card-shop">
-                    <i class="fas fa-store"></i>
-                    <a href="${shopUrl}" class="shop-link" onclick="event.stopPropagation();" target="_blank">
-                        ${listing.shopName}
-                    </a>
-                </div>
-            ` : ''}
-            
-            ${listing.productType ? `
-                <div class="card-product-type">
-                    <i class="fas fa-tag"></i> ${listing.productType}
+            ${listing.shopName || simplifiedProductType ? `
+                <div class="card-shop-type">
+                    ${listing.shopName ? `
+                        <div class="shop-info">
+                            <i class="fas fa-store"></i>
+                            <a href="${shopUrl}" class="shop-link" onclick="event.stopPropagation();" target="_blank">
+                                ${listing.shopName}
+                            </a>
+                        </div>
+                    ` : ''}
+                    ${simplifiedProductType && simplifiedProductType !== 'Unknown' ? `
+                        <div class="product-type-info">
+                            <i class="fas fa-tag"></i>
+                            <span>${simplifiedProductType}</span>
+                        </div>
+                    ` : ''}
                 </div>
             ` : ''}
             
@@ -800,13 +823,16 @@ function createListingCard(listing) {
                 <div class="card-rating">
                     ${listing.rating > 0 ? `
                         <i class="fas fa-star star-icon"></i>
-                        <span>${listing.rating.toFixed(1)}</span>
-                    ` : '<span class="no-rating">No rating</span>'}
+                        <span class="rating-text">${listing.rating.toFixed(1)}</span>
+                        ${listing.reviews > 0 ? `
+                            <span class="reviews-inline">(${reviewsFormatted})</span>
+                        ` : ''}
+                    ` : listing.reviews > 0 ? `
+                        <span class="no-rating-with-reviews">${reviewsFormatted} reviews</span>
+                    ` : `
+                        <span class="no-rating">No reviews</span>
+                    `}
                 </div>
-            </div>
-            <div class="card-reviews">
-                <i class="fas fa-comment-dots"></i>
-                <span class="review-count">${listing.reviews.toLocaleString()} reviews</span>
             </div>
         </div>
     `;

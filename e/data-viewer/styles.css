@@ -1028,15 +1028,42 @@ body {
     font-weight: 600;
 }
 
-/* Shop Name Link */
-.card-shop {
+/* FIXED: Shop name and product type on same line */
+.card-shop-type {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    margin-top: -2px;
+}
+
+.shop-info {
     display: flex;
     align-items: center;
-    gap: 5px;
-    font-size: 11px;
-    color: var(--text-secondary);
-    margin-bottom: 4px;
-    margin-top: -2px;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+}
+
+.shop-info .shop-link {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-type-info {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.product-type-info i {
+    font-size: 9px;
 }
 
 .shop-link {
@@ -1049,16 +1076,6 @@ body {
 .shop-link:hover {
     text-decoration: underline;
     color: #ff7a33;
-}
-
-/* Product Type */
-.card-product-type {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 10px;
-    color: var(--text-secondary);
-    margin-bottom: 6px;
 }
 
 /* Price Section Update */
@@ -1093,17 +1110,46 @@ body {
 }
 
 .card-details {
-    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0;
 }
 
-.card-reviews {
+/* FIXED: Reviews inline with rating */
+.card-rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.rating-text {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.reviews-inline {
+    color: var(--text-secondary);
+    opacity: 0.8;
     font-size: 11px;
+}
+
+.no-rating-with-reviews {
+    font-size: 11px;
+    color: var(--text-secondary);
 }
 
 .no-rating {
     font-size: 11px;
     color: var(--text-secondary);
     opacity: 0.6;
+}
+
+/* Hide old card-reviews since reviews are now inline */
+.card-reviews {
+    display: none;
 }
 
 /* Update checkbox inline for 5 items */

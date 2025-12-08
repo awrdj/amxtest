@@ -900,7 +900,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 2px; /* Small gap to make them look connected */
+    gap: 0px; /* Small gap to make them look connected */
     max-width: 180px;
 }
 
@@ -923,12 +923,17 @@ body {
 
 /* First line - rounded top corners */
 .badge-line:first-child {
-    border-radius: 8px 8px 4px 4px;
+    /* border-radius: 8px 8px 4px 4px; */
+    border-radius: 8px 8px 0 0;
+    border-bottom: none;
+    margin-bottom: -2px;
 }
 
 /* Last line - rounded bottom corners */
 .badge-line:last-child {
-    border-radius: 4px 4px 8px 8px;
+    /* border-radius: 4px 4px 8px 8px; */
+    border-radius: 0 8px 8px 8px;
+    border-top: none;
 }
 
 /* If only one line exists - all corners rounded */

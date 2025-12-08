@@ -882,6 +882,9 @@ body {
     z-index: 4;
     border: 1px solid var(--border-color);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    max-width: 202px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .file-info-icon:hover .file-info-tooltip {

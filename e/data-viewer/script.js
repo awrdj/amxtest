@@ -648,16 +648,31 @@ function clearAllFilters() {
     elements.filterPopular.checked = false;
     elements.filterEtsysPick.checked = false;
     
+    // Get the actual max values from the sliders
+    const maxPrice = parseFloat(elements.priceMaxSlider.getAttribute('max'));
+    const maxReviews = parseFloat(elements.reviewMaxSlider.getAttribute('max'));
+    
+    // Reset Price sliders
     elements.priceMinSlider.value = 0;
-    elements.priceMaxSlider.value = 1000;
+    elements.priceMaxSlider.value = maxPrice;
+    
+    // Reset Review sliders
     elements.reviewMinSlider.value = 0;
-    elements.reviewMaxSlider.value = 10000;
+    elements.reviewMaxSlider.value = maxReviews;
+    
+    // Reset Rating sliders
     elements.ratingMinSlider.value = 0;
     elements.ratingMaxSlider.value = 50;
     
+    // Update displays
     updateRangeDisplay('price');
     updateRangeDisplay('review');
     updateRangeDisplay('rating');
+    
+    // FIXED: Update visual fills
+    updateSliderFill('price');
+    updateSliderFill('review');
+    updateSliderFill('rating');
     
     clearAllBrands();
     

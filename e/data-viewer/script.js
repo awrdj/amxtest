@@ -721,9 +721,23 @@ function createListingCard(listing) {
     const fileInfo = uploadedFiles[listing.fileIndex - 1];
     const fileName = fileInfo ? fileInfo.name : 'Unknown';
     
-// Page origin badge (only show if exists)
+// Page origin and search query badge
 const pageOrigin = listing.Page_Origin;
-const pageOriginHTML = pageOrigin ? `<div class="page-origin-badge">p. ${pageOrigin}</div>` : '';
+const searchQuery = listing.Search_Query || listing.SearchQuery; // Handle both column name formats
+
+let pageOriginHTML = '';
+if (pageOrigin || searchQuery) {
+    pageOriginHTML = '<div class="page-origin-badge">';
+    if (pageOrigin) {
+        pageOriginHTML += `<div class="badge-line">p. ${pageOrigin}</div>`;
+    }
+    if (searchQuery) {
+        // Truncate long queries
+        const displayQuery = searchQuery.length > 20 ? searchQuery.substring(0, 20) + '...' : searchQuery;
+        pageOriginHTML += `<div class="badge-line">🔍 ${displayQuery}</div>`;
+    }
+    pageOriginHTML += '</div>';
+}
 
 // Ad border indicator
 const adBorderHTML = listing.Is_Ad ? '<div class="card-ad-indicator"></div>' : '';

@@ -749,7 +749,7 @@ function loadMoreCards() {
     }
 }
 
-function createListingCard(listing) {
+function createCard(listing) {
     const card = document.createElement('div');
     card.className = 'listing-card';
     card.onclick = () => window.open(listing.url, '_blank');

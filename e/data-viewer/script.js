@@ -857,37 +857,46 @@ function showViewer() {
     const maxPrice = prices.length > 0 ? Math.max(...prices) : 100;
     const maxReviews = reviews.length > 0 ? Math.max(...reviews) : 1000;
     
-    // FIXED: Round up to nearest step value
-    const roundedMaxPrice = Math.ceil(maxPrice);
-    const roundedMaxReviews = Math.ceil(maxReviews / 10) * 10; // Round up to nearest 10
+    // UPDATED: Dynamic step size for review slider
+    const reviewStep = maxReviews < 500 ? 1 : 10;
     
-    console.log(`📊 Data Range - Price: $0-$${roundedMaxPrice}, Reviews: 0-${roundedMaxReviews}`);
+    // Round up based on step size
+    const roundedMaxPrice = Math.ceil(maxPrice);
+    const roundedMaxReviews = reviewStep === 1 ? Math.ceil(maxReviews) : Math.ceil(maxReviews / 10) * 10;
+    
+    console.log(`📊 Data Range - Price: $0-$${roundedMaxPrice}, Reviews: 0-${roundedMaxReviews} (step: ${reviewStep})`);
     
     // Set Price Range sliders
     elements.priceMinSlider.setAttribute('min', '0');
     elements.priceMinSlider.setAttribute('max', roundedMaxPrice);
+    elements.priceMinSlider.setAttribute('step', '1');
     elements.priceMinSlider.value = 0;
     
     elements.priceMaxSlider.setAttribute('min', '0');
     elements.priceMaxSlider.setAttribute('max', roundedMaxPrice);
+    elements.priceMaxSlider.setAttribute('step', '1');
     elements.priceMaxSlider.value = roundedMaxPrice;
     
-    // Set Review Range sliders
+    // Set Review Range sliders with DYNAMIC STEP
     elements.reviewMinSlider.setAttribute('min', '0');
     elements.reviewMinSlider.setAttribute('max', roundedMaxReviews);
+    elements.reviewMinSlider.setAttribute('step', reviewStep);
     elements.reviewMinSlider.value = 0;
     
     elements.reviewMaxSlider.setAttribute('min', '0');
     elements.reviewMaxSlider.setAttribute('max', roundedMaxReviews);
+    elements.reviewMaxSlider.setAttribute('step', reviewStep);
     elements.reviewMaxSlider.value = roundedMaxReviews;
     
     // Set Rating Range sliders (always 0-5.0)
     elements.ratingMinSlider.setAttribute('min', '0');
     elements.ratingMinSlider.setAttribute('max', '50');
+    elements.ratingMinSlider.setAttribute('step', '1');
     elements.ratingMinSlider.value = 0;
     
     elements.ratingMaxSlider.setAttribute('min', '0');
     elements.ratingMaxSlider.setAttribute('max', '50');
+    elements.ratingMaxSlider.setAttribute('step', '1');
     elements.ratingMaxSlider.value = 50;
     
     updateRangeDisplay('price');
@@ -904,10 +913,10 @@ function showViewer() {
     applyFilters();
     
     // Debug: Count ads
-    const adCount = allListings.filter(l => l.Is_Ad).length;
+    const adCount = allListings.filter(l => l.IsAd).length;
     console.log(`🎯 AD DEBUG: ${adCount} ads out of ${allListings.length} total listings`);
     if (adCount > 0) {
-        console.log('Sample ad:', allListings.find(l => l.Is_Ad));
+        console.log('Sample ad:', allListings.find(l => l.IsAd));
     }
 }
 

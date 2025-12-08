@@ -346,75 +346,78 @@ async function processFiles(files) {
     showViewer();
 }
 
-function parseCSV(text) {
+// ==========================================
+// CSV Parsing
+// ==========================================
+
+function parseCSV(text, filename) {
     const lines = text.trim().split('\n');
+    if (lines.length < 2) return [];
+    
     const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
-    
-    console.log(`   📋 CSV Headers (${headers.length}):`, headers.join(', '));
-    
     const listings = [];
-    let skippedRows = [];
+    
+    // Detect CSV format (old vs new)
+    const hasShopName = headers.includes('Shop Name');
+    const hasProductType = headers.includes('Product Type');
+    const hasOriginalPrice = headers.includes('Original Price');
     
     for (let i = 1; i < lines.length; i++) {
         const values = parseCSVLine(lines[i]);
-        
-        // IMPORTANT: Log rows with mismatched column counts
-        if (values.length !== headers.length) {
-            skippedRows.push({
-                line: i + 1,
-                expected: headers.length,
-                got: values.length,
-                preview: lines[i].substring(0, 100)
-            });
-            continue;
-        }
+        if (values.length < headers.length) continue;
         
         const listing = {};
         headers.forEach((header, index) => {
-            listing[header] = values[index].trim().replace(/"/g, '');
+            listing[header] = values[index] || '';
         });
         
-        // Parse numeric values
-        listing.Price = parseFloat(listing.Price?.replace('$', '') || 0);
-        listing.Reviews = parseInt(listing.Reviews || 0);
-        listing.Rating = parseFloat(listing.Rating || 0);
+        // Normalize data
+        const title = listing['Title'] || '';
+        const currentPrice = parseFloat((listing['Current Price'] || listing['Price'] || '0').replace(/[$,]/g, ''));
+        const originalPrice = parseFloat((listing['Original Price'] || '0').replace(/[$,]/g, ''));
+        const reviews = parseInt(listing['Reviews'] || '0');
+        const rating = parseFloat(listing['Rating'] || '0');
+        const url = listing['URL'] || '';
+        const thumbnail = listing['Thumbnail'] || listing['Image'] || '';
+        const isAd = (listing['Is Ad'] || 'No').toLowerCase() === 'yes';
+        const pageOrigin = listing['Page Origin'] || '';
+        const searchQuery = listing['Search Query'] || '';
+        const badges = listing['Badges'] || '';
         
-        // Parse Is_Ad
-        const isAdValue = listing.Is_Ad;
-        if (typeof isAdValue === 'boolean') {
-            listing.Is_Ad = isAdValue;
-        } else if (typeof isAdValue === 'string') {
-            listing.Is_Ad = ['yes', 'true', '1'].includes(isAdValue.toLowerCase());
-        } else {
-            listing.Is_Ad = false;
-        }
+        // NEW FIELDS
+        const shopName = listing['Shop Name'] || '';
+        const productType = listing['Product Type'] || 'Unknown';
+        const freeShipping = (listing['Free Shipping'] || 'No').toLowerCase() === 'yes';
+        const organicListingsCount = parseInt(listing['Organic Listings Count'] || '0');
         
-        // Parse badges
-        const badges = listing.Badges?.split('|').filter(b => b) || [];
-        listing.hasBestseller = badges.includes('Bestseller');
-        listing.hasPopular = badges.includes('Popular Now');
-        listing.hasEtsysPick = badges.includes("Etsy's Pick");
+        if (!title || !url) continue;
         
-        listings.push(listing);
-    }
-    
-    // Log skipped rows details
-    if (skippedRows.length > 0) {
-        console.warn(`   ⚠️ Skipped ${skippedRows.length} malformed rows:`);
-        skippedRows.slice(0, 5).forEach(row => {
-            console.warn(`      Line ${row.line}: Expected ${row.expected} columns, got ${row.got}`);
-            console.warn(`      Preview: "${row.preview}..."`);
+        listings.push({
+            title,
+            currentPrice,
+            originalPrice: originalPrice > 0 ? originalPrice : currentPrice,
+            reviews,
+            rating,
+            url,
+            thumbnail,
+            isAd,
+            pageOrigin,
+            searchQuery,
+            badges,
+            shopName,
+            productType,
+            freeShipping,
+            organicListingsCount,
+            fileName: filename,
+            fileIndex: uploadedFiles.length
         });
-        if (skippedRows.length > 5) {
-            console.warn(`      ... and ${skippedRows.length - 5} more`);
-        }
     }
     
     return listings;
 }
 
 function parseCSVLine(line) {
-    const values = [];
+    const result = [];
     let current = '';
     let inQuotes = false;
     
@@ -422,17 +425,22 @@ function parseCSVLine(line) {
         const char = line[i];
         
         if (char === '"') {
-            inQuotes = !inQuotes;
+            if (inQuotes && line[i + 1] === '"') {
+                current += '"';
+                i++;
+            } else {
+                inQuotes = !inQuotes;
+            }
         } else if (char === ',' && !inQuotes) {
-            values.push(current);
+            result.push(current.trim());
             current = '';
         } else {
             current += char;
         }
     }
-    values.push(current);
     
-    return values;
+    result.push(current.trim());
+    return result.map(v => v.replace(/^"|"$/g, ''));
 }
 
 function deduplicateListings(listings) {

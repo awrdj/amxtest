@@ -807,7 +807,7 @@ body {
     right: 8px;
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 4px;
     z-index: 2;
 }
 

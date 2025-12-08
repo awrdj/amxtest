@@ -62,6 +62,10 @@ const elements = {
     loadMoreBtn: document.getElementById('loadMoreBtn'),
     searchInput: document.getElementById('searchInput'),
     sortSelect: document.getElementById('sortSelect'),
+
+    filterFreeShipping: document.getElementById('filterFreeShipping'),
+    productTypeSelect: document.getElementById('productTypeSelect'),
+    
     filterHideAds: document.getElementById('filterHideAds'),
     filterBestseller: document.getElementById('filterBestseller'),
     filterPopular: document.getElementById('filterPopular'),
@@ -131,6 +135,9 @@ function setupEventListeners() {
     elements.filterBestseller.addEventListener('change', applyFilters);
     elements.filterPopular.addEventListener('change', applyFilters);
     elements.filterEtsysPick.addEventListener('change', applyFilters);
+
+    elements.filterFreeShipping.addEventListener('change', applyFilters);
+    elements.productTypeSelect.addEventListener('change', applyFilters);
 
     // Price Range Sliders
 elements.priceMinSlider.addEventListener('input', (e) => {
@@ -551,56 +558,76 @@ function getExcludedBrands() {
 // ==========================================
 
 function applyFilters() {
-    const searchTerm = elements.searchInput.value.toLowerCase();
+    const searchTerm = elements.searchInput.value.toLowerCase().trim();
+    const sortBy = elements.sortSelect.value;
     const hideAds = elements.filterHideAds.checked;
-    const showBestseller = elements.filterBestseller.checked;
-    const showPopular = elements.filterPopular.checked;
-    const showEtsysPick = elements.filterEtsysPick.checked;
+    const bestseller = elements.filterBestseller.checked;
+    const popular = elements.filterPopular.checked;
+    const etsysPick = elements.filterEtsysPick.checked;
+    const freeShipping = elements.filterFreeShipping.checked;
+    const productType = elements.productTypeSelect.value;
     
     const priceMin = parseFloat(elements.priceMinSlider.value);
     const priceMax = parseFloat(elements.priceMaxSlider.value);
     const reviewMin = parseInt(elements.reviewMinSlider.value);
     const reviewMax = parseInt(elements.reviewMaxSlider.value);
-    const ratingMin = parseFloat(elements.ratingMinSlider.value) / 10;
-    const ratingMax = parseFloat(elements.ratingMaxSlider.value) / 10;
+    const ratingMin = parseInt(elements.ratingMinSlider.value) / 10;
+    const ratingMax = parseInt(elements.ratingMaxSlider.value) / 10;
     
     const excludedBrands = getExcludedBrands();
     
+    // Parse search term for shop filter
+    let shopFilter = '';
+    let titleSearchTerm = searchTerm;
+    
+    if (searchTerm.includes('shop:')) {
+        const shopMatch = searchTerm.match(/shop:(\S+)/i);
+        if (shopMatch) {
+            shopFilter = shopMatch[1].toLowerCase();
+            titleSearchTerm = searchTerm.replace(/shop:\S+/gi, '').trim();
+        }
+    }
+    
     filteredListings = allListings.filter(listing => {
-        // Search
-        if (searchTerm && !listing.Title?.toLowerCase().includes(searchTerm)) {
+        // Search filter (title + shop)
+        if (titleSearchTerm && !listing.title.toLowerCase().includes(titleSearchTerm)) {
             return false;
         }
         
-        // Hide Ads
-        if (hideAds && listing.Is_Ad) {
+        // Shop filter
+        if (shopFilter && !listing.shopName.toLowerCase().includes(shopFilter)) {
             return false;
         }
         
-        // Badge Filters
-        if (showBestseller && !listing.hasBestseller) return false;
-        if (showPopular && !listing.hasPopular) return false;
-        if (showEtsysPick && !listing.hasEtsysPick) return false;
+        // Quick filters
+        if (hideAds && listing.isAd) return false;
+        if (bestseller && !listing.badges.toLowerCase().includes('bestseller')) return false;
+        if (popular && !listing.badges.toLowerCase().includes('popular')) return false;
+        if (etsysPick && !listing.badges.toLowerCase().includes("etsy's pick")) return false;
+        if (freeShipping && !listing.freeShipping) return false;
         
-        // Price Range
-        if (listing.Price < priceMin || listing.Price > priceMax) {
-            return false;
+        // Product Type filter
+        if (productType !== 'all') {
+            const isPhysical = listing.productType.toLowerCase().includes('physical');
+            const isDigital = listing.productType.toLowerCase().includes('digital');
+            
+            if (productType === 'physical' && !isPhysical) return false;
+            if (productType === 'digital' && !isDigital) return false;
         }
         
-        // Review Range
-        if (listing.Reviews < reviewMin || listing.Reviews > reviewMax) {
-            return false;
-        }
+        // Price range
+        if (listing.currentPrice < priceMin || listing.currentPrice > priceMax) return false;
         
-        // Rating Range
-        if (listing.Rating < ratingMin || listing.Rating > ratingMax) {
-            return false;
-        }
+        // Review range
+        if (listing.reviews < reviewMin || listing.reviews > reviewMax) return false;
         
-        // Brand Filter
+        // Rating range
+        if (listing.rating < ratingMin || listing.rating > ratingMax) return false;
+        
+        // Brand exclusion
         if (excludedBrands.length > 0) {
-            const title = listing.Title?.toLowerCase() || '';
-            if (excludedBrands.some(brand => title.includes(brand))) {
+            const titleLower = listing.title.toLowerCase();
+            if (excludedBrands.some(brand => titleLower.includes(brand))) {
                 return false;
             }
         }
@@ -608,16 +635,25 @@ function applyFilters() {
         return true;
     });
     
-    // Apply Sorting
-    applySorting();
+    // Sorting
+    if (sortBy !== 'default') {
+        filteredListings.sort((a, b) => {
+            switch (sortBy) {
+                case 'price-asc': return a.currentPrice - b.currentPrice;
+                case 'price-desc': return b.currentPrice - a.currentPrice;
+                case 'reviews-asc': return a.reviews - b.reviews;
+                case 'reviews-desc': return b.reviews - a.reviews;
+                case 'rating-asc': return a.rating - b.rating;
+                case 'rating-desc': return b.rating - a.rating;
+                default: return 0;
+            }
+        });
+    }
     
-    // Reset display
     displayedCount = 0;
-    elements.cardsContainer.innerHTML = '';
-    loadMoreCards();
-    
-    // Update count
+    renderCards();
     updateFilteredCount();
+    saveSettings();
 }
 
 function applySorting() {
@@ -716,58 +752,100 @@ function loadMoreCards() {
 function createListingCard(listing) {
     const card = document.createElement('div');
     card.className = 'listing-card';
-    card.onclick = () => window.open(listing.URL, '_blank');
+    card.onclick = () => window.open(listing.url, '_blank');
+    
+    // Calculate discount
+    const hasDiscount = listing.originalPrice > listing.currentPrice;
+    const discountPercent = hasDiscount 
+        ? Math.round(((listing.originalPrice - listing.currentPrice) / listing.originalPrice) * 100)
+        : 0;
     
     // Badges
-    const badges = [];
-    if (listing.Is_Ad) badges.push('<span class="badge badge-ad">AD</span>');
-    if (listing.hasBestseller) badges.push('<span class="badge badge-bestseller">Bestseller</span>');
-    if (listing.hasPopular) badges.push('<span class="badge badge-popular">Popular</span>');
-    if (listing.hasEtsysPick) badges.push('<span class="badge badge-etsyspick">Etsy\'s Pick</span>');
+    const badgesArray = listing.badges.split(',').map(b => b.trim()).filter(b => b);
+    let badgesHTML = '';
     
-    // File info
-    const fileInfo = uploadedFiles[listing.fileIndex - 1];
-    const fileName = fileInfo ? fileInfo.name : 'Unknown';
-    
-// Page origin and search query badge
-const pageOrigin = listing.Page_Origin;
-const searchQuery = listing.Search_Query || listing.SearchQuery;
-
-let pageOriginHTML = '';
-if (pageOrigin || searchQuery) {
-    pageOriginHTML = '<div class="page-origin-badge">';
-    if (pageOrigin) {
-        pageOriginHTML += `<div class="badge-line">p. ${pageOrigin}</div>`;
+    if (listing.isAd) {
+        badgesHTML += '<span class="badge badge-ad">AD</span>';
     }
-    if (searchQuery) {
-        const displayQuery = searchQuery.length > 20 ? searchQuery.substring(0, 20) + '...' : searchQuery;
-        pageOriginHTML += `<div class="badge-line">🔍 ${displayQuery}</div>`;
+    if (hasDiscount) {
+        badgesHTML += `<span class="badge badge-discount">-${discountPercent}%</span>`;
     }
-    pageOriginHTML += '</div>';
-}
+    if (listing.freeShipping) {
+        badgesHTML += '<span class="badge badge-shipping">Free Ship</span>';
+    }
+    if (badgesArray.includes('Bestseller')) {
+        badgesHTML += '<span class="badge badge-bestseller">Bestseller</span>';
+    }
+    if (badgesArray.includes('Popular Now')) {
+        badgesHTML += '<span class="badge badge-popular">Popular</span>';
+    }
+    if (badgesArray.some(b => b.toLowerCase().includes("etsy's pick"))) {
+        badgesHTML += '<span class="badge badge-etsyspick">Etsy\\'s Pick</span>';
+    }
     
-// Ad border indicator
-const adBorderHTML = listing.Is_Ad ? '<div class="card-ad-indicator"></div>' : '';
-
-card.innerHTML = `
-    ${adBorderHTML}
-    <div class="card-image-wrapper">
-        <img src="${listing.Thumbnail || 'placeholder.jpg'}" alt="${listing.Title}" class="card-image" loading="lazy">
-        <div class="card-badges">${badges.join('')}</div>
-        <div class="file-info-icon">
-            <i class="fas fa-info"></i>
-            <div class="file-info-tooltip">${fileName}</div>
+    // Shop URL
+    const shopUrl = listing.shopName ? `https://www.etsy.com/shop/${listing.shopName}` : '#';
+    
+    // Format organic listings count
+    const organicCount = listing.organicListingsCount > 0 
+        ? (listing.organicListingsCount >= 1000000 
+            ? (listing.organicListingsCount / 1000000).toFixed(1) + 'M'
+            : listing.organicListingsCount >= 1000
+                ? (listing.organicListingsCount / 1000).toFixed(1) + 'K'
+                : listing.organicListingsCount.toLocaleString())
+        : '';
+    
+    card.innerHTML = `
+        ${listing.isAd ? '<div class="card-ad-indicator"></div>' : ''}
+        <div class="card-image-wrapper">
+            <img src="${listing.thumbnail}" alt="${listing.title}" class="card-image" loading="lazy">
+            <div class="card-badges">${badgesHTML}</div>
+            ${listing.pageOrigin || listing.searchQuery ? `
+                <div class="page-origin-badge">
+                    ${listing.searchQuery ? `
+                        <span class="badge-line">
+                            ${listing.searchQuery}${organicCount ? ` (${organicCount})` : ''}
+                        </span>
+                    ` : ''}
+                    ${listing.pageOrigin ? `<span class="badge-line">Page ${listing.pageOrigin}</span>` : ''}
+                </div>
+            ` : ''}
         </div>
-        ${pageOriginHTML}
-    </div>
         <div class="card-content">
-            <div class="card-title">${listing.Title || 'No Title'}</div>
+            <div class="card-title">${listing.title}</div>
+            
+            ${listing.shopName ? `
+                <div class="card-shop">
+                    <i class="fas fa-store"></i>
+                    <a href="${shopUrl}" class="shop-link" onclick="event.stopPropagation();" target="_blank">
+                        ${listing.shopName}
+                    </a>
+                </div>
+            ` : ''}
+            
+            ${listing.productType ? `
+                <div class="card-product-type">
+                    <i class="fas fa-tag"></i> ${listing.productType}
+                </div>
+            ` : ''}
+            
             <div class="card-details">
-                <span class="card-price">$${listing.Price.toFixed(2)}</span>
-                <span class="card-rating">
-                    <i class="fas fa-star star-icon"></i>
-                    ${listing.Rating.toFixed(1)} <span class="review-count">(${formatNumber(listing.Reviews)})</span>
-                </span>
+                <div class="card-price-section">
+                    <span class="card-price">$${listing.currentPrice.toFixed(2)}</span>
+                    ${hasDiscount ? `
+                        <span class="card-price-original">$${listing.originalPrice.toFixed(2)}</span>
+                    ` : ''}
+                </div>
+                <div class="card-rating">
+                    ${listing.rating > 0 ? `
+                        <i class="fas fa-star star-icon"></i>
+                        <span>${listing.rating.toFixed(1)}</span>
+                    ` : '<span class="no-rating">No rating</span>'}
+                </div>
+            </div>
+            <div class="card-reviews">
+                <i class="fas fa-comment-dots"></i>
+                <span class="review-count">${listing.reviews.toLocaleString()} reviews</span>
             </div>
         </div>
     `;

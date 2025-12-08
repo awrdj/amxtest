@@ -729,11 +729,11 @@ let pageOriginHTML = '';
 if (pageOrigin || searchQuery) {
     const lines = [];
     if (pageOrigin) {
-        lines.push(`<span class="badge-line">p. ${pageOrigin}</span>`);
+        lines.push(`<span class="badge-line top-badge-line">p. ${pageOrigin}</span>`);
     }
     if (searchQuery) {
         const displayQuery = searchQuery.length > 20 ? searchQuery.substring(0, 20) + '...' : searchQuery;
-        lines.push(`<span class="badge-line">🔍 ${displayQuery}</span>`);
+        lines.push(`<span class="badge-line bottom-badge-line">🔍 ${displayQuery}</span>`);
     }
     pageOriginHTML = `<div class="page-origin-badge">${lines.join('')}</div>`;
 }

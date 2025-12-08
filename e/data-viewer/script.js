@@ -697,7 +697,7 @@ function createListingCard(listing) {
     
     // Badges
     const badges = [];
-    if (listing.Is_Ad) badges.push('<span class="badge badge-ad">SPONSORED</span>');
+    if (listing.Is_Ad) badges.push('<span class="badge badge-ad">AD</span>');
     if (listing.hasBestseller) badges.push('<span class="badge badge-bestseller">Bestseller</span>');
     if (listing.hasPopular) badges.push('<span class="badge badge-popular">Popular</span>');
     if (listing.hasEtsysPick) badges.push('<span class="badge badge-etsyspick">Etsy\'s Pick</span>');

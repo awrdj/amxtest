@@ -62,14 +62,12 @@ const elements = {
     loadMoreBtn: document.getElementById('loadMoreBtn'),
     searchInput: document.getElementById('searchInput'),
     sortSelect: document.getElementById('sortSelect'),
-
-    filterFreeShipping: document.getElementById('filterFreeShipping'),
-    productTypeSelect: document.getElementById('productTypeSelect'),
-    
     filterHideAds: document.getElementById('filterHideAds'),
     filterBestseller: document.getElementById('filterBestseller'),
     filterPopular: document.getElementById('filterPopular'),
     filterEtsysPick: document.getElementById('filterEtsysPick'),
+    filterFreeShipping: document.getElementById('filterFreeShipping'),
+    productTypeSelect: document.getElementById('productTypeSelect'),
     priceMinSlider: document.getElementById('priceMinSlider'),
     priceMaxSlider: document.getElementById('priceMaxSlider'),
     priceMin: document.getElementById('priceMin'),
@@ -135,79 +133,77 @@ function setupEventListeners() {
     elements.filterBestseller.addEventListener('change', applyFilters);
     elements.filterPopular.addEventListener('change', applyFilters);
     elements.filterEtsysPick.addEventListener('change', applyFilters);
-
     elements.filterFreeShipping.addEventListener('change', applyFilters);
     elements.productTypeSelect.addEventListener('change', applyFilters);
 
     // Price Range Sliders
-elements.priceMinSlider.addEventListener('input', (e) => {
-    let min = parseFloat(elements.priceMinSlider.value);
-    let max = parseFloat(elements.priceMaxSlider.value);
-    if (min >= max - 1) {
-        elements.priceMinSlider.value = max - 1;
-    }
-    updateRangeDisplay('price');
-    updateSliderFill('price');
-});
-elements.priceMaxSlider.addEventListener('input', (e) => {
-    let min = parseFloat(elements.priceMinSlider.value);
-    let max = parseFloat(elements.priceMaxSlider.value);
-    if (max <= min + 1) {
-        elements.priceMaxSlider.value = min + 1;
-    }
-    updateRangeDisplay('price');
-    updateSliderFill('price');
-});
+    elements.priceMinSlider.addEventListener('input', () => {
+        let min = parseFloat(elements.priceMinSlider.value);
+        let max = parseFloat(elements.priceMaxSlider.value);
+        if (min >= max - 1) {
+            elements.priceMinSlider.value = max - 1;
+        }
+        updateRangeDisplay('price');
+        updateSliderFill('price');
+    });
+    elements.priceMaxSlider.addEventListener('input', () => {
+        let min = parseFloat(elements.priceMinSlider.value);
+        let max = parseFloat(elements.priceMaxSlider.value);
+        if (max <= min + 1) {
+            elements.priceMaxSlider.value = min + 1;
+        }
+        updateRangeDisplay('price');
+        updateSliderFill('price');
+    });
+    
+    elements.priceMinSlider.addEventListener('change', () => applyFilters());
+    elements.priceMaxSlider.addEventListener('change', () => applyFilters());
 
-// Apply filters with debounce on change (when user releases slider)
-elements.priceMinSlider.addEventListener('change', () => applyFilters());
-elements.priceMaxSlider.addEventListener('change', () => applyFilters());
+    // Review Range Sliders
+    elements.reviewMinSlider.addEventListener('input', () => {
+        let min = parseInt(elements.reviewMinSlider.value);
+        let max = parseInt(elements.reviewMaxSlider.value);
+        if (min >= max - 10) {
+            elements.reviewMinSlider.value = max - 10;
+        }
+        updateRangeDisplay('review');
+        updateSliderFill('review');
+    });
+    elements.reviewMaxSlider.addEventListener('input', () => {
+        let min = parseInt(elements.reviewMinSlider.value);
+        let max = parseInt(elements.reviewMaxSlider.value);
+        if (max <= min + 10) {
+            elements.reviewMaxSlider.value = min + 10;
+        }
+        updateRangeDisplay('review');
+        updateSliderFill('review');
+    });
+    
+    elements.reviewMinSlider.addEventListener('change', () => applyFilters());
+    elements.reviewMaxSlider.addEventListener('change', () => applyFilters());
 
-// Review Range Sliders
-elements.reviewMinSlider.addEventListener('input', (e) => {
-    let min = parseInt(elements.reviewMinSlider.value);
-    let max = parseInt(elements.reviewMaxSlider.value);
-    if (min >= max - 10) {
-        elements.reviewMinSlider.value = max - 10;
-    }
-    updateRangeDisplay('review');
-    updateSliderFill('review');
-});
-elements.reviewMaxSlider.addEventListener('input', (e) => {
-    let min = parseInt(elements.reviewMinSlider.value);
-    let max = parseInt(elements.reviewMaxSlider.value);
-    if (max <= min + 10) {
-        elements.reviewMaxSlider.value = min + 10;
-    }
-    updateRangeDisplay('review');
-    updateSliderFill('review');
-});
-
-elements.reviewMinSlider.addEventListener('change', () => applyFilters());
-elements.reviewMaxSlider.addEventListener('change', () => applyFilters());
-
-// Rating Range Sliders
-elements.ratingMinSlider.addEventListener('input', (e) => {
-    let min = parseInt(elements.ratingMinSlider.value);
-    let max = parseInt(elements.ratingMaxSlider.value);
-    if (min >= max - 1) {
-        elements.ratingMinSlider.value = max - 1;
-    }
-    updateRangeDisplay('rating');
-    updateSliderFill('rating');
-});
-elements.ratingMaxSlider.addEventListener('input', (e) => {
-    let min = parseInt(elements.ratingMinSlider.value);
-    let max = parseInt(elements.ratingMaxSlider.value);
-    if (max <= min + 1) {
-        elements.ratingMaxSlider.value = min + 1;
-    }
-    updateRangeDisplay('rating');
-    updateSliderFill('rating');
-});
-
-elements.ratingMinSlider.addEventListener('change', () => applyFilters());
-elements.ratingMaxSlider.addEventListener('change', () => applyFilters());
+    // Rating Range Sliders
+    elements.ratingMinSlider.addEventListener('input', () => {
+        let min = parseInt(elements.ratingMinSlider.value);
+        let max = parseInt(elements.ratingMaxSlider.value);
+        if (min >= max - 1) {
+            elements.ratingMinSlider.value = max - 1;
+        }
+        updateRangeDisplay('rating');
+        updateSliderFill('rating');
+    });
+    elements.ratingMaxSlider.addEventListener('input', () => {
+        let min = parseInt(elements.ratingMinSlider.value);
+        let max = parseInt(elements.ratingMaxSlider.value);
+        if (max <= min + 1) {
+            elements.ratingMaxSlider.value = min + 1;
+        }
+        updateRangeDisplay('rating');
+        updateSliderFill('rating');
+    });
+    
+    elements.ratingMinSlider.addEventListener('change', () => applyFilters());
+    elements.ratingMaxSlider.addEventListener('change', () => applyFilters());
     
     // Brand Filter Collapsible
     elements.brandFilterToggle.addEventListener('click', toggleBrandFilter);
@@ -236,24 +232,16 @@ function updateSliderFill(type) {
         container = minSlider.parentElement;
     }
     
-    // Get current values
     const minValue = parseFloat(minSlider.value);
     const maxValue = parseFloat(maxSlider.value);
-    
-    // Get range from attributes (dynamically set)
     const rangeMin = parseFloat(minSlider.getAttribute('min'));
     const rangeMax = parseFloat(minSlider.getAttribute('max'));
     
-    // Prevent division by zero
-    if (rangeMax === rangeMin) {
-        return;
-    }
+    if (rangeMax === rangeMin) return;
     
-    // Calculate percentages
     const minPercent = ((minValue - rangeMin) / (rangeMax - rangeMin)) * 100;
     const maxPercent = ((maxValue - rangeMin) / (rangeMax - rangeMin)) * 100;
     
-    // Find or create fill element
     let fill = container.querySelector('.slider-range-fill');
     if (!fill) {
         fill = document.createElement('div');
@@ -261,26 +249,11 @@ function updateSliderFill(type) {
         container.appendChild(fill);
     }
     
-    // Clamp values between 0-100 to prevent overflow
     const safeLeft = Math.max(0, Math.min(100, minPercent));
     const safeWidth = Math.max(0, Math.min(100 - safeLeft, maxPercent - minPercent));
     
-    fill.style.left = safeLeft + '%';
-    fill.style.width = safeWidth + '%';
-    
-    // Debug logging (remove after testing)
-    if (type === 'review') {
-        console.log(`Review Fill Debug:`, {
-            minValue,
-            maxValue,
-            rangeMin,
-            rangeMax,
-            minPercent: minPercent.toFixed(2),
-            maxPercent: maxPercent.toFixed(2),
-            safeLeft: safeLeft.toFixed(2),
-            safeWidth: safeWidth.toFixed(2)
-        });
-    }
+    fill.style.left = `${safeLeft}%`;
+    fill.style.width = `${safeWidth}%`;
 }
 
 // ==========================================
@@ -313,13 +286,12 @@ function handleDrop(e) {
 async function processFiles(files) {
     for (const file of files) {
         const text = await file.text();
+        console.log(`📁 Processing file: ${file.name}`);
         
-        console.log(`\n📁 Processing file: ${file.name}`);
         const rawLineCount = text.trim().split('\n').length - 1; // -1 for header
         console.log(`   Raw lines in file: ${rawLineCount}`);
         
-        const listings = parseCSV(text);
-        
+        const listings = parseCSV(text, file.name);
         console.log(`   ✅ Successfully parsed: ${listings.length} listings`);
         console.log(`   ❌ Skipped/Invalid: ${rawLineCount - listings.length} rows`);
         
@@ -329,10 +301,7 @@ async function processFiles(files) {
             index: uploadedFiles.length + 1
         });
         
-        allListings.push(...listings.map(listing => ({
-            ...listing,
-            fileIndex: uploadedFiles.length
-        })));
+        allListings.push(...listings.map(listing => ({ ...listing, fileIndex: uploadedFiles.length })));
     }
     
     const totalBeforeDedup = allListings.length;
@@ -343,7 +312,7 @@ async function processFiles(files) {
     
     const duplicatesRemoved = totalBeforeDedup - allListings.length;
     console.log(`🔄 Duplicates removed: ${duplicatesRemoved}`);
-    console.log(`✅ Final unique listings: ${allListings.length}\n`);
+    console.log(`✅ Final unique listings: ${allListings.length}`);
     
     // Save to localStorage
     saveToLocalStorage();
@@ -450,13 +419,17 @@ function parseCSVLine(line) {
     return result.map(v => v.replace(/^"|"$/g, ''));
 }
 
+// ==========================================
+// FIXED: Deduplication Function
+// ==========================================
+
 function deduplicateListings(listings) {
     const urlGroups = new Map();
     
     // Group all listings by URL
     listings.forEach(listing => {
-        const url = listing.URL;
-        if (!url || url.trim() === '') return;
+        const url = listing.url; // FIXED: lowercase 'url'
+        if (!url || !url.trim()) return;
         
         if (!urlGroups.has(url)) {
             urlGroups.set(url, []);
@@ -476,27 +449,27 @@ function deduplicateListings(listings) {
             return;
         }
         
-        totalDuplicates += (group.length - 1);
+        totalDuplicates += group.length - 1;
         
-        // Separate ads and non-ads
-        const ads = group.filter(l => l.Is_Ad);
-        const nonAds = group.filter(l => !l.Is_Ad);
+        // Separate ads and non-ads - FIXED: lowercase 'isAd'
+        const ads = group.filter(l => l.isAd);
+        const nonAds = group.filter(l => !l.isAd);
         
-        // Keep the non-ad with smallest Page_Origin
+        // Keep the non-ad with smallest PageOrigin
         if (nonAds.length > 0) {
             const bestNonAd = nonAds.reduce((best, current) => {
-                const bestPage = parseInt(best.Page_Origin) || 999999;
-                const currentPage = parseInt(current.Page_Origin) || 999999;
+                const bestPage = parseInt(best.pageOrigin) || 999999;
+                const currentPage = parseInt(current.pageOrigin) || 999999;
                 return currentPage < bestPage ? current : best;
             });
             deduplicated.push(bestNonAd);
         }
         
-        // Keep the ad with smallest Page_Origin
+        // Keep the ad with smallest PageOrigin
         if (ads.length > 0) {
             const bestAd = ads.reduce((best, current) => {
-                const bestPage = parseInt(best.Page_Origin) || 999999;
-                const currentPage = parseInt(current.Page_Origin) || 999999;
+                const bestPage = parseInt(best.pageOrigin) || 999999;
+                const currentPage = parseInt(current.pageOrigin) || 999999;
                 return currentPage < bestPage ? current : best;
             });
             deduplicated.push(bestAd);
@@ -653,35 +626,6 @@ function applyFilters() {
     displayedCount = 0;
     renderCards();
     updateFilteredCount();
-    saveSettings();
-}
-
-function applySorting() {
-    const sortMode = elements.sortSelect.value;
-    
-    switch(sortMode) {
-        case 'price-asc':
-            filteredListings.sort((a, b) => a.Price - b.Price);
-            break;
-        case 'price-desc':
-            filteredListings.sort((a, b) => b.Price - a.Price);
-            break;
-        case 'reviews-desc':
-            filteredListings.sort((a, b) => b.Reviews - a.Reviews);
-            break;
-        case 'reviews-asc':
-            filteredListings.sort((a, b) => a.Reviews - b.Reviews);
-            break;
-        case 'rating-desc':
-            filteredListings.sort((a, b) => b.Rating - a.Rating);
-            break;
-        case 'rating-asc':
-            filteredListings.sort((a, b) => a.Rating - b.Rating);
-            break;
-        default:
-            // Keep default order
-            break;
-    }
 }
 
 function clearAllFilters() {
@@ -691,41 +635,58 @@ function clearAllFilters() {
     elements.filterBestseller.checked = false;
     elements.filterPopular.checked = false;
     elements.filterEtsysPick.checked = false;
+    elements.filterFreeShipping.checked = false;
+    elements.productTypeSelect.value = 'all';
     
-    // Get the actual max values from the sliders
     const maxPrice = parseFloat(elements.priceMaxSlider.getAttribute('max'));
     const maxReviews = parseFloat(elements.reviewMaxSlider.getAttribute('max'));
     
-    // Reset Price sliders
     elements.priceMinSlider.value = 0;
     elements.priceMaxSlider.value = maxPrice;
-    
-    // Reset Review sliders
     elements.reviewMinSlider.value = 0;
     elements.reviewMaxSlider.value = maxReviews;
-    
-    // Reset Rating sliders
     elements.ratingMinSlider.value = 0;
     elements.ratingMaxSlider.value = 50;
     
-    // Update displays
     updateRangeDisplay('price');
     updateRangeDisplay('review');
     updateRangeDisplay('rating');
-    
-    // FIXED: Update visual fills
     updateSliderFill('price');
     updateSliderFill('review');
     updateSliderFill('rating');
     
     clearAllBrands();
-    
     applyFilters();
 }
 
 // ==========================================
-// Card Rendering
+// NEW: Card Rendering Functions
 // ==========================================
+
+function renderCards() {
+    elements.cardsContainer.innerHTML = ''; // Clear existing cards
+    
+    const fragment = document.createDocumentFragment();
+    const cardsToShow = filteredListings.slice(0, CONFIG.cardsPerLoad);
+    
+    cardsToShow.forEach(listing => {
+        const card = createListingCard(listing);
+        fragment.appendChild(card);
+    });
+    
+    elements.cardsContainer.appendChild(fragment);
+    displayedCount = cardsToShow.length;
+    
+    // Update results count
+    elements.resultsCount.textContent = `${allListings.length.toLocaleString()} listings`;
+    
+    // Show/hide Load More button
+    if (displayedCount < filteredListings.length) {
+        elements.loadMoreContainer.style.display = 'block';
+    } else {
+        elements.loadMoreContainer.style.display = 'none';
+    }
+}
 
 function loadMoreCards() {
     const startIndex = displayedCount;
@@ -765,22 +726,22 @@ function createListingCard(listing) {
     let badgesHTML = '';
     
     if (listing.isAd) {
-        badgesHTML += '<span class="badge badge-ad">AD</span>';
+        badgesHTML += `<span class="badge badge-ad">AD</span>`;
     }
     if (hasDiscount) {
         badgesHTML += `<span class="badge badge-discount">-${discountPercent}%</span>`;
     }
     if (listing.freeShipping) {
-        badgesHTML += '<span class="badge badge-shipping">Free Ship</span>';
+        badgesHTML += `<span class="badge badge-shipping">Free Ship</span>`;
     }
     if (badgesArray.includes('Bestseller')) {
-        badgesHTML += '<span class="badge badge-bestseller">Bestseller</span>';
+        badgesHTML += `<span class="badge badge-bestseller">Bestseller</span>`;
     }
     if (badgesArray.includes('Popular Now')) {
-        badgesHTML += '<span class="badge badge-popular">Popular</span>';
+        badgesHTML += `<span class="badge badge-popular">Popular</span>`;
     }
     if (badgesArray.some(b => b.toLowerCase().includes("etsy's pick"))) {
-        badgesHTML += '<span class="badge badge-etsyspick">Etsy\'s Pick</span>';
+        badgesHTML += `<span class="badge badge-etsyspick">Etsy's Pick</span>`;
     }
     
     // Shop URL
@@ -863,60 +824,16 @@ function exportRefinedResults() {
         return;
     }
     
-    // Generate filter summary for filename
-    let filterSummary = '';
-    
-    if (elements.searchInput.value) {
-        filterSummary += `_search-${sanitizeFilename(elements.searchInput.value)}`;
-    }
-    
-    if (elements.filterHideAds.checked) filterSummary += '_no-ads';
-    if (elements.filterBestseller.checked) filterSummary += '_bestseller';
-    if (elements.filterPopular.checked) filterSummary += '_popular';
-    
-    const priceMin = parseFloat(elements.priceMinSlider.value);
-    const priceMax = parseFloat(elements.priceMaxSlider.value);
-    const sliderMaxPrice = parseFloat(elements.priceMaxSlider.getAttribute('max'));
-    if (priceMin > 0 || priceMax < sliderMaxPrice) {
-        filterSummary += `_price${priceMin}-${priceMax}`;
-    }
-    
-    const reviewMin = parseInt(elements.reviewMinSlider.value);
-    const reviewMax = parseInt(elements.reviewMaxSlider.value);
-    const sliderMaxReview = parseInt(elements.reviewMaxSlider.getAttribute('max'));
-    if (reviewMin > 0 || reviewMax < sliderMaxReview) {
-        filterSummary += `_reviews${reviewMin}-${reviewMax}`;
-    }
-    
-    const ratingMin = (parseFloat(elements.ratingMinSlider.value) / 10).toFixed(1);
-    const ratingMax = (parseFloat(elements.ratingMaxSlider.value) / 10).toFixed(1);
-    if (ratingMin > 0 || ratingMax < 5.0) {
-        filterSummary += `_rating${ratingMin}-${ratingMax}`;
-    }
-    
-    // Truncate to reasonable length
-    if (filterSummary.length > 50) {
-        filterSummary = filterSummary.substring(0, 50);
-    }
-    
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
-    const filename = `etsy_refined${filterSummary}_${timestamp}.csv`;
-    
-    // FIXED: Get all column headers dynamically from the first listing
+    // Get all column headers dynamically from the first listing
     if (filteredListings.length === 0) return;
     
     const allKeys = Object.keys(filteredListings[0]);
     
-    // Exclude internal/computed properties
-    const headers = allKeys.filter(key => 
-        !['hasBestseller', 'hasPopular', 'hasEtsysPick', 'fileIndex'].includes(key)
-    );
-    
-    // Generate CSV rows with all columns
+    // Generate CSV with all columns
+    const headers = allKeys;
     const rows = filteredListings.map(listing => 
         headers.map(header => {
             const value = listing[header];
-            // Handle different types
             if (value === null || value === undefined) return '';
             if (typeof value === 'boolean') return value ? 'Yes' : 'No';
             if (typeof value === 'string') return escapeCSV(value);
@@ -924,7 +841,11 @@ function exportRefinedResults() {
         })
     );
     
-    const csv = [headers, ...rows].map(row => row.map(v => `"${v}"`).join(',')).join('\n');
+    const csv = [headers, ...rows.map(row => row.map(v => `"${v}"`).join(','))].join('\n');
+    
+    // Generate filename
+    const timestamp = new Date().toISOString().replace(/:/g, '-').slice(0, -5);
+    const filename = `etsy_refined_${timestamp}.csv`;
     
     // Download
     const blob = new Blob([csv], { type: 'text/csv' });
@@ -935,7 +856,7 @@ function exportRefinedResults() {
     a.click();
     URL.revokeObjectURL(url);
     
-    console.log(`📥 Exported ${filteredListings.length} listings with ${headers.length} columns`);
+    console.log(`✅ Exported ${filteredListings.length} listings with ${headers.length} columns`);
 }
 
 // ==========================================
@@ -945,64 +866,57 @@ function exportRefinedResults() {
 function showViewer() {
     elements.uploadSection.style.display = 'none';
     elements.viewerSection.style.display = 'block';
-    
     elements.resultsCount.textContent = `${allListings.length} listings`;
     elements.lastUpdated.textContent = `Last updated: ${new Date().toLocaleString()}`;
     
     // Get actual max values from data
-    const prices = allListings.map(l => l.Price).filter(p => p > 0);
-    const reviews = allListings.map(l => l.Reviews).filter(r => r > 0);
+    const prices = allListings.map(l => l.currentPrice).filter(p => p > 0);
+    const reviews = allListings.map(l => l.reviews).filter(r => r >= 0);
     
     const maxPrice = prices.length > 0 ? Math.max(...prices) : 100;
     const maxReviews = reviews.length > 0 ? Math.max(...reviews) : 1000;
     
-    // UPDATED: Dynamic step size for review slider
-    const reviewStep = maxReviews < 500 ? 1 : 10;
+    const reviewStep = maxReviews > 500 ? 10 : 1;
     
-    // Round up based on step size
     const roundedMaxPrice = Math.ceil(maxPrice);
     const roundedMaxReviews = reviewStep === 1 ? Math.ceil(maxReviews) : Math.ceil(maxReviews / 10) * 10;
     
     console.log(`📊 Data Range - Price: $0-$${roundedMaxPrice}, Reviews: 0-${roundedMaxReviews} (step: ${reviewStep})`);
     
     // Set Price Range sliders
-    elements.priceMinSlider.setAttribute('min', '0');
+    elements.priceMinSlider.setAttribute('min', 0);
     elements.priceMinSlider.setAttribute('max', roundedMaxPrice);
-    elements.priceMinSlider.setAttribute('step', '1');
+    elements.priceMinSlider.setAttribute('step', 1);
     elements.priceMinSlider.value = 0;
-    
-    elements.priceMaxSlider.setAttribute('min', '0');
+    elements.priceMaxSlider.setAttribute('min', 0);
     elements.priceMaxSlider.setAttribute('max', roundedMaxPrice);
-    elements.priceMaxSlider.setAttribute('step', '1');
+    elements.priceMaxSlider.setAttribute('step', 1);
     elements.priceMaxSlider.value = roundedMaxPrice;
     
-    // Set Review Range sliders with DYNAMIC STEP
-    elements.reviewMinSlider.setAttribute('min', '0');
+    // Set Review Range sliders
+    elements.reviewMinSlider.setAttribute('min', 0);
     elements.reviewMinSlider.setAttribute('max', roundedMaxReviews);
     elements.reviewMinSlider.setAttribute('step', reviewStep);
     elements.reviewMinSlider.value = 0;
-    
-    elements.reviewMaxSlider.setAttribute('min', '0');
+    elements.reviewMaxSlider.setAttribute('min', 0);
     elements.reviewMaxSlider.setAttribute('max', roundedMaxReviews);
     elements.reviewMaxSlider.setAttribute('step', reviewStep);
     elements.reviewMaxSlider.value = roundedMaxReviews;
     
-    // Set Rating Range sliders (always 0-5.0)
-    elements.ratingMinSlider.setAttribute('min', '0');
-    elements.ratingMinSlider.setAttribute('max', '50');
-    elements.ratingMinSlider.setAttribute('step', '1');
+    // Set Rating Range sliders
+    elements.ratingMinSlider.setAttribute('min', 0);
+    elements.ratingMinSlider.setAttribute('max', 50);
+    elements.ratingMinSlider.setAttribute('step', 1);
     elements.ratingMinSlider.value = 0;
-    
-    elements.ratingMaxSlider.setAttribute('min', '0');
-    elements.ratingMaxSlider.setAttribute('max', '50');
-    elements.ratingMaxSlider.setAttribute('step', '1');
+    elements.ratingMaxSlider.setAttribute('min', 0);
+    elements.ratingMaxSlider.setAttribute('max', 50);
+    elements.ratingMaxSlider.setAttribute('step', 1);
     elements.ratingMaxSlider.value = 50;
     
     updateRangeDisplay('price');
     updateRangeDisplay('review');
     updateRangeDisplay('rating');
     
-    // Initialize slider fills
     setTimeout(() => {
         updateSliderFill('price');
         updateSliderFill('review');
@@ -1010,13 +924,6 @@ function showViewer() {
     }, 100);
     
     applyFilters();
-    
-    // Debug: Count ads
-    const adCount = allListings.filter(l => l.IsAd).length;
-    console.log(`🎯 AD DEBUG: ${adCount} ads out of ${allListings.length} total listings`);
-    if (adCount > 0) {
-        console.log('Sample ad:', allListings.find(l => l.IsAd));
-    }
 }
 
 function updateFilesDisplay() {
@@ -1031,7 +938,7 @@ function updateFilesDisplay() {
             <div class="file-info">
                 <span class="file-badge">File ${file.index}</span>
                 <span class="file-name">${file.name}</span>
-                <span class="file-count">(${file.count} items)</span>
+                <span class="file-count">${file.count} items</span>
             </div>
             <button class="btn-remove" onclick="removeFile(${index})">
                 <i class="fas fa-times"></i>
@@ -1066,31 +973,25 @@ function updateRangeDisplay(type) {
         const max = parseFloat(elements.priceMaxSlider.value);
         const sliderMax = parseFloat(elements.priceMaxSlider.getAttribute('max'));
         
-        // Format min value
-        elements.priceMin.textContent = min === 0 ? '$0' : `$${formatPrice(min)}`;
+        elements.priceMin.textContent = min === 0 ? '$0' : formatPrice(min);
         
-        // Format max value - show actual max if at the end
         if (max >= sliderMax) {
-            elements.priceMax.textContent = `$${formatPrice(sliderMax)}`;
+            elements.priceMax.textContent = formatPrice(sliderMax) + '+';
         } else {
-            elements.priceMax.textContent = `$${formatPrice(max)}`;
+            elements.priceMax.textContent = formatPrice(max);
         }
-        
     } else if (type === 'review') {
         const min = parseInt(elements.reviewMinSlider.value);
         const max = parseInt(elements.reviewMaxSlider.value);
         const sliderMax = parseInt(elements.reviewMaxSlider.getAttribute('max'));
         
-        // Format min value
         elements.reviewMin.textContent = min === 0 ? '0' : formatNumber(min);
         
-        // Format max value - show actual max if at the end
         if (max >= sliderMax) {
-            elements.reviewMax.textContent = formatNumber(sliderMax);
+            elements.reviewMax.textContent = formatNumber(sliderMax) + '+';
         } else {
             elements.reviewMax.textContent = formatNumber(max);
         }
-        
     } else if (type === 'rating') {
         const min = (parseFloat(elements.ratingMinSlider.value) / 10).toFixed(1);
         const max = (parseFloat(elements.ratingMaxSlider.value) / 10).toFixed(1);
@@ -1153,16 +1054,11 @@ function clearCache() {
         filteredListings = [];
         uploadedFiles = [];
         displayedCount = 0;
-        
         elements.viewerSection.style.display = 'none';
         elements.uploadSection.style.display = 'block';
         elements.filesList.style.display = 'none';
     }
 }
-
-// ==========================================
-// Utility Functions
-// ==========================================
 
 // ==========================================
 // Utility Functions
@@ -1177,30 +1073,19 @@ function debounce(func, delay) {
 }
 
 function formatNumber(num) {
-    if (num >= 1000000) {
-        return (num / 1000000).toFixed(1) + 'M';
-    }
-    if (num >= 1000) {
-        return (num / 1000).toFixed(1) + 'K';
-    }
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
     return num.toString();
 }
 
-// NEW: Format price with K suffix for thousands
 function formatPrice(price) {
-    if (price >= 1000) {
-        return (price / 1000).toFixed(1) + 'K';
-    }
-    return price.toFixed(0);
+    if (price >= 1000) return '$' + (price / 1000).toFixed(1) + 'K';
+    return '$' + price.toFixed(0);
 }
 
 function escapeCSV(str) {
     if (typeof str !== 'string') return str;
     return str.replace(/"/g, '""');
-}
-
-function sanitizeFilename(str) {
-    return str.replace(/[^a-z0-9]/gi, '-').substring(0, 20);
 }
 
 // ==========================================

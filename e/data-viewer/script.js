@@ -780,7 +780,7 @@ function createCard(listing) {
         badgesHTML += '<span class="badge badge-popular">Popular</span>';
     }
     if (badgesArray.some(b => b.toLowerCase().includes("etsy's pick"))) {
-        badgesHTML += '<span class="badge badge-etsyspick">Etsy\\'s Pick</span>';
+        badgesHTML += '<span class="badge badge-etsyspick">Etsy\'s Pick</span>';
     }
     
     // Shop URL

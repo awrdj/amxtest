@@ -72,130 +72,133 @@
                     </div>
                 </div>
 
-                <!-- TOP ROW: Search + Quick Filters + Sort -->
-                <div class="filters-top-row">
-                    <!-- Search Box -->
-                    <div class="filter-box">
-                        <label class="filter-label">
-                            <i class="fas fa-search"></i> Search
-                        </label>
-                        <input type="text" id="searchInput" class="filter-input" placeholder="Search by title...">
-                    </div>
+                <!-- ROW 1: Search + Quick Filters -->
+<div class="filters-row-1">
+    <!-- Search Box -->
+    <div class="filter-box filter-search">
+        <label class="filter-label">
+            <i class="fas fa-search"></i> Search
+        </label>
+        <input type="text" id="searchInput" class="filter-input" placeholder="Search by title or shop:SHOPNAME...">
+    </div>
 
-                    <!-- Quick Filters -->
-<div class="filter-box">
-    <label class="filter-label">Quick Filters</label>
-    <div class="checkbox-group-inline">
-        <label class="checkbox-label">
-            <input type="checkbox" id="filterHideAds">
-            <span>Hide Ads</span>
-        </label>
-        <label class="checkbox-label">
-            <input type="checkbox" id="filterBestseller">
-            <span>Bestseller</span>
-        </label>
-        <label class="checkbox-label">
-            <input type="checkbox" id="filterPopular">
-            <span>Popular Now</span>
-        </label>
-        <label class="checkbox-label">
-            <input type="checkbox" id="filterEtsysPick">
-            <span>Etsy's Pick</span>
-        </label>
-        <label class="checkbox-label">
-            <input type="checkbox" id="filterFreeShipping">
-            <span>Free Shipping</span>
-        </label>
+    <!-- Quick Filters -->
+    <div class="filter-box filter-quick">
+        <label class="filter-label">Quick Filters</label>
+        <div class="checkbox-group-inline">
+            <label class="checkbox-label">
+                <input type="checkbox" id="filterHideAds">
+                <span>Hide Ads</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="filterBestseller">
+                <span>Bestseller</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="filterPopular">
+                <span>Popular Now</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="filterEtsysPick">
+                <span>Etsy's Pick</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="filterFreeShipping">
+                <span>Free Shipping</span>
+            </label>
+        </div>
     </div>
 </div>
 
-<!-- Product Type Filter -->
-<div class="filter-box">
-    <label class="filter-label">
-        <i class="fas fa-box"></i> Product Type
-    </label>
-    <select id="productTypeSelect" class="filter-select">
-        <option value="all">All Types</option>
-        <option value="physical">Physical Product</option>
-        <option value="digital">Digital Product</option>
-    </select>
+<!-- ROW 2: Price, Reviews, Rating Sliders -->
+<div class="filters-row-2">
+    <!-- Price Range -->
+    <div class="filter-box">
+        <label class="filter-label">
+            <i class="fas fa-dollar-sign"></i> Price Range
+        </label>
+        <div class="range-display">
+            <span id="priceMin">$0</span>
+            <span>-</span>
+            <span id="priceMax">$100</span>
+        </div>
+        <div class="dual-slider">
+            <input type="range" id="priceMinSlider" class="range-slider" min="0" max="1000" value="0" step="1">
+            <input type="range" id="priceMaxSlider" class="range-slider range-slider-max" min="0" max="1000" value="1000" step="1">
+        </div>
+    </div>
+
+    <!-- Review Count Range -->
+    <div class="filter-box">
+        <label class="filter-label">
+            <i class="fas fa-comment-dots"></i> Review Count Range
+        </label>
+        <div class="range-display">
+            <span id="reviewMin">0</span>
+            <span>-</span>
+            <span id="reviewMax">10K+</span>
+        </div>
+        <div class="dual-slider">
+            <input type="range" id="reviewMinSlider" class="range-slider" min="0" max="10000" value="0">
+            <input type="range" id="reviewMaxSlider" class="range-slider range-slider-max" min="0" max="10000" value="10000">
+        </div>
+    </div>
+
+    <!-- Rating Range -->
+    <div class="filter-box">
+        <label class="filter-label">
+            <i class="fas fa-star"></i> Rating Range
+        </label>
+        <div class="range-display">
+            <span id="ratingMin">0.0</span>
+            <span>-</span>
+            <span id="ratingMax">5.0</span>
+        </div>
+        <div class="dual-slider">
+            <input type="range" id="ratingMinSlider" class="range-slider" min="0" max="50" value="0" step="1">
+            <input type="range" id="ratingMaxSlider" class="range-slider range-slider-max" min="0" max="50" value="50" step="1">
+        </div>
+    </div>
 </div>
-                    
-                    <!-- Sort Options -->
-                    <div class="filter-box">
-                        <label class="filter-label">
-                            <i class="fas fa-sort"></i> Sort By
-                        </label>
-                        <select id="sortSelect" class="filter-select">
-    <option value="default">Default Order</option>
-    <option value="price-asc">Price: Low → High</option>
-    <option value="price-desc">Price: High → Low</option>
-    <option value="reviews-desc">Reviews: High → Low</option>
-    <option value="reviews-asc">Reviews: Low → High</option>
-    <option value="rating-desc">Rating: High → Low</option>
-    <option value="rating-asc">Rating: Low → High</option>
-</select>
-                    </div>
-                </div>
 
-                <!-- BOTTOM ROW: Sliders + Export -->
-                <div class="filters-bottom-row">
-                    <!-- Price Range -->
-                    <div class="filter-box">
-                        <label class="filter-label">
-                            <i class="fas fa-dollar-sign"></i> Price Range
-                        </label>
-                        <div class="range-display">
-                            <span id="priceMin">$0</span>
-                            <span>-</span>
-                            <span id="priceMax">$100</span>
-                        </div>
-                        <div class="dual-slider">
-                            <input type="range" id="priceMinSlider" class="range-slider" min="0" max="1000" value="0" step="1">
-                            <input type="range" id="priceMaxSlider" class="range-slider range-slider-max" min="0" max="1000" value="1000" step="1">
-                        </div>
-                    </div>
+<!-- ROW 3: Product Type, Sort By, Export -->
+<div class="filters-row-3">
+    <!-- Product Type Filter -->
+    <div class="filter-box">
+        <label class="filter-label">
+            <i class="fas fa-box"></i> Product Type
+        </label>
+        <select id="productTypeSelect" class="filter-select">
+            <option value="all">All Types</option>
+            <option value="physical">Physical Product</option>
+            <option value="digital">Digital Product</option>
+        </select>
+    </div>
 
-                    <!-- Review Count Range -->
-                    <div class="filter-box">
-                        <label class="filter-label">
-                            <i class="fas fa-comment-dots"></i> Review Count Range
-                        </label>
-                        <div class="range-display">
-                            <span id="reviewMin">0</span>
-                            <span>-</span>
-                            <span id="reviewMax">10K+</span>
-                        </div>
-                        <div class="dual-slider">
-                            <input type="range" id="reviewMinSlider" class="range-slider" min="0" max="10000" value="0">
-                            <input type="range" id="reviewMaxSlider" class="range-slider range-slider-max" min="0" max="10000" value="10000">
-                        </div>
-                    </div>
+    <!-- Sort Options -->
+    <div class="filter-box">
+        <label class="filter-label">
+            <i class="fas fa-sort"></i> Sort By
+        </label>
+        <select id="sortSelect" class="filter-select">
+            <option value="default">Default Order</option>
+            <option value="price-asc">Price: Low → High</option>
+            <option value="price-desc">Price: High → Low</option>
+            <option value="reviews-desc">Reviews: High → Low</option>
+            <option value="reviews-asc">Reviews: Low → High</option>
+            <option value="rating-desc">Rating: High → Low</option>
+            <option value="rating-asc">Rating: Low → High</option>
+        </select>
+    </div>
 
-                    <!-- Rating Range -->
-                    <div class="filter-box">
-                        <label class="filter-label">
-                            <i class="fas fa-star"></i> Rating Range
-                        </label>
-                        <div class="range-display">
-                            <span id="ratingMin">0.0</span>
-                            <span>-</span>
-                            <span id="ratingMax">5.0</span>
-                        </div>
-                        <div class="dual-slider">
-                            <input type="range" id="ratingMinSlider" class="range-slider" min="0" max="50" value="0" step="1">
-                            <input type="range" id="ratingMaxSlider" class="range-slider range-slider-max" min="0" max="50" value="50" step="1">
-                        </div>
-                    </div>
-
-                    <!-- Export Button -->
-                    <div class="filter-box">
-                        <label class="filter-label" style="opacity: 0;">Export</label>
-                        <button class="btn-export" id="exportBtn">
-                            <i class="fas fa-download"></i> Export Refined Results
-                        </button>
-                    </div>
-                </div>
+    <!-- Export Button -->
+    <div class="filter-box">
+        <label class="filter-label" style="opacity: 0;">Export</label>
+        <button class="btn-export" id="exportBtn">
+            <i class="fas fa-download"></i> Export Refined Results
+        </button>
+    </div>
+</div>
 
                 <!-- Brand/IP Filter (Collapsible) -->
                 <div class="filter-collapsible">

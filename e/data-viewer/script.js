@@ -721,23 +721,24 @@ function createListingCard(listing) {
     const fileInfo = uploadedFiles[listing.fileIndex - 1];
     const fileName = fileInfo ? fileInfo.name : 'Unknown';
     
-    // Page origin badge
-    const pageOrigin = listing.Page_Origin || '?';
-    
-    // Ad border indicator
-    const adBorderHTML = listing.Is_Ad ? '<div class="card-ad-indicator"></div>' : '';
-    
-    card.innerHTML = `
-        ${adBorderHTML}
-        <div class="card-image-wrapper">
-            <img src="${listing.Thumbnail || 'placeholder.jpg'}" alt="${listing.Title}" class="card-image" loading="lazy">
-            <div class="card-badges">${badges.join('')}</div>
-            <div class="file-info-icon">
-                <i class="fas fa-info"></i>
-                <div class="file-info-tooltip">${fileName}</div>
-            </div>
-            <div class="page-origin-badge">p. ${pageOrigin}</div>
+// Page origin badge (only show if exists)
+const pageOrigin = listing.Page_Origin;
+const pageOriginHTML = pageOrigin ? `<div class="page-origin-badge">p. ${pageOrigin}</div>` : '';
+
+// Ad border indicator
+const adBorderHTML = listing.Is_Ad ? '<div class="card-ad-indicator"></div>' : '';
+
+card.innerHTML = `
+    ${adBorderHTML}
+    <div class="card-image-wrapper">
+        <img src="${listing.Thumbnail || 'placeholder.jpg'}" alt="${listing.Title}" class="card-image" loading="lazy">
+        <div class="card-badges">${badges.join('')}</div>
+        <div class="file-info-icon">
+            <i class="fas fa-info"></i>
+            <div class="file-info-tooltip">${fileName}</div>
         </div>
+        ${pageOriginHTML}
+    </div>
         <div class="card-content">
             <div class="card-title">${listing.Title || 'No Title'}</div>
             <div class="card-details">

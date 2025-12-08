@@ -850,16 +850,16 @@ function showViewer() {
     elements.resultsCount.textContent = `${allListings.length} listings`;
     elements.lastUpdated.textContent = `Last updated: ${new Date().toLocaleString()}`;
     
-    // FIXED: Get actual max values from data (no fallbacks)
+    // Get actual max values from data
     const prices = allListings.map(l => l.Price).filter(p => p > 0);
     const reviews = allListings.map(l => l.Reviews).filter(r => r > 0);
     
     const maxPrice = prices.length > 0 ? Math.max(...prices) : 100;
     const maxReviews = reviews.length > 0 ? Math.max(...reviews) : 1000;
     
-    // Round up to nice numbers for better UX
+    // FIXED: Round up to nearest step value
     const roundedMaxPrice = Math.ceil(maxPrice);
-    const roundedMaxReviews = Math.ceil(maxReviews);
+    const roundedMaxReviews = Math.ceil(maxReviews / 10) * 10; // Round up to nearest 10
     
     console.log(`📊 Data Range - Price: $0-$${roundedMaxPrice}, Reviews: 0-${roundedMaxReviews}`);
     
@@ -904,10 +904,10 @@ function showViewer() {
     applyFilters();
     
     // Debug: Count ads
-    const adCount = allListings.filter(l => l.IsAd).length;
+    const adCount = allListings.filter(l => l.Is_Ad).length;
     console.log(`🎯 AD DEBUG: ${adCount} ads out of ${allListings.length} total listings`);
     if (adCount > 0) {
-        console.log('Sample ad:', allListings.find(l => l.IsAd));
+        console.log('Sample ad:', allListings.find(l => l.Is_Ad));
     }
 }
 

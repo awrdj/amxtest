@@ -852,10 +852,10 @@ body {
 
 .file-info-icon {
     position: absolute;
-    top: 12px;
+    bottom: 8px;
     right: 8px;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
+    background: rgba(0, 0, 0, 0.7);
+    color: #222;
     width: 20px;
     height: 20px;
     border-radius: 50%;
@@ -891,7 +891,7 @@ body {
 /* Page Origin Badge - Bottom Right */
 .page-origin-badge {
     position: absolute;
-    bottom: 11px;
+    bottom: 7px;
     left: 8px;
     background: rgba(0, 0, 0, 0.7);
     color: white;

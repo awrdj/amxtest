@@ -777,13 +777,15 @@ function exportRefinedResults() {
     
     const priceMin = parseFloat(elements.priceMinSlider.value);
     const priceMax = parseFloat(elements.priceMaxSlider.value);
-    if (priceMin > 0 || priceMax < 1000) {
+    const sliderMaxPrice = parseFloat(elements.priceMaxSlider.getAttribute('max'));
+    if (priceMin > 0 || priceMax < sliderMaxPrice) {
         filterSummary += `_price${priceMin}-${priceMax}`;
     }
     
     const reviewMin = parseInt(elements.reviewMinSlider.value);
     const reviewMax = parseInt(elements.reviewMaxSlider.value);
-    if (reviewMin > 0 || reviewMax < 10000) {
+    const sliderMaxReview = parseInt(elements.reviewMaxSlider.getAttribute('max'));
+    if (reviewMin > 0 || reviewMax < sliderMaxReview) {
         filterSummary += `_reviews${reviewMin}-${reviewMax}`;
     }
     
@@ -801,21 +803,27 @@ function exportRefinedResults() {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
     const filename = `etsy_refined${filterSummary}_${timestamp}.csv`;
     
-    // Generate CSV
-    const headers = ['Title', 'Price', 'Reviews', 'Rating', 'URL', 'Thumbnail', 'Shop_URL', 'Badges', 'Is_Ad', 'PageOrigin', 'SearchQuery'];
-    const rows = filteredListings.map(listing => [
-        escapeCSV(listing.Title || ''),
-        listing.Price,
-        listing.Reviews,
-        listing.Rating,
-        listing.URL || '',
-        listing.Thumbnail || '',
-        listing.Shop_URL || '',
-        listing.Badges || '',
-        listing.Is_Ad,
-        listing.PageOrigin || '',
-        listing.SearchQuery || ''
-    ]);
+    // FIXED: Get all column headers dynamically from the first listing
+    if (filteredListings.length === 0) return;
+    
+    const allKeys = Object.keys(filteredListings[0]);
+    
+    // Exclude internal/computed properties
+    const headers = allKeys.filter(key => 
+        !['hasBestseller', 'hasPopular', 'hasEtsysPick', 'fileIndex'].includes(key)
+    );
+    
+    // Generate CSV rows with all columns
+    const rows = filteredListings.map(listing => 
+        headers.map(header => {
+            const value = listing[header];
+            // Handle different types
+            if (value === null || value === undefined) return '';
+            if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+            if (typeof value === 'string') return escapeCSV(value);
+            return value;
+        })
+    );
     
     const csv = [headers, ...rows].map(row => row.map(v => `"${v}"`).join(',')).join('\n');
     
@@ -827,6 +835,8 @@ function exportRefinedResults() {
     a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
+    
+    console.log(`📥 Exported ${filteredListings.length} listings with ${headers.length} columns`);
 }
 
 // ==========================================

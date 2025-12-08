@@ -723,20 +723,19 @@ function createListingCard(listing) {
     
 // Page origin and search query badge
 const pageOrigin = listing.Page_Origin;
-const searchQuery = listing.Search_Query || listing.SearchQuery; // Handle both column name formats
+const searchQuery = listing.Search_Query || listing.SearchQuery;
 
 let pageOriginHTML = '';
 if (pageOrigin || searchQuery) {
-    pageOriginHTML = '<div class="page-origin-badge">';
+    const lines = [];
     if (pageOrigin) {
-        pageOriginHTML += `<div class="badge-line">p. ${pageOrigin}</div>`;
+        lines.push(`<span class="badge-line">p. ${pageOrigin}</span>`);
     }
     if (searchQuery) {
-        // Truncate long queries
         const displayQuery = searchQuery.length > 20 ? searchQuery.substring(0, 20) + '...' : searchQuery;
-        pageOriginHTML += `<div class="badge-line">🔍 ${displayQuery}</div>`;
+        lines.push(`<span class="badge-line">🔍 ${displayQuery}</span>`);
     }
-    pageOriginHTML += '</div>';
+    pageOriginHTML = `<div class="page-origin-badge">${lines.join('')}</div>`;
 }
 
 // Ad border indicator

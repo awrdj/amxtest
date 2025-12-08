@@ -727,17 +727,17 @@ const searchQuery = listing.Search_Query || listing.SearchQuery;
 
 let pageOriginHTML = '';
 if (pageOrigin || searchQuery) {
-    const lines = [];
+    pageOriginHTML = '<div class="page-origin-badge">';
     if (pageOrigin) {
-        lines.push(`<span class="badge-line top-badge-line">p. ${pageOrigin}</span>`);
+        pageOriginHTML += `<div class="badge-line">p. ${pageOrigin}</div>`;
     }
     if (searchQuery) {
         const displayQuery = searchQuery.length > 20 ? searchQuery.substring(0, 20) + '...' : searchQuery;
-        lines.push(`<span class="badge-line bottom-badge-line">🔍 ${displayQuery}</span>`);
+        pageOriginHTML += `<div class="badge-line">🔍 ${displayQuery}</div>`;
     }
-    pageOriginHTML = `<div class="page-origin-badge">${lines.join('')}</div>`;
+    pageOriginHTML += '</div>';
 }
-
+    
 // Ad border indicator
 const adBorderHTML = listing.Is_Ad ? '<div class="card-ad-indicator"></div>' : '';
 

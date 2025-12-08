@@ -894,13 +894,13 @@ body {
 
 .page-origin-badge {
     position: absolute;
-    top: 8px; /* Top instead of bottom */
+    bottom: 7px; /* Bottom-left */
     left: 8px;
     z-index: 3;
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Align to left */
-    gap: 4px;
+    align-items: flex-start;
+    gap: 2px; /* Small gap to make them look connected */
     max-width: 180px;
 }
 
@@ -909,7 +909,6 @@ body {
     background: rgba(0, 0, 0, 0.75);
     color: white;
     padding: 4px 10px;
-    border-radius: 8px;
     font-size: 11px;
     font-weight: 600;
     border: 1px solid rgba(255, 255, 255, 0.15);
@@ -922,8 +921,19 @@ body {
     line-height: 1.3;
 }
 
-.badge-line + .badge-line {
-    margin-top: 0; /* Remove this since we use gap now */
+/* First line - rounded top corners */
+.badge-line:first-child {
+    border-radius: 8px 8px 4px 4px;
+}
+
+/* Last line - rounded bottom corners */
+.badge-line:last-child {
+    border-radius: 4px 4px 8px 8px;
+}
+
+/* If only one line exists - all corners rounded */
+.badge-line:only-child {
+    border-radius: 8px;
 }
 
 .card-content {

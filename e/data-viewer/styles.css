@@ -1013,3 +1013,115 @@ body {
     color: var(--text-secondary);
     font-size: 14px;
 }
+
+/* Discount Badge */
+.badge-discount {
+    background: linear-gradient(135deg, #ff4757 0%, #ff6348 100%);
+    color: white;
+    font-weight: 700;
+}
+
+/* Shipping Badge */
+.badge-shipping {
+    background: linear-gradient(135deg, #26de81 0%, #20bf6b 100%);
+    color: white;
+    font-weight: 600;
+}
+
+/* Shop Name Link */
+.card-shop {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    margin-top: -2px;
+}
+
+.shop-link {
+    color: var(--primary-orange);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.shop-link:hover {
+    text-decoration: underline;
+    color: #ff7a33;
+}
+
+/* Product Type */
+.card-product-type {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+/* Price Section Update */
+.card-price-section {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.card-price {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--primary-orange);
+}
+
+.card-price-original {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+/* Adjust card content spacing */
+.card-content {
+    padding: 8px;
+}
+
+.card-title {
+    font-size: 13px;
+    margin-bottom: 6px;
+    min-height: 35px;
+}
+
+.card-details {
+    margin-bottom: 4px;
+}
+
+.card-reviews {
+    font-size: 11px;
+}
+
+.no-rating {
+    font-size: 11px;
+    color: var(--text-secondary);
+    opacity: 0.6;
+}
+
+/* Update checkbox inline for 5 items */
+.checkbox-group-inline {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+}
+
+@media (max-width: 1100px) {
+    .checkbox-group-inline {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .checkbox-group-inline {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+

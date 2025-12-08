@@ -83,28 +83,44 @@
                     </div>
 
                     <!-- Quick Filters -->
-                    <div class="filter-box">
-                        <label class="filter-label">Quick Filters</label>
-                        <div class="checkbox-group-inline">
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="filterHideAds">
-                                <span>Hide Ads</span>
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="filterBestseller">
-                                <span>Bestseller</span>
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="filterPopular">
-                                <span>Popular Now</span>
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="filterEtsysPick">
-                                <span>Etsy's Pick</span>
-                            </label>
-                        </div>
-                    </div>
+<div class="filter-box">
+    <label class="filter-label">Quick Filters</label>
+    <div class="checkbox-group-inline">
+        <label class="checkbox-label">
+            <input type="checkbox" id="filterHideAds">
+            <span>Hide Ads</span>
+        </label>
+        <label class="checkbox-label">
+            <input type="checkbox" id="filterBestseller">
+            <span>Bestseller</span>
+        </label>
+        <label class="checkbox-label">
+            <input type="checkbox" id="filterPopular">
+            <span>Popular Now</span>
+        </label>
+        <label class="checkbox-label">
+            <input type="checkbox" id="filterEtsysPick">
+            <span>Etsy's Pick</span>
+        </label>
+        <label class="checkbox-label">
+            <input type="checkbox" id="filterFreeShipping">
+            <span>Free Shipping</span>
+        </label>
+    </div>
+</div>
 
+<!-- Product Type Filter -->
+<div class="filter-box">
+    <label class="filter-label">
+        <i class="fas fa-box"></i> Product Type
+    </label>
+    <select id="productTypeSelect" class="filter-select">
+        <option value="all">All Types</option>
+        <option value="physical">Physical Product</option>
+        <option value="digital">Digital Product</option>
+    </select>
+</div>
+                    
                     <!-- Sort Options -->
                     <div class="filter-box">
                         <label class="filter-label">

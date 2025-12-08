@@ -782,12 +782,12 @@ function createListingCard(listing) {
             <div class="card-badges">${badgesHTML}</div>
             ${listing.pageOrigin || listing.searchQuery ? `
                 <div class="page-origin-badge">
+                    ${listing.pageOrigin ? `<span class="badge-line">p. ${listing.pageOrigin}</span>` : ''}
                     ${listing.searchQuery ? `
                         <span class="badge-line">
                             ${listing.searchQuery}${organicCount ? ` (${organicCount})` : ''}
                         </span>
                     ` : ''}
-                    ${listing.pageOrigin ? `<span class="badge-line">Page ${listing.pageOrigin}</span>` : ''}
                 </div>
             ` : ''}
         </div>

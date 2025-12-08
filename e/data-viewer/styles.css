@@ -373,32 +373,59 @@ body {
     font-size: 14px;
 }
 
-/* NEW LAYOUT: Top Row + Bottom Row */
-.filters-top-row {
+/* NEW LAYOUT: Three Rows */
+
+/* ROW 1: Search (wide) + Quick Filters */
+.filters-row-1 {
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-columns: 1fr 2fr;
     gap: 20px;
     margin-bottom: 12px;
 }
 
-.filters-bottom-row {
+.filter-search {
+    min-width: 0; /* Allow proper text truncation */
+}
+
+.filter-quick {
+    min-width: 0;
+}
+
+/* ROW 2: Price, Reviews, Rating (equal width) */
+.filters-row-2 {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 12px;
+}
+
+/* ROW 3: Product Type, Sort By, Export (equal width) */
+.filters-row-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
 }
 
+/* Responsive Design */
 @media (max-width: 1200px) {
-    .filters-top-row {
+    .filters-row-1 {
         grid-template-columns: 1fr;
     }
     
-    .filters-bottom-row {
-        grid-template-columns: repeat(2, 1fr);
+    .filters-row-2 {
+        grid-template-columns: 1fr;
+    }
+    
+    .filters-row-3 {
+        grid-template-columns: 1fr;
     }
 }
 
 @media (max-width: 768px) {
-    .filters-bottom-row {
+    /* Keep single column on mobile */
+    .filters-row-1,
+    .filters-row-2,
+    .filters-row-3 {
         grid-template-columns: 1fr;
     }
 }

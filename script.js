@@ -2216,8 +2216,12 @@ $(document).ready(function() {
             'suffix': queryLast || ""
         });
 
-        const suggestUrl = `https://completion.${marketplace.domain}/api/2017/suggestions?${params.toString()}`;
-
+        // OLD NO CLOUDFLARE CORS const suggestUrl = `https://completion.${marketplace.domain}/api/2017/suggestions?${params.toString()}`;
+        // Replace with your actual Cloudflare Worker URL
+        const proxyWorker = "https://amazon-proxy.yourname.workers.dev"; 
+        const amazonUrl = `https://completion.${marketplace.domain}/api/2017/suggestions?${params.toString()}`;
+        const suggestUrl = `${proxyWorker}?url=${encodeURIComponent(amazonUrl)}`;
+        
         return fetch(suggestUrl)
             .then(response => {
                 if (!response.ok) {

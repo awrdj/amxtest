@@ -2218,7 +2218,7 @@ $(document).ready(function() {
 
         // OLD NO CLOUDFLARE CORS const suggestUrl = `https://completion.${marketplace.domain}/api/2017/suggestions?${params.toString()}`;
         // Replace with your actual Cloudflare Worker URL
-        const proxyWorker = "https://amazon-proxy.yourname.workers.dev"; 
+        const proxyWorker = "https://amx.awrdjmusic.workers.dev"; 
         const amazonUrl = `https://completion.${marketplace.domain}/api/2017/suggestions?${params.toString()}`;
         const suggestUrl = `${proxyWorker}?url=${encodeURIComponent(amazonUrl)}`;
         

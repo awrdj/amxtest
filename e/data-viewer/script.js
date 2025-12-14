@@ -576,7 +576,7 @@ function applyFilters() {
         if (hideAds && listing.isAd) return false;
         if (bestseller && !listing.badges.toLowerCase().includes('bestseller')) return false;
         if (popular && !listing.badges.toLowerCase().includes('popular')) return false;
-        if (etsysPick && !listing.badges.toLowerCase().includes("etsy's pick")) return false;
+        if (etsysPick && !listing.badges.toLowerCase().includes("etsy’s pick")) return false;
         if (freeShipping && !listing.freeShipping) return false;
         
         // Product Type filter

@@ -4,8 +4,8 @@
 
 // EASY TO ADJUST: Configuration
 const CONFIG = {
-    cardsPerLoad: 200,  // Initial cards to load
-    cardsPerPage: 100,  // Cards to add when "Load More" is clicked
+    cardsPerLoad: 360,  // Initial cards to load
+    cardsPerPage: 180,  // Cards to add when "Load More" is clicked
     localStorageKey: 'etsyScopeData',
     settingsKey: 'etsyScopeSettings'
 };

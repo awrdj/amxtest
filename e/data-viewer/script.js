@@ -734,11 +734,11 @@ function applyFilters() {
         cleanedSearchTerm = cleanedSearchTerm.replace(match[0], '').trim();
     }
 
-    // Extract single negative words: -word
-    const wordNegativeMatches = cleanedSearchTerm.matchAll(/-(\S+)/g);
+    // Extract single negative words: -word (only if preceded by space or at start)
+    const wordNegativeMatches = cleanedSearchTerm.matchAll(/(?:^|\s)-(\S+)/g);
     for (const match of wordNegativeMatches) {
         negativeTerms.push(match[1].toLowerCase().trim());
-        cleanedSearchTerm = cleanedSearchTerm.replace(match[0], '').trim();
+        cleanedSearchTerm = cleanedSearchTerm.replace(match[0], ' ').trim();
     }
 
     // Parse search term for shop filter

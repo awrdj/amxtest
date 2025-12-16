@@ -1315,7 +1315,7 @@ function updateRangeDisplay(type) {
 
         elements.priceMin.textContent = min === 0 ? '$0' : formatPrice(min);
         if (max >= sliderMax) {
-            elements.priceMax.textContent = `$${formatPrice(sliderMax)}+`;
+            elements.priceMax.textContent = formatPrice(sliderMax) + '+';
         } else {
             elements.priceMax.textContent = formatPrice(max);
         }

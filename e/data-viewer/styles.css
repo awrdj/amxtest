@@ -1291,3 +1291,60 @@ body {
 .btn-brand-filter-custom {
     margin-left: 8px;
 }
+
+/* ========================================
+   HARAM BLOCKER STYLES (Different color theme)
+   ======================================== */
+
+/* Haram checkbox grid items (red theme) */
+.haram-checkbox-grid .brand-checkbox-item {
+    background: linear-gradient(135deg, #2d1a1f 0%, #3d2a2f 100%);
+    border: 1px solid #8b3a3a;
+}
+
+.haram-checkbox-grid .brand-checkbox-item:hover {
+    background: linear-gradient(135deg, #3d2a2f 0%, #4d3a3f 100%);
+    border-color: #c94545;
+}
+
+/* Custom haram item styling (darker red) */
+.haram-checkbox-grid .custom-brand-item {
+    background: linear-gradient(135deg, #3d1a25 0%, #4d2a35 100%) !important;
+    border: 2px solid #a83a3a !important;
+}
+
+.haram-checkbox-grid .custom-brand-item:hover {
+    background: linear-gradient(135deg, #4d2a35 0%, #5d3a45 100%) !important;
+    border-color: #d94545 !important;
+}
+
+/* Haram delete icon */
+.haram-checkbox-grid .delete-brand-icon {
+    color: #ff8b8b;
+}
+
+.haram-checkbox-grid .delete-brand-icon:hover {
+    color: #ff6b6b;
+}
+
+/* Haram input container styling */
+.haram-checkbox-grid .custom-brand-input-container {
+    border-top: 2px solid #8b3a3a;
+}
+
+.haram-checkbox-grid .custom-brand-input {
+    border-color: #8b3a3a;
+}
+
+.haram-checkbox-grid .custom-brand-input:focus {
+    border-color: #c94545;
+}
+
+/* Haram add button (red theme) */
+.haram-checkbox-grid .btn-add-brand {
+    background: linear-gradient(135deg, #c94545 0%, #a83a3a 100%);
+}
+
+.haram-checkbox-grid .btn-add-brand:hover {
+    box-shadow: 0 6px 16px rgba(201, 69, 69, 0.4);
+}

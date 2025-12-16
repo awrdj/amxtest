@@ -1200,3 +1200,94 @@ body {
     }
 }
 
+/* ========================================
+   CUSTOM BRAND STYLES
+   ======================================== */
+
+/* Custom brand input container */
+.custom-brand-input-container {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 2px solid var(--border-color);
+}
+
+.custom-brand-input {
+    flex: 1;
+    padding: 10px 12px;
+    background: var(--darker-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.custom-brand-input:focus {
+    outline: none;
+    border-color: var(--primary-orange);
+    background: #141822;
+}
+
+.custom-brand-input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+
+.btn-add-brand {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.btn-add-brand:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(72, 187, 120, 0.4);
+}
+
+/* Custom brand item styling (blue theme) */
+.custom-brand-item {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%) !important;
+    border: 2px solid #4a90e2 !important;
+    position: relative;
+    padding-right: 30px !important;
+}
+
+.custom-brand-item:hover {
+    background: linear-gradient(135deg, #2d4a6f 0%, #3a5a8f 100%) !important;
+    border-color: #5aa5ff !important;
+}
+
+.delete-brand-icon {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ff6b6b;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 2px;
+}
+
+.delete-brand-icon:hover {
+    color: #ff4757;
+    transform: translateY(-50%) scale(1.2);
+}
+
+/* Additional button styles for brand filter buttons */
+.btn-brand-filter-custom {
+    margin-left: 8px;
+}

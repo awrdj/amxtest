@@ -4,13 +4,13 @@
 
 // EASY TO ADJUST: Configuration
 const CONFIG = {
-    cardsPerLoad: 360,           // Initial cards to load
-    cardsPerPage: 180,           // Cards to add when "Load More" is clicked
+    cardsPerLoad: 360,
+    cardsPerPage: 180,
     localStorageKey: 'etsyScopeData',
     settingsKey: 'etsyScopeSettings'
 };
 
-// EASY TO ADJUST: Brand/IP List - Add as many as you want
+// EASY TO ADJUST: Brand/IP List
 const BRANDLIST = [
     "007", "20th Century Studios", "2K", "A24", "ABC News", "Acer", "Activision", "Acura", "Adidas", "Air Jordan",
     "Airbus", "Alibaba", "AliExpress", "AMD", "American Express", "American Red Cross", "Amex", "Android",
@@ -79,6 +79,18 @@ const BRANDLIST = [
     "KPop", "Demon Hunters", "HUNTRX", "Grinch", "Huntrix"
 ];
 
+// NEW: HARAM BLOCKER LIST (Placeholder - you can edit this)
+const HARAMLIST = [
+    "Alcohol", "Beer", "Wine", "Whiskey", "Vodka", "Champagne", "Tequila", "Rum", "Gin",
+    "Pork", "Bacon", "Ham", "Sausage", "Pepperoni", "Hot Dog", "Salami",
+    "Casino", "Gambling", "Poker", "Blackjack", "Slot Machine", "Lottery", "Betting",
+    "Adult", "NSFW", "Explicit", "Mature Content", "18+", "XXX",
+    "Halloween", "Witch", "Devil", "Demon", "Satan", "Lucifer", "Occult", "Ouija",
+    "Tattoo", "Body Art", "Piercing", "Body Modification",
+    "Interest", "Usury", "Riba", "Payday Loan",
+    "Cross", "Crucifix", "Religious Symbol", "Buddha", "Idol", "Statue Worship"
+];
+
 // ========================================
 // Global State
 // ========================================
@@ -86,7 +98,8 @@ let allListings = [];
 let filteredListings = [];
 let displayedCount = 0;
 let uploadedFiles = [];
-let customBrands = []; // NEW: Store custom user-added brands
+let customBrands = [];
+let customHaram = []; // NEW: Store custom haram terms
 
 // ========================================
 // DOM Elements
@@ -132,7 +145,13 @@ const elements = {
     brandFilterContent: document.getElementById('brandFilterContent'),
     brandCheckboxGrid: document.getElementById('brandCheckboxGrid'),
     selectAllBrands: document.getElementById('selectAllBrands'),
-    clearAllBrands: document.getElementById('clearAllBrands')
+    clearAllBrands: document.getElementById('clearAllBrands'),
+    // NEW: Haram filter elements
+    haramFilterToggle: document.getElementById('haramFilterToggle'),
+    haramFilterContent: document.getElementById('haramFilterContent'),
+    haramCheckboxGrid: document.getElementById('haramCheckboxGrid'),
+    selectAllHaram: document.getElementById('selectAllHaram'),
+    clearAllHaram: document.getElementById('clearAllHaram')
 };
 
 // ========================================
@@ -142,6 +161,7 @@ function init() {
     setupEventListeners();
     loadFromLocalStorage();
     loadBrandCheckboxes();
+    loadHaramCheckboxes(); // NEW
 }
 
 // ========================================
@@ -247,6 +267,11 @@ function setupEventListeners() {
     elements.brandFilterToggle.addEventListener('click', toggleBrandFilter);
     elements.selectAllBrands.addEventListener('click', selectAllBrands);
     elements.clearAllBrands.addEventListener('click', clearAllBrands);
+
+    // NEW: Haram Filter Collapsible
+    elements.haramFilterToggle.addEventListener('click', toggleHaramFilter);
+    elements.selectAllHaram.addEventListener('click', selectAllHaram);
+    elements.clearAllHaram.addEventListener('click', clearAllHaram);
 }
 
 // ========================================
@@ -299,7 +324,7 @@ function updateSliderFill(type) {
 function handleFileSelect(e) {
     const files = Array.from(e.target.files);
     processFiles(files);
-    e.target.value = ''; // Reset input
+    e.target.value = '';
 }
 
 function handleDragOver(e) {
@@ -324,7 +349,7 @@ async function processFiles(files) {
         const text = await file.text();
         console.log(`Processing file: ${file.name}`);
 
-        const rawLineCount = text.trim().split('\n').length - 1; // -1 for header
+        const rawLineCount = text.trim().split('\n').length - 1;
         console.log(`Raw lines in file: ${rawLineCount}`);
 
         const listings = parseCSV(text, file.name);
@@ -342,7 +367,6 @@ async function processFiles(files) {
         const totalBeforeDedup = allListings.length;
         console.log(`Total listings before deduplication: ${totalBeforeDedup}`);
 
-        // Deduplicate
         allListings = deduplicateListings(allListings);
 
         const duplicatesRemoved = totalBeforeDedup - allListings.length;
@@ -350,10 +374,7 @@ async function processFiles(files) {
         console.log(`Final unique listings: ${allListings.length}`);
     }
 
-    // Save to localStorage
     saveToLocalStorage();
-
-    // Update UI
     updateFilesDisplay();
     showViewer();
 }
@@ -368,7 +389,6 @@ function parseCSV(text, filename) {
     const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
     const listings = [];
 
-    // Detect CSV format (old vs new)
     const hasShopName = headers.includes('Shop Name');
     const hasProductType = headers.includes('Product Type');
     const hasOriginalPrice = headers.includes('Original Price');
@@ -382,7 +402,6 @@ function parseCSV(text, filename) {
             listing[header] = values[index];
         });
 
-        // Normalize data
         const title = listing['Title'];
         const currentPrice = parseFloat((listing['Current Price'] || listing['Price'] || '0').replace(/,/g, ''));
         const originalPrice = parseFloat((listing['Original Price'] || '0').replace(/,/g, ''));
@@ -395,7 +414,6 @@ function parseCSV(text, filename) {
         const searchQuery = listing['Search Query'];
         const badges = listing['Badges'] || '';
 
-        // NEW FIELDS
         const shopName = listing['Shop Name'] || '';
         const productType = listing['Product Type'] || 'Unknown';
         const freeShipping = (listing['Free Shipping'] || 'No').toLowerCase() === 'yes';
@@ -453,14 +471,13 @@ function parseCSVLine(line) {
 }
 
 // ========================================
-// FIXED: Deduplication Function
+// Deduplication Function
 // ========================================
 function deduplicateListings(listings) {
     const urlGroups = new Map();
 
-    // Group all listings by URL
     listings.forEach(listing => {
-        const url = listing.url; // FIXED: lowercase url
+        const url = listing.url;
         if (!url || !url.trim()) return;
 
         if (!urlGroups.has(url)) {
@@ -473,21 +490,17 @@ function deduplicateListings(listings) {
     let totalDuplicates = 0;
     let keptBothVersions = 0;
 
-    // Process each URL group
     urlGroups.forEach((group, url) => {
         if (group.length === 1) {
-            // No duplicates for this URL
             deduplicated.push(group[0]);
             return;
         }
 
         totalDuplicates += group.length - 1;
 
-        // Separate ads and non-ads - FIXED: lowercase isAd
         const ads = group.filter(l => l.isAd);
         const nonAds = group.filter(l => !l.isAd);
 
-        // Keep the non-ad with smallest PageOrigin
         if (nonAds.length > 0) {
             const bestNonAd = nonAds.reduce((best, current) => {
                 const bestPage = parseInt(best.pageOrigin) || 999999;
@@ -497,7 +510,6 @@ function deduplicateListings(listings) {
             deduplicated.push(bestNonAd);
         }
 
-        // Keep the ad with smallest PageOrigin
         if (ads.length > 0) {
             const bestAd = ads.reduce((best, current) => {
                 const bestPage = parseInt(best.pageOrigin) || 999999;
@@ -507,7 +519,6 @@ function deduplicateListings(listings) {
             deduplicated.push(bestAd);
         }
 
-        // Track when we kept both versions
         if (ads.length > 0 && nonAds.length > 0) {
             keptBothVersions++;
         }
@@ -521,7 +532,7 @@ function deduplicateListings(listings) {
 }
 
 // ========================================
-// NEW: Brand Filter with Custom Brands
+// Brand Filter with Custom Brands
 // ========================================
 function loadBrandCheckboxes() {
     const allBrands = [...BRANDLIST, ...customBrands];
@@ -540,7 +551,6 @@ function loadBrandCheckboxes() {
         `;
     }).join('');
 
-    // Add custom brand input field at the bottom
     const inputHTML = `
         <div class="custom-brand-input-container">
             <input type="text" 
@@ -555,12 +565,10 @@ function loadBrandCheckboxes() {
     `;
     elements.brandCheckboxGrid.insertAdjacentHTML('beforeend', inputHTML);
 
-    // Add event listeners
     document.querySelectorAll('.brand-checkbox').forEach(cb => {
         cb.addEventListener('change', applyFilters);
     });
 
-    // Delete brand icons
     document.querySelectorAll('.delete-brand-icon').forEach(icon => {
         icon.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -569,7 +577,6 @@ function loadBrandCheckboxes() {
         });
     });
 
-    // Add brand button
     const addBtn = document.getElementById('addCustomBrandBtn');
     const input = document.getElementById('customBrandInput');
     
@@ -582,11 +589,9 @@ function loadBrandCheckboxes() {
         });
     }
 
-    // Update button visibility
     updateBrandFilterButtons();
 }
 
-// NEW: Add custom brands from input
 function addCustomBrands() {
     const input = document.getElementById('customBrandInput');
     if (!input) return;
@@ -594,15 +599,12 @@ function addCustomBrands() {
     const value = input.value.trim();
     if (!value) return;
 
-    // Split by comma and process each brand
     const newBrands = value.split(',')
         .map(b => b.trim())
-        .filter(b => b.length > 0 && b.length <= 75); // Max 75 chars
+        .filter(b => b.length > 0 && b.length <= 75);
 
-    // Get all existing brands (case-insensitive)
     const existingBrandsLower = [...BRANDLIST, ...customBrands].map(b => b.toLowerCase());
 
-    // Add only unique brands (case-insensitive check)
     let addedCount = 0;
     newBrands.forEach(brand => {
         if (!existingBrandsLower.includes(brand.toLowerCase())) {
@@ -613,11 +615,10 @@ function addCustomBrands() {
     });
 
     if (addedCount > 0) {
-        input.value = ''; // Clear input
+        input.value = '';
         saveToLocalStorage();
         loadBrandCheckboxes();
         
-        // Auto-check newly added brands
         setTimeout(() => {
             newBrands.forEach(brand => {
                 const checkbox = document.querySelector(`.brand-checkbox[value="${brand}"]`);
@@ -628,7 +629,6 @@ function addCustomBrands() {
     }
 }
 
-// NEW: Remove custom brand
 function removeCustomBrand(brand) {
     customBrands = customBrands.filter(b => b !== brand);
     saveToLocalStorage();
@@ -636,16 +636,13 @@ function removeCustomBrand(brand) {
     applyFilters();
 }
 
-// NEW: Update brand filter button visibility
 function updateBrandFilterButtons() {
     const hasCustomBrands = customBrands.length > 0;
     
-    // Remove existing custom buttons
     const existingCustomButtons = document.querySelectorAll('.btn-brand-filter-custom');
     existingCustomButtons.forEach(btn => btn.remove());
 
     if (hasCustomBrands) {
-        // Add new buttons after "Clear" button
         const clearBtn = elements.clearAllBrands;
         const buttonHTML = `
             <button class="btn-text btn-brand-filter-custom" id="selectDefaultBrands">Default only</button>
@@ -653,13 +650,11 @@ function updateBrandFilterButtons() {
         `;
         clearBtn.insertAdjacentHTML('afterend', buttonHTML);
 
-        // Add event listeners
         document.getElementById('selectDefaultBrands')?.addEventListener('click', selectDefaultBrandsOnly);
         document.getElementById('selectCustomBrands')?.addEventListener('click', selectCustomBrandsOnly);
     }
 }
 
-// NEW: Select only default brands
 function selectDefaultBrandsOnly() {
     document.querySelectorAll('.brand-checkbox').forEach(cb => {
         const isCustom = customBrands.includes(cb.value);
@@ -668,7 +663,6 @@ function selectDefaultBrandsOnly() {
     applyFilters();
 }
 
-// NEW: Select only custom brands
 function selectCustomBrandsOnly() {
     document.querySelectorAll('.brand-checkbox').forEach(cb => {
         const isCustom = customBrands.includes(cb.value);
@@ -702,6 +696,170 @@ function getExcludedBrands() {
 }
 
 // ========================================
+// NEW: HARAM BLOCKER FILTER
+// ========================================
+function loadHaramCheckboxes() {
+    const allHaram = [...HARAMLIST, ...customHaram];
+    
+    elements.haramCheckboxGrid.innerHTML = allHaram.map((term, index) => {
+        const isCustom = customHaram.includes(term);
+        const customClass = isCustom ? ' custom-brand-item' : '';
+        const deleteBtn = isCustom ? `<i class="fas fa-times delete-brand-icon" data-brand="${term}"></i>` : '';
+        
+        return `
+            <label class="brand-checkbox-item${customClass}">
+                <input type="checkbox" value="${term}" class="haram-checkbox">
+                <span>${term}</span>
+                ${deleteBtn}
+            </label>
+        `;
+    }).join('');
+
+    const inputHTML = `
+        <div class="custom-brand-input-container">
+            <input type="text" 
+                   id="customHaramInput" 
+                   class="custom-brand-input" 
+                   placeholder="Add custom term (comma separated)" 
+                   maxlength="500">
+            <button class="btn-add-brand" id="addCustomHaramBtn">
+                <i class="fas fa-plus"></i> Add
+            </button>
+        </div>
+    `;
+    elements.haramCheckboxGrid.insertAdjacentHTML('beforeend', inputHTML);
+
+    document.querySelectorAll('.haram-checkbox').forEach(cb => {
+        cb.addEventListener('change', applyFilters);
+    });
+
+    document.querySelectorAll('.haram-checkbox-grid .delete-brand-icon').forEach(icon => {
+        icon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const term = e.target.getAttribute('data-brand');
+            removeCustomHaram(term);
+        });
+    });
+
+    const addBtn = document.getElementById('addCustomHaramBtn');
+    const input = document.getElementById('customHaramInput');
+    
+    if (addBtn && input) {
+        addBtn.addEventListener('click', () => addCustomHaram());
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addCustomHaram();
+            }
+        });
+    }
+
+    updateHaramFilterButtons();
+}
+
+function addCustomHaram() {
+    const input = document.getElementById('customHaramInput');
+    if (!input) return;
+
+    const value = input.value.trim();
+    if (!value) return;
+
+    const newTerms = value.split(',')
+        .map(b => b.trim())
+        .filter(b => b.length > 0 && b.length <= 75);
+
+    const existingHaramLower = [...HARAMLIST, ...customHaram].map(b => b.toLowerCase());
+
+    let addedCount = 0;
+    newTerms.forEach(term => {
+        if (!existingHaramLower.includes(term.toLowerCase())) {
+            customHaram.push(term);
+            existingHaramLower.push(term.toLowerCase());
+            addedCount++;
+        }
+    });
+
+    if (addedCount > 0) {
+        input.value = '';
+        saveToLocalStorage();
+        loadHaramCheckboxes();
+        
+        setTimeout(() => {
+            newTerms.forEach(term => {
+                const checkbox = document.querySelector(`.haram-checkbox[value="${term}"]`);
+                if (checkbox) checkbox.checked = true;
+            });
+            applyFilters();
+        }, 50);
+    }
+}
+
+function removeCustomHaram(term) {
+    customHaram = customHaram.filter(b => b !== term);
+    saveToLocalStorage();
+    loadHaramCheckboxes();
+    applyFilters();
+}
+
+function updateHaramFilterButtons() {
+    const hasCustomHaram = customHaram.length > 0;
+    
+    const existingCustomButtons = document.querySelectorAll('.btn-haram-filter-custom');
+    existingCustomButtons.forEach(btn => btn.remove());
+
+    if (hasCustomHaram) {
+        const clearBtn = elements.clearAllHaram;
+        const buttonHTML = `
+            <button class="btn-text btn-haram-filter-custom" id="selectDefaultHaram">Default only</button>
+            <button class="btn-text btn-haram-filter-custom" id="selectCustomHaram">Custom only</button>
+        `;
+        clearBtn.insertAdjacentHTML('afterend', buttonHTML);
+
+        document.getElementById('selectDefaultHaram')?.addEventListener('click', selectDefaultHaramOnly);
+        document.getElementById('selectCustomHaram')?.addEventListener('click', selectCustomHaramOnly);
+    }
+}
+
+function selectDefaultHaramOnly() {
+    document.querySelectorAll('.haram-checkbox').forEach(cb => {
+        const isCustom = customHaram.includes(cb.value);
+        cb.checked = !isCustom;
+    });
+    applyFilters();
+}
+
+function selectCustomHaramOnly() {
+    document.querySelectorAll('.haram-checkbox').forEach(cb => {
+        const isCustom = customHaram.includes(cb.value);
+        cb.checked = isCustom;
+    });
+    applyFilters();
+}
+
+function toggleHaramFilter() {
+    elements.haramFilterToggle.classList.toggle('active');
+    elements.haramFilterContent.classList.toggle('active');
+}
+
+function selectAllHaram() {
+    document.querySelectorAll('.haram-checkbox').forEach(cb => {
+        cb.checked = true;
+    });
+    applyFilters();
+}
+
+function clearAllHaram() {
+    document.querySelectorAll('.haram-checkbox').forEach(cb => {
+        cb.checked = false;
+    });
+    applyFilters();
+}
+
+function getExcludedHaram() {
+    return Array.from(document.querySelectorAll('.haram-checkbox:checked'))
+        .map(cb => cb.value.toLowerCase());
+}
+
+// ========================================
 // Filtering & Sorting
 // ========================================
 function applyFilters() {
@@ -722,26 +880,23 @@ function applyFilters() {
     const ratingMax = parseFloat(elements.ratingMaxSlider.value) / 10;
 
     const excludedBrands = getExcludedBrands();
+    const excludedHaram = getExcludedHaram(); // NEW
 
-    // NEW: Parse negative terms (words and quoted phrases)
     const negativeTerms = [];
     let cleanedSearchTerm = searchTerm;
 
-    // Extract quoted negative phrases: -"phrase here"
     const quotedNegativeMatches = searchTerm.matchAll(/-"([^"]+)"/g);
     for (const match of quotedNegativeMatches) {
         negativeTerms.push(match[1].toLowerCase().trim());
         cleanedSearchTerm = cleanedSearchTerm.replace(match[0], '').trim();
     }
 
-    // Extract single negative words: -word (only if preceded by space or at start)
     const wordNegativeMatches = cleanedSearchTerm.matchAll(/(?:^|\s)-(\S+)/g);
     for (const match of wordNegativeMatches) {
         negativeTerms.push(match[1].toLowerCase().trim());
         cleanedSearchTerm = cleanedSearchTerm.replace(match[0], ' ').trim();
     }
 
-    // Parse search term for shop filter
     let shopFilter = '';
     let titleSearchTerm = cleanedSearchTerm;
 
@@ -756,27 +911,22 @@ function applyFilters() {
     filteredListings = allListings.filter(listing => {
         const titleLower = listing.title.toLowerCase();
 
-        // NEW: Negative term filter (exclude if ANY negative term is found)
         if (negativeTerms.length > 0) {
             if (negativeTerms.some(term => titleLower.includes(term))) {
                 return false;
             }
         }
 
-        // Search filter (title + shop)
         if (titleSearchTerm && !titleLower.includes(titleSearchTerm)) return false;
 
-        // Shop filter
         if (shopFilter && !listing.shopName.toLowerCase().includes(shopFilter)) return false;
 
-        // Quick filters
         if (hideAds && listing.isAd) return false;
         if (bestseller && !listing.badges.toLowerCase().includes('bestseller')) return false;
         if (popular && !listing.badges.toLowerCase().includes('popular')) return false;
         if (etsysPick && !listing.badges.toLowerCase().includes('etsy\'s pick')) return false;
         if (freeShipping && !listing.freeShipping) return false;
 
-        // Product Type filter
         if (productType !== 'all') {
             const isPhysical = listing.productType.toLowerCase().includes('physical');
             const isDigital = listing.productType.toLowerCase().includes('digital');
@@ -784,19 +934,22 @@ function applyFilters() {
             if (productType === 'digital' && !isDigital) return false;
         }
 
-        // Price range
         if (listing.currentPrice < priceMin || listing.currentPrice > priceMax) return false;
 
-        // Review range
         if (listing.reviews < reviewMin || listing.reviews > reviewMax) return false;
 
-        // Rating range
         if (listing.rating < ratingMin || listing.rating > ratingMax) return false;
 
-        // Brand exclusion (CASE-INSENSITIVE)
+        // Brand exclusion
         if (excludedBrands.length > 0) {
-            const titleLower = listing.title.toLowerCase();
             if (excludedBrands.some(brand => titleLower.includes(brand))) {
+                return false;
+            }
+        }
+
+        // NEW: Haram exclusion
+        if (excludedHaram.length > 0) {
+            if (excludedHaram.some(term => titleLower.includes(term))) {
                 return false;
             }
         }
@@ -804,7 +957,6 @@ function applyFilters() {
         return true;
     });
 
-    // Sorting
     if (sortBy !== 'default') {
         filteredListings.sort((a, b) => {
             switch (sortBy) {
@@ -852,14 +1004,15 @@ function clearAllFilters() {
     updateSliderFill('rating');
 
     clearAllBrands();
+    clearAllHaram(); // NEW
     applyFilters();
 }
 
 // ========================================
-// NEW: Card Rendering Functions
+// Card Rendering Functions
 // ========================================
 function renderCards() {
-    elements.cardsContainer.innerHTML = ''; // Clear existing cards
+    elements.cardsContainer.innerHTML = '';
 
     const fragment = document.createDocumentFragment();
     const cardsToShow = filteredListings.slice(0, CONFIG.cardsPerLoad);
@@ -872,10 +1025,8 @@ function renderCards() {
     elements.cardsContainer.appendChild(fragment);
     displayedCount = cardsToShow.length;
 
-    // Update results count
     elements.resultsCount.textContent = `${allListings.length.toLocaleString()} listings`;
 
-    // Show/hide Load More button
     if (displayedCount < filteredListings.length) {
         elements.loadMoreContainer.style.display = 'block';
     } else {
@@ -896,7 +1047,6 @@ function loadMoreCards() {
     elements.cardsContainer.appendChild(fragment);
     displayedCount = endIndex;
 
-    // Show/hide Load More button
     if (displayedCount < filteredListings.length) {
         elements.loadMoreContainer.style.display = 'block';
     } else {
@@ -909,20 +1059,16 @@ function createListingCard(listing) {
     card.className = 'listing-card';
     card.onclick = () => window.open(listing.url, '_blank');
 
-    // Calculate discount
     const hasDiscount = listing.originalPrice > listing.currentPrice;
     const discountPercent = hasDiscount ? Math.round(((listing.originalPrice - listing.currentPrice) / listing.originalPrice) * 100) : 0;
 
-    // FIXED: Badge order - AD first, then bestseller/popular/etsy's pick, then discount/shipping last
     const badgesArray = listing.badges.split(',').map(b => b.trim()).filter(b => b);
     let badgesHTML = '';
 
-    // 1. AD badge first
     if (listing.isAd) {
         badgesHTML += `<span class="badge badge-ad">AD</span>`;
     }
 
-    // 2. Etsy badges (middle)
     if (badgesArray.includes('Bestseller')) {
         badgesHTML += `<span class="badge badge-bestseller">Bestseller</span>`;
     }
@@ -933,7 +1079,6 @@ function createListingCard(listing) {
         badgesHTML += `<span class="badge badge-etsyspick">Etsy's Pick</span>`;
     }
 
-    // 3. Discount and shipping badges (last)
     if (hasDiscount) {
         badgesHTML += `<span class="badge badge-discount">-${discountPercent}%</span>`;
     }
@@ -941,10 +1086,8 @@ function createListingCard(listing) {
         badgesHTML += `<span class="badge badge-shipping">Free Ship</span>`;
     }
 
-    // Shop URL
     const shopUrl = listing.shopName ? `https://www.etsy.com/shop/${listing.shopName}` : '#';
 
-    // Format organic listings count
     const organicCount = listing.organicListingsCount > 0
         ? listing.organicListingsCount > 1000000
             ? `${(listing.organicListingsCount / 1000000).toFixed(1)}M`
@@ -953,14 +1096,12 @@ function createListingCard(listing) {
             : listing.organicListingsCount.toLocaleString()
         : '';
 
-    // FIXED: Simplified product type (remove "Product" word)
     const simplifiedProductType = listing.productType
         .replace('Product', '')
         .replace('Physical', 'Physical')
         .replace('Digital', 'Digital')
         .trim();
 
-    // FIXED: Format reviews for inline display
     const reviewsFormatted = listing.reviews > 1000000
         ? `${(listing.reviews / 1000000).toFixed(1)}M`
         : listing.reviews > 1000
@@ -1031,12 +1172,10 @@ function exportRefinedResults() {
         return;
     }
 
-    // Get all column headers dynamically from the first listing
     if (filteredListings.length === 0) return;
 
     const allKeys = Object.keys(filteredListings[0]);
 
-    // Generate CSV with all columns
     const headers = allKeys;
     const rows = filteredListings.map(listing => {
         return headers.map(header => {
@@ -1050,11 +1189,9 @@ function exportRefinedResults() {
 
     const csv = [headers, ...rows.map(row => row.map(v => `"${v}"`).join(','))].join('\n');
 
-    // Generate filename
     const timestamp = new Date().toISOString().replace(/:/g, '-').slice(0, -5);
     const filename = `etsyrefined_${timestamp}.csv`;
 
-    // Download
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -1075,7 +1212,6 @@ function showViewer() {
     elements.resultsCount.textContent = `${allListings.length} listings`;
     elements.lastUpdated.textContent = `Last updated: ${new Date().toLocaleString()}`;
 
-    // Get actual max values from data
     const prices = allListings.map(l => l.currentPrice).filter(p => p > 0);
     const reviews = allListings.map(l => l.reviews).filter(r => r >= 0);
 
@@ -1088,7 +1224,6 @@ function showViewer() {
 
     console.log(`Data Range - Price: $0-$${roundedMaxPrice}, Reviews: 0-${roundedMaxReviews} (step: ${reviewStep})`);
 
-    // Set Price Range sliders
     elements.priceMinSlider.setAttribute('min', '0');
     elements.priceMinSlider.setAttribute('max', roundedMaxPrice);
     elements.priceMinSlider.setAttribute('step', '1');
@@ -1099,7 +1234,6 @@ function showViewer() {
     elements.priceMaxSlider.setAttribute('step', '1');
     elements.priceMaxSlider.value = roundedMaxPrice;
 
-    // Set Review Range sliders
     elements.reviewMinSlider.setAttribute('min', '0');
     elements.reviewMinSlider.setAttribute('max', roundedMaxReviews);
     elements.reviewMinSlider.setAttribute('step', reviewStep);
@@ -1110,7 +1244,6 @@ function showViewer() {
     elements.reviewMaxSlider.setAttribute('step', reviewStep);
     elements.reviewMaxSlider.value = roundedMaxReviews;
 
-    // Set Rating Range sliders
     elements.ratingMinSlider.setAttribute('min', '0');
     elements.ratingMinSlider.setAttribute('max', '50');
     elements.ratingMinSlider.setAttribute('step', '1');
@@ -1160,7 +1293,6 @@ function removeFile(index) {
     allListings = allListings.filter(l => l.fileIndex !== fileIndex);
     uploadedFiles.splice(index, 1);
 
-    // Re-index remaining files
     uploadedFiles.forEach((file, i) => {
         file.index = i + 1;
     });
@@ -1221,14 +1353,15 @@ function updateFilteredCount() {
 }
 
 // ========================================
-// LocalStorage (UPDATED with customBrands)
+// LocalStorage (UPDATED with customBrands + customHaram)
 // ========================================
 function saveToLocalStorage() {
     try {
         localStorage.setItem(CONFIG.localStorageKey, JSON.stringify({
             listings: allListings,
             files: uploadedFiles,
-            customBrands: customBrands, // NEW: Save custom brands
+            customBrands: customBrands,
+            customHaram: customHaram, // NEW
             timestamp: Date.now()
         }));
     } catch (e) {
@@ -1244,7 +1377,8 @@ function loadFromLocalStorage() {
         const parsed = JSON.parse(data);
         allListings = parsed.listings || [];
         uploadedFiles = parsed.files || [];
-        customBrands = parsed.customBrands || []; // NEW: Load custom brands
+        customBrands = parsed.customBrands || [];
+        customHaram = parsed.customHaram || []; // NEW
 
         if (allListings.length > 0) {
             updateFilesDisplay();
@@ -1261,7 +1395,8 @@ function clearCache() {
         allListings = [];
         filteredListings = [];
         uploadedFiles = [];
-        customBrands = []; // NEW: Clear custom brands
+        customBrands = [];
+        customHaram = []; // NEW
         displayedCount = 0;
 
         elements.viewerSection.style.display = 'none';

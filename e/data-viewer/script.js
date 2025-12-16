@@ -723,21 +723,48 @@ function applyFilters() {
 
     const excludedBrands = getExcludedBrands();
 
+    // NEW: Parse negative terms (words and quoted phrases)
+    const negativeTerms = [];
+    let cleanedSearchTerm = searchTerm;
+
+    // Extract quoted negative phrases: -"phrase here"
+    const quotedNegativeMatches = searchTerm.matchAll(/-"([^"]+)"/g);
+    for (const match of quotedNegativeMatches) {
+        negativeTerms.push(match[1].toLowerCase().trim());
+        cleanedSearchTerm = cleanedSearchTerm.replace(match[0], '').trim();
+    }
+
+    // Extract single negative words: -word
+    const wordNegativeMatches = cleanedSearchTerm.matchAll(/-(\S+)/g);
+    for (const match of wordNegativeMatches) {
+        negativeTerms.push(match[1].toLowerCase().trim());
+        cleanedSearchTerm = cleanedSearchTerm.replace(match[0], '').trim();
+    }
+
     // Parse search term for shop filter
     let shopFilter = '';
-    let titleSearchTerm = searchTerm;
+    let titleSearchTerm = cleanedSearchTerm;
 
-    if (searchTerm.includes('shop:')) {
-        const shopMatch = searchTerm.match(/shop:(\S+)/i);
+    if (cleanedSearchTerm.includes('shop:')) {
+        const shopMatch = cleanedSearchTerm.match(/shop:(\S+)/i);
         if (shopMatch) {
             shopFilter = shopMatch[1].toLowerCase();
-            titleSearchTerm = searchTerm.replace(/shop:\S+/gi, '').trim();
+            titleSearchTerm = cleanedSearchTerm.replace(/shop:\S+/gi, '').trim();
         }
     }
 
     filteredListings = allListings.filter(listing => {
+        const titleLower = listing.title.toLowerCase();
+
+        // NEW: Negative term filter (exclude if ANY negative term is found)
+        if (negativeTerms.length > 0) {
+            if (negativeTerms.some(term => titleLower.includes(term))) {
+                return false;
+            }
+        }
+
         // Search filter (title + shop)
-        if (titleSearchTerm && !listing.title.toLowerCase().includes(titleSearchTerm)) return false;
+        if (titleSearchTerm && !titleLower.includes(titleSearchTerm)) return false;
 
         // Shop filter
         if (shopFilter && !listing.shopName.toLowerCase().includes(shopFilter)) return false;

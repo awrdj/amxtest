@@ -1348,3 +1348,102 @@ body {
 .haram-checkbox-grid .btn-add-brand:hover {
     box-shadow: 0 6px 16px rgba(201, 69, 69, 0.4);
 }
+
+/* ========================================
+   FAVORITES FEATURE
+   ======================================== */
+
+/* Favorite heart icon in card */
+.favorite-heart {
+    cursor: pointer;
+    font-size: 18px;
+    margin-right: 8px;
+    transition: all 0.2s ease;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.favorite-heart.unfavorited {
+    color: #666;
+}
+
+.favorite-heart.unfavorited:hover {
+    color: #ff6b6b;
+    transform: scale(1.2);
+}
+
+.favorite-heart.favorited {
+    color: #ff6b6b;
+}
+
+.favorite-heart.favorited:hover {
+    transform: scale(1.2);
+}
+
+/* Title with tooltip on hover */
+.card-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    cursor: default;
+}
+
+.card-title:hover::after {
+    content: attr(data-full-title);
+    position: absolute;
+    left: 0;
+    top: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    white-space: normal;
+    z-index: 1000;
+    max-width: 400px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    margin-top: 4px;
+    line-height: 1.4;
+}
+
+/* Favorite bulk action buttons */
+.btn-favorites {
+    margin-left: 8px;
+}
+
+.btn-favorites:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%);
+}
+
+.btn-favorites:disabled:hover {
+    box-shadow: none;
+    transform: none;
+}
+
+/* Empty favorites state message */
+.empty-favorites-message {
+    text-align: center;
+    padding: 60px 20px;
+    color: #888;
+}
+
+.empty-favorites-message i {
+    font-size: 64px;
+    color: #555;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.empty-favorites-message h3 {
+    font-size: 24px;
+    margin-bottom: 12px;
+    color: #aaa;
+}
+
+.empty-favorites-message p {
+    font-size: 16px;
+    color: #777;
+}

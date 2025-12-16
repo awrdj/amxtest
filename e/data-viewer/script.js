@@ -140,8 +140,8 @@ const elements = {
 // ========================================
 function init() {
     setupEventListeners();
-    loadBrandCheckboxes();
     loadFromLocalStorage();
+    loadBrandCheckboxes();
 }
 
 // ========================================

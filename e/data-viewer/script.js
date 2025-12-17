@@ -1239,11 +1239,13 @@ ${hasDiscount ? `<span class="card-price-original">$${(listing.originalPrice || 
 // Download image function
 async function downloadImage(imageUrl, title) {
     try {
-        // Use CORS proxy directly (Etsy blocks direct downloads)
-        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(imageUrl)}`;
+        // Use Cloudflare Worker proxy
+        const workerUrl = 'https://YOUR-WORKER-NAME.YOUR-USERNAME.workers.dev'; // REPLACE THIS
+        const proxyUrl = `${workerUrl}?url=${encodeURIComponent(imageUrl)}`;
+        
         const response = await fetch(proxyUrl);
         
-        if (!response.ok) throw new Error('Proxy fetch failed');
+        if (!response.ok) throw new Error('Download failed');
         
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
@@ -1264,14 +1266,8 @@ async function downloadImage(imageUrl, title) {
         
     } catch (err) {
         console.error('Download failed:', err);
-        // Fallback: Right-click save or copy URL
-        if (confirm('Download blocked by CORS. Copy image URL to clipboard instead?')) {
-            navigator.clipboard.writeText(imageUrl).then(() => {
-                alert('Image URL copied! Paste in browser to download.');
-            }).catch(() => {
-                prompt('Copy this URL:', imageUrl);
-            });
-        }
+        alert('Download failed. Opening image in new tab instead.');
+        window.open(imageUrl, '_blank');
     }
 }
 

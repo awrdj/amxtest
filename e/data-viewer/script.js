@@ -1164,7 +1164,7 @@ function createListingCard(listing) {
                 <img src="${listing.thumbnail}" alt="${listing.title}" class="card-image" loading="lazy">
                 <div class="card-badges">${badgesHTML}</div>
                 <i class="fas fa-heart favorite-heart ${favorites.has(listing.url) ? 'favorited' : 'unfavorited'}" data-url="${listing.url}" title="${favorites.has(listing.url) ? 'Remove from favorites' : 'Add to favorites'}"></i>
-                <i class="fas fa-download download-image-btn" data-image="${listing.thumbnail}" title="Download image"></i>
+                <i class="fas fa-cloud-arrow-down download-image-btn" data-image="${listing.thumbnail}" title="Download image"></i>
                 ${listing.pageOrigin || listing.searchQuery ? `
                 <div class="page-origin-badge">
                     ${listing.pageOrigin ? `<span class="badge-line">p. ${listing.pageOrigin}</span>` : ''}
@@ -1240,7 +1240,7 @@ ${hasDiscount ? `<span class="card-price-original">$${(listing.originalPrice || 
 async function downloadImage(imageUrl, title) {
     try {
         // Use Cloudflare Worker proxy
-        const workerUrl = 'https://YOUR-WORKER-NAME.YOUR-USERNAME.workers.dev'; // REPLACE THIS
+        const workerUrl = 'https://escope-img-download.awrdjmusic.workers.dev'; // REPLACE THIS
         const proxyUrl = `${workerUrl}?url=${encodeURIComponent(imageUrl)}`;
         
         const response = await fetch(proxyUrl);

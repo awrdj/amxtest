@@ -1161,10 +1161,11 @@ function createListingCard(listing) {
     card.innerHTML = `
         ${listing.isAd ? `<div class="card-ad-indicator"></div>` : ''}
         <div class="card-image-wrapper">
-            <img src="${listing.thumbnail}" alt="${listing.title}" class="card-image" loading="lazy">
-            <div class="card-badges">${badgesHTML}</div>
-            <i class="fas fa-heart favorite-heart ${favorites.has(listing.url) ? 'favorited' : 'unfavorited'}" data-url="${listing.url}" title="${favorites.has(listing.url) ? 'Remove from favorites' : 'Add to favorites'}"></i>
-            ${listing.pageOrigin || listing.searchQuery ? `
+                <img src="${listing.thumbnail}" alt="${listing.title}" class="card-image" loading="lazy">
+                <div class="card-badges">${badgesHTML}</div>
+                <i class="fas fa-heart favorite-heart ${favorites.has(listing.url) ? 'favorited' : 'unfavorited'}" data-url="${listing.url}" title="${favorites.has(listing.url) ? 'Remove from favorites' : 'Add to favorites'}"></i>
+                <i class="fas fa-download download-image-btn" data-image="${listing.thumbnail}" title="Download image"></i>
+                ${listing.pageOrigin || listing.searchQuery ? `
                 <div class="page-origin-badge">
                     ${listing.pageOrigin ? `<span class="badge-line">p. ${listing.pageOrigin}</span>` : ''}
                     ${listing.searchQuery ? `<span class="badge-line">${listing.searchQuery}${organicCount ? ` • ${organicCount}` : ''}</span>` : ''}
@@ -1222,7 +1223,36 @@ ${hasDiscount ? `<span class="card-price-original">$${(listing.originalPrice || 
         });
     }
     
+    // Attach download image button handler
+    const downloadBtn = card.querySelector('.download-image-btn');
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            downloadImage(listing.thumbnail, listing.title);
+        });
+    }
+    
     return card;
+    
+}
+
+// Download image function
+function downloadImage(imageUrl, title) {
+    fetch(imageUrl)
+        .then(response => response.blob())
+        .then(blob => {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const sanitizedTitle = title.replace(/[^a-z0-9]/gi, '_').substring(0, 50);
+            a.download = `${sanitizedTitle}.jpg`;
+            a.click();
+            URL.revokeObjectURL(url);
+        })
+        .catch(err => {
+            console.error('Download failed:', err);
+            window.open(imageUrl, '_blank');
+        });
 }
 
 // ========================================

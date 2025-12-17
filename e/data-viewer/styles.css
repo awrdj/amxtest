@@ -1355,21 +1355,23 @@ body {
 
 /* Favorite heart icon in card */
 .favorite-heart {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    z-index: 6;
     cursor: pointer;
-    font-size: 18px;
-    margin-right: 8px;
+    font-size: 22px;
     transition: all 0.2s ease;
-    display: inline-block;
-    vertical-align: middle;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
 }
 
 .favorite-heart.unfavorited {
-    color: #666;
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .favorite-heart.unfavorited:hover {
     color: #ff6b6b;
-    transform: scale(1.2);
+    transform: scale(1.15);
 }
 
 .favorite-heart.favorited {
@@ -1377,16 +1379,15 @@ body {
 }
 
 .favorite-heart.favorited:hover {
-    transform: scale(1.2);
+    transform: scale(1.15);
 }
 
 /* Title with tooltip on hover */
 .card-title {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    position: relative;
-    cursor: default;
+    font-size: 13px;
+    margin-bottom: 6px;
+    min-height: 35px;
+    line-height: 1.4;
 }
 
 .card-title:hover::after {

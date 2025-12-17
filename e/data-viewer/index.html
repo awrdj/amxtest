@@ -65,18 +65,17 @@
             <!-- Filters Panel -->
             <div class="filters-panel">
                 
-                <button class="btn-clear btn-favorites" id="clearAllFavoritesBtn" disabled>
-                    <i class="fas fa-heart-broken"></i> Clear All Favorites
-                </button>
-                <button class="btn-clear btn-favorites" id="favoriteAllVisibleBtn">
-                    <i class="fas fa-heart"></i> Favorite All Visible
-                </button>
-                
                 <div class="filters-header">
                     <h3><i class="fas fa-filter"></i> Filters</h3>
                     <div class="filter-actions">
                         <span id="filteredCount" class="filtered-count"></span>
                         <button class="btn-clear" id="clearFiltersBtn">Clear All</button>
+                        <button class="btn-clear btn-favorites" id="clearAllFavoritesBtn" disabled>
+                            <i class="fas fa-heart-broken"></i> Clear All Favorites
+                        </button>
+                        <button class="btn-clear btn-favorites" id="favoriteAllVisibleBtn">
+                            <i class="fas fa-heart"></i> Favorite All Visible
+                        </button>
                     </div>
                 </div>
 
@@ -114,9 +113,9 @@
                 <input type="checkbox" id="filterFreeShipping">
                 <span>Free Ship</span>
             </label>
-            <label class="filter-checkbox">
+            <label class="checkbox-label">
                 <input type="checkbox" id="filterFavorites">
-                <span>♡</span>
+                <span>Favorites</span>
             </label>
         </div>
     </div>
@@ -221,13 +220,13 @@
                     <div class="collapsible-content" id="brandFilterContent">
                         <div class="brand-filter-actions">
                             <span class="small-text">Select brands/IPs to exclude</span>
+                            <div class="brand-checkbox-grid" id="brandCheckboxGrid">
+                                <!-- Populated by JavaScript -->
+                            </div>
                             <div>
                                 <button class="btn-text" id="selectAllBrands">Select all</button>
-                                <button class="btn-text" id="clearAllBrands">Clear</button>
+                                <button class="btn-text" id="clearAllBrands">Clear all</button>
                             </div>
-                        </div>
-                        <div class="brand-checkbox-grid" id="brandCheckboxGrid">
-                            <!-- Populated by JavaScript -->
                         </div>
                     </div>
                 </div>
@@ -240,13 +239,13 @@
                     <div class="collapsible-content" id="haramFilterContent">
                         <div class="brand-filter-actions">
                             <span class="small-text">Select items to exclude</span>
+                            <div class="brand-checkbox-grid haram-checkbox-grid" id="haramCheckboxGrid">
+                                <!-- Populated by JavaScript -->
+                            </div>
                             <div>
                                 <button class="btn-text" id="selectAllHaram">Select all</button>
-                                <button class="btn-text" id="clearAllHaram">Clear</button>
+                                <button class="btn-text" id="clearAllHaram">Clear all</button>
                             </div>
-                        </div>
-                        <div class="brand-checkbox-grid haram-checkbox-grid" id="haramCheckboxGrid">
-                            <!-- Populated by JavaScript -->
                         </div>
                     </div>
                 </div>

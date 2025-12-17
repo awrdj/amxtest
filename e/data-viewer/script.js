@@ -1148,9 +1148,8 @@ function createListingCard(listing) {
         <div class="card-content">
             <div class="card-title" data-full-title="${listing.title}">
                 <i class="fas fa-heart favorite-heart ${favorites.has(listing.url) ? 'favorited' : 'unfavorited'}" 
-                   data-url="${listing.url}"
-                   title="${favorites.has(listing.url) ? 'Remove from favorites' : 'Add to favorites'}"
-                   onclick="event.stopPropagation(); toggleFavorite('${listing.url.replace(/'/g, "\\'")}');"></i>
+               data-url="${listing.url}"
+               title="${favorites.has(listing.url) ? 'Remove from favorites' : 'Add to favorites'}"></i>
                 ${listing.title}
             </div>
             ${listing.shopName || simplifiedProductType ? `
@@ -1173,13 +1172,13 @@ function createListingCard(listing) {
             ` : ''}
             <div class="card-details">
                 <div class="card-price-section">
-                    <span class="card-price">$${listing.currentPrice.toFixed(2)}</span>
-                    ${hasDiscount ? `<span class="card-price-original">$${listing.originalPrice.toFixed(2)}</span>` : ''}
+                    <span class="card-price">$${(listing.currentPrice || 0).toFixed(2)}</span>
+${hasDiscount ? `<span class="card-price-original">$${(listing.originalPrice || 0).toFixed(2)}</span>` : ''}
                 </div>
                 <div class="card-rating">
                     ${listing.rating > 0 ? `
                         <i class="fas fa-star star-icon"></i>
-                        <span class="rating-text">${listing.rating.toFixed(1)}</span>
+                        <span class="rating-text">${(listing.rating || 0).toFixed(1)}</span>
                         ${listing.reviews > 0 ? `<span class="reviews-inline">(${reviewsFormatted})</span>` : ''}
                     ` : listing.reviews > 0 ? `
                         <span class="no-rating-with-reviews">(${reviewsFormatted} reviews)</span>
@@ -1190,7 +1189,16 @@ function createListingCard(listing) {
             </div>
         </div>
     `;
-
+    
+    // Attach favorite heart click handler
+    const heartIcon = card.querySelector('.favorite-heart');
+    if (heartIcon) {
+        heartIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleFavorite(listing.url);
+        });
+    }
+    
     return card;
 }
 

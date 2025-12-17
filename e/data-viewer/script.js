@@ -985,7 +985,7 @@ function applyFilters() {
 
     displayedCount = 0;
     renderCards();
-    updateFilteredCount();
+    // updateFilteredCount();
     updateFavoritesUI(); // Favorites
 }
 
@@ -1509,10 +1509,12 @@ function favoriteAllVisible() {
 function updateFavoritesUI() {
     const favoriteCount = favorites.size;
     
-    // Update Clear All Favorites button state
-    elements.clearAllFavoritesBtn.disabled = favoriteCount === 0;
+    // Update Clear All Favorites button state (check if it exists first)
+    if (elements.clearAllFavoritesBtn) {
+        elements.clearAllFavoritesBtn.disabled = favoriteCount === 0;
+    }
     
-    // Update stats display (will be handled in updateFilteredCount)
+    // Update stats display
     updateFilteredCount();
 }
 

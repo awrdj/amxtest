@@ -1425,10 +1425,9 @@ body {
 
 /* Empty favorites state message */
 .empty-favorites-message {
+    grid-column: 1 / -1; /* Span all grid columns */
     text-align: center;
     padding: 60px 20px;
-    margin: 0 auto;
-    max-width: 600px;
     color: #888;
 }
 

@@ -100,6 +100,7 @@ let displayedCount = 0;
 let uploadedFiles = [];
 let customBrands = [];
 let customHaram = []; // NEW: Store custom haram terms
+let favorites = new Set(); // Store favorited URLs
 
 // ========================================
 // DOM Elements
@@ -146,6 +147,10 @@ const elements = {
     brandCheckboxGrid: document.getElementById('brandCheckboxGrid'),
     selectAllBrands: document.getElementById('selectAllBrands'),
     clearAllBrands: document.getElementById('clearAllBrands'),
+    // Favorites elements
+    filterFavorites: document.getElementById('filterFavorites'),
+    clearAllFavoritesBtn: document.getElementById('clearAllFavoritesBtn'),
+    favoriteAllVisibleBtn: document.getElementById('favoriteAllVisibleBtn'),
     // NEW: Haram filter elements
     haramFilterToggle: document.getElementById('haramFilterToggle'),
     haramFilterContent: document.getElementById('haramFilterContent'),
@@ -186,6 +191,8 @@ function setupEventListeners() {
     elements.exportBtn.addEventListener('click', exportRefinedResults);
     elements.loadMoreBtn.addEventListener('click', loadMoreCards);
     elements.clearFiltersBtn.addEventListener('click', clearAllFilters);
+    elements.clearAllFavoritesBtn.addEventListener('click', clearAllFavorites); // Favorites
+    elements.favoriteAllVisibleBtn.addEventListener('click', favoriteAllVisible); // Favorites
 
     // Filters
     elements.searchInput.addEventListener('input', debounce(applyFilters, 300));
@@ -196,6 +203,7 @@ function setupEventListeners() {
     elements.filterEtsysPick.addEventListener('change', applyFilters);
     elements.filterFreeShipping.addEventListener('change', applyFilters);
     elements.productTypeSelect.addEventListener('change', applyFilters);
+    elements.filterFavorites.addEventListener('change', applyFilters); // Favorites
 
     // Price Range Sliders
     elements.priceMinSlider.addEventListener('input', () => {
@@ -871,6 +879,7 @@ function applyFilters() {
     const etsysPick = elements.filterEtsysPick.checked;
     const freeShipping = elements.filterFreeShipping.checked;
     const productType = elements.productTypeSelect.value;
+    const showOnlyFavorites = elements.filterFavorites.checked; // Favorites
 
     const priceMin = parseFloat(elements.priceMinSlider.value);
     const priceMax = parseFloat(elements.priceMaxSlider.value);
@@ -940,6 +949,9 @@ function applyFilters() {
 
         if (listing.rating < ratingMin || listing.rating > ratingMax) return false;
 
+        // Favorites filter
+        if (showOnlyFavorites && !favorites.has(listing.url)) return false;
+
         // Brand exclusion
         if (excludedBrands.length > 0) {
             if (excludedBrands.some(brand => titleLower.includes(brand))) {
@@ -974,6 +986,7 @@ function applyFilters() {
     displayedCount = 0;
     renderCards();
     updateFilteredCount();
+    updateFavoritesUI(); // Favorites
 }
 
 function clearAllFilters() {
@@ -1005,6 +1018,7 @@ function clearAllFilters() {
 
     clearAllBrands();
     clearAllHaram(); // NEW
+    elements.filterFavorites.checked = false; // Favorites
     applyFilters();
 }
 
@@ -1031,6 +1045,17 @@ function renderCards() {
         elements.loadMoreContainer.style.display = 'block';
     } else {
         elements.loadMoreContainer.style.display = 'none';
+    }
+
+    // NEW: Show empty favorites message
+    if (elements.filterFavorites.checked && filteredListings.length === 0) {
+        elements.cardsContainer.innerHTML = `
+            <div class="empty-favorites-message">
+                <i class="fas fa-heart-broken"></i>
+                <h3>No favorites yet</h3>
+                <p>Click the ♥ icon on cards to add them to your favorites</p>
+            </div>
+        `;
     }
 }
 
@@ -1121,7 +1146,13 @@ function createListingCard(listing) {
             ` : ''}
         </div>
         <div class="card-content">
-            <div class="card-title">${listing.title}</div>
+            <div class="card-title" data-full-title="${listing.title}">
+                <i class="fas fa-heart favorite-heart ${favorites.has(listing.url) ? 'favorited' : 'unfavorited'}" 
+                   data-url="${listing.url}"
+                   title="${favorites.has(listing.url) ? 'Remove from favorites' : 'Add to favorites'}"
+                   onclick="event.stopPropagation(); toggleFavorite('${listing.url.replace(/'/g, "\\'")}');"></i>
+                ${listing.title}
+            </div>
             ${listing.shopName || simplifiedProductType ? `
                 <div class="card-shop-type">
                     ${listing.shopName ? `
@@ -1176,9 +1207,12 @@ function exportRefinedResults() {
 
     const allKeys = Object.keys(filteredListings[0]);
 
-    const headers = allKeys;
+    const headers = [...allKeys, 'Favorited']; // Favorites
     const rows = filteredListings.map(listing => {
         return headers.map(header => {
+            if (header === 'Favorited') {
+                return favorites.has(listing.url) ? 'Yes' : 'No';
+            }
             const value = listing[header];
             if (value === null || value === undefined) return '';
             if (typeof value === 'boolean') return value ? 'Yes' : 'No';
@@ -1300,6 +1334,12 @@ function removeFile(index) {
     saveToLocalStorage();
     updateFilesDisplay();
 
+    // Remove favorites for listings from this file
+    const remainingUrls = new Set(allListings.map(l => l.url));
+    favorites = new Set([...favorites].filter(url => remainingUrls.has(url)));
+    saveToLocalStorage();
+    updateFavoritesUI(); // Favorites
+
     if (uploadedFiles.length === 0) {
         clearCache();
     } else {
@@ -1342,14 +1382,21 @@ function updateRangeDisplay(type) {
 function updateFilteredCount() {
     const total = allListings.length;
     const filtered = filteredListings.length;
-
+    const favoriteCount = favorites.size;
+    
+    let statusText = `${filtered} of ${total} listings`;
+    
+    if (favoriteCount > 0) {
+        statusText += ` | ${favoriteCount} favorited`;
+    }
+    
+    elements.resultsCount.textContent = statusText;
+    
     if (filtered === total) {
         elements.filteredCount.textContent = '';
     } else {
         elements.filteredCount.textContent = `${filtered} found`;
     }
-
-    elements.resultsCount.textContent = `${filtered} of ${total} listings`;
 }
 
 // ========================================
@@ -1361,7 +1408,8 @@ function saveToLocalStorage() {
             listings: allListings,
             files: uploadedFiles,
             customBrands: customBrands,
-            customHaram: customHaram, // NEW
+            customHaram: customHaram,
+            favorites: Array.from(favorites), // Favorites
             timestamp: Date.now()
         }));
     } catch (e) {
@@ -1379,6 +1427,7 @@ function loadFromLocalStorage() {
         uploadedFiles = parsed.files || [];
         customBrands = parsed.customBrands || [];
         customHaram = parsed.customHaram || []; // NEW
+        favorites = new Set(parsed.favorites || []); // Favorites
 
         if (allListings.length > 0) {
             updateFilesDisplay();
@@ -1397,6 +1446,7 @@ function clearCache() {
         uploadedFiles = [];
         customBrands = [];
         customHaram = []; // NEW
+        favorites = new Set(); // Favorites
         displayedCount = 0;
 
         elements.viewerSection.style.display = 'none';
@@ -1404,6 +1454,68 @@ function clearCache() {
         elements.filesList.style.display = 'none';
     }
 }
+
+// ========================================
+// FAVORITES SYSTEM
+// ========================================
+
+function toggleFavorite(url) {
+    if (favorites.has(url)) {
+        favorites.delete(url);
+    } else {
+        favorites.add(url);
+    }
+    
+    saveToLocalStorage();
+    updateFavoritesUI();
+    
+    // Update the heart icon for all cards with this URL
+    document.querySelectorAll(`.favorite-heart[data-url="${url.replace(/"/g, '\\"')}"]`).forEach(heart => {
+        if (favorites.has(url)) {
+            heart.classList.remove('unfavorited');
+            heart.classList.add('favorited');
+            heart.setAttribute('title', 'Remove from favorites');
+        } else {
+            heart.classList.remove('favorited');
+            heart.classList.add('unfavorited');
+            heart.setAttribute('title', 'Add to favorites');
+        }
+    });
+}
+
+function clearAllFavorites() {
+    if (favorites.size === 0) return;
+    
+    if (confirm(`Clear all ${favorites.size} favorites?`)) {
+        favorites.clear();
+        saveToLocalStorage();
+        applyFilters(); // Re-render to update hearts
+    }
+}
+
+function favoriteAllVisible() {
+    const cardsToFavorite = filteredListings.slice(0, displayedCount);
+    
+    if (cardsToFavorite.length === 0) return;
+    
+    cardsToFavorite.forEach(listing => {
+        favorites.add(listing.url);
+    });
+    
+    saveToLocalStorage();
+    applyFilters(); // Re-render to update hearts
+}
+
+function updateFavoritesUI() {
+    const favoriteCount = favorites.size;
+    
+    // Update Clear All Favorites button state
+    elements.clearAllFavoritesBtn.disabled = favoriteCount === 0;
+    
+    // Update stats display (will be handled in updateFilteredCount)
+    updateFilteredCount();
+}
+
 
 // ========================================
 // Utility Functions

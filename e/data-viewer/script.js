@@ -1049,7 +1049,7 @@ function renderCards() {
 
     // NEW: Show empty favorites message
     if (elements.filterFavorites.checked && filteredListings.length === 0) {
-        elements.document.getElementById('viewerSection'),.innerHTML = `
+        elements.viewerSection.innerHTML = `
             <div class="empty-favorites-message">
                 <i class="fas fa-heart-broken"></i>
                 <h3>No favorites yet</h3>

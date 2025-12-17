@@ -1411,7 +1411,8 @@ body {
 
 /* Favorite bulk action buttons */
 .btn-favorites {
-    margin-left: 8px;
+    /*margin-left: 8px;*/
+    margin-left:0;
 }
 
 .btn-favorites:disabled {

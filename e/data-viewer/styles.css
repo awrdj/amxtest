@@ -1459,8 +1459,8 @@ body {
     z-index: 6;
     cursor: pointer;
     font-size: 18px;
-    color: rgba(255, 255, 255, 0.7);
-    background: rgba(0, 0, 0, 0.6);
+    color: rgba(255, 255, 255, 1);
+    background: rgba(0, 0, 0, 0.75);
     padding: 2px;
     border-radius: 25px;
     transition: all 0.2s ease;
@@ -1476,6 +1476,6 @@ body {
 
 .download-image-btn:hover {
     color: #fff;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(246, 88, 0, 0.75);
     transform: scale(1.1);
 }

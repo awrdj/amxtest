@@ -1426,9 +1426,10 @@ body {
 /* Empty favorites state message */
 .empty-favorites-message {
     text-align: center;
-    margin: 40px auto;
-    color: var(--text-secondary);
-    font-size: 16px;
+    padding: 60px 20px;
+    margin: 0 auto;
+    max-width: 600px;
+    color: #888;
 }
 
 .empty-favorites-message i {

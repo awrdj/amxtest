@@ -1237,22 +1237,44 @@ ${hasDiscount ? `<span class="card-price-original">$${(listing.originalPrice || 
 }
 
 // Download image function
-function downloadImage(imageUrl, title) {
-    fetch(imageUrl)
-        .then(response => response.blob())
-        .then(blob => {
+async function downloadImage(imageUrl, title) {
+    try {
+        // Try direct download first
+        const response = await fetch(imageUrl, { mode: 'cors' });
+        const blob = await response.blob();
+        
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const sanitizedTitle = title.replace(/[^a-z0-9]/gi, '_').substring(0, 50);
+        a.download = `${sanitizedTitle}.jpg`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    } catch (err) {
+        // CORS blocked - use proxy approach
+        try {
+            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(imageUrl)}`;
+            const response = await fetch(proxyUrl);
+            const blob = await response.blob();
+            
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
             const sanitizedTitle = title.replace(/[^a-z0-9]/gi, '_').substring(0, 50);
             a.download = `${sanitizedTitle}.jpg`;
+            document.body.appendChild(a);
             a.click();
+            document.body.removeChild(a);
             URL.revokeObjectURL(url);
-        })
-        .catch(err => {
-            console.error('Download failed:', err);
+        } catch (proxyErr) {
+            // Both failed - fallback to opening in new tab
+            console.error('Download failed:', proxyErr);
+            alert('Direct download blocked. Opening image in new tab instead.');
             window.open(imageUrl, '_blank');
-        });
+        }
+    }
 }
 
 // ========================================

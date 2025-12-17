@@ -411,8 +411,8 @@ function parseCSV(text, filename) {
         });
 
         const title = listing['Title'];
-        const currentPrice = parseFloat((listing['Current Price'] || listing['Price'] || '0').replace(/,/g, ''));
-        const originalPrice = parseFloat((listing['Original Price'] || '0').replace(/,/g, ''));
+        const currentPrice = parseFloat((listing['Current Price'] || listing['Price'] || '0').replace(/[$,]/g, ''));
+        const originalPrice = parseFloat((listing['Original Price'] || '0').replace(/[$,]/g, ''));
         const reviews = parseInt(listing['Reviews'] || '0');
         const rating = parseFloat(listing['Rating'] || '0');
         const url = listing['URL'];

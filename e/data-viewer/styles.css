@@ -1362,7 +1362,7 @@ body {
     cursor: pointer;
     font-size: 22px;
     transition: all 0.2s ease;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 1));
 }
 
 .favorite-heart.unfavorited {
@@ -1370,12 +1370,13 @@ body {
 }
 
 .favorite-heart.unfavorited:hover {
-    color: #ff6b6b;
+    color: #f65800;
     transform: scale(1.15);
 }
 
 .favorite-heart.favorited {
-    color: #ff6b6b;
+    color: #f65800;
+    filter: drop-shadow(0px 2px 4px #f65800);
 }
 
 .favorite-heart.favorited:hover {
@@ -1460,8 +1461,8 @@ body {
     font-size: 18px;
     color: rgba(255, 255, 255, 0.7);
     background: rgba(0, 0, 0, 0.6);
-    padding: 8px;
-    border-radius: 6px;
+    padding: 2px;
+    border-radius: 25px;
     transition: all 0.2s ease;
     opacity: 0;
     pointer-events: none;

@@ -1426,8 +1426,9 @@ body {
 /* Empty favorites state message */
 .empty-favorites-message {
     text-align: center;
-    padding: 60px 20px;
-    color: #888;
+    margin: 40px auto;
+    color: var(--text-secondary);
+    font-size: 16px;
 }
 
 .empty-favorites-message i {

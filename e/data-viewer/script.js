@@ -971,6 +971,7 @@ function applyFilters() {
 
     if (sortBy !== 'default') {
         filteredListings.sort((a, b) => {
+            /* OLD BEHAVIOR
             switch (sortBy) {
                 case 'price-asc': return a.currentPrice - b.currentPrice;
                 case 'price-desc': return b.currentPrice - a.currentPrice;
@@ -979,6 +980,30 @@ function applyFilters() {
                 case 'rating-asc': return a.rating - b.rating;
                 case 'rating-desc': return b.rating - a.rating;
                 default: return 0;
+            } */
+            switch (sortBy) {
+                case 'price-asc':
+                    return a.currentPrice !== b.currentPrice 
+                        ? a.currentPrice - b.currentPrice 
+                        : b.reviews - a.reviews;
+                case 'price-desc':
+                    return b.currentPrice !== a.currentPrice 
+                        ? b.currentPrice - a.currentPrice 
+                        : b.reviews - a.reviews;
+                case 'reviews-asc':
+                    return a.reviews - b.reviews;
+                case 'reviews-desc':
+                    return b.reviews - a.reviews;
+                case 'rating-asc':
+                    return a.rating !== b.rating 
+                        ? a.rating - b.rating 
+                        : a.reviews - b.reviews;
+                case 'rating-desc':
+                    return b.rating !== a.rating 
+                        ? b.rating - a.rating 
+                        : b.reviews - a.reviews;
+                default:
+                    return 0;
             }
         });
     }

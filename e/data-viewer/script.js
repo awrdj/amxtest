@@ -1138,6 +1138,7 @@ function createListingCard(listing) {
         <div class="card-image-wrapper">
             <img src="${listing.thumbnail}" alt="${listing.title}" class="card-image" loading="lazy">
             <div class="card-badges">${badgesHTML}</div>
+            <i class="fas fa-heart favorite-heart ${favorites.has(listing.url) ? 'favorited' : 'unfavorited'}" data-url="${listing.url}" title="${favorites.has(listing.url) ? 'Remove from favorites' : 'Add to favorites'}"></i>
             ${listing.pageOrigin || listing.searchQuery ? `
                 <div class="page-origin-badge">
                     ${listing.pageOrigin ? `<span class="badge-line">p. ${listing.pageOrigin}</span>` : ''}
@@ -1147,9 +1148,6 @@ function createListingCard(listing) {
         </div>
         <div class="card-content">
             <div class="card-title" data-full-title="${listing.title}">
-                <i class="fas fa-heart favorite-heart ${favorites.has(listing.url) ? 'favorited' : 'unfavorited'}" 
-               data-url="${listing.url}"
-               title="${favorites.has(listing.url) ? 'Remove from favorites' : 'Add to favorites'}"></i>
                 ${listing.title}
             </div>
             ${listing.shopName || simplifiedProductType ? `

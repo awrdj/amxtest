@@ -1374,7 +1374,7 @@ body {
 }
 
 .favorite-heart.unfavorited:hover {
-    color: #f65800;
+    color: #ff8947;
     transform: scale(1.15);
 }
 

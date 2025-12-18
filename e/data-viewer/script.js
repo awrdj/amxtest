@@ -426,6 +426,9 @@ function parseCSV(text, filename) {
         const productType = listing['Product Type'] || 'Unknown';
         const freeShipping = (listing['Free Shipping'] || 'No').toLowerCase() === 'yes';
         const organicListingsCount = parseInt(listing['Organic Listings Count'] || '0');
+        // Favorited column (optional in input)
+        const favoritedRaw = (listing['Favorited'] || '').toLowerCase().trim();
+        const isFavorited = favoritedRaw === 'yes';
 
         if (!title || !url) continue;
 
@@ -446,8 +449,14 @@ function parseCSV(text, filename) {
             freeShipping,
             organicListingsCount,
             fileName: filename,
-            fileIndex: uploadedFiles.length
+            fileIndex: uploadedFiles.length,
+            isFavorited // NEW: keep original favorited info
         });
+
+        // NEW: If Favorited column says Yes, add to favorites set
+        if (isFavorited && url) {
+            favorites.add(url);
+        }
     }
 
     return listings;
@@ -1276,32 +1285,176 @@ async function downloadImage(imageUrl, title) {
 // ========================================
 function exportRefinedResults() {
     if (filteredListings.length === 0) {
-        alert('No listings to export!');
+        alert('No listings to export! Apply different filters or load more data.');
         return;
     }
 
-    if (filteredListings.length === 0) return;
+    // Determine if any listing is favorited
+    const hasAnyFavorites = filteredListings.some(l => favorites.has(l.url));
 
-    const allKeys = Object.keys(filteredListings[0]);
+    // Build the exact header order required
+    const headers = [
+        'Title',
+        'Current Price',
+        'Original Price',
+        'Reviews',
+        'Rating',
+        'URL',
+        'Thumbnail',
+        'Shop Name',
+        'Product Type',
+        'Free Shipping',
+        'Organic Listings Count',
+        'Badges',
+        'Is Ad',
+        'Page Origin',
+        'Search Query'
+    ];
 
-    const headers = [...allKeys, 'Favorited']; // Favorites
-    const rows = filteredListings.map(listing => {
-        return headers.map(header => {
-            if (header === 'Favorited') {
-                return favorites.has(listing.url) ? 'Yes' : 'No';
+    // Add Favorited column only if at least one listing is favorited
+    if (hasAnyFavorites) {
+        headers.push('Favorited');
+    }
+
+    // Helper to format values back to original-like CSV
+    function formatExportValue(header, listing) {
+        switch (header) {
+            case 'Title':
+                return listing.title || '';
+            case 'Current Price':
+                // Back to $X.XX format to match original CSV
+                return listing.currentPrice != null && !isNaN(listing.currentPrice)
+                    ? `$${Number(listing.currentPrice).toFixed(2)}`
+                    : '';
+            case 'Original Price': {
+                const price = listing.originalPrice != null && !isNaN(listing.originalPrice)
+                    ? listing.originalPrice
+                    : listing.currentPrice;
+                return price != null && !isNaN(price)
+                    ? `$${Number(price).toFixed(2)}`
+                    : '';
             }
-            const value = listing[header];
-            if (value === null || value === undefined) return '';
-            if (typeof value === 'boolean') return value ? 'Yes' : 'No';
-            if (typeof value === 'string') return escapeCSV(value);
-            return value;
-        });
-    });
+            case 'Reviews':
+                return listing.reviews != null && !isNaN(listing.reviews)
+                    ? String(listing.reviews)
+                    : '';
+            case 'Rating':
+                return listing.rating != null && !isNaN(listing.rating) && listing.rating > 0
+                    ? Number(listing.rating).toFixed(1)
+                    : '';
+            case 'URL':
+                return listing.url || '';
+            case 'Thumbnail':
+                return listing.thumbnail || '';
+            case 'Shop Name':
+                return listing.shopName || '';
+            case 'Product Type':
+                return listing.productType || '';
+            case 'Free Shipping':
+                // Back to Yes / No
+                return listing.freeShipping ? 'Yes' : 'No';
+            case 'Organic Listings Count':
+                return listing.organicListingsCount != null && !isNaN(listing.organicListingsCount)
+                    ? String(listing.organicListingsCount)
+                    : '';
+            case 'Badges':
+                return listing.badges || '';
+            case 'Is Ad':
+                // Back to Yes / No
+                return listing.isAd ? 'Yes' : 'No';
+            case 'Page Origin':
+                return listing.pageOrigin != null ? String(listing.pageOrigin) : '';
+            case 'Search Query':
+                return listing.searchQuery || '';
+            case 'Favorited':
+                return favorites.has(listing.url) ? 'Yes' : 'No';
+            default:
+                return '';
+        }
+    }
 
-    const csv = [headers, ...rows.map(row => row.map(v => `"${v}"`).join(','))].join('\n');
+    const rows = filteredListings.map(listing =>
+        headers.map(header => {
+            const raw = formatExportValue(header, listing);
+            if (raw === null || raw === undefined) return '';
+            if (typeof raw === 'string') return escapeCSV(raw);
+            return raw;
+        })
+    );
 
-    const timestamp = new Date().toISOString().replace(/:/g, '-').slice(0, -5);
-    const filename = `etsyrefined_${timestamp}.csv`;
+    const csv = [
+        headers.map(h => `"${escapeCSV(h)}"`).join(','),
+        ...rows.map(row => row.map(v => `"${v}"`).join(','))
+    ].join('\n');
+
+    // ------- Filename construction -------
+
+    // Collect unique search queries from filtered listings
+    const searchQueriesSet = new Set(
+        filteredListings
+            .map(l => (l.searchQuery || '').trim())
+            .filter(q => q.length > 0)
+    );
+
+    let searchParts = Array.from(searchQueriesSet);
+
+    // If system/OS has filename length issues, we can optionally cap here.
+    // Basic safeguard: if joined part is > 150 chars, trim to first 5.
+    const joinedAll = searchParts.join('-');
+    if (joinedAll.length > 150 && searchParts.length > 5) {
+        searchParts = searchParts.slice(0, 5);
+    }
+
+    const searchPartForFilename = searchParts
+        .map(q => q.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, ''))
+        .filter(q => q.length > 0)
+        .join('-') || 'AllQueries';
+
+    // Build filters summary for filename (simple, readable flags)
+    const activeFilters = [];
+
+    if (elements.filterHideAds.checked) activeFilters.push('hideAds');
+    if (elements.filterBestseller.checked) activeFilters.push('bestseller');
+    if (elements.filterPopular.checked) activeFilters.push('popular');
+    if (elements.filterEtsysPick.checked) activeFilters.push('etsysPick');
+    if (elements.filterFreeShipping.checked) activeFilters.push('freeShip');
+    if (elements.productTypeSelect.value === 'physical') activeFilters.push('physicalOnly');
+    if (elements.productTypeSelect.value === 'digital') activeFilters.push('digitalOnly');
+    if (elements.filterFavorites.checked) activeFilters.push('favoritesOnly');
+
+    // Price range
+    const priceMin = parseFloat(elements.priceMinSlider.value);
+    const priceMax = parseFloat(elements.priceMaxSlider.value);
+    activeFilters.push(`price${priceMin}-${priceMax}`);
+
+    // Reviews range
+    const reviewMin = parseInt(elements.reviewMinSlider.value);
+    const reviewMax = parseInt(elements.reviewMaxSlider.value);
+    activeFilters.push(`reviews${reviewMin}-${reviewMax}`);
+
+    // Rating range
+    const ratingMin = (parseFloat(elements.ratingMinSlider.value) / 10).toFixed(1);
+    const ratingMax = (parseFloat(elements.ratingMaxSlider.value) / 10).toFixed(1);
+    activeFilters.push(`rating${ratingMin}-${ratingMax}`);
+
+    // Brand / haram counts
+    const excludedBrands = getExcludedBrands();
+    const excludedHaram = getExcludedHaram();
+    if (excludedBrands.length > 0) activeFilters.push(`excludeBrands${excludedBrands.length}`);
+    if (excludedHaram.length > 0) activeFilters.push(`excludeHaram${excludedHaram.length}`);
+
+    const filtersPart = activeFilters.length > 0
+        ? activeFilters.join('_')
+        : 'nofilters';
+
+    // Timestamp in YYYY-MM-DDTHH-MM-SS
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const timestamp = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}`;
+
+    const filename = `combined_${searchPartForFilename}_${timestamp}_eScope_${filtersPart}.csv`;
+
+    // ------- Download -------
 
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
@@ -1311,7 +1464,7 @@ function exportRefinedResults() {
     a.click();
     URL.revokeObjectURL(url);
 
-    console.log(`Exported ${filteredListings.length} listings with ${headers.length} columns`);
+    console.log(`Exported ${filteredListings.length} listings with ${headers.length} columns as ${filename}`);
 }
 
 // ========================================

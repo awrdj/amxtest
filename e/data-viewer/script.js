@@ -1458,7 +1458,7 @@ function exportRefinedResults() {
     const pad = n => String(n).padStart(2, '0');
     const timestamp = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}`;
 
-    const filename = `combined_${searchPartForFilename}_${timestamp}_eScope_${filtersPart}.csv`;
+    const filename = `eScopeDataViewer_${searchPartForFilename}_${timestamp}_${filtersPart}.csv`;
 
     // ------- Download -------
 

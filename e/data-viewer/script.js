@@ -728,7 +728,7 @@ function loadHaramCheckboxes() {
             <input type="text" 
                    id="customHaramInput" 
                    class="custom-brand-input" 
-                   placeholder="Add custom term (comma separated)" 
+                   placeholder="Add custom Haram terms (comma separated)" 
                    maxlength="500">
             <button class="btn-add-brand" id="addCustomHaramBtn">
                 <i class="fas fa-plus"></i> Add

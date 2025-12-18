@@ -5,7 +5,7 @@
 // EASY TO ADJUST: Configuration
 const CONFIG = {
     cardsPerLoad: 360,
-    cardsPerPage: 180,
+    cardsPerPage: 360,
     localStorageKey: 'etsyScopeData',
     settingsKey: 'etsyScopeSettings'
 };

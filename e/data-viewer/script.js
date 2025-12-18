@@ -180,8 +180,24 @@ function init() {
 // ========================================
 function setupEventListeners() {
     // Upload
-    elements.uploadZone.addEventListener('click', () => elements.fileInput.click());
-    elements.fileInput.addEventListener('change', handleFileSelect);
+    
+    // Previous code
+    // elements.uploadZone.addEventListener('click', () => elements.fileInput.click());
+    // New code to test
+    elements.uploadZone.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('🟢 Upload zone clicked, opening file picker'); // DEBUG
+        elements.fileInput.click();
+    });
+
+    // Previous code
+    // elements.fileInput.addEventListener('change', handleFileSelect);
+    // New code to test
+    elements.fileInput.addEventListener('change', (e) => {
+        console.log('🟡 File input change event fired'); // DEBUG
+        handleFileSelect(e);
+    });
 
     // Drag & Drop
     elements.uploadZone.addEventListener('dragover', handleDragOver);
@@ -192,6 +208,7 @@ function setupEventListeners() {
     elements.addMoreBtn.addEventListener('click', () => {
         elements.viewerSection.style.display = 'none';
         elements.uploadSection.style.display = 'block';
+        elements.fileInput.value = ''; // Clear file input to ensure change event fires
     });
     elements.clearCacheBtn.addEventListener('click', clearCache);
     elements.exportBtn.addEventListener('click', exportRefinedResults);
@@ -335,8 +352,22 @@ function updateSliderFill(type) {
 // ========================================
 // File Upload & Parsing
 // ========================================
-function handleFileSelect(e) {
+
+// Previous code
+/*function handleFileSelect(e) {
     const files = Array.from(e.target.files);
+    processFiles(files);
+    e.target.value = '';
+}*/
+
+// New code to test
+function handleFileSelect(e) {
+    console.log('🔵 handleFileSelect triggered', e.target.files.length, 'files'); // DEBUG
+    const files = Array.from(e.target.files);
+    if (files.length === 0) {
+        console.warn('⚠️ No files selected'); // DEBUG
+        return;
+    }
     processFiles(files);
     e.target.value = '';
 }

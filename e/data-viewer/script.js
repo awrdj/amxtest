@@ -184,15 +184,9 @@ function setupEventListeners() {
     // Previous code
     // elements.uploadZone.addEventListener('click', () => elements.fileInput.click());
     // New code to test
-    elements.uploadZone.addEventListener('click', (e) => {
-        // Only stop propagation to prevent double-firing
-        e.stopPropagation();
-        console.log('🟢 Upload zone clicked, opening file picker'); // DEBUG
-        
-        // Small delay to ensure click completes
-        setTimeout(() => {
-            elements.fileInput.click();
-        }, 0);
+    elements.uploadZone.addEventListener('click', () => {
+        console.log('🟢 Upload zone clicked, opening file picker');
+        elements.fileInput.click();
     });
 
     // Previous code

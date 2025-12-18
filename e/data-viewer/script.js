@@ -82,13 +82,19 @@ const BRANDLIST = [
 // NEW: HARAM BLOCKER LIST (Placeholder - you can edit this)
 const HARAMLIST = [
     "Alcohol", "Beer", "Wine", "Whiskey", "Vodka", "Champagne", "Tequila", "Rum", "Gin",
-    "Pork", "Bacon", "Ham", "Sausage", "Pepperoni", "Hot Dog", "Salami",
-    "Casino", "Gambling", "Poker", "Blackjack", "Slot Machine", "Lottery", "Betting",
-    "Adult", "NSFW", "Explicit", "Mature Content", "18+", "XXX",
-    "Halloween", "Witch", "Devil", "Demon", "Satan", "Lucifer", "Occult", "Ouija",
-    "Tattoo", "Body Art", "Piercing", "Body Modification",
-    "Interest", "Usury", "Riba", "Payday Loan",
-    "Cross", "Crucifix", "Religious Symbol", "Buddha", "Idol", "Statue Worship"
+    "Pork", "Bacon", "Ham", "Casino", "Gambling", "Poker", "Blackjack", "Slot Machine", "Lottery", "Betting",
+    "NSFW", "XXX", "Witch", "Devil", "Demon", "Satan", "Lucifer", "Occult", "Ouija",
+    "Tattoo", "Body Art", "Piercing", "Body Modification", "Usury", "Riba", "Payday Loan",
+    "Crucifix", "Buddha", "Statue Worship", "Sexy", "Lingerie", "Nude", "Naked", "Bikini", "Topless", "Booty", "Cleavage",
+    "Erotic", "Porn", "Swimsuit", "Seduce", "Babe", "Kiss", "Makeout", "Boyfriend", "Girlfriend", "Dating",
+    "bodycon", "fetish", "bdsm", "onlyfans", "playboy", "strip", "stripper", "escort", "camgirl", "jesus", "church",
+    "Christian", "Christianity", "Bible", "Zodiac", "Horoscope", "Astrology", "Tarot", "Witchcraft", "Spells", "Pagan",
+    "Magic", "Goddess", "Cocktail", "Weed", "Marijuana", "Cannabis", "Hookah", "Cigar", "Cigarette", "Zombie",
+    "Boudoir", "Cosplay", "Saint", "Trinity", "Hindu", "Krishna", "Vishnu", "Buddhist", "Shiva", "Ganesh", "Deity", "Wizard",
+    "Spell", "Sorcery", "Reincarnation", "Brandy", "Smoking", "Vaping", "Vape", "Shisha", "Halloween", "Christmas",
+    "LGBT", "LGBT+", "LGBTQ", "LGBTQ+", "Pride", "Gay", "Lesbian", "Queer", "Trans", "Profanity", "Horus", "Chakra", "Easter", "Valentine", "Valentine's",
+    "St Valentine", "Thanksgiving", "St Patrick", "Patrick's Day", "Hanukkah", "Jewish", "Jewishness", "Judaism", "Yom Kippur",
+    "Diwali", "Santa", "Santa Claus", "Elf", "Tattoos"
 ];
 
 // ========================================
@@ -1420,7 +1426,7 @@ function exportRefinedResults() {
     if (elements.filterFreeShipping.checked) activeFilters.push('freeShip');
     if (elements.productTypeSelect.value === 'physical') activeFilters.push('physicalOnly');
     if (elements.productTypeSelect.value === 'digital') activeFilters.push('digitalOnly');
-    if (elements.filterFavorites.checked) activeFilters.push('favoritesOnly');
+    if (elements.filterFavorites.checked) activeFilters.push('favOnly');
 
     // Price range
     const priceMin = parseFloat(elements.priceMinSlider.value);

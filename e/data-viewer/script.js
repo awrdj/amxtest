@@ -1169,8 +1169,8 @@ function createListingCard(listing) {
     if (badgesArray.includes('Popular Now')) {
         badgesHTML += `<span class="badge badge-popular">Popular</span>`;
     }
-    if (badgesArray.some(b => b.toLowerCase().includes('etsy\'s pick'))) {
-        badgesHTML += `<span class="badge badge-etsyspick">Etsy's Pick</span>`;
+    if (badgesArray.some(b => b.toLowerCase().includes('etsy’s pick'))) {
+        badgesHTML += `<span class="badge badge-etsyspick">Etsy’s Pick</span>`;
     }
 
     if (hasDiscount) {

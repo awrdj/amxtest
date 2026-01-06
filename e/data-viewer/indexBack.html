@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eScope DataViewer</title>
+    <link rel="icon" type="image/x-icon" href="EtsyScopeLogo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header-section">
+        <div class="container">
+            <h1 class="text-center header-title">
+                <div class="logo-container">
+                    <a href="./" style="color:white;">
+                        <img src="EtsyScopeLogo.png" alt="eScope Logo" class="logo-image">
+                        <span class="logo-text"><span class="logo-highlight">Scope</span><span style="font-size:1.5rem;">DataViewer</span></span>
+                    </a>
+                </div>
+            </h1>
+            <p class="text-center header-subtitle mb-0">Analyze and refine your eScope research exports</p>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <!-- Upload Section -->
+        <div id="uploadSection" class="upload-section">
+            <div class="upload-zone" id="uploadZone">
+                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                <h2>Upload Your CSV Files</h2>
+                <p>Drag & drop CSV files here or click to browse</p>
+                <input type="file" id="fileInput" accept=".csv" multiple hidden>
+                <button class="btn-primary" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-file-upload"></i> Choose Files
+                </button>
+            </div>
+
+            <!-- Uploaded Files List -->
+            <div id="filesList" class="files-list" style="display: none;">
+                <h3><i class="fas fa-list"></i> Loaded Files</h3>
+                <div id="filesContainer"></div>
+            </div>
+        </div>
+
+        <!-- Data Viewer Section -->
+        <div id="viewerSection" class="viewer-section" style="display: none;">
+            <!-- Header Actions -->
+            <div class="viewer-header">
+                <div class="header-actions">
+                    <button class="btn-secondary" id="addMoreBtn">
+                        <i class="fas fa-plus"></i> Add More Data
+                    </button>
+                    <button class="btn-danger" id="clearCacheBtn">
+                        <i class="fas fa-trash"></i> Clear Cache
+                    </button>
+                </div>
+                <div class="results-info">
+                    <span id="resultsCount">0 listings</span>
+                    <span class="separator">•</span>
+                    <span id="lastUpdated"></span>
+                </div>
+            </div>
+
+            <!-- Filters Panel -->
+            <div class="filters-panel">
+                
+                <div class="filters-header">
+                    <h3><i class="fas fa-filter"></i> Filters</h3>
+                    <div class="filter-actions">
+                        <span id="filteredCount" class="filtered-count"></span>
+                        <button class="btn-clear" id="clearFiltersBtn">Clear All</button>
+                        <button class="btn-clear btn-favorites" id="clearAllFavoritesBtn" style="border-top-right-radius: 0; border-bottom-right-radius: 0;" disabled>
+                            <i class="fas fa-heart-broken"></i> Clear All Favorites
+                        </button>
+                        <button class="btn-clear btn-favorites" id="favoriteAllVisibleBtn" style="border-left: 1; border-top-left-radius: 0; border-bottom-left-radius: 0; margin-left: -16px;">
+                            <i class="fas fa-heart"></i> Favorite All Visible
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ROW 1: Search + Quick Filters -->
+<div class="filters-row-1">
+    <!-- Search Box -->
+    <div class="filter-box filter-search">
+        <label class="filter-label">
+            <i class="fas fa-search"></i> Search
+        </label>
+        <input type="text" id="searchInput" class="filter-input" placeholder="Search by title or shop:SHOPNAME, -ToExclude...">
+    </div>
+
+    <!-- Quick Filters -->
+    <div class="filter-box filter-quick">
+        <label class="filter-label">Quick Filters</label>
+        <div class="checkbox-group-inline">
+            <label class="checkbox-label">
+                <input type="checkbox" id="filterHideAds">
+                <span>Hide Ads</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="filterBestseller">
+                <span>Bestseller</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="filterPopular">
+                <span>Popular Now</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="filterEtsysPick">
+                <span>Etsy’s Pick</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="filterFreeShipping">
+                <span>Free Ship</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="filterFavorites">
+                <span>Favorites</span>
+            </label>
+        </div>
+    </div>
+</div>
+
+<!-- ROW 2: Price, Reviews, Rating Sliders -->
+<div class="filters-row-2">
+    <!-- Price Range -->
+    <div class="filter-box">
+        <label class="filter-label">
+            <i class="fas fa-dollar-sign"></i> Price Range
+        </label>
+        <div class="range-display">
+            <span id="priceMin">$0</span>
+            <span>-</span>
+            <span id="priceMax">$100</span>
+        </div>
+        <div class="dual-slider">
+            <input type="range" id="priceMinSlider" class="range-slider" min="0" max="1000" value="0" step="1">
+            <input type="range" id="priceMaxSlider" class="range-slider range-slider-max" min="0" max="1000" value="1000" step="1">
+        </div>
+    </div>
+
+    <!-- Review Count Range -->
+    <div class="filter-box">
+        <label class="filter-label">
+            <i class="fas fa-comment-dots"></i> Review Count Range
+        </label>
+        <div class="range-display">
+            <span id="reviewMin">0</span>
+            <span>-</span>
+            <span id="reviewMax">10K+</span>
+        </div>
+        <div class="dual-slider">
+            <input type="range" id="reviewMinSlider" class="range-slider" min="0" max="10000" value="0">
+            <input type="range" id="reviewMaxSlider" class="range-slider range-slider-max" min="0" max="10000" value="10000">
+        </div>
+    </div>
+
+    <!-- Rating Range -->
+    <div class="filter-box">
+        <label class="filter-label">
+            <i class="fas fa-star"></i> Rating Range
+        </label>
+        <div class="range-display">
+            <span id="ratingMin">0.0</span>
+            <span>-</span>
+            <span id="ratingMax">5.0</span>
+        </div>
+        <div class="dual-slider">
+            <input type="range" id="ratingMinSlider" class="range-slider" min="0" max="50" value="0" step="1">
+            <input type="range" id="ratingMaxSlider" class="range-slider range-slider-max" min="0" max="50" value="50" step="1">
+        </div>
+    </div>
+</div>
+
+<!-- ROW 3: Product Type, Sort By, Export -->
+<div class="filters-row-3">
+    <!-- Product Type Filter -->
+    <div class="filter-box">
+        <label class="filter-label">
+            <i class="fas fa-box"></i> Product Type
+        </label>
+        <select id="productTypeSelect" class="filter-select">
+            <option value="all">All Types</option>
+            <option value="physical">Physical Product</option>
+            <option value="digital">Digital Product</option>
+        </select>
+    </div>
+
+    <!-- Sort Options -->
+    <div class="filter-box">
+        <label class="filter-label">
+            <i class="fas fa-sort"></i> Sort By
+        </label>
+        <select id="sortSelect" class="filter-select">
+            <option value="default">Default Order</option>
+            <option value="price-asc">Price: Low → High</option>
+            <option value="price-desc">Price: High → Low</option>
+            <option value="reviews-desc">Reviews: High → Low</option>
+            <option value="reviews-asc">Reviews: Low → High</option>
+            <option value="rating-desc">Rating: High → Low</option>
+            <option value="rating-asc">Rating: Low → High</option>
+        </select>
+    </div>
+
+    <!-- Export Button -->
+    <div class="filter-box">
+        <label class="filter-label" style="opacity: 0;">Export</label>
+        <button class="btn-export" id="exportBtn">
+            <i class="fas fa-download"></i> Export Refined Results
+        </button>
+    </div>
+</div>
+
+                <!-- Brand/IP Filter (Collapsible) -->
+                <div class="filter-collapsible" style="border-bottom-right-radius: 0;border-bottom-left-radius: 0;">
+                    <div class="collapsible-header" id="brandFilterToggle">
+                        <span><i class="fas fa-copyright"></i> Exclude Major Brands / IPs</span>
+                        <i class="fas fa-chevron-down collapsible-arrow"></i>
+                    </div>
+                    <div class="collapsible-content" id="brandFilterContent">
+                        <div class="brand-filter-actions">
+                            <span class="small-text">Select brands/IPs to exclude</span>
+                            <div>
+                                <button class="btn-text" id="selectAllBrands">Select all</button>
+                                <button class="btn-text" id="clearAllBrands">Clear all</button>
+                            </div>
+                        </div>
+                        <div class="brand-checkbox-grid" id="brandCheckboxGrid">
+                                <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Haram Blocker Filter (NEW - Add after Brand Filter) -->
+                <div class="filter-collapsible" style="margin-top: 0; border-top-right-radius: 0; border-top-left-radius: 0;">
+                    <div class="collapsible-header" id="haramFilterToggle">
+                        <span><i class="fas fa-ban"></i> Haram Blocker</span>
+                        <i class="fas fa-chevron-down collapsible-arrow"></i>
+                    </div>
+                    <div class="collapsible-content" id="haramFilterContent">
+                        <div class="brand-filter-actions">
+                            <span class="small-text">Select HARAM terms to exclude</span>
+                            <div>
+                                <button class="btn-text" id="selectAllHaram">Select all</button>
+                                <button class="btn-text" id="clearAllHaram">Clear all</button>
+                            </div>
+                        </div>
+                        <div class="brand-checkbox-grid haram-checkbox-grid" id="haramCheckboxGrid">
+                                <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cards Grid -->
+            <div id="cardsContainer" class="cards-container">
+                <!-- Cards populated by JavaScript -->
+            </div>
+
+            <!-- Load More Button -->
+            <div class="load-more-container" id="loadMoreContainer" style="display: none;">
+                <button class="btn-load-more" id="loadMoreBtn">
+                    <i class="fas fa-chevron-down"></i> Load More
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 eScope DataViewer. Created for personal research purposes.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

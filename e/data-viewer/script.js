@@ -229,6 +229,11 @@ function calculateStats(listings) {
     };
 
     listings.forEach(listing => {
+        // TEMPORARY DEBUG - REMOVE AFTER CHECKING
+        if (listing.productType) {
+            console.log('Product Type:', listing.productType);
+        }
+        
         // Price
         const price = listing.currentPrice || 0;
         if (price > 0) {

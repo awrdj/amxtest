@@ -46,21 +46,84 @@
         <!-- Data Viewer Section -->
         <div id="viewerSection" class="viewer-section" style="display: none;">
             <!-- Header Actions -->
-            <div class="viewer-header">
-                <div class="header-actions">
-                    <button class="btn-secondary" id="addMoreBtn">
-                        <i class="fas fa-plus"></i> Add More Data
-                    </button>
-                    <button class="btn-danger" id="clearCacheBtn">
-                        <i class="fas fa-trash"></i> Clear Cache
-                    </button>
+<div class="viewer-header">
+    <div class="header-actions">
+        <button class="btn-secondary" id="addMoreBtn">
+            <i class="fas fa-plus"></i> Add More Data
+        </button>
+        <button class="btn-danger" id="clearCacheBtn">
+            <i class="fas fa-trash"></i> Clear Cache
+        </button>
+    </div>
+    <div class="results-info">
+        <span id="resultsCount">0 listings</span>
+        <span class="separator">•</span>
+        <span id="lastUpdated"></span>
+    </div>
+    
+    <!-- NEW: Stats Bar -->
+    <div id="statsBar" class="stats-bar" style="display: none;">
+        <div class="stats-content">
+            <span id="statsListings"></span>
+            <span class="stat-sep">|</span>
+            <span id="statsPrice"></span>
+            <span class="stat-sep">|</span>
+            <span id="statsDiscount"></span>
+            <span class="stat-sep">|</span>
+            <span id="statsDigital"></span>
+            <span class="stat-sep">|</span>
+            <span id="statsBestseller"></span>
+            <span class="stat-sep">|</span>
+            <span id="statsPopular"></span>
+            <span class="stat-sep">|</span>
+            <span id="statsEtsysPick"></span>
+            <span class="stat-sep">|</span>
+            <span id="statsFreeShip"></span>
+            <span class="stat-sep">|</span>
+            
+            <!-- Shop Breakdown Trigger -->
+            <span class="stats-dropdown-trigger" id="shopStatsTrigger">
+                <span id="shopStatsLabel"></span>
+                <div id="shopStatsDropdown" class="stats-dropdown"></div>
+            </span>
+            
+            <span class="stat-sep">|</span>
+            
+            <!-- Keyword Analysis Trigger -->
+            <span class="stats-kw-trigger" id="kwStatsTrigger">
+                KW Analysis
+                <div id="kwStatsDropdown" class="stats-kw-dropdown">
+                    <div class="stats-kw-grid">
+                        <div class="stats-kw-col">
+                            <h4>
+                                Top Focus Keywords
+                                <div style="display:flex; gap:6px;">
+                                    <span class="stats-copy-btn" id="kwFocusExport">CSV</span>
+                                    <span class="stats-copy-btn" id="kwFocusCopy">
+                                        <i class="fas fa-copy"></i> Copy
+                                    </span>
+                                </div>
+                            </h4>
+                            <ul class="stats-kw-list" id="kwFocusList"></ul>
+                        </div>
+                        <div class="stats-kw-col">
+                            <h4>
+                                Top Long-Tail Keywords
+                                <div style="display:flex; gap:6px;">
+                                    <span class="stats-copy-btn" id="kwLongExport">CSV</span>
+                                    <span class="stats-copy-btn" id="kwLongCopy">
+                                        <i class="fas fa-copy"></i> Copy
+                                    </span>
+                                </div>
+                            </h4>
+                            <ul class="stats-kw-list" id="kwLongList"></ul>
+                        </div>
+                    </div>
                 </div>
-                <div class="results-info">
-                    <span id="resultsCount">0 listings</span>
-                    <span class="separator">•</span>
-                    <span id="lastUpdated"></span>
-                </div>
-            </div>
+            </span>
+        </div>
+    </div>
+</div>
 
             <!-- Filters Panel -->
             <div class="filters-panel">

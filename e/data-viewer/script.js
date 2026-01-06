@@ -229,10 +229,6 @@ function calculateStats(listings) {
     };
 
     listings.forEach(listing => {
-        // TEMPORARY DEBUG - REMOVE AFTER CHECKING
-        if (listing.productType) {
-            console.log('Product Type:', listing.productType);
-        }
         
         // Price
         const price = listing.currentPrice || 0;
@@ -250,8 +246,11 @@ function calculateStats(listings) {
         }
 
         // Digital
-        if (listing.productType && listing.productType.toLowerCase() === 'digital') {
-            stats.digitalCount++;
+        if (listing.productType) {
+            const productTypeLower = listing.productType.toLowerCase().trim();
+            if (productTypeLower.includes('digital')) {
+                stats.digitalCount++;
+            }
         }
 
         // Badges

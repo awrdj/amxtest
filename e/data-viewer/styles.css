@@ -1490,10 +1490,10 @@ body {
    ======================================== */
 
 .stats-bar {
+    padding: 10px 0;
     width: 100%;
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 2px solid var(--border-color);
+    background: #1a1f28;
+    border-radius: 12px;
 }
 
 .stats-content {

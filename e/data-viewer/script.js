@@ -2,6 +2,17 @@
 // EtsyScope Data Viewer - Main Script
 // ========================================
 
+// ========================================
+// STATS: Stop Words for Keyword Analysis
+// ========================================
+const STOP_WORDS = new Set([
+    "the", "and", "or", "for", "with", "a", "an", "of", "in", "on", "at", "to", "from", "by",
+    "is", "are", "was", "were", "be", "been", "this", "that", "these", "those", "it", "its",
+    "gift", "gifts", "sale", "new", "box", "set", "pack", "piece", "pcs", "pdf",
+    "svg", "png", "jpg", "download", "instant", "digital", "editable", "template", "printable",
+    "personalized", "custom", "handmade", "item", "items", "shop", "shipping", "free", "ready"
+]);
+
 // EASY TO ADJUST: Configuration
 const CONFIG = {
     cardsPerLoad: 360,
@@ -108,6 +119,12 @@ let customBrands = [];
 let customHaram = []; // NEW: Store custom haram terms
 let favorites = new Set(); // Store favorited URLs
 
+
+// Stats State
+let currentStats = null;
+let isShopDropdownOpen = false;
+let isKwDropdownOpen = false;
+
 // ========================================
 // DOM Elements
 // ========================================
@@ -162,8 +179,399 @@ const elements = {
     haramFilterContent: document.getElementById('haramFilterContent'),
     haramCheckboxGrid: document.getElementById('haramCheckboxGrid'),
     selectAllHaram: document.getElementById('selectAllHaram'),
-    clearAllHaram: document.getElementById('clearAllHaram')
+    clearAllHaram: document.getElementById('clearAllHaram'),
+
+    // STATS elements
+    statsBar: document.getElementById('statsBar'),
+    statsListings: document.getElementById('statsListings'),
+    statsPrice: document.getElementById('statsPrice'),
+    statsDiscount: document.getElementById('statsDiscount'),
+    statsDigital: document.getElementById('statsDigital'),
+    statsBestseller: document.getElementById('statsBestseller'),
+    statsPopular: document.getElementById('statsPopular'),
+    statsEtsysPick: document.getElementById('statsEtsysPick'),
+    statsFreeShip: document.getElementById('statsFreeShip'),
+    shopStatsTrigger: document.getElementById('shopStatsTrigger'),
+    shopStatsLabel: document.getElementById('shopStatsLabel'),
+    shopStatsDropdown: document.getElementById('shopStatsDropdown'),
+    kwStatsTrigger: document.getElementById('kwStatsTrigger'),
+    kwStatsDropdown: document.getElementById('kwStatsDropdown'),
+    kwFocusList: document.getElementById('kwFocusList'),
+    kwLongList: document.getElementById('kwLongList')
 };
+
+// ========================================
+// STATS: Calculate Statistics
+// ========================================
+function calculateStats(listings) {
+    if (!listings || listings.length === 0) {
+        return null;
+    }
+
+    const stats = {
+        totalCount: listings.length,
+        prices: [],
+        minPrice: Infinity,
+        maxPrice: 0,
+        avgPrice: 0,
+        discountCount: 0,
+        totalDiscountPct: 0,
+        avgDiscount: 0,
+        digitalCount: 0,
+        digitalPct: 0,
+        bestsellerCount: 0,
+        popularCount: 0,
+        etsysPickCount: 0,
+        freeShipCount: 0,
+        shopCounts: {},
+        uniqueShops: 0,
+        titles: []
+    };
+
+    listings.forEach(listing => {
+        // Price
+        const price = listing.currentPrice || 0;
+        if (price > 0) {
+            stats.prices.push(price);
+            stats.minPrice = Math.min(stats.minPrice, price);
+            stats.maxPrice = Math.max(stats.maxPrice, price);
+        }
+
+        // Discount
+        if (listing.originalPrice && listing.originalPrice > listing.currentPrice) {
+            stats.discountCount++;
+            const discPct = ((listing.originalPrice - listing.currentPrice) / listing.originalPrice) * 100;
+            stats.totalDiscountPct += discPct;
+        }
+
+        // Digital
+        if (listing.productType && listing.productType.toLowerCase() === 'digital') {
+            stats.digitalCount++;
+        }
+
+        // Badges
+        const badges = (listing.badges || '').toLowerCase();
+        if (badges.includes('bestseller')) stats.bestsellerCount++;
+        if (badges.includes('popular now')) stats.popularCount++;
+        if (badges.includes("etsy's pick")) stats.etsysPickCount++;
+
+        // Free Shipping
+        if (listing.freeShipping) stats.freeShipCount++;
+
+        // Shop counts
+        if (listing.shopName) {
+            const shopName = listing.shopName.trim();
+            if (shopName) {
+                stats.shopCounts[shopName] = (stats.shopCounts[shopName] || 0) + 1;
+            }
+        }
+
+        // Titles for keyword analysis
+        if (listing.title) {
+            stats.titles.push(listing.title);
+        }
+    });
+
+    // Calculate averages
+    if (stats.prices.length > 0) {
+        stats.avgPrice = stats.prices.reduce((a, b) => a + b, 0) / stats.prices.length;
+    }
+    if (stats.discountCount > 0) {
+        stats.avgDiscount = stats.totalDiscountPct / stats.discountCount;
+    }
+    if (stats.totalCount > 0) {
+        stats.digitalPct = (stats.digitalCount / stats.totalCount) * 100;
+    }
+
+    // Shop breakdown (sorted)
+    stats.sortedShops = Object.entries(stats.shopCounts)
+        .sort(([nameA, countA], [nameB, countB]) => countB - countA || nameA.localeCompare(nameB));
+    stats.uniqueShops = stats.sortedShops.length;
+
+    // Keyword analysis
+    stats.keywordAnalysis = extractKeywords(stats.titles);
+
+    return stats;
+}
+
+// ========================================
+// STATS: Extract Keywords
+// ========================================
+function extractKeywords(titles) {
+    const singleCounts = {};
+    const phraseCounts = {};
+
+    titles.forEach(title => {
+        const cleanTitle = title.toLowerCase()
+            .replace(/[^a-z0-9\s]/g, '')
+            .replace(/\s+/g, ' ')
+            .trim();
+        const words = cleanTitle.split(' ');
+
+        // Single words
+        words.forEach(word => {
+            if (word.length > 2 && !STOP_WORDS.has(word)) {
+                singleCounts[word] = (singleCounts[word] || 0) + 1;
+            }
+        });
+
+        // Phrases (2-5 words)
+        for (let i = 0; i < words.length; i++) {
+            // 2 words
+            if (i < words.length - 1) {
+                const w1 = words[i], w2 = words[i + 1];
+                if (!STOP_WORDS.has(w1) && !STOP_WORDS.has(w2)) {
+                    const phrase = `${w1} ${w2}`;
+                    phraseCounts[phrase] = (phraseCounts[phrase] || 0) + 1;
+                }
+            }
+            // 3 words
+            if (i < words.length - 2) {
+                const w1 = words[i], w2 = words[i + 1], w3 = words[i + 2];
+                if (!STOP_WORDS.has(w1) && !STOP_WORDS.has(w2) && !STOP_WORDS.has(w3)) {
+                    const phrase = `${w1} ${w2} ${w3}`;
+                    phraseCounts[phrase] = (phraseCounts[phrase] || 0) + 1;
+                }
+            }
+            // 4 words
+            if (i < words.length - 3) {
+                const w1 = words[i], w2 = words[i + 1], w3 = words[i + 2], w4 = words[i + 3];
+                if (!STOP_WORDS.has(w1) && !STOP_WORDS.has(w2) && !STOP_WORDS.has(w3) && !STOP_WORDS.has(w4)) {
+                    const phrase = `${w1} ${w2} ${w3} ${w4}`;
+                    phraseCounts[phrase] = (phraseCounts[phrase] || 0) + 1;
+                }
+            }
+            // 5 words
+            if (i < words.length - 4) {
+                const w1 = words[i], w2 = words[i + 1], w3 = words[i + 2], w4 = words[i + 3], w5 = words[i + 4];
+                if (!STOP_WORDS.has(w1) && !STOP_WORDS.has(w2) && !STOP_WORDS.has(w3) && !STOP_WORDS.has(w4) && !STOP_WORDS.has(w5)) {
+                    const phrase = `${w1} ${w2} ${w3} ${w4} ${w5}`;
+                    phraseCounts[phrase] = (phraseCounts[phrase] || 0) + 1;
+                }
+            }
+        }
+    });
+
+    const sorter = (a, b) => b[1] - a[1] || a[0].localeCompare(b[0]);
+
+    return {
+        focusKeywords: Object.entries(singleCounts).sort(sorter).slice(0, 100),
+        longTailKeywords: Object.entries(phraseCounts).sort(sorter).slice(0, 100)
+    };
+}
+
+// ========================================
+// STATS: Render Stats Bar
+// ========================================
+function renderStatsBar(stats, isFiltered = false, totalCount = 0) {
+    const statsBar = document.getElementById('statsBar');
+    if (!statsBar) return;
+
+    if (!stats || stats.totalCount === 0) {
+        statsBar.style.display = 'none';
+        return;
+    }
+
+    statsBar.style.display = 'block';
+    currentStats = stats;
+
+    // Listings count
+    let listingsText = `${stats.totalCount} listing${stats.totalCount !== 1 ? 's' : ''}`;
+    if (isFiltered && totalCount > stats.totalCount) {
+        listingsText += ` <span class="stats-comparison">(from ${totalCount} total)</span>`;
+    }
+    document.getElementById('statsListings').innerHTML = listingsText;
+
+    // Price
+    let priceText = '';
+    if (stats.prices.length > 0) {
+        priceText = `$${stats.minPrice.toFixed(2)}-$${stats.maxPrice.toFixed(2)} (Avg $${stats.avgPrice.toFixed(2)})`;
+    } else {
+        priceText = 'No price data';
+    }
+    document.getElementById('statsPrice').textContent = priceText;
+
+    // Discount
+    let discountText = '';
+    if (stats.discountCount > 0) {
+        discountText = `${stats.discountCount} on sale (Avg. ${Math.round(stats.avgDiscount)}% off)`;
+    } else {
+        discountText = 'No discounts';
+    }
+    document.getElementById('statsDiscount').textContent = discountText;
+
+    // Digital
+    let digitalText = '';
+    if (stats.digitalPct === 100) {
+        digitalText = '100% Digital';
+    } else if (stats.digitalPct === 0) {
+        digitalText = '100% Physical';
+    } else {
+        const roundedPct = stats.digitalPct < 1 && stats.digitalPct > 0 ? '<1' : Math.round(stats.digitalPct);
+        digitalText = `${roundedPct}% Digital`;
+    }
+    document.getElementById('statsDigital').textContent = digitalText;
+
+    // Bestseller
+    const bestsellerText = stats.bestsellerCount > 0
+        ? `${stats.bestsellerCount} Bestseller${stats.bestsellerCount > 1 ? 's' : ''}`
+        : 'No Bestseller';
+    document.getElementById('statsBestseller').textContent = bestsellerText;
+
+    // Popular Now
+    const popularText = stats.popularCount > 0
+        ? `${stats.popularCount} Popular Now`
+        : 'No Popular Now';
+    document.getElementById('statsPopular').textContent = popularText;
+
+    // Etsy's Pick
+    const etsysPickText = stats.etsysPickCount > 0
+        ? `${stats.etsysPickCount} Etsy's Pick`
+        : "No Etsy's Pick";
+    document.getElementById('statsEtsysPick').textContent = etsysPickText;
+
+    // Free Shipping
+    const freeShipText = stats.freeShipCount > 0
+        ? `${stats.freeShipCount} Free Shipping`
+        : 'No Free Shipping';
+    document.getElementById('statsFreeShip').textContent = freeShipText;
+
+    // Shop breakdown
+    const shopLabel = `${stats.uniqueShops} shop${stats.uniqueShops !== 1 ? 's' : ''} / ${stats.totalCount} listing${stats.totalCount !== 1 ? 's' : ''}`;
+    document.getElementById('shopStatsLabel').textContent = shopLabel;
+
+    // Populate shop dropdown
+    const shopDropdown = document.getElementById('shopStatsDropdown');
+    if (stats.sortedShops.length > 0) {
+        shopDropdown.innerHTML = stats.sortedShops.map(([name, count]) => `
+            <div class="stats-dropdown-item" data-shop="${name}">
+                <span class="stats-shop-name">${name}</span>
+                <span class="stats-shop-count">${count}</span>
+            </div>
+        `).join('');
+
+        // Add click handlers for shop filtering
+        shopDropdown.querySelectorAll('.stats-dropdown-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const shopName = item.getAttribute('data-shop');
+                elements.searchInput.value = `shop:${shopName}`;
+                applyFilters();
+                // Close dropdown
+                shopDropdown.classList.remove('show');
+                isShopDropdownOpen = false;
+            });
+        });
+    } else {
+        shopDropdown.innerHTML = '<div class="stats-dropdown-item">No shop data</div>';
+    }
+
+    // Populate keyword lists
+    const focusList = document.getElementById('kwFocusList');
+    const longList = document.getElementById('kwLongList');
+
+    if (stats.keywordAnalysis.focusKeywords.length > 0) {
+        focusList.innerHTML = stats.keywordAnalysis.focusKeywords.map(([word, count]) => `
+            <li class="stats-kw-item">
+                <span class="stats-kw-word" data-keyword="${word}">${word}</span>
+                <span class="stats-kw-count">${count}</span>
+            </li>
+        `).join('');
+
+        // Add click handlers
+        focusList.querySelectorAll('.stats-kw-word').forEach(span => {
+            span.addEventListener('click', () => {
+                const keyword = span.getAttribute('data-keyword');
+                elements.searchInput.value = keyword;
+                applyFilters();
+                // Close dropdown
+                document.getElementById('kwStatsDropdown').classList.remove('show');
+                document.getElementById('kwStatsTrigger').classList.remove('active');
+                isKwDropdownOpen = false;
+            });
+        });
+    } else {
+        focusList.innerHTML = '<li class="stats-kw-item">No keywords found</li>';
+    }
+
+    if (stats.keywordAnalysis.longTailKeywords.length > 0) {
+        longList.innerHTML = stats.keywordAnalysis.longTailKeywords.map(([phrase, count]) => `
+            <li class="stats-kw-item">
+                <span class="stats-kw-word" data-keyword="${phrase}">${phrase}</span>
+                <span class="stats-kw-count">${count}</span>
+            </li>
+        `).join('');
+
+        // Add click handlers
+        longList.querySelectorAll('.stats-kw-word').forEach(span => {
+            span.addEventListener('click', () => {
+                const keyword = span.getAttribute('data-keyword');
+                elements.searchInput.value = keyword;
+                applyFilters();
+                // Close dropdown
+                document.getElementById('kwStatsDropdown').classList.remove('show');
+                document.getElementById('kwStatsTrigger').classList.remove('active');
+                isKwDropdownOpen = false;
+            });
+        });
+    } else {
+        longList.innerHTML = '<li class="stats-kw-item">No long-tail keywords found</li>';
+    }
+}
+
+// ========================================
+// STATS: Export/Copy Keywords
+// ========================================
+function copyKeywordsToClipboard(type) {
+    const listId = type === 'focus' ? 'kwFocusList' : 'kwLongList';
+    const btnId = type === 'focus' ? 'kwFocusCopy' : 'kwLongCopy';
+    const list = document.getElementById(listId);
+    const btn = document.getElementById(btnId);
+    
+    if (!list) return;
+    
+    const words = [];
+    list.querySelectorAll('.stats-kw-word').forEach(span => {
+        words.push(span.textContent);
+    });
+    
+    navigator.clipboard.writeText(words.join('\n')).then(() => {
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i> Copied';
+        setTimeout(() => {
+            btn.innerHTML = originalHTML;
+        }, 2000);
+    });
+}
+
+function exportKeywordsCSV(type) {
+    const listId = type === 'focus' ? 'kwFocusList' : 'kwLongList';
+    const list = document.getElementById(listId);
+    
+    if (!list || !currentStats) return;
+    
+    let csvContent = "Keyword,Count\n";
+    
+    list.querySelectorAll('.stats-kw-item').forEach(li => {
+        const word = li.querySelector('.stats-kw-word').textContent;
+        const count = li.querySelector('.stats-kw-count').textContent;
+        csvContent += `"${word.replace(/"/g, '""')}",${count}\n`;
+    });
+    
+    const timestamp = new Date().toISOString().slice(0, 10);
+    const typeLabel = type === 'focus' ? 'focus' : 'long_tail';
+    const filename = `eScope_keywords_${typeLabel}_${currentStats.totalCount}listings_${timestamp}.csv`;
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
 
 // ========================================
 // Initialization
@@ -301,6 +709,91 @@ function setupEventListeners() {
     elements.haramFilterToggle.addEventListener('click', toggleHaramFilter);
     elements.selectAllHaram.addEventListener('click', selectAllHaram);
     elements.clearAllHaram.addEventListener('click', clearAllHaram);
+
+        
+    // STATS: Shop Dropdown
+    const shopTrigger = document.getElementById('shopStatsTrigger');
+    const shopDropdown = document.getElementById('shopStatsDropdown');
+    if (shopTrigger && shopDropdown) {
+        shopTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (e.target.closest('.stats-dropdown')) return;
+            
+            if (isKwDropdownOpen) {
+                document.getElementById('kwStatsDropdown').classList.remove('show');
+                document.getElementById('kwStatsTrigger').classList.remove('active');
+                isKwDropdownOpen = false;
+            }
+            
+            shopDropdown.classList.toggle('show');
+            isShopDropdownOpen = shopDropdown.classList.contains('show');
+        });
+    }
+    
+    // STATS: Keyword Dropdown
+    const kwTrigger = document.getElementById('kwStatsTrigger');
+    const kwDropdown = document.getElementById('kwStatsDropdown');
+    if (kwTrigger && kwDropdown) {
+        kwTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (e.target.closest('.stats-kw-dropdown')) return;
+            
+            if (isShopDropdownOpen) {
+                document.getElementById('shopStatsDropdown').classList.remove('show');
+                isShopDropdownOpen = false;
+            }
+            
+            kwDropdown.classList.toggle('show');
+            kwTrigger.classList.toggle('active');
+            isKwDropdownOpen = kwDropdown.classList.contains('show');
+        });
+    }
+    
+    // STATS: Copy/Export Buttons
+    const kwFocusCopy = document.getElementById('kwFocusCopy');
+    const kwLongCopy = document.getElementById('kwLongCopy');
+    const kwFocusExport = document.getElementById('kwFocusExport');
+    const kwLongExport = document.getElementById('kwLongExport');
+    
+    if (kwFocusCopy) kwFocusCopy.addEventListener('click', (e) => {
+        e.stopPropagation();
+        copyKeywordsToClipboard('focus');
+    });
+    if (kwLongCopy) kwLongCopy.addEventListener('click', (e) => {
+        e.stopPropagation();
+        copyKeywordsToClipboard('long');
+    });
+    if (kwFocusExport) kwFocusExport.addEventListener('click', (e) => {
+        e.stopPropagation();
+        exportKeywordsCSV('focus');
+    });
+    if (kwLongExport) kwLongExport.addEventListener('click', (e) => {
+        e.stopPropagation();
+        exportKeywordsCSV('long');
+    });
+    
+    // STATS: Close dropdowns on outside click
+    window.addEventListener('click', (e) => {
+        if (!e.target.closest('#shopStatsTrigger') && !e.target.closest('#shopStatsDropdown')) {
+            const shopDropdown = document.getElementById('shopStatsDropdown');
+            if (shopDropdown && shopDropdown.classList.contains('show')) {
+                shopDropdown.classList.remove('show');
+                isShopDropdownOpen = false;
+            }
+        }
+        
+        if (!e.target.closest('#kwStatsTrigger') && !e.target.closest('#kwStatsDropdown')) {
+            const kwDropdown = document.getElementById('kwStatsDropdown');
+            const kwTrigger = document.getElementById('kwStatsTrigger');
+            if (kwDropdown && kwDropdown.classList.contains('show')) {
+                kwDropdown.classList.remove('show');
+                if (kwTrigger) kwTrigger.classList.remove('active');
+                isKwDropdownOpen = false;
+            }
+        }
+    });
+// }
+
 }
 
 // ========================================
@@ -1056,6 +1549,12 @@ function applyFilters() {
     renderCards();
     // updateFilteredCount();
     updateFavoritesUI(); // Favorites
+
+    // STATS: Update stats bar (debounced)
+    const isFiltered = filteredListings.length < allListings.length;
+    const statsToAnalyze = filteredListings.length > 0 ? filteredListings : allListings;
+    const stats = calculateStats(statsToAnalyze);
+    renderStatsBar(stats, isFiltered, allListings.length);
 }
 
 function clearAllFilters() {
@@ -1089,6 +1588,10 @@ function clearAllFilters() {
     clearAllHaram(); // NEW
     elements.filterFavorites.checked = false; // Favorites
     applyFilters();
+
+    // STATS: Reset to unfiltered stats
+    const stats = calculateStats(allListings);
+    renderStatsBar(stats, false, allListings.length);
 }
 
 // ========================================
@@ -1564,6 +2067,10 @@ function showViewer() {
     }, 100);
 
     applyFilters();
+
+    // STATS: Initial stats calculation
+    const stats = calculateStats(allListings);
+    renderStatsBar(stats, false, allListings.length);
 }
 
 function updateFilesDisplay() {

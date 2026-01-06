@@ -1502,7 +1502,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    font-size: 13px;
+    font-size: 14px;
     color: var(--text-primary);
     line-height: 1.6;
 }

@@ -470,7 +470,7 @@ function renderStatsBar(stats, isFiltered = false, totalCount = 0) {
     const focusList = document.getElementById('kwFocusList');
     const longList = document.getElementById('kwLongList');
 
-    if (stats.keywordAnalysis.focusKeywords.length > 0) {
+        if (stats.keywordAnalysis.focusKeywords.length > 0) {
         focusList.innerHTML = stats.keywordAnalysis.focusKeywords.map(([word, count]) => `
             <li class="stats-kw-item">
                 <span class="stats-kw-word" data-keyword="${word}">${word}</span>
@@ -478,23 +478,18 @@ function renderStatsBar(stats, isFiltered = false, totalCount = 0) {
             </li>
         `).join('');
 
-        // Add click handlers
+        // Add click handlers - OPEN ETSY SEARCH
         focusList.querySelectorAll('.stats-kw-word').forEach(span => {
             span.addEventListener('click', () => {
                 const keyword = span.getAttribute('data-keyword');
-                elements.searchInput.value = keyword;
-                applyFilters();
-                // Close dropdown
-                document.getElementById('kwStatsDropdown').classList.remove('show');
-                document.getElementById('kwStatsTrigger').classList.remove('active');
-                isKwDropdownOpen = false;
+                window.open(`https://www.etsy.com/search?q=${encodeURIComponent(keyword)}`, '_blank');
             });
         });
     } else {
         focusList.innerHTML = '<li class="stats-kw-item">No keywords found</li>';
     }
 
-    if (stats.keywordAnalysis.longTailKeywords.length > 0) {
+        if (stats.keywordAnalysis.longTailKeywords.length > 0) {
         longList.innerHTML = stats.keywordAnalysis.longTailKeywords.map(([phrase, count]) => `
             <li class="stats-kw-item">
                 <span class="stats-kw-word" data-keyword="${phrase}">${phrase}</span>
@@ -502,16 +497,11 @@ function renderStatsBar(stats, isFiltered = false, totalCount = 0) {
             </li>
         `).join('');
 
-        // Add click handlers
+        // Add click handlers - OPEN ETSY SEARCH
         longList.querySelectorAll('.stats-kw-word').forEach(span => {
             span.addEventListener('click', () => {
                 const keyword = span.getAttribute('data-keyword');
-                elements.searchInput.value = keyword;
-                applyFilters();
-                // Close dropdown
-                document.getElementById('kwStatsDropdown').classList.remove('show');
-                document.getElementById('kwStatsTrigger').classList.remove('active');
-                isKwDropdownOpen = false;
+                window.open(`https://www.etsy.com/search?q=${encodeURIComponent(keyword)}`, '_blank');
             });
         });
     } else {

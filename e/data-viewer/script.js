@@ -257,7 +257,7 @@ function calculateStats(listings) {
         const badges = (listing.badges || '').toLowerCase();
         if (badges.includes('bestseller')) stats.bestsellerCount++;
         if (badges.includes('popular now')) stats.popularCount++;
-        if (badges.includes("etsy's pick")) stats.etsysPickCount++;
+        if (badges.includes("etsy’s pick")) stats.etsysPickCount++;
 
         // Free Shipping
         if (listing.freeShipping) stats.freeShipCount++;
@@ -430,8 +430,8 @@ function renderStatsBar(stats, isFiltered = false, totalCount = 0) {
 
     // Etsy's Pick
     const etsysPickText = stats.etsysPickCount > 0
-        ? `${stats.etsysPickCount} Etsy's Pick`
-        : "No Etsy's Pick";
+        ? `${stats.etsysPickCount} Etsy’s Pick`
+        : "No Etsy’s Pick";
     document.getElementById('statsEtsysPick').textContent = etsysPickText;
 
     // Free Shipping

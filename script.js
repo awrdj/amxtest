@@ -2046,11 +2046,31 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
             rhParams.push(document.getElementById('reviewsFilter').value);
         }
 
+        /* BCKP ONE - WORKING
         const minPrice = document.getElementById('minPrice').value;
         const maxPrice = document.getElementById('maxPrice').value;
         if (minPrice && maxPrice) {
             rhParams.push(`p_36%3A${minPrice}00-${maxPrice}00`);
-        }
+        }*/
+
+// Price Range Filter with auto-fill logic
+let minPrice = document.getElementById('minPrice').value.trim();
+let maxPrice = document.getElementById('maxPrice').value.trim();
+
+// Auto-fill logic: if one is set, default the other
+if (minPrice && !maxPrice) {
+    maxPrice = '1000'; // Auto-fill max when only min is specified
+}
+if (maxPrice && !minPrice) {
+    minPrice = '0'; // Auto-fill min when only max is specified
+}
+
+// Only add price filter if at least one value was provided by user
+if (minPrice && maxPrice) {
+    let minCents = Math.round(parseFloat(minPrice) * 100);
+    let maxCents = Math.round(parseFloat(maxPrice) * 100);
+    rhParams.push(`p_36%3A${minCents}-${maxCents}`);
+}
 
         const department = departmentSelect.value;
         if (department) {

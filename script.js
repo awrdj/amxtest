@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const filterCottonContainer = document.getElementById('filterCottonContainer');
     const minPriceInput = document.getElementById('minPrice');
     const maxPriceInput = document.getElementById('maxPrice');
+    const pageNumberInput = document.getElementById('pageNumber');
 
     // Clear Search Button
     const searchInput = document.getElementById('searchInput');
@@ -136,7 +137,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Presets Config
     const presetConfigs = {
-/* Possible parameters for the settings object:
+/*
+Possible parameters for the settings object:
 productType: (String) Sets the Product Type dropdown (e.g., 'tshirt', 'hoodie', 'custom').
 department: (String) Sets the Department dropdown (e.g., 'fashion', 'fashion-novelty', 'stripbooks').
 category: (String) Sets the Category dropdown after the department is set (e.g., '7141123011'). Make sure the category ID is valid for the specified department.
@@ -148,7 +150,9 @@ minPrice: (String or Number) Sets the minimum price input value.
 maxPrice: (String or Number) Sets the maximum price input value.
 searchKeywords: (String) - New - Sets the main search input value.
 customHiddenKeywords: (String) - New - Sets the custom hidden keywords input value.
-productTypeOverrides: (Object) - New - Contains nested objects where keys are product type strings (e.g., 'hoodie') and values are objects that can contain searchKeywords and/or customHiddenKeywords to override the base settings for that specific product type.*/
+productTypeOverrides: (Object) - New - Contains nested objects where keys are product type strings (e.g., 'hoodie') and values are objects that can contain searchKeywords and/or customHiddenKeywords to override the base settings for that specific product type.
+pageNumber: (String or Number) Sets the page number input value.
+*/
         // Presets config US
         'com': [
             { value: 'last30-fashion-com', text: '⏱ Last 30 Days Fashion', 
@@ -1615,6 +1619,9 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
         // Clear the input when X is clicked
         clearSearchBtn.addEventListener('click', function() {
             searchInput.value = '';
+
+            // pageNumberInput.value = ''; // UNCOMMENT to clear page number when clearing search
+            
             this.style.display = 'none';
             searchInput.focus();
             updateGeneratedUrl(); // Update the generated URL after clearing
@@ -1661,6 +1668,8 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
         // Set up price input constraints
         setupPriceInputs();
 
+        setupPageNumberInput();
+
         // Generate and display the initial URL
         updateGeneratedUrl();
 
@@ -1691,6 +1700,9 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
             // console.log("[Marketplace Change] Changed to:", this.value);
             const presetsSelect = document.getElementById('presetsSelect');
             presetsSelect.value = ''; // Clear preset selection
+
+            // pageNumberInput.value = ''; // UNCOMMENT to clear page number when changing marketplace
+            
             // console.log("[Marketplace Change] Preset selection cleared.");
             updateZipCode();
             populateProductTypes();
@@ -1750,6 +1762,8 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
             document.getElementById('filterExcludeBrands').checked = false;
             document.getElementById('minPrice').value = '';
             document.getElementById('maxPrice').value = '';
+            // pageNumberInput.value = ''; // UNCOMMENT to clear page number when changing presets
+            
             // Initial sort order will be set by updateSortOrderOptions via department change during reset or preset application
             productTypeSelect.value = availableProductTypes.length > 0 ? availableProductTypes[0] : 'custom';
             departmentSelect.value = '';
@@ -1823,6 +1837,8 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
                 document.getElementById('minPrice').value = settings.minPrice || '';
                 document.getElementById('maxPrice').value = settings.maxPrice || '';
 
+                document.getElementById('pageNumber').value = settings.pageNumber || '';
+
                 let presetProductType = productTypeSelect.value;
                 if (settings.productType !== undefined && availableProductTypes.includes(settings.productType)) {
                     presetProductType = settings.productType;
@@ -1893,6 +1909,45 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
             });
         });
     }
+
+// Setup page number input constraints and validation
+function setupPageNumberInput() {
+    const pageNumberInput = document.getElementById('pageNumber');
+    
+    // Real-time validation: only allow numbers, block 0, 1, and negatives
+    pageNumberInput.addEventListener('input', function(e) {
+        // Remove non-numeric characters
+        let value = this.value.replace(/[^0-9]/g, '');
+        
+        // If value is 0 or 1, clear it
+        if (value === '0' || value === '1') {
+            value = '';
+        }
+        
+        this.value = value;
+        updateGeneratedUrl(); // Update URL in real-time
+    });
+    
+    // Prevent pasting invalid content
+    pageNumberInput.addEventListener('paste', function(e) {
+        e.preventDefault();
+        const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+        const numericOnly = pastedText.replace(/[^0-9]/g, '');
+        
+        // Only paste if it's a valid number >= 2
+        if (numericOnly && parseInt(numericOnly) >= 2) {
+            this.value = numericOnly;
+            updateGeneratedUrl();
+        }
+    });
+    
+    // Block certain keys (e, -, +, .)
+    pageNumberInput.addEventListener('keydown', function(e) {
+        if (e.key === 'e' || e.key === '-' || e.key === '+' || e.key === '.') {
+            e.preventDefault();
+        }
+    });
+}
 
     function updateZipCode() {
         const marketplace = marketplaceSelect.value;
@@ -2136,6 +2191,12 @@ if (minPrice && maxPrice) {
         if (sortOrder && sortOrder !== 'custom') { // Ensure sortOrder has a value and is not 'custom'
             paramParts.push(`s=${sortOrder}`);
         }
+
+// Page Number Parameter
+const pageNumber = pageNumberInput.value.trim();
+if (pageNumber && parseInt(pageNumber) >= 2) {
+    paramParts.push(`page=${pageNumber}`);
+}
 
         if (rhParams.length > 0) {
             paramParts.push(`rh=${rhParams.join('%2C')}`);

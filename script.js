@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Cache DOM elements
+    // Cache DOM  elements
     const searchForm = document.getElementById('searchForm');
     const copyUrlBtn = document.getElementById('copyUrlBtn');
     const resultUrlContainer = document.getElementById('resultUrlContainer');

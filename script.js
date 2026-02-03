@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const productTypeAvailability = {
         'com': [
             'tshirt', 'premtshirt', 'tanktop', 'longsleeve', 'raglan', 'sweatshirt', 
-            'hoodie', 'ziphoodie', 'baseballhat', 'truckerhat', 'popsocket', 'case', 'totebag', 'throwpillow', 
+            'hoodie', 'ziphoodie', 'performancepolo', 'baseballhat', 'truckerhat', 'popsocket', 'case', 'totebag', 'throwpillow', 
             'tumbler', 'waterbottle', 'coffeemug', 'KDP', 'custom'
         ],
         'co.uk': [
@@ -70,6 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'sweatshirt': 'Sweatshirt',
         'hoodie': 'Pullover hoodie',
         'ziphoodie': 'Zip hoodie',
+        'performancepolo': 'Polos',
         'baseballhat': 'Baseball Hat',
         'truckerhat': 'Trucker Hat',
         'popsocket': 'PopSockets',
@@ -299,6 +300,7 @@ pageNumber: (String or Number) Sets the page number input value.
                     'sweatshirt': { customHiddenKeywords: '"sweatshirt" 8.5 oz, Classic fit, Twill-taped neck -Raglan -Vneck -Tanktop -hoodie' },
                     'hoodie': { customHiddenKeywords: '"pullover hoodie" 8.5 oz, Classic fit, Twill-taped neck -Raglan -Vneck -Tanktop -zip' },
                     'ziphoodie': { customHiddenKeywords: '"zip hoodie" 8.5 oz, Classic fit, Twill-taped neck -Raglan -Vneck -Tanktop' },
+                    'performancepolo': { customHiddenKeywords: '"Performance Polo"' },
                     'baseballhat': { customHiddenKeywords: '"Printed Baseball Hat" -Mesh' },
                     'truckerhat': { customHiddenKeywords: '"Trucker Hat" "Mesh Back"' },
                     'popsocket': { customHiddenKeywords: '"Popsocket" Printed top is swappable with other compatible PopGrip models. Just press flat, turn 90 degrees until you hear a click and remove to swap.' },
@@ -443,6 +445,7 @@ pageNumber: (String or Number) Sets the page number input value.
                     'sweatshirt': '"sweatshirt"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-hoodie',
                     'hoodie': '"pullover+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-zip',
                     'ziphoodie': '"zip+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop',
+                    'performancepolo': '"Performance Polo"',
                     'baseballhat': '"Printed Baseball Hat" -Mesh',
                     'truckerhat': '"Trucker Hat" "Mesh Back"',
                     'popsocket': '"Popsocket"+Printed+top+is+swappable+with+other+compatible+PopGrip+models.+Just+press+flat%2C+turn+90+degrees+until+you+hear+a+click+and+remove+to+swap.',
@@ -593,6 +596,7 @@ pageNumber: (String or Number) Sets the page number input value.
                 'sweatshirt': 'fashion-novelty',
                 'hoodie': 'fashion-novelty',
                 'ziphoodie': 'fashion-novelty',
+                'performancepolo': '',
                 'baseballhat': 'fashion',
                 'truckerhat': 'fashion',
                 'popsocket': 'mobile',

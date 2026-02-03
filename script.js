@@ -2912,3 +2912,31 @@ $(document).ready(function() {
     updateActionButtonsState();
 
 });
+
+// ===== DARK MODE FUNCTIONALITY =====
+
+// Check for saved theme preference or default to light mode
+const currentTheme = localStorage.getItem('theme') || 'light';
+
+// Apply theme on page load
+if (currentTheme === 'dark') {
+    document.body.classList.add('dark-mode');
+}
+
+// Toggle dark mode
+const darkModeToggle = document.getElementById('darkModeToggle');
+if (darkModeToggle) {
+    darkModeToggle.addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        
+        // Save preference
+        const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+        localStorage.setItem('theme', theme);
+        
+        // Optional: Add animation feedback
+        this.style.transform = 'rotate(360deg)';
+        setTimeout(() => {
+            this.style.transform = '';
+        }, 300);
+    });
+}

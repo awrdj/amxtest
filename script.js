@@ -124,16 +124,130 @@ document.addEventListener('DOMContentLoaded', function() {
         updateCategoryOptions();
     }
 
-    // ZIP codes for each marketplaces
-    const zipCodes = {
-        'com': { zip: '90210', location: 'Beverly Hills, CA' },
-        'co.uk': { zip: 'E1 6AN', location: 'London' },
-        'de': { zip: '10115', location: 'Berlin' },
-        'fr': { zip: '75001', location: 'Paris' },
-        'it': { zip: '00100', location: 'Rome' },
-        'es': { zip: '28001', location: 'Madrid' }
-        // 'co.jp': { zip: '100-0001', location: 'Tokyo' }
-    };
+    // ZIP codes for each marketplace (multiple options)
+const zipCodes = {
+    'com': [
+        // Los Angeles Area
+        { zip: '90210', location: 'Beverly Hills, CA' },
+        { zip: '90012', location: 'Downtown LA, CA' },
+        { zip: '90401', location: 'Santa Monica, CA' },
+        { zip: '90028', location: 'Hollywood, CA' },
+        { zip: '91101', location: 'Pasadena, CA' },
+        
+        // New York Area
+        { zip: '10001', location: 'Manhattan (Chelsea), NY' },
+        { zip: '10022', location: 'Manhattan (Midtown East), NY' },
+        { zip: '10014', location: 'Manhattan (West Village), NY' },
+        { zip: '11201', location: 'Brooklyn (Heights), NY' },
+        { zip: '11101', location: 'Queens (LIC), NY' },
+        
+        // Chicago Area
+        { zip: '60601', location: 'Chicago (Loop), IL' },
+        { zip: '60614', location: 'Chicago (Lincoln Park), IL' },
+        { zip: '60607', location: 'Chicago (West Loop), IL' },
+        { zip: '60611', location: 'Chicago (River North), IL' },
+        { zip: '60657', location: 'Chicago (Lakeview), IL' },
+        
+        // Miami Area
+        { zip: '33139', location: 'Miami Beach, FL' },
+        { zip: '33131', location: 'Miami (Downtown), FL' },
+        { zip: '33134', location: 'Coral Gables, FL' },
+        { zip: '33137', location: 'Miami (Design District), FL' },
+        { zip: '33109', location: 'Miami Beach (South), FL' },
+        
+        // San Francisco Area
+        { zip: '94102', location: 'San Francisco (Downtown), CA' },
+        { zip: '94110', location: 'San Francisco (Mission), CA' },
+        { zip: '94104', location: 'San Francisco (Financial District), CA' },
+        { zip: '94109', location: 'San Francisco (Nob Hill), CA' },
+        { zip: '94133', location: 'San Francisco (North Beach), CA' },
+        
+        // Seattle Area
+        { zip: '98101', location: 'Seattle (Downtown), WA' },
+        { zip: '98102', location: 'Seattle (Capitol Hill), WA' },
+        { zip: '98109', location: 'Seattle (South Lake Union), WA' },
+        { zip: '98112', location: 'Seattle (Madison Park), WA' },
+        { zip: '98122', location: 'Seattle (Central District), WA' },
+        
+        // Boston Area
+        { zip: '02101', location: 'Boston (Downtown), MA' },
+        { zip: '02108', location: 'Boston (Beacon Hill), MA' },
+        { zip: '02109', location: 'Boston (North End), MA' },
+        { zip: '02116', location: 'Boston (Back Bay), MA' },
+        { zip: '02139', location: 'Cambridge, MA' },
+        
+        // Dallas Area
+        { zip: '75201', location: 'Dallas (Downtown), TX' },
+        { zip: '75205', location: 'Dallas (Highland Park), TX' },
+        { zip: '75219', location: 'Dallas (Uptown), TX' },
+        { zip: '75225', location: 'Dallas (University Park), TX' },
+        { zip: '75202', location: 'Dallas (Deep Ellum), TX' },
+        
+        // Houston Area
+        { zip: '77002', location: 'Houston (Downtown), TX' },
+        { zip: '77019', location: 'Houston (River Oaks), TX' },
+        { zip: '77006', location: 'Houston (Montrose), TX' },
+        { zip: '77027', location: 'Houston (Memorial), TX' },
+        { zip: '77056', location: 'Houston (Galleria), TX' },
+        
+        // Atlanta Area
+        { zip: '30303', location: 'Atlanta (Downtown), GA' },
+        { zip: '30305', location: 'Atlanta (Buckhead), GA' },
+        { zip: '30308', location: 'Atlanta (Midtown), GA' },
+        { zip: '30312', location: 'Atlanta (Old Fourth Ward), GA' },
+        { zip: '30318', location: 'Atlanta (West Midtown), GA' }
+    ],
+    'co.uk': [
+        { zip: 'E1 6AN', location: 'London (East End)' },
+        { zip: 'SW1A 1AA', location: 'London (Westminster)' },
+        { zip: 'W1A 1AA', location: 'London (West End)' },
+        { zip: 'EC1A 1BB', location: 'London (City)' },
+        { zip: 'M1 1AA', location: 'Manchester' },
+        { zip: 'B1 1AA', location: 'Birmingham' },
+        { zip: 'G1 1AA', location: 'Glasgow' },
+        { zip: 'EH1 1AA', location: 'Edinburgh' }
+    ],
+    'de': [
+        { zip: '10115', location: 'Berlin (Mitte)' },
+        { zip: '10178', location: 'Berlin (Alexanderplatz)' },
+        { zip: '80331', location: 'Munich (City Center)' },
+        { zip: '60311', location: 'Frankfurt (Innenstadt)' },
+        { zip: '20095', location: 'Hamburg (HafenCity)' },
+        { zip: '50667', location: 'Cologne (Altstadt)' },
+        { zip: '70173', location: 'Stuttgart (Mitte)' },
+        { zip: '01067', location: 'Dresden (Altstadt)' }
+    ],
+    'fr': [
+        { zip: '75001', location: 'Paris (1st - Louvre)' },
+        { zip: '75008', location: 'Paris (8th - Champs-Élysées)' },
+        { zip: '75116', location: 'Paris (16th - Trocadéro)' },
+        { zip: '69001', location: 'Lyon (1st)' },
+        { zip: '13001', location: 'Marseille (1st)' },
+        { zip: '33000', location: 'Bordeaux' },
+        { zip: '31000', location: 'Toulouse' },
+        { zip: '06000', location: 'Nice' }
+    ],
+    'it': [
+        { zip: '00100', location: 'Rome (Centro)' },
+        { zip: '00184', location: 'Rome (Colosseo)' },
+        { zip: '20121', location: 'Milan (Centro Storico)' },
+        { zip: '50122', location: 'Florence (Centro)' },
+        { zip: '80138', location: 'Naples (Centro)' },
+        { zip: '40121', location: 'Bologna (Centro)' },
+        { zip: '10121', location: 'Turin (Centro)' },
+        { zip: '30100', location: 'Venice (Centro)' }
+    ],
+    'es': [
+        { zip: '28001', location: 'Madrid (Centro)' },
+        { zip: '28013', location: 'Madrid (Retiro)' },
+        { zip: '08001', location: 'Barcelona (Ciutat Vella)' },
+        { zip: '08002', location: 'Barcelona (Eixample)' },
+        { zip: '41001', location: 'Seville (Centro)' },
+        { zip: '46001', location: 'Valencia (Ciutat Vella)' },
+        { zip: '29015', location: 'Málaga (Centro)' },
+        { zip: '48001', location: 'Bilbao (Centro)' }
+    ]
+};
 
     // Presets Config
     const presetConfigs = {
@@ -1645,7 +1759,9 @@ pageNumber: (String or Number) Sets the page number input value.
         populateProductTypes();
 
         // Update ZIP code display
-        updateZipCode();
+populateZipDropdown(); // Initialize ZIP dropdown
+setupZipDropdown(); // Setup event listeners
+
 
         // Update marketplace-specific filters
         updateMarketplaceFilters();
@@ -1690,7 +1806,7 @@ pageNumber: (String or Number) Sets the page number input value.
         updateGeneratedUrl();
         });
         copyUrlBtn.addEventListener('click', handleCopyUrl);
-        copyZipBtn.addEventListener('click', handleCopyZip);
+        // copyZipBtn.addEventListener('click', handleCopyZip);
         document.getElementById('searchInput').addEventListener('input', updateGeneratedUrl);
         document.getElementById('customHiddenKeywords').addEventListener('input', updateGeneratedUrl);
         document.getElementById('minPrice').addEventListener('input', updateGeneratedUrl);
@@ -1704,7 +1820,7 @@ pageNumber: (String or Number) Sets the page number input value.
             // pageNumberInput.value = ''; // UNCOMMENT to clear page number when changing marketplace
             
             // console.log("[Marketplace Change] Preset selection cleared.");
-            updateZipCode();
+            populateZipDropdown(); // Update ZIP options when marketplace changes
             populateProductTypes();
             populateDepartments();
             updatePresetsDropdown();
@@ -1949,17 +2065,68 @@ function setupPageNumberInput() {
     });
 }
 
-    function updateZipCode() {
-        const marketplace = marketplaceSelect.value;
-        const zipInfo = zipCodes[marketplace];
-        const zipHelper = document.querySelector('.plz_helper');
+// Populate ZIP dropdown based on marketplace
+function populateZipDropdown() {
+    const marketplace = marketplaceSelect.value;
+    const zipSelect = document.getElementById('zipSelect');
+    const zipMarketplaceLabel = document.getElementById('zipMarketplaceLabel');
+    
+    // Update label
+    zipMarketplaceLabel.textContent = `.${marketplace.toUpperCase()}`;
+    
+    // Clear existing options
+    zipSelect.innerHTML = '';
+    
+    // Get ZIP codes for current marketplace
+    const zips = zipCodes[marketplace] || zipCodes['com'];
+    
+    // Populate dropdown
+    zips.forEach(zipObj => {
+        const option = document.createElement('option');
+        option.value = zipObj.zip;
+        option.textContent = `${zipObj.zip} (${zipObj.location})`;
+        zipSelect.appendChild(option);
+    });
+}
 
-        if (zipInfo) {
-            zipHelper.innerHTML = `.${marketplace.toUpperCase()}: <span class="copy_me">${zipInfo.zip}</span> (${zipInfo.location})`;
-        }
-    }
+// Copy ZIP to clipboard
+function copyZipToClipboard() {
+    const zipSelect = document.getElementById('zipSelect');
+    const selectedZip = zipSelect.value;
+    const copiedMessage = document.querySelector('.copied-message');
+    
+    // Copy to clipboard
+    navigator.clipboard.writeText(selectedZip).then(() => {
+        // Show "Copied!" message
+        copiedMessage.style.display = 'inline';
+        
+        // Hide after 1.5 seconds
+        setTimeout(() => {
+            copiedMessage.style.display = 'none';
+        }, 1500);
+    }).catch(err => {
+        console.error('Failed to copy ZIP:', err);
+        alert('Failed to copy ZIP code');
+    });
+}
 
-    function handleCopyZip() {
+// Setup ZIP dropdown event listeners
+function setupZipDropdown() {
+    const zipSelect = document.getElementById('zipSelect');
+    const copyZipBtn = document.getElementById('copyZipBtn');
+    
+    // Auto-copy when user selects from dropdown
+    zipSelect.addEventListener('change', function() {
+        copyZipToClipboard();
+    });
+    
+    // Manual copy button
+    copyZipBtn.addEventListener('click', function() {
+        copyZipToClipboard();
+    });
+}
+
+    /*function handleCopyZip() {
         const zipCode = document.querySelector('.copy_me').textContent;
         navigator.clipboard.writeText(zipCode)
             .then(function() {
@@ -1977,7 +2144,7 @@ function setupPageNumberInput() {
                     copyMessage.style.display = 'none';
                 }, 2000);
             });
-    }
+    }*/
 
     // Form submit handler opens the URL in a new tab
     function handleFormSubmit(e) {

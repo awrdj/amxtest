@@ -644,7 +644,58 @@ footer {
     color: #721c24 !important;
 }
 
+/* Suggestion controls - default desktop layout */
 .suggestion-controls {
+    display: flex;
     align-items: center;
+    gap: 15px;
+    float: left;
+    margin-bottom: 5px;
     flex-wrap: wrap;
+}
+
+/* Mobile responsiveness - stack vertically */
+@media (max-width: 768px) {
+    .suggestion-controls {
+        float: none !important;
+        width: 100%;
+        margin-bottom: 10px;
+        justify-content: flex-start;
+    }
+    
+    .plz_hinweis {
+        float: none !important;
+        display: block;
+        width: 100%;
+        text-align: left;
+        margin-top: 10px;
+    }
+    
+    .plz_hinweis > div {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+    
+    #zipSelect {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 576px) {
+    .suggestion-controls {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    #suggestionDepartmentSelect {
+        width: 100% !important;
+    }
+    
+    #suggestionActions {
+        width: 100%;
+        justify-content: flex-start;
+    }
 }

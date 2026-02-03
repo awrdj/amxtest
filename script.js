@@ -303,8 +303,8 @@ pageNumber: (String or Number) Sets the page number input value.
                     'ziphoodie': { customHiddenKeywords: '"zip hoodie" 8.5 oz, Classic fit, Twill-taped neck -Raglan -Vneck -Tanktop' },
                     'performancepolo': { customHiddenKeywords: '"Performance Polo" "100% polyester construction resists fading to maintain vibrant color"' },
                     'performanceziptop': { customHiddenKeywords: '"Performance Quarter-zip" "100% polyester construction resists fading to maintain vibrant color"'},
-                    'baseballhat': { customHiddenKeywords: '"Printed Baseball Hat" -Mesh' },
-                    'truckerhat': { customHiddenKeywords: '"Trucker Hat" "Mesh Back"' },
+                    'baseballhat': { customHiddenKeywords: '"Baseball Hat" "Classic five-panel structured baseball hat with high-profile crown"' },
+                    'truckerhat': { customHiddenKeywords: '"Trucker Hat" "Five-panel trucker hat featuring structured foam front, mesh back, and high-profile crown"' },
                     'popsocket': { customHiddenKeywords: '"Popsocket" Printed top is swappable with other compatible PopGrip models. Just press flat, turn 90 degrees until you hear a click and remove to swap.' },
                     'case': { customHiddenKeywords: '"case" "Two-part protective case made from a premium scratch-resistant polycarbonate shell and shock absorbent TPU liner protects against drops"' },
                     'totebag': { customHiddenKeywords: '"Tote Bag" Made of a lightweight, spun polyester canvas-like fabric. All seams and stress points are double-stitched for durability, and the reinforced bottom flattens to fit more items and hold larger objects.' },
@@ -449,8 +449,8 @@ pageNumber: (String or Number) Sets the page number input value.
                     'ziphoodie': '"zip+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop',
                     'performancepolo': '"Performance Polo" "100%25+polyester+construction+resists+fading+to+maintain+vibrant+color"',
                     'performanceziptop': '"Performance Quarter-zip" "100%25+polyester+construction+resists+fading+to+maintain+vibrant+color"',
-                    'baseballhat': '"Printed Baseball Hat" -Mesh',
-                    'truckerhat': '"Trucker Hat" "Mesh Back"',
+                    'baseballhat': '"Baseball Hat" "Classic+five-panel+structured+baseball+hat+with+high-profile+crown"',
+                    'truckerhat': '"Trucker Hat" "five-panel+trucker+hat+featuring+structured+foam+front%2C+mesh+back%2C+and+high-profile+crown"',
                     'popsocket': '"Popsocket"+Printed+top+is+swappable+with+other+compatible+PopGrip+models.+Just+press+flat%2C+turn+90+degrees+until+you+hear+a+click+and+remove+to+swap.',
                     'case': '"case"+"Two-part+protective+case+made+from+a+premium+scratch-resistant+polycarbonate+shell+and+shock+absorbent+TPU+liner+protects+against+drops"',
                     'totebag': '"Tote+Bag"+Made+of+a+lightweight%2C+spun+polyester+canvas-like+fabric.+All+seams+and+stress+points+are+double-stitched+for+durability%2C+and+the+reinforced+bottom+flattens+to+fit+more+items+and+hold+larger+objects.',
@@ -588,7 +588,7 @@ pageNumber: (String or Number) Sets the page number input value.
                     ]
                   }
                 },
-                // Department to Product mappings /US
+                // Department to Product mappings US
                 productTypeToDepartment: {
                 'KDP': 'stripbooks',
                 'tshirt': 'fashion-novelty',

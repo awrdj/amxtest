@@ -97,14 +97,21 @@
                             </div>
                         </div>
                 
-                        <div class="plz_hinweis text-right" style="margin-top: 0; padding: 0; background-color: white; border: 0;">
-                            <div id="copy_to_clipboard">
-                                <div class="copy_area" title="Copy ZIP to Clipboard">
-                                    <span class="copied-message">Copied!&nbsp;</span> Valid ZIP for&nbsp;<span class="plz_helper">.COM: <span class="copy_me">90210</span> (Beverly Hills, CA)</span>
-                                    &nbsp;<i class="fas fa-clipboard" aria-hidden="true"></i>
-                                </div>
-                            </div>
-                        </div>
+<div class="plz_hinweis text-right" style="margin-top: 0; padding: 0; background-color: white; border: 0;">
+    <div id="copy_to_clipboard">
+        <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
+            <span class="copied-message" style="display: none;">Copied!&nbsp;</span>
+            <label for="zipSelect" style="margin: 0; font-size: 0.85rem; white-space: nowrap;">Valid ZIP for <span id="zipMarketplaceLabel">.COM</span>:</label>
+            <select id="zipSelect" class="form-control form-control-sm" style="width: 250px; font-size: 0.85rem; padding: 4px 30px 4px 8px; height: auto;">
+                <!-- Options populated by JavaScript -->
+            </select>
+            <button type="button" id="copyZipBtn" class="btn btn-outline-secondary btn-sm" title="Copy ZIP to Clipboard" style="padding: 4px 10px; font-size: 0.85rem;">
+                <i class="fas fa-clipboard" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
                         <div style="clear: both;"></div>
                     </div>
                 </div>

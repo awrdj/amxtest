@@ -588,7 +588,7 @@ pageNumber: (String or Number) Sets the page number input value.
                     ]
                   }
                 },
-                // Department to Product mappings US
+                // Department to Product mappings /US
                 productTypeToDepartment: {
                 'KDP': 'stripbooks',
                 'tshirt': 'fashion-novelty',

@@ -2156,12 +2156,17 @@ function setupZipDropdown() {
     const zipSelect = document.getElementById('zipSelect');
     const copyZipBtn = document.getElementById('copyZipBtn');
     
-    // Auto-copy when user selects from dropdown
-    zipSelect.addEventListener('change', function() {
-        copyZipToClipboard();
-    });
+    // Detect Safari browser
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     
-    // Manual copy button
+    // Auto-copy when user selects from dropdown (disabled on Safari due to security)
+    if (!isSafari) {
+        zipSelect.addEventListener('change', function() {
+            copyZipToClipboard();
+        });
+    }
+    
+    // Manual copy button (works on all browsers including Safari)
     copyZipBtn.addEventListener('click', function() {
         copyZipToClipboard();
     });

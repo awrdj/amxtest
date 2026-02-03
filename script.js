@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'com': [
             'tshirt', 'premtshirt', 'tanktop', 'longsleeve', 'raglan', 'sweatshirt', 
             'hoodie', 'ziphoodie', 'popsocket', 'case', 'totebag', 'throwpillow', 
-            'tumbler', 'coffeemug', 'KDP', 'custom'
+            'tumbler', 'waterbottle', 'coffeemug', 'KDP', 'custom'
         ],
         'co.uk': [
             'tshirt', 'tanktop', 'longsleeve', 'raglan', 'sweatshirt', 
@@ -75,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'totebag': 'Tote bag',
         'throwpillow': 'Throw pillows',
         'tumbler': 'Tumbler',
+        'waterbottle': 'Water Bottle',
         'coffeemug': 'Coffee Mug',
         'KDP': 'KDP',
         'custom': 'None'
@@ -301,6 +302,7 @@ pageNumber: (String or Number) Sets the page number input value.
                     'totebag': { customHiddenKeywords: '"Tote Bag" Made of a lightweight, spun polyester canvas-like fabric. All seams and stress points are double-stitched for durability, and the reinforced bottom flattens to fit more items and hold larger objects.' },
                     'throwpillow': { customHiddenKeywords: '"Throw Pillow" Filled with 100% polyester and sewn closed' },
                     'tumbler': { customHiddenKeywords: '"Tumbler" "Merch on Demand"' },
+                    'waterbottle': { customHiddenKeywords: '"Water Bottle" "MerchByAmazon"' },
                     'coffeemug': { customHiddenKeywords: '"Ceramic Mug" "Merch on Demand"' },
                     'KDP': { customHiddenKeywords: '"independently published"' }
                 }
@@ -442,6 +444,7 @@ pageNumber: (String or Number) Sets the page number input value.
                     'totebag': '"Tote+Bag"+Made+of+a+lightweight%2C+spun+polyester+canvas-like+fabric.+All+seams+and+stress+points+are+double-stitched+for+durability%2C+and+the+reinforced+bottom+flattens+to+fit+more+items+and+hold+larger+objects.',
                     'throwpillow': '"Throw+Pillow"+Filled+with+100%25+polyester+and+sewn+closed',
                     'tumbler': '"Tumbler"+"Merch+on+Demand"',
+                    'waterbottle': { customHiddenKeywords: '"Water Bottle"+"MerchByAmazon"' },
                     'coffeemug': '"Ceramic Mug"+"Merch+on+Demand"',
                     'KDP': '"independently+published"'
                 },
@@ -514,6 +517,10 @@ pageNumber: (String or Number) Sets the page number input value.
                         displayName: 'Home & Kitchen',
                         categories: []
                     },
+                    'sports-outdoors': {
+                        displayName: 'Sports & Outdoors',
+                        categories: []
+                    },    
                     // 'stripbooks-intl-ship' MRB uses this // US
                     'stripbooks': {
                         displayName: 'Books (KDP)',
@@ -569,7 +576,7 @@ pageNumber: (String or Number) Sets the page number input value.
                     ]
                   }
                 },
-                // Department to Product mappings UK
+                // Department to Product mappings US
                 productTypeToDepartment: {
                 'KDP': 'stripbooks',
                 'tshirt': 'fashion-novelty',
@@ -585,6 +592,7 @@ pageNumber: (String or Number) Sets the page number input value.
                 'totebag': 'fashion',
                 'throwpillow': 'garden',
                 'tumbler': 'garden',
+                'waterbottle': 'sports-outdoors',
                 'coffeemug': 'garden'
                 },
                 departmentToProductType: {

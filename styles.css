@@ -783,12 +783,12 @@ body.dark-mode .filter-title {
 }
 
 body.dark-mode .plz_hinweis {
-    background-color: #2d2d2d;
+    background-color: #1e1e1e;
     border-color: #444;
 }
 
 body.dark-mode .plz_hinweis:hover {
-    background-color: #363636 !important;
+    background-color: #1e1e1e !important;
 }
 
 body.dark-mode .btn-url-copy {

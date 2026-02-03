@@ -128,70 +128,70 @@ document.addEventListener('DOMContentLoaded', function() {
 const zipCodes = {
     'com': [
         // Los Angeles Area
-        { zip: '90210', location: 'Beverly Hills, CA ——' },
+        { zip: '90210', location: '— Beverly Hills, CA —' },
         { zip: '90012', location: 'Downtown LA, CA' },
         { zip: '90401', location: 'Santa Monica, CA' },
         { zip: '90028', location: 'Hollywood, CA' },
         { zip: '91101', location: 'Pasadena, CA' },
         
         // New York Area
-        { zip: '10001', location: 'Manhattan (Chelsea), NY ——' },
+        { zip: '10001', location: '— Manhattan (Chelsea), NY —' },
         { zip: '10022', location: 'Manhattan (Midtown East), NY' },
         { zip: '10014', location: 'Manhattan (West Village), NY' },
         { zip: '11201', location: 'Brooklyn (Heights), NY' },
         { zip: '11101', location: 'Queens (LIC), NY' },
         
         // Chicago Area
-        { zip: '60601', location: 'Chicago (Loop), IL ——' },
+        { zip: '60601', location: '— Chicago (Loop), IL —' },
         { zip: '60614', location: 'Chicago (Lincoln Park), IL' },
         { zip: '60607', location: 'Chicago (West Loop), IL' },
         { zip: '60611', location: 'Chicago (River North), IL' },
         { zip: '60657', location: 'Chicago (Lakeview), IL' },
         
         // Miami Area
-        { zip: '33139', location: 'Miami Beach, FL ——' },
+        { zip: '33139', location: '— Miami Beach, FL —' },
         { zip: '33131', location: 'Miami (Downtown), FL' },
         { zip: '33134', location: 'Coral Gables, FL' },
         { zip: '33137', location: 'Miami (Design District), FL' },
         { zip: '33109', location: 'Miami Beach (South), FL' },
         
         // San Francisco Area
-        { zip: '94102', location: 'San Francisco (Downtown), CA ——' },
+        { zip: '94102', location: '— San Francisco (Downtown), CA —' },
         { zip: '94110', location: 'San Francisco (Mission), CA' },
         { zip: '94104', location: 'San Francisco (Financial District), CA' },
         { zip: '94109', location: 'San Francisco (Nob Hill), CA' },
         { zip: '94133', location: 'San Francisco (North Beach), CA' },
         
         // Seattle Area
-        { zip: '98101', location: 'Seattle (Downtown), WA ——' },
+        { zip: '98101', location: '— Seattle (Downtown), WA —' },
         { zip: '98102', location: 'Seattle (Capitol Hill), WA' },
         { zip: '98109', location: 'Seattle (South Lake Union), WA' },
         { zip: '98112', location: 'Seattle (Madison Park), WA' },
         { zip: '98122', location: 'Seattle (Central District), WA' },
         
         // Boston Area
-        { zip: '02101', location: 'Boston (Downtown), MA ——' },
+        { zip: '02101', location: '— Boston (Downtown), MA —' },
         { zip: '02108', location: 'Boston (Beacon Hill), MA' },
         { zip: '02109', location: 'Boston (North End), MA' },
         { zip: '02116', location: 'Boston (Back Bay), MA' },
         { zip: '02139', location: 'Cambridge, MA' },
         
         // Dallas Area
-        { zip: '75201', location: 'Dallas (Downtown), TX ——' },
+        { zip: '75201', location: '— Dallas (Downtown), TX —' },
         { zip: '75205', location: 'Dallas (Highland Park), TX' },
         { zip: '75219', location: 'Dallas (Uptown), TX' },
         { zip: '75225', location: 'Dallas (University Park), TX' },
         { zip: '75202', location: 'Dallas (Deep Ellum), TX' },
         
         // Houston Area
-        { zip: '77002', location: 'Houston (Downtown), TX ——' },
+        { zip: '77002', location: '— Houston (Downtown), TX —' },
         { zip: '77019', location: 'Houston (River Oaks), TX' },
         { zip: '77006', location: 'Houston (Montrose), TX' },
         { zip: '77027', location: 'Houston (Memorial), TX' },
         { zip: '77056', location: 'Houston (Galleria), TX' },
         
         // Atlanta Area
-        { zip: '30303', location: 'Atlanta (Downtown), GA ——' },
+        { zip: '30303', location: '— Atlanta (Downtown), GA —' },
         { zip: '30305', location: 'Atlanta (Buckhead), GA' },
         { zip: '30308', location: 'Atlanta (Midtown), GA' },
         { zip: '30312', location: 'Atlanta (Old Fourth Ward), GA' },

@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const productTypeAvailability = {
         'com': [
             'tshirt', 'premtshirt', 'tanktop', 'longsleeve', 'raglan', 'sweatshirt', 
-            'hoodie', 'ziphoodie', 'baseballhat', 'popsocket', 'case', 'totebag', 'throwpillow', 
+            'hoodie', 'ziphoodie', 'baseballhat', 'truckerhat', 'popsocket', 'case', 'totebag', 'throwpillow', 
             'tumbler', 'waterbottle', 'coffeemug', 'KDP', 'custom'
         ],
         'co.uk': [
@@ -70,7 +70,8 @@ document.addEventListener('DOMContentLoaded', function() {
         'sweatshirt': 'Sweatshirt',
         'hoodie': 'Pullover hoodie',
         'ziphoodie': 'Zip hoodie',
-        'baseballhat': 'Printed Baseball Hat',
+        'baseballhat': 'Baseball Hat',
+        'truckerhat': 'Trucker Hat',
         'popsocket': 'PopSockets',
         'case': 'Phone case',
         'totebag': 'Tote bag',
@@ -298,7 +299,8 @@ pageNumber: (String or Number) Sets the page number input value.
                     'sweatshirt': { customHiddenKeywords: '"sweatshirt" 8.5 oz, Classic fit, Twill-taped neck -Raglan -Vneck -Tanktop -hoodie' },
                     'hoodie': { customHiddenKeywords: '"pullover hoodie" 8.5 oz, Classic fit, Twill-taped neck -Raglan -Vneck -Tanktop -zip' },
                     'ziphoodie': { customHiddenKeywords: '"zip hoodie" 8.5 oz, Classic fit, Twill-taped neck -Raglan -Vneck -Tanktop' },
-                    'baseballhat': { customHiddenKeywords: '"Printed Baseball Hat" "Printed in the USA on imported materials"' },
+                    'baseballhat': { customHiddenKeywords: '"Printed Baseball Hat" -Mesh' },
+                    'truckerhat': { customHiddenKeywords: '"Trucker Hat" "Mesh Back"' },
                     'popsocket': { customHiddenKeywords: '"Popsocket" Printed top is swappable with other compatible PopGrip models. Just press flat, turn 90 degrees until you hear a click and remove to swap.' },
                     'case': { customHiddenKeywords: '"case" "Two-part protective case made from a premium scratch-resistant polycarbonate shell and shock absorbent TPU liner protects against drops"' },
                     'totebag': { customHiddenKeywords: '"Tote Bag" Made of a lightweight, spun polyester canvas-like fabric. All seams and stress points are double-stitched for durability, and the reinforced bottom flattens to fit more items and hold larger objects.' },
@@ -441,7 +443,8 @@ pageNumber: (String or Number) Sets the page number input value.
                     'sweatshirt': '"sweatshirt"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-hoodie',
                     'hoodie': '"pullover+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-zip',
                     'ziphoodie': '"zip+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop',
-                    'baseballhat': '"Printed Baseball Hat" "Printed in the USA on imported materials"',
+                    'baseballhat': '"Printed Baseball Hat" -Mesh',
+                    'truckerhat': '"Trucker Hat" "Mesh Back"',
                     'popsocket': '"Popsocket"+Printed+top+is+swappable+with+other+compatible+PopGrip+models.+Just+press+flat%2C+turn+90+degrees+until+you+hear+a+click+and+remove+to+swap.',
                     'case': '"case"+"Two-part+protective+case+made+from+a+premium+scratch-resistant+polycarbonate+shell+and+shock+absorbent+TPU+liner+protects+against+drops"',
                     'totebag': '"Tote+Bag"+Made+of+a+lightweight%2C+spun+polyester+canvas-like+fabric.+All+seams+and+stress+points+are+double-stitched+for+durability%2C+and+the+reinforced+bottom+flattens+to+fit+more+items+and+hold+larger+objects.',
@@ -591,6 +594,7 @@ pageNumber: (String or Number) Sets the page number input value.
                 'hoodie': 'fashion-novelty',
                 'ziphoodie': 'fashion-novelty',
                 'baseballhat': 'fashion',
+                'truckerhat': 'fashion',
                 'popsocket': 'mobile',
                 'case': 'mobile',
                 'totebag': 'fashion',

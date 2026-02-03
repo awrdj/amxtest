@@ -2089,25 +2089,66 @@ function populateZipDropdown() {
     });
 }
 
-// Copy ZIP to clipboard
+// Copy ZIP to clipboard (Safari-compatible)
 function copyZipToClipboard() {
     const zipSelect = document.getElementById('zipSelect');
     const selectedZip = zipSelect.value;
     const copiedMessage = document.querySelector('.copied-message');
     
-    // Copy to clipboard
-    navigator.clipboard.writeText(selectedZip).then(() => {
-        // Show "Copied!" message
-        copiedMessage.style.display = 'inline';
-        
-        // Hide after 1.5 seconds
-        setTimeout(() => {
-            copiedMessage.style.display = 'none';
-        }, 1500);
-    }).catch(err => {
-        console.error('Failed to copy ZIP:', err);
-        alert('Failed to copy ZIP code');
-    });
+    // Try modern Clipboard API first
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(selectedZip).then(() => {
+            showCopiedMessage(copiedMessage);
+        }).catch(err => {
+            console.warn('Clipboard API failed, trying fallback:', err);
+            fallbackCopyToClipboard(selectedZip, copiedMessage);
+        });
+    } else {
+        // Fallback for older browsers or Safari restrictions
+        fallbackCopyToClipboard(selectedZip, copiedMessage);
+    }
+}
+
+// Fallback copy method using legacy execCommand
+function fallbackCopyToClipboard(text, copiedMessage) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.top = '0';
+    textArea.style.left = '0';
+    textArea.style.width = '2em';
+    textArea.style.height = '2em';
+    textArea.style.padding = '0';
+    textArea.style.border = 'none';
+    textArea.style.outline = 'none';
+    textArea.style.boxShadow = 'none';
+    textArea.style.background = 'transparent';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            showCopiedMessage(copiedMessage);
+        } else {
+            console.error('Fallback copy failed');
+            alert('Failed to copy ZIP code. Please copy manually: ' + text);
+        }
+    } catch (err) {
+        console.error('Fallback copy error:', err);
+        alert('Failed to copy ZIP code. Please copy manually: ' + text);
+    }
+    
+    document.body.removeChild(textArea);
+}
+
+// Show copied message helper
+function showCopiedMessage(copiedMessage) {
+    copiedMessage.style.display = 'inline';
+    setTimeout(() => {
+        copiedMessage.style.display = 'none';
+    }, 1500);
 }
 
 // Setup ZIP dropdown event listeners

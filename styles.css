@@ -863,3 +863,58 @@ body:not(.dark-mode) .dark-mode-toggle i.fa-sun {
 body:not(.dark-mode) .dark-mode-toggle i.fa-moon {
     display: inline;
 }
+
+/* Form inputs (checkboxes/radios) in dark mode */
+body.dark-mode .form-check-input {
+    background-color: #2d2d2d;
+    border-color: #666;
+}
+
+body.dark-mode .form-check-input:checked {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+body.dark-mode .form-check-input:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 0.2rem rgba(255, 153, 0, 0.25);
+}
+
+/* Search button in dark mode */
+body.dark-mode .search-input-group .search-button {
+    background-color: var(--secondary-color);
+    color: #1a1a1a;
+}
+
+body.dark-mode .search-input-group .search-button:hover {
+    background-color: var(--hover-color);
+    color: #1a1a1a;
+}
+
+body.dark-mode .search-button i {
+    color: #1a1a1a;
+}
+
+body.dark-mode .search-input-group {
+    border-color: #444;
+    background-color: #2d2d2d;
+}
+
+body.dark-mode .search-input-group input {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+    border: none;
+}
+
+body.dark-mode .search-input-group input::placeholder {
+    color: #888;
+}
+
+/* Clear search button in dark mode */
+body.dark-mode .clear-search-btn {
+    color: #888;
+}
+
+body.dark-mode .clear-search-btn:hover {
+    color: #e0e0e0;
+}

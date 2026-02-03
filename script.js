@@ -444,7 +444,7 @@ pageNumber: (String or Number) Sets the page number input value.
                     'totebag': '"Tote+Bag"+Made+of+a+lightweight%2C+spun+polyester+canvas-like+fabric.+All+seams+and+stress+points+are+double-stitched+for+durability%2C+and+the+reinforced+bottom+flattens+to+fit+more+items+and+hold+larger+objects.',
                     'throwpillow': '"Throw+Pillow"+Filled+with+100%25+polyester+and+sewn+closed',
                     'tumbler': '"Tumbler"+"Merch+on+Demand"',
-                    'waterbottle': customHiddenKeywords: '"Water Bottle"+"MerchByAmazon"',
+                    'waterbottle': '"Water Bottle"+"MerchByAmazon"',
                     'coffeemug': '"Ceramic Mug"+"Merch+on+Demand"',
                     'KDP': '"independently+published"'
                 },
@@ -517,7 +517,7 @@ pageNumber: (String or Number) Sets the page number input value.
                         displayName: 'Home & Kitchen',
                         categories: []
                     },
-                    'sports-outdoors': {
+                    'sporting': {
                         displayName: 'Sports & Outdoors',
                         categories: []
                     },    
@@ -592,7 +592,7 @@ pageNumber: (String or Number) Sets the page number input value.
                 'totebag': 'fashion',
                 'throwpillow': 'garden',
                 'tumbler': 'garden',
-                'waterbottle': 'sports-outdoors',
+                'waterbottle': 'sporting',
                 'coffeemug': 'garden'
                 },
                 departmentToProductType: {

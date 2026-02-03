@@ -873,12 +873,13 @@ body.dark-mode .form-check-input {
 body.dark-mode .form-check-input:checked {
     background-color: var(--secondary-color);
     border-color: var(--secondary-color);
+	accent-color: var(--secondary-color);
 }
 
-body.dark-mode .form-check-input:focus {
+/*body.dark-mode .form-check-input:focus {
     border-color: var(--secondary-color);
     box-shadow: 0 0 0 0.2rem rgba(255, 153, 0, 0.25);
-}
+}*/
 
 /* Search button in dark mode */
 body.dark-mode .search-input-group .search-button {

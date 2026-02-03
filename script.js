@@ -1806,7 +1806,6 @@ setupZipDropdown(); // Setup event listeners
         updateGeneratedUrl();
         });
         copyUrlBtn.addEventListener('click', handleCopyUrl);
-        // copyZipBtn.addEventListener('click', handleCopyZip);
         document.getElementById('searchInput').addEventListener('input', updateGeneratedUrl);
         document.getElementById('customHiddenKeywords').addEventListener('input', updateGeneratedUrl);
         document.getElementById('minPrice').addEventListener('input', updateGeneratedUrl);
@@ -2113,34 +2112,41 @@ function copyZipToClipboard() {
 function fallbackCopyToClipboard(text, copiedMessage) {
     const textArea = document.createElement('textarea');
     textArea.value = text;
-    textArea.style.position = 'fixed';
-    textArea.style.top = '0';
-    textArea.style.left = '0';
-    textArea.style.width = '2em';
-    textArea.style.height = '2em';
-    textArea.style.padding = '0';
-    textArea.style.border = 'none';
-    textArea.style.outline = 'none';
-    textArea.style.boxShadow = 'none';
-    textArea.style.background = 'transparent';
+    
+    // Better positioning for mobile/Safari compatibility
+    textArea.style.position = 'absolute';
+    textArea.style.left = '-9999px';
+    textArea.style.top = (window.pageYOffset || document.documentElement.scrollTop) + 'px';
+    textArea.setAttribute('readonly', ''); // Prevent iOS keyboard
+    
     document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
+    
+    // Select text based on browser
+    if (navigator.userAgent.match(/ipad|iphone/i)) {
+        const range = document.createRange();
+        range.selectNodeContents(textArea);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        textArea.setSelectionRange(0, 999999);
+    } else {
+        textArea.select();
+    }
     
     try {
         const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
         if (successful) {
             showCopiedMessage(copiedMessage);
         } else {
-            console.error('Fallback copy failed');
-            alert('Failed to copy ZIP code. Please copy manually: ' + text);
+            // Silent fail - just log to console
+            console.warn('Copy failed silently');
         }
     } catch (err) {
-        console.error('Fallback copy error:', err);
-        alert('Failed to copy ZIP code. Please copy manually: ' + text);
+        document.body.removeChild(textArea);
+        console.warn('Copy error (silent):', err);
     }
-    
-    document.body.removeChild(textArea);
 }
 
 // Show copied message helper
@@ -2171,26 +2177,6 @@ function setupZipDropdown() {
         copyZipToClipboard();
     });
 }
-
-    /*function handleCopyZip() {
-        const zipCode = document.querySelector('.copy_me').textContent;
-        navigator.clipboard.writeText(zipCode)
-            .then(function() {
-                copyMessage.style.display = 'inline';
-                setTimeout(() => {
-                    copyMessage.style.display = 'none';
-                }, 2000);
-            })
-            .catch(function(err) {
-                // console.error('Could not copy ZIP code: ', err);
-                copyMessage.textContent = 'Copy failed';
-                copyMessage.style.display = 'inline';
-                setTimeout(() => {
-                    copyMessage.textContent = 'Copied!';
-                    copyMessage.style.display = 'none';
-                }, 2000);
-            });
-    }*/
 
     // Form submit handler opens the URL in a new tab
     function handleFormSubmit(e) {

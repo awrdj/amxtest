@@ -2035,6 +2035,7 @@ setupZipDropdown(); // Setup event listeners
         document.getElementById('filterExcludeBrands').addEventListener('click', updateGeneratedUrl);
     }
 
+    /* OLD CODE
     function setupPriceInputs() {
         [minPriceInput, maxPriceInput].forEach(input => {
             // Only allow digits and limit to 2 characters
@@ -2048,6 +2049,50 @@ setupZipDropdown(); // Setup event listeners
             });
         });
     }
+    */
+
+function setupPriceInputs() {
+    [minPriceInput, maxPriceInput].forEach(input => {
+        
+        // Only allow numbers and a single decimal point
+        input.addEventListener('input', function() {
+            let value = this.value;
+            
+            // Remove anything that's not a digit or decimal point
+            value = value.replace(/[^0-9.]/g, '');
+            
+            // Allow only one decimal point
+            const parts = value.split('.');
+            if (parts.length > 2) {
+                value = parts[0] + '.' + parts.slice(1).join('');
+            }
+            
+            // Limit to 2 decimal places
+            if (parts[1] && parts[1].length > 2) {
+                value = parts[0] + '.' + parts[1].substring(0, 2);
+            }
+            
+            this.value = value;
+            updateGeneratedUrl();
+        });
+
+        // Block invalid keys
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'e' || e.key === '-' || e.key === '+') {
+                e.preventDefault();
+            }
+        });
+
+        // Clean up on blur (e.g. user types "13." → becomes "13")
+        input.addEventListener('blur', function() {
+            if (this.value.endsWith('.')) {
+                this.value = this.value.slice(0, -1);
+            }
+            updateGeneratedUrl();
+        });
+    });
+}
+
 
 // Setup page number input constraints and validation
 function setupPageNumberInput() {

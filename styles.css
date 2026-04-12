@@ -919,3 +919,25 @@ body.dark-mode .clear-search-btn {
 body.dark-mode .clear-search-btn:hover {
     color: #e0e0e0;
 }
+
+.exclude-checkboxes-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0;
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.exclude-checkboxes-row .form-check {
+    flex: 0 0 auto;
+}
+
+/* Center the middle one */
+.exclude-checkboxes-row .form-check:nth-child(2) {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}

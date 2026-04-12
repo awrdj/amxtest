@@ -427,7 +427,7 @@ pageNumber: (String or Number) Sets the page number input value.
         document.getElementById('filterExcludeBrands').checked = false;
 
 document.getElementById('filterExcludePolitics').checked = false;
-document.getElementById('filterExcludeHaram').checked = false;
+document.getElementById('filterExcludeHaram').checked = true;
           
       }
     }

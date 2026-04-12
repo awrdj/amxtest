@@ -936,8 +936,6 @@ body.dark-mode .clear-search-btn:hover {
 /* Center the middle one */
 .exclude-checkboxes-row .form-check:nth-child(2) {
     flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
+    text-align: center;
+    padding-left: 1.5rem;
 }

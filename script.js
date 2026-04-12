@@ -425,6 +425,10 @@ pageNumber: (String or Number) Sets the page number input value.
       if (config.excludeBrands) {
         // We don't set the value here, just use it from the config in generateAmazonUrl
         document.getElementById('filterExcludeBrands').checked = false;
+
+document.getElementById('filterExcludePolitics').checked = false;
+document.getElementById('filterExcludeHaram').checked = false;
+          
       }
     }
 
@@ -549,7 +553,7 @@ pageNumber: (String or Number) Sets the page number input value.
                 },
                 // Brands to exclude for USA
                 // excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha+-DreamWorks+-UniversalStudios+-Paramount+-20thCenturyStudios+-SonyPictures+-Lionsgate+-HBO+-AMC+-BBC+-Netflix+-Hulu+-PlayStation+-Xbox+-Fortnite+-LeagueofLegends+-Overwatch+-CallofDuty+-Minecraft+-EldenRing+-WorldofWarcraft+-TheSims+-AmongUs+-Tetris+-SEGA+-Atari+-Capcom+-Konami+-TheBeatles+-LedZeppelin+-ACDC+-Metallica+-Nirvana+-TaylorSwift+-BTS+-BLACKPINK+-Drake+-GameofThrones+-SquidGame+-PeakyBlinders+-Lego+-Barney+-ThomasandFriends+-PeppaPig+-Bluey+-FisherPrice+-Tonka+-PowerRangers+-Ford+-Chevrolet+-Toyota+-Honda+-Tesla+-BMW+-MercedesBenz+-HarleyDavidson+-Nike+-Adidas+-Puma+-Gucci+-LouisVuitton+-Chanel+-Balenciaga+-Vans+-Fila+-Pepsi+-MountainDew+-Sprite+-DrPepper+-Nestle+-Oreo+-Reeses+-Snickers+-TacoBell+-McDonalds+-KFC+-Starbucks+-NFL+-NBA+-MLB+-NHL+-NCAA+-FIFA+-UFC+-Google+-Facebook+-Instagram+-Snapchat+-YouTube+-Twitter+-TikTok',
-                excludeBrands: '-Officially -Licensed -LyricLyfe -Disney -Marvel -StarWars -Mademark -HarryPotter -Pixar -SANRIO -EliteAuthentics -Barbie -BATMAN -JeffDunham -CJGrips -BreakingT -SpongebobSquarePants -DCComics -Looney -SUPERMARIO -Pokemon -STARTREK -Fallout -MTV -Beetlejuice -SouthPark -HelloKitty -Jeep -GypsyQueen -NEWLINECINEMA -ScoobyDoo -Nickelodeon -Popfunk -WWE -DrSeuss -NBC -CartoonNetwork -Hasbro -CocaCola -RickMorty -Nintendo -DespicableMe -JurassicPark -TMNT -MyLittlePony -AmericanKennelClub -AnnoyingOrange -Buckedup -Daria -Dunkin -IMOMSOHARD -Kabillion -LyricVerse -ROBLOX -Oddbods -Mandalorian -Aerosmith -Bengals -Rebelde -Mattel -Sheeran -Zelda -Dunham -Masha -Paramount -Sony -Lionsgate -HBO -AMC -BBC -Netflix -Hulu -PlayStation -Xbox -Fortnite -Overwatch -Minecraft -Tetris -SEGA -Atari -Capcom -Konami -ACDC -Metallica -Nirvana -BTS -BLACKPINK -Lego -Barney -Bluey -Tonka -Ford -Chevrolet -Toyota -Honda -Tesla -BMW -Nike -Adidas -Puma -Gucci -Chanel -Balenciaga -Vans -Fila -Pepsi -Sprite -DrPepper -Nestle -Oreo -Reeses -Snickers -McDonalds -KFC -Starbucks -NFL -NBA -MLB -NHL -NCAA -FIFA -UFC -Google -Facebook -Instagram -Snapchat -YouTube -Twitter -TikTok',
+                excludeBrands: '-Officially -Licensed -LyricLyfe -Disney -Marvel -StarWars -Mademark -HarryPotter -Pixar -SANRIO -EliteAuthentics -Barbie -BATMAN -JeffDunham -CJGrips -BreakingT -SpongebobSquarePants -DCComics -Looney -SUPERMARIO -Pokemon -STARTREK -Fallout -MTV -Beetlejuice -SouthPark -HelloKitty -Jeep -GypsyQueen -NEWLINECINEMA -ScoobyDoo -Nickelodeon -Popfunk -WWE -DrSeuss -NBC -CartoonNetwork -Hasbro -CocaCola -RickMorty -Nintendo -DespicableMe -JurassicPark -TMNT -MyLittlePony -AmericanKennelClub -AnnoyingOrange -Buckedup -Daria -Dunkin -IMOMSOHARD -Kabillion -LyricVerse -ROBLOX -Oddbods -Mandalorian -Aerosmith -Bengals -Rebelde -Mattel -Sheeran -Zelda -Dunham -Masha -Paramount -Sony -Lionsgate -HBO -AMC -BBC -Netflix -Hulu -PlayStation -Xbox -Fortnite -Overwatch -Minecraft -Tetris -SEGA -Atari -Capcom -Konami -ACDC -Metallica -Nirvana -BTS -BLACKPINK -Lego -Barney -Bluey -Tonka -Ford -Chevrolet -Toyota -Honda -Tesla -BMW -Nike -Adidas -Puma -Gucci -Chanel -Balenciaga -Vans -Fila -Pepsi -Sprite -DrPepper -Nestle -Oreo -Reeses -Snickers -McDonalds -KFC -Starbucks -NFL -NBA -MLB -NHL -NCAA -FIFA -UFC -Google -Facebook -Instagram -Snapchat -YouTube -Twitter -TikTok -gunsnroses -spacejam -korn -yellowstone -strangerthings -jellyroll -breakingbad -tyt -ferrari -fanprint -microsoft -uglydolls -kitty -pinkfloyd -sonic -sabbath -twinpeaks -seuss -spongebob -misfits -samsung -looneytunes -warner -morty -pantera -vuitton',
                 // No Preset Defaults
                 noPresetDefaults: {
                     productType: 'tshirt',
@@ -2033,6 +2037,10 @@ setupZipDropdown(); // Setup event listeners
         document.getElementById('sellerAmazon').addEventListener('click', updateGeneratedUrl);
         document.getElementById('reviewsFilter').addEventListener('click', updateGeneratedUrl);
         document.getElementById('filterExcludeBrands').addEventListener('click', updateGeneratedUrl);
+
+document.getElementById('filterExcludePolitics').addEventListener('click', updateGeneratedUrl);
+document.getElementById('filterExcludeHaram').addEventListener('click', updateGeneratedUrl);
+        
     }
 
     /* OLD CODE
@@ -2450,6 +2458,16 @@ if (minPrice && maxPrice) {
         if (filterExcludeBrandsChecked && config.excludeBrands) {
             hiddenKeywordsArray.push(config.excludeBrands);
         }
+
+const filterExcludePoliticsChecked = document.getElementById('filterExcludePolitics').checked;
+if (filterExcludePoliticsChecked) {
+    hiddenKeywordsArray.push('-trump -biden -obama -clinton -reagan -putin -harris -kamala -vote -voting -election -republican -democrat -conservative -liberal -socialist -communist -political -government -congress -senate -maga -blm -lgbt -lgbtq -pride -feminist -antifa -gadsden -army -navy -marines -airforce -military -veteran -israel -palestine -war -terrorist -gun -rifle -amendment -nra -fbi -cia');
+}
+
+const filterExcludeHaramChecked = document.getElementById('filterExcludeHaram').checked;
+if (filterExcludeHaramChecked) {
+    hiddenKeywordsArray.push('-Alcohol -Wine -Beer -Liquor -Pork -Bacon -Ham -Lard -Gelatin -Gambling -Lottery -Casino -Betting -Riba -Pornography -Adultery -Fornication -Prostitution -Homosexuality -Lesbianism -Sodomy -LGBT -LGBTQ -Queer -Gay -Lesbian -Bisexual -Transgender -Transsexual -Drag -Crossdressing -Drugs -Cannabis -Marijuana -Cocaine -Heroin -Idolatry -Idol -Crucifix -Trinity -Witchcraft -Sorcery -Magic -Tarot -Horoscope -Zodiac -Astrology -Shirk -Polytheism -Satanism -Lucifer -Occult -buddhist -slotmachine -tattoo -krishna -church -demon -santaclaus -tattoos -chakra -brandy -vishnu -deity -stvalentine -smoking -reincarnation -paydayloan -trans -jewish -bikini -easter -fetish -shiva -piercing -vape -wizard -erotic -valentine -cocktail -swimsuit -tequila -porn -satan -shisha -elf -statueworship -bdsm -boyfriend -dating -poker -usury -xxx -girlfriend -goddess -jesus -devil -hindu -vodka -nsfw -bodyart -weed -cigar -cigarette -naked -christmas -rum -gin -buddha -witch -christian -saint -jewishness -profanity -champagne -santa -ouija -stripper -stpatrick -blackjack -bible -valentine -seduce -cosplay -booty -judaism -strip -bodycon -lingerie -hanukkah -kiss -camgirl -horus -pagan -babe -thanksgiving -onlyfans -patricksday -diwali -halloween -whiskey -hookah -christianity -nude -cleavage -boudoir -makeout -vaping -topless -playboy -ganesh -yomkippur -bodymodification -sexy -pride -spells -escort');
+}
 
         if (hiddenKeywordsArray.length > 0) {
             paramParts.push(`hidden-keywords=${hiddenKeywordsArray.join('+')}`);

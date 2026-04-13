@@ -238,6 +238,80 @@
                 <button id="copyUrlBtn" class="btn-url-copy"><i class="fas fa-clipboard"></i></button>
             </div>
         </div>
+
+<!-- Deep Keyword Research Panel -->
+<div class="filter-box kwr-panel" id="kwResearchPanel">
+    <div class="filter-title kwr-toggle" id="kwResearchToggle">
+        <span><i class="fas fa-flask" style="margin-right:6px;"></i>Deep Keyword Research</span>
+        <i class="fas fa-chevron-down kwr-chevron" id="kwResearchChevron"></i>
+    </div>
+
+    <div id="kwResearchContent" style="display:none; margin-top:14px;">
+
+        <!-- Marketplace sync hint -->
+        <p class="kwr-sync-hint">
+            <i class="fas fa-link"></i> Using marketplace: <strong id="kwrMarketplaceLabel">US</strong>
+        </p>
+
+        <!-- Tabs -->
+        <div class="kwr-tabs">
+            <button class="kwr-tab active" data-kwr-view="kwr-amazon">Amazon Engine</button>
+            <button class="kwr-tab" data-kwr-view="kwr-platforms">Multi-Platform</button>
+        </div>
+
+        <!-- Amazon Engine -->
+        <div id="kwr-amazon" class="kwr-view active">
+            <div class="kwr-input-group">
+                <input id="kwr-amz-title" type="text" class="form-control" placeholder="Product Title (e.g., funny cat shirt)">
+                <input id="kwr-amz-brand" type="text" class="form-control" placeholder="Brand Name (optional)">
+                <input id="kwr-amz-advanced" type="text" class="form-control kwr-advanced-bg" placeholder="Advanced words (e.g., for kids, funny, best)">
+                <input id="kwr-amz-negative" type="text" class="form-control kwr-negative-bg" placeholder="Negative keywords (e.g., free, cheap)">
+            </div>
+            <div class="kwr-buttons-group">
+                <button id="kwr-amz-btn" class="kwr-primary-btn">
+                    <i class="fas fa-search"></i> Analyze Keywords
+                </button>
+                <div id="kwr-amz-loader" class="kwr-loader"></div>
+            </div>
+            <div id="kwr-amz-results-header" class="kwr-results-header">
+                <span id="kwr-amz-count" class="kwr-count"></span>
+                <div class="kwr-export-btns">
+                    <button id="kwr-amz-copy-btn" class="btn btn-outline-secondary btn-sm">Copy All</button>
+                    <button id="kwr-amz-txt-btn" class="btn btn-outline-secondary btn-sm">.TXT</button>
+                    <button id="kwr-amz-csv-btn" class="btn btn-outline-secondary btn-sm">.CSV</button>
+                </div>
+            </div>
+            <ul id="kwr-amz-results" class="kwr-results-list"></ul>
+        </div>
+
+        <!-- Multi-Platform -->
+        <div id="kwr-platforms" class="kwr-view">
+            <div class="kwr-input-group">
+                <input id="kwr-plat-title" type="text" class="form-control" placeholder="Product Title (e.g., funny cat shirt)">
+                <input id="kwr-plat-brand" type="text" class="form-control" placeholder="Brand Name (optional)">
+                <input id="kwr-plat-advanced" type="text" class="form-control kwr-advanced-bg" placeholder="Advanced words (e.g., for kids, funny, best)">
+                <input id="kwr-plat-negative" type="text" class="form-control kwr-negative-bg" placeholder="Negative keywords (e.g., free, cheap)">
+            </div>
+            <div id="kwr-platform-checkboxes" class="kwr-platforms-grid"></div>
+            <div class="kwr-buttons-group">
+                <button id="kwr-plat-btn" class="kwr-primary-btn">
+                    <i class="fas fa-globe"></i> Analyze Platforms
+                </button>
+                <div id="kwr-plat-loader" class="kwr-loader"></div>
+            </div>
+            <div id="kwr-plat-results-header" class="kwr-results-header">
+                <span id="kwr-plat-count" class="kwr-count"></span>
+                <div class="kwr-export-btns">
+                    <button id="kwr-plat-copy-btn" class="btn btn-outline-secondary btn-sm">Copy All</button>
+                    <button id="kwr-plat-txt-btn" class="btn btn-outline-secondary btn-sm">.TXT</button>
+                    <button id="kwr-plat-csv-btn" class="btn btn-outline-secondary btn-sm">.CSV</button>
+                </div>
+            </div>
+            <ul id="kwr-plat-results" class="kwr-results-list"></ul>
+        </div>
+
+    </div>
+</div>
         
     </div>
 

@@ -786,7 +786,7 @@ body.dark-mode select.form-control {
 body.dark-mode .url-box {
     background-color: #2d2d2d;
     border-color: #444;
-    color: #b0b0b0;
+    color: #b0b0b0 !important;
 }
 
 body.dark-mode .filter-title {
@@ -1042,6 +1042,7 @@ body.dark-mode .clear-search-btn:hover {
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.2s ease;
 }
+body.dark-mode .kwr-primary-btn { color: #1a1a1a; }
 .kwr-primary-btn:hover {
     background-color: var(--hover-color);
     transform: translateY(-1px);

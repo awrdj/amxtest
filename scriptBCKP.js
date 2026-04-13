@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Cache DOM elements
+    // Cache DOM  elements
     const searchForm = document.getElementById('searchForm');
     const copyUrlBtn = document.getElementById('copyUrlBtn');
     const resultUrlContainer = document.getElementById('resultUrlContainer');
@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const filterCottonContainer = document.getElementById('filterCottonContainer');
     const minPriceInput = document.getElementById('minPrice');
     const maxPriceInput = document.getElementById('maxPrice');
+    const pageNumberInput = document.getElementById('pageNumber');
 
     // Clear Search Button
     const searchInput = document.getElementById('searchInput');
@@ -31,8 +32,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const productTypeAvailability = {
         'com': [
             'tshirt', 'premtshirt', 'tanktop', 'longsleeve', 'raglan', 'sweatshirt', 
-            'hoodie', 'ziphoodie', 'popsocket', 'case', 'totebag', 'throwpillow', 
-            'tumbler', 'coffeemug', 'KDP', 'custom'
+            'hoodie', 'ziphoodie', 'performancepolo', 'performanceziptop', 'baseballhat', 'truckerhat', 'popsocket', 'case', 'totebag', 'throwpillow', 
+            'tumbler', 'waterbottle', 'coffeemug', 'KDP', 'custom'
         ],
         'co.uk': [
             'tshirt', 'tanktop', 'longsleeve', 'raglan', 'sweatshirt', 
@@ -69,11 +70,16 @@ document.addEventListener('DOMContentLoaded', function() {
         'sweatshirt': 'Sweatshirt',
         'hoodie': 'Pullover hoodie',
         'ziphoodie': 'Zip hoodie',
+        'performancepolo': 'Polos',
+        'performanceziptop': 'Quarter-zip Top',
+        'baseballhat': 'Baseball Hat',
+        'truckerhat': 'Trucker Hat',
         'popsocket': 'PopSockets',
         'case': 'Phone case',
         'totebag': 'Tote bag',
         'throwpillow': 'Throw pillows',
         'tumbler': 'Tumbler',
+        'waterbottle': 'Water Bottle',
         'coffeemug': 'Coffee Mug',
         'KDP': 'KDP',
         'custom': 'None'
@@ -123,20 +129,135 @@ document.addEventListener('DOMContentLoaded', function() {
         updateCategoryOptions();
     }
 
-    // ZIP codes for each marketplaces
-    const zipCodes = {
-        'com': { zip: '90210', location: 'Beverly Hills, CA' },
-        'co.uk': { zip: 'E1 6AN', location: 'London' },
-        'de': { zip: '10115', location: 'Berlin' },
-        'fr': { zip: '75001', location: 'Paris' },
-        'it': { zip: '00100', location: 'Rome' },
-        'es': { zip: '28001', location: 'Madrid' }
-        // 'co.jp': { zip: '100-0001', location: 'Tokyo' }
-    };
+    // ZIP codes for each marketplace (multiple options)
+const zipCodes = {
+    'com': [
+        // Los Angeles Area
+        { zip: '90210', location: '— Beverly Hills, CA —' },
+        { zip: '90012', location: 'Downtown LA, CA' },
+        { zip: '90401', location: 'Santa Monica, CA' },
+        { zip: '90028', location: 'Hollywood, CA' },
+        { zip: '91101', location: 'Pasadena, CA' },
+        
+        // New York Area
+        { zip: '10001', location: '— Manhattan (Chelsea), NY —' },
+        { zip: '10022', location: 'Manhattan (Midtown East), NY' },
+        { zip: '10014', location: 'Manhattan (West Village), NY' },
+        { zip: '11201', location: 'Brooklyn (Heights), NY' },
+        { zip: '11101', location: 'Queens (LIC), NY' },
+        
+        // Chicago Area
+        { zip: '60601', location: '— Chicago (Loop), IL —' },
+        { zip: '60614', location: 'Chicago (Lincoln Park), IL' },
+        { zip: '60607', location: 'Chicago (West Loop), IL' },
+        { zip: '60611', location: 'Chicago (River North), IL' },
+        { zip: '60657', location: 'Chicago (Lakeview), IL' },
+        
+        // Miami Area
+        { zip: '33139', location: '— Miami Beach, FL —' },
+        { zip: '33131', location: 'Miami (Downtown), FL' },
+        { zip: '33134', location: 'Coral Gables, FL' },
+        { zip: '33137', location: 'Miami (Design District), FL' },
+        { zip: '33109', location: 'Miami Beach (South), FL' },
+        
+        // San Francisco Area
+        { zip: '94102', location: '— San Francisco (Downtown), CA —' },
+        { zip: '94110', location: 'San Francisco (Mission), CA' },
+        { zip: '94104', location: 'San Francisco (Financial District), CA' },
+        { zip: '94109', location: 'San Francisco (Nob Hill), CA' },
+        { zip: '94133', location: 'San Francisco (North Beach), CA' },
+        
+        // Seattle Area
+        { zip: '98101', location: '— Seattle (Downtown), WA —' },
+        { zip: '98102', location: 'Seattle (Capitol Hill), WA' },
+        { zip: '98109', location: 'Seattle (South Lake Union), WA' },
+        { zip: '98112', location: 'Seattle (Madison Park), WA' },
+        { zip: '98122', location: 'Seattle (Central District), WA' },
+        
+        // Boston Area
+        { zip: '02101', location: '— Boston (Downtown), MA —' },
+        { zip: '02108', location: 'Boston (Beacon Hill), MA' },
+        { zip: '02109', location: 'Boston (North End), MA' },
+        { zip: '02116', location: 'Boston (Back Bay), MA' },
+        { zip: '02139', location: 'Cambridge, MA' },
+        
+        // Dallas Area
+        { zip: '75201', location: '— Dallas (Downtown), TX —' },
+        { zip: '75205', location: 'Dallas (Highland Park), TX' },
+        { zip: '75219', location: 'Dallas (Uptown), TX' },
+        { zip: '75225', location: 'Dallas (University Park), TX' },
+        { zip: '75202', location: 'Dallas (Deep Ellum), TX' },
+        
+        // Houston Area
+        { zip: '77002', location: '— Houston (Downtown), TX —' },
+        { zip: '77019', location: 'Houston (River Oaks), TX' },
+        { zip: '77006', location: 'Houston (Montrose), TX' },
+        { zip: '77027', location: 'Houston (Memorial), TX' },
+        { zip: '77056', location: 'Houston (Galleria), TX' },
+        
+        // Atlanta Area
+        { zip: '30303', location: '— Atlanta (Downtown), GA —' },
+        { zip: '30305', location: 'Atlanta (Buckhead), GA' },
+        { zip: '30308', location: 'Atlanta (Midtown), GA' },
+        { zip: '30312', location: 'Atlanta (Old Fourth Ward), GA' },
+        { zip: '30318', location: 'Atlanta (West Midtown), GA' }
+    ],
+    'co.uk': [
+        { zip: 'E1 6AN', location: 'London (East End)' },
+        { zip: 'SW1A 1AA', location: 'London (Westminster)' },
+        { zip: 'W1A 1AA', location: 'London (West End)' },
+        { zip: 'EC1A 1BB', location: 'London (City)' },
+        { zip: 'M1 1AA', location: 'Manchester' },
+        { zip: 'B1 1AA', location: 'Birmingham' },
+        { zip: 'G1 1AA', location: 'Glasgow' },
+        { zip: 'EH1 1AA', location: 'Edinburgh' }
+    ],
+    'de': [
+        { zip: '10115', location: 'Berlin (Mitte)' },
+        { zip: '10178', location: 'Berlin (Alexanderplatz)' },
+        { zip: '80331', location: 'Munich (City Center)' },
+        { zip: '60311', location: 'Frankfurt (Innenstadt)' },
+        { zip: '20095', location: 'Hamburg (HafenCity)' },
+        { zip: '50667', location: 'Cologne (Altstadt)' },
+        { zip: '70173', location: 'Stuttgart (Mitte)' },
+        { zip: '01067', location: 'Dresden (Altstadt)' }
+    ],
+    'fr': [
+        { zip: '75001', location: 'Paris (1st - Louvre)' },
+        { zip: '75008', location: 'Paris (8th - Champs-Élysées)' },
+        { zip: '75116', location: 'Paris (16th - Trocadéro)' },
+        { zip: '69001', location: 'Lyon (1st)' },
+        { zip: '13001', location: 'Marseille (1st)' },
+        { zip: '33000', location: 'Bordeaux' },
+        { zip: '31000', location: 'Toulouse' },
+        { zip: '06000', location: 'Nice' }
+    ],
+    'it': [
+        { zip: '00100', location: 'Rome (Centro)' },
+        { zip: '00184', location: 'Rome (Colosseo)' },
+        { zip: '20121', location: 'Milan (Centro Storico)' },
+        { zip: '50122', location: 'Florence (Centro)' },
+        { zip: '80138', location: 'Naples (Centro)' },
+        { zip: '40121', location: 'Bologna (Centro)' },
+        { zip: '10121', location: 'Turin (Centro)' },
+        { zip: '30100', location: 'Venice (Centro)' }
+    ],
+    'es': [
+        { zip: '28001', location: 'Madrid (Centro)' },
+        { zip: '28013', location: 'Madrid (Retiro)' },
+        { zip: '08001', location: 'Barcelona (Ciutat Vella)' },
+        { zip: '08002', location: 'Barcelona (Eixample)' },
+        { zip: '41001', location: 'Seville (Centro)' },
+        { zip: '46001', location: 'Valencia (Ciutat Vella)' },
+        { zip: '29015', location: 'Málaga (Centro)' },
+        { zip: '48001', location: 'Bilbao (Centro)' }
+    ]
+};
 
     // Presets Config
     const presetConfigs = {
-/* Possible parameters for the settings object:
+/*
+Possible parameters for the settings object:
 productType: (String) Sets the Product Type dropdown (e.g., 'tshirt', 'hoodie', 'custom').
 department: (String) Sets the Department dropdown (e.g., 'fashion', 'fashion-novelty', 'stripbooks').
 category: (String) Sets the Category dropdown after the department is set (e.g., '7141123011'). Make sure the category ID is valid for the specified department.
@@ -148,7 +269,9 @@ minPrice: (String or Number) Sets the minimum price input value.
 maxPrice: (String or Number) Sets the maximum price input value.
 searchKeywords: (String) - New - Sets the main search input value.
 customHiddenKeywords: (String) - New - Sets the custom hidden keywords input value.
-productTypeOverrides: (Object) - New - Contains nested objects where keys are product type strings (e.g., 'hoodie') and values are objects that can contain searchKeywords and/or customHiddenKeywords to override the base settings for that specific product type.*/
+productTypeOverrides: (Object) - New - Contains nested objects where keys are product type strings (e.g., 'hoodie') and values are objects that can contain searchKeywords and/or customHiddenKeywords to override the base settings for that specific product type.
+pageNumber: (String or Number) Sets the page number input value.
+*/
         // Presets config US
         'com': [
             { value: 'last30-fashion-com', text: '⏱ Last 30 Days Fashion', 
@@ -178,11 +301,16 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
                     'sweatshirt': { customHiddenKeywords: '"sweatshirt" 8.5 oz, Classic fit, Twill-taped neck -Raglan -Vneck -Tanktop -hoodie' },
                     'hoodie': { customHiddenKeywords: '"pullover hoodie" 8.5 oz, Classic fit, Twill-taped neck -Raglan -Vneck -Tanktop -zip' },
                     'ziphoodie': { customHiddenKeywords: '"zip hoodie" 8.5 oz, Classic fit, Twill-taped neck -Raglan -Vneck -Tanktop' },
+                    'performancepolo': { customHiddenKeywords: '"Performance Polo" "100% polyester construction resists fading to maintain vibrant color"' },
+                    'performanceziptop': { customHiddenKeywords: '"Performance Quarter-zip" "100% polyester construction resists fading to maintain vibrant color"'},
+                    'baseballhat': { customHiddenKeywords: '"Baseball Hat" "Classic five-panel structured baseball hat with high-profile crown"' },
+                    'truckerhat': { customHiddenKeywords: '"Trucker Hat" "Five-panel trucker hat featuring structured foam front, mesh back, and high-profile crown"' },
                     'popsocket': { customHiddenKeywords: '"Popsocket" Printed top is swappable with other compatible PopGrip models. Just press flat, turn 90 degrees until you hear a click and remove to swap.' },
                     'case': { customHiddenKeywords: '"case" "Two-part protective case made from a premium scratch-resistant polycarbonate shell and shock absorbent TPU liner protects against drops"' },
                     'totebag': { customHiddenKeywords: '"Tote Bag" Made of a lightweight, spun polyester canvas-like fabric. All seams and stress points are double-stitched for durability, and the reinforced bottom flattens to fit more items and hold larger objects.' },
                     'throwpillow': { customHiddenKeywords: '"Throw Pillow" Filled with 100% polyester and sewn closed' },
                     'tumbler': { customHiddenKeywords: '"Tumbler" "Merch on Demand"' },
+                    'waterbottle': { customHiddenKeywords: '"Water Bottle" "MerchByAmazon"' },
                     'coffeemug': { customHiddenKeywords: '"Ceramic Mug" "Merch on Demand"' },
                     'KDP': { customHiddenKeywords: '"independently published"' }
                 }
@@ -297,6 +425,10 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
       if (config.excludeBrands) {
         // We don't set the value here, just use it from the config in generateAmazonUrl
         document.getElementById('filterExcludeBrands').checked = false;
+
+document.getElementById('filterExcludePolitics').checked = false;
+document.getElementById('filterExcludeHaram').checked = false;
+          
       }
     }
 
@@ -319,11 +451,16 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
                     'sweatshirt': '"sweatshirt"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-hoodie',
                     'hoodie': '"pullover+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop+-zip',
                     'ziphoodie': '"zip+hoodie"+8.5+oz%2C+Classic+fit%2C+Twill-taped+neck+-Raglan+-Vneck+-Tanktop',
+                    'performancepolo': '"Performance Polo" "100%25+polyester+construction+resists+fading+to+maintain+vibrant+color"',
+                    'performanceziptop': '"Performance Quarter-zip" "100%25+polyester+construction+resists+fading+to+maintain+vibrant+color"',
+                    'baseballhat': '"Baseball Hat" "Classic+five-panel+structured+baseball+hat+with+high-profile+crown"',
+                    'truckerhat': '"Trucker Hat" "five-panel+trucker+hat+featuring+structured+foam+front%2C+mesh+back%2C+and+high-profile+crown"',
                     'popsocket': '"Popsocket"+Printed+top+is+swappable+with+other+compatible+PopGrip+models.+Just+press+flat%2C+turn+90+degrees+until+you+hear+a+click+and+remove+to+swap.',
                     'case': '"case"+"Two-part+protective+case+made+from+a+premium+scratch-resistant+polycarbonate+shell+and+shock+absorbent+TPU+liner+protects+against+drops"',
                     'totebag': '"Tote+Bag"+Made+of+a+lightweight%2C+spun+polyester+canvas-like+fabric.+All+seams+and+stress+points+are+double-stitched+for+durability%2C+and+the+reinforced+bottom+flattens+to+fit+more+items+and+hold+larger+objects.',
                     'throwpillow': '"Throw+Pillow"+Filled+with+100%25+polyester+and+sewn+closed',
                     'tumbler': '"Tumbler"+"Merch+on+Demand"',
+                    'waterbottle': '"Water Bottle"+"MerchByAmazon"',
                     'coffeemug': '"Ceramic Mug"+"Merch+on+Demand"',
                     'KDP': '"independently+published"'
                 },
@@ -396,6 +533,10 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
                         displayName: 'Home & Kitchen',
                         categories: []
                     },
+                    'sporting': {
+                        displayName: 'Sports & Outdoors',
+                        categories: []
+                    },    
                     // 'stripbooks-intl-ship' MRB uses this // US
                     'stripbooks': {
                         displayName: 'Books (KDP)',
@@ -412,7 +553,7 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
                 },
                 // Brands to exclude for USA
                 // excludeBrands: '-Officially+-Licensed+-LyricLyfe+-Disney+-Marvel+-StarWars+-Mademark+-HarryPotter+-Pixar+-SANRIO+-EliteAuthentics+-Barbie+-BATMAN+-JeffDunham+-CJGrips+-BreakingT+-SpongebobSquarePants+-BallparkMVP+-DCComics+-LooneyTunes+-SUPERMARIO+-Pokemon+-STARTREK+-StrangerThings+-Fallout+-MTV+-Beetlejuice+-SouthPark+-HelloKitty+-Jeep+-GypsyQueen+-TheRollingStones+-NEWLINECINEMA+-SagittariusGallery+-ScoobyDoo+-OfficialHighSchoolFanGear+-PinkFloyd+-Nickelodeon+-CareBears+-Popfunk+-FanPrint+-WarnerBros+-WWE+-DrSeuss+-NBC+-CuriousGeorge+-MeanGirls+-CartoonNetwork+-SesameStreet+-Hasbro+-CocaCola+-RickMorty+-Nintendo+-DespicableMe+-JurassicPark+-TMNT+-MyLittlePony+-AmericanKennelClub+-AnnoyingOrange+-BeerNuts+-BillNye+-Booba+-Buckedup+-CarlyMartina+-ComradeDetective+-Daria+-DippinDots+-DramaLlama+-Dunkin+-HannahHart+-IMOMSOHARD+-ImpracticalJokers+-JaneAusten+-JaneGoodall+-JennMcAllister+-JoJoSiwa+-Kabillion+-LoveIsland+-LyricVerse+-ModPodge+-NashGrier+-NeildeGrasseTyson+-RickyDillon+-ROBLOX+-ShibSibs+-SpongeBob+-TheDailyWire+-TheGrandTour+-Oddbods+-TheYoungTurks+-TheSoul+-TwinPeaks+-UglyDolls+-Mandalorian+-SpaceJam+-Aerosmith+-Bengals+-Rebelde+-BreakingBad+-FooFighters+-BlackSabbath+-SelenaQuintanilla+-CampusLab+-RobZombie+-Misfits+-Mattel+-Sheeran+-Zelda+-Dunham+-Masha+-DreamWorks+-UniversalStudios+-Paramount+-20thCenturyStudios+-SonyPictures+-Lionsgate+-HBO+-AMC+-BBC+-Netflix+-Hulu+-PlayStation+-Xbox+-Fortnite+-LeagueofLegends+-Overwatch+-CallofDuty+-Minecraft+-EldenRing+-WorldofWarcraft+-TheSims+-AmongUs+-Tetris+-SEGA+-Atari+-Capcom+-Konami+-TheBeatles+-LedZeppelin+-ACDC+-Metallica+-Nirvana+-TaylorSwift+-BTS+-BLACKPINK+-Drake+-GameofThrones+-SquidGame+-PeakyBlinders+-Lego+-Barney+-ThomasandFriends+-PeppaPig+-Bluey+-FisherPrice+-Tonka+-PowerRangers+-Ford+-Chevrolet+-Toyota+-Honda+-Tesla+-BMW+-MercedesBenz+-HarleyDavidson+-Nike+-Adidas+-Puma+-Gucci+-LouisVuitton+-Chanel+-Balenciaga+-Vans+-Fila+-Pepsi+-MountainDew+-Sprite+-DrPepper+-Nestle+-Oreo+-Reeses+-Snickers+-TacoBell+-McDonalds+-KFC+-Starbucks+-NFL+-NBA+-MLB+-NHL+-NCAA+-FIFA+-UFC+-Google+-Facebook+-Instagram+-Snapchat+-YouTube+-Twitter+-TikTok',
-                excludeBrands: '-Officially -Licensed -LyricLyfe -Disney -Marvel -StarWars -Mademark -HarryPotter -Pixar -SANRIO -EliteAuthentics -Barbie -BATMAN -JeffDunham -CJGrips -BreakingT -SpongebobSquarePants -DCComics -Looney -SUPERMARIO -Pokemon -STARTREK -Fallout -MTV -Beetlejuice -SouthPark -HelloKitty -Jeep -GypsyQueen -NEWLINECINEMA -ScoobyDoo -Nickelodeon -Popfunk -WWE -DrSeuss -NBC -CartoonNetwork -Hasbro -CocaCola -RickMorty -Nintendo -DespicableMe -JurassicPark -TMNT -MyLittlePony -AmericanKennelClub -AnnoyingOrange -Buckedup -Daria -Dunkin -IMOMSOHARD -Kabillion -LyricVerse -ROBLOX -Oddbods -Mandalorian -Aerosmith -Bengals -Rebelde -Mattel -Sheeran -Zelda -Dunham -Masha -Paramount -Sony -Lionsgate -HBO -AMC -BBC -Netflix -Hulu -PlayStation -Xbox -Fortnite -Overwatch -Minecraft -Tetris -SEGA -Atari -Capcom -Konami -ACDC -Metallica -Nirvana -BTS -BLACKPINK -Lego -Barney -Bluey -Tonka -Ford -Chevrolet -Toyota -Honda -Tesla -BMW -Nike -Adidas -Puma -Gucci -Chanel -Balenciaga -Vans -Fila -Pepsi -Sprite -DrPepper -Nestle -Oreo -Reeses -Snickers -McDonalds -KFC -Starbucks -NFL -NBA -MLB -NHL -NCAA -FIFA -UFC -Google -Facebook -Instagram -Snapchat -YouTube -Twitter -TikTok',
+                excludeBrands: '-Officially -Licensed -LyricLyfe -Disney -Marvel -StarWars -Mademark -HarryPotter -Pixar -SANRIO -EliteAuthentics -Barbie -BATMAN -JeffDunham -CJGrips -BreakingT -SpongebobSquarePants -DCComics -Looney -SUPERMARIO -Pokemon -STARTREK -Fallout -MTV -Beetlejuice -SouthPark -HelloKitty -Jeep -GypsyQueen -NEWLINECINEMA -ScoobyDoo -Nickelodeon -Popfunk -WWE -DrSeuss -NBC -CartoonNetwork -Hasbro -CocaCola -RickMorty -Nintendo -DespicableMe -JurassicPark -TMNT -MyLittlePony -AmericanKennelClub -AnnoyingOrange -Buckedup -Daria -Dunkin -IMOMSOHARD -Kabillion -LyricVerse -ROBLOX -Oddbods -Mandalorian -Aerosmith -Bengals -Rebelde -Mattel -Sheeran -Zelda -Dunham -Masha -Paramount -Sony -Lionsgate -HBO -AMC -BBC -Netflix -Hulu -PlayStation -Xbox -Fortnite -Overwatch -Minecraft -Tetris -SEGA -Atari -Capcom -Konami -ACDC -Metallica -Nirvana -BTS -BLACKPINK -Lego -Barney -Bluey -Tonka -Ford -Chevrolet -Toyota -Honda -Tesla -BMW -Nike -Adidas -Puma -Gucci -Chanel -Balenciaga -Vans -Fila -Pepsi -Sprite -DrPepper -Nestle -Oreo -Reeses -Snickers -McDonalds -KFC -Starbucks -NFL -NBA -MLB -NHL -NCAA -FIFA -UFC -Google -Facebook -Instagram -Snapchat -YouTube -Twitter -TikTok -gunsnroses -spacejam -korn -yellowstone -strangerthings -jellyroll -breakingbad -tyt -ferrari -fanprint -microsoft -uglydolls -kitty -pinkfloyd -sonic -sabbath -twinpeaks -seuss -spongebob -misfits -samsung -looneytunes -warner -morty -pantera -vuitton',
                 // No Preset Defaults
                 noPresetDefaults: {
                     productType: 'tshirt',
@@ -451,7 +592,7 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
                     ]
                   }
                 },
-                // Department to Product mappings UK
+                // Department to Product mappings US
                 productTypeToDepartment: {
                 'KDP': 'stripbooks',
                 'tshirt': 'fashion-novelty',
@@ -462,11 +603,16 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
                 'sweatshirt': 'fashion-novelty',
                 'hoodie': 'fashion-novelty',
                 'ziphoodie': 'fashion-novelty',
+                'performancepolo': 'fashion',
+                'performanceziptop': 'fashion',
+                'baseballhat': 'fashion',
+                'truckerhat': 'fashion',
                 'popsocket': 'mobile',
                 'case': 'mobile',
                 'totebag': 'fashion',
                 'throwpillow': 'garden',
                 'tumbler': 'garden',
+                'waterbottle': 'sporting',
                 'coffeemug': 'garden'
                 },
                 departmentToProductType: {
@@ -1615,6 +1761,9 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
         // Clear the input when X is clicked
         clearSearchBtn.addEventListener('click', function() {
             searchInput.value = '';
+
+            // pageNumberInput.value = ''; // UNCOMMENT to clear page number when clearing search
+            
             this.style.display = 'none';
             searchInput.focus();
             updateGeneratedUrl(); // Update the generated URL after clearing
@@ -1638,7 +1787,9 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
         populateProductTypes();
 
         // Update ZIP code display
-        updateZipCode();
+populateZipDropdown(); // Initialize ZIP dropdown
+setupZipDropdown(); // Setup event listeners
+
 
         // Update marketplace-specific filters
         updateMarketplaceFilters();
@@ -1661,6 +1812,8 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
         // Set up price input constraints
         setupPriceInputs();
 
+        setupPageNumberInput();
+
         // Generate and display the initial URL
         updateGeneratedUrl();
 
@@ -1681,7 +1834,6 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
         updateGeneratedUrl();
         });
         copyUrlBtn.addEventListener('click', handleCopyUrl);
-        copyZipBtn.addEventListener('click', handleCopyZip);
         document.getElementById('searchInput').addEventListener('input', updateGeneratedUrl);
         document.getElementById('customHiddenKeywords').addEventListener('input', updateGeneratedUrl);
         document.getElementById('minPrice').addEventListener('input', updateGeneratedUrl);
@@ -1691,8 +1843,11 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
             // console.log("[Marketplace Change] Changed to:", this.value);
             const presetsSelect = document.getElementById('presetsSelect');
             presetsSelect.value = ''; // Clear preset selection
+
+            // pageNumberInput.value = ''; // UNCOMMENT to clear page number when changing marketplace
+            
             // console.log("[Marketplace Change] Preset selection cleared.");
-            updateZipCode();
+            populateZipDropdown(); // Update ZIP options when marketplace changes
             populateProductTypes();
             populateDepartments();
             updatePresetsDropdown();
@@ -1750,6 +1905,8 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
             document.getElementById('filterExcludeBrands').checked = false;
             document.getElementById('minPrice').value = '';
             document.getElementById('maxPrice').value = '';
+            // pageNumberInput.value = ''; // UNCOMMENT to clear page number when changing presets
+            
             // Initial sort order will be set by updateSortOrderOptions via department change during reset or preset application
             productTypeSelect.value = availableProductTypes.length > 0 ? availableProductTypes[0] : 'custom';
             departmentSelect.value = '';
@@ -1823,6 +1980,8 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
                 document.getElementById('minPrice').value = settings.minPrice || '';
                 document.getElementById('maxPrice').value = settings.maxPrice || '';
 
+                document.getElementById('pageNumber').value = settings.pageNumber || '';
+
                 let presetProductType = productTypeSelect.value;
                 if (settings.productType !== undefined && availableProductTypes.includes(settings.productType)) {
                     presetProductType = settings.productType;
@@ -1878,8 +2037,13 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
         document.getElementById('sellerAmazon').addEventListener('click', updateGeneratedUrl);
         document.getElementById('reviewsFilter').addEventListener('click', updateGeneratedUrl);
         document.getElementById('filterExcludeBrands').addEventListener('click', updateGeneratedUrl);
+
+document.getElementById('filterExcludePolitics').addEventListener('click', updateGeneratedUrl);
+document.getElementById('filterExcludeHaram').addEventListener('click', updateGeneratedUrl);
+        
     }
 
+    /* OLD CODE
     function setupPriceInputs() {
         [minPriceInput, maxPriceInput].forEach(input => {
             // Only allow digits and limit to 2 characters
@@ -1893,36 +2057,203 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
             });
         });
     }
+    */
 
-    function updateZipCode() {
-        const marketplace = marketplaceSelect.value;
-        const zipInfo = zipCodes[marketplace];
-        const zipHelper = document.querySelector('.plz_helper');
+function setupPriceInputs() {
+    [minPriceInput, maxPriceInput].forEach(input => {
+        
+        // Only allow numbers and a single decimal point
+        input.addEventListener('input', function() {
+            let value = this.value;
+            
+            // Remove anything that's not a digit or decimal point
+            value = value.replace(/[^0-9.]/g, '');
+            
+            // Allow only one decimal point
+            const parts = value.split('.');
+            if (parts.length > 2) {
+                value = parts[0] + '.' + parts.slice(1).join('');
+            }
+            
+            // Limit to 2 decimal places
+            if (parts[1] && parts[1].length > 2) {
+                value = parts[0] + '.' + parts[1].substring(0, 2);
+            }
+            
+            this.value = value;
+            updateGeneratedUrl();
+        });
 
-        if (zipInfo) {
-            zipHelper.innerHTML = `.${marketplace.toUpperCase()}: <span class="copy_me">${zipInfo.zip}</span> (${zipInfo.location})`;
+        // Block invalid keys
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'e' || e.key === '-' || e.key === '+') {
+                e.preventDefault();
+            }
+        });
+
+        // Clean up on blur (e.g. user types "13." → becomes "13")
+        input.addEventListener('blur', function() {
+            if (this.value.endsWith('.')) {
+                this.value = this.value.slice(0, -1);
+            }
+            updateGeneratedUrl();
+        });
+    });
+}
+
+
+// Setup page number input constraints and validation
+function setupPageNumberInput() {
+    const pageNumberInput = document.getElementById('pageNumber');
+    
+    // Real-time validation: only allow numbers, block 0, 1, and negatives
+    pageNumberInput.addEventListener('input', function(e) {
+        // Remove non-numeric characters
+        let value = this.value.replace(/[^0-9]/g, '');
+        
+        // If value is 0 or 1, clear it
+        if (value === '0' || value === '1') {
+            value = '';
         }
-    }
+        
+        this.value = value;
+        updateGeneratedUrl(); // Update URL in real-time
+    });
+    
+    // Prevent pasting invalid content
+    pageNumberInput.addEventListener('paste', function(e) {
+        e.preventDefault();
+        const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+        const numericOnly = pastedText.replace(/[^0-9]/g, '');
+        
+        // Only paste if it's a valid number >= 2
+        if (numericOnly && parseInt(numericOnly) >= 2) {
+            this.value = numericOnly;
+            updateGeneratedUrl();
+        }
+    });
+    
+    // Block certain keys (e, -, +, .)
+    pageNumberInput.addEventListener('keydown', function(e) {
+        if (e.key === 'e' || e.key === '-' || e.key === '+' || e.key === '.') {
+            e.preventDefault();
+        }
+    });
+}
 
-    function handleCopyZip() {
-        const zipCode = document.querySelector('.copy_me').textContent;
-        navigator.clipboard.writeText(zipCode)
-            .then(function() {
-                copyMessage.style.display = 'inline';
-                setTimeout(() => {
-                    copyMessage.style.display = 'none';
-                }, 2000);
-            })
-            .catch(function(err) {
-                // console.error('Could not copy ZIP code: ', err);
-                copyMessage.textContent = 'Copy failed';
-                copyMessage.style.display = 'inline';
-                setTimeout(() => {
-                    copyMessage.textContent = 'Copied!';
-                    copyMessage.style.display = 'none';
-                }, 2000);
-            });
+// Populate ZIP dropdown based on marketplace
+function populateZipDropdown() {
+    const marketplace = marketplaceSelect.value;
+    const zipSelect = document.getElementById('zipSelect');
+    const zipMarketplaceLabel = document.getElementById('zipMarketplaceLabel');
+    
+    // Update label
+    zipMarketplaceLabel.textContent = `.${marketplace.toUpperCase()}`;
+    
+    // Clear existing options
+    zipSelect.innerHTML = '';
+    
+    // Get ZIP codes for current marketplace
+    const zips = zipCodes[marketplace] || zipCodes['com'];
+    
+    // Populate dropdown
+    zips.forEach(zipObj => {
+        const option = document.createElement('option');
+        option.value = zipObj.zip;
+        option.textContent = `${zipObj.zip} (${zipObj.location})`;
+        zipSelect.appendChild(option);
+    });
+}
+
+// Copy ZIP to clipboard (Safari-compatible)
+function copyZipToClipboard() {
+    const zipSelect = document.getElementById('zipSelect');
+    const selectedZip = zipSelect.value;
+    const copiedMessage = document.querySelector('.copied-message');
+    
+    // Try modern Clipboard API first
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(selectedZip).then(() => {
+            showCopiedMessage(copiedMessage);
+        }).catch(err => {
+            console.warn('Clipboard API failed, trying fallback:', err);
+            fallbackCopyToClipboard(selectedZip, copiedMessage);
+        });
+    } else {
+        // Fallback for older browsers or Safari restrictions
+        fallbackCopyToClipboard(selectedZip, copiedMessage);
     }
+}
+
+// Fallback copy method using legacy execCommand
+function fallbackCopyToClipboard(text, copiedMessage) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    
+    // Better positioning for mobile/Safari compatibility
+    textArea.style.position = 'absolute';
+    textArea.style.left = '-9999px';
+    textArea.style.top = (window.pageYOffset || document.documentElement.scrollTop) + 'px';
+    textArea.setAttribute('readonly', ''); // Prevent iOS keyboard
+    
+    document.body.appendChild(textArea);
+    
+    // Select text based on browser
+    if (navigator.userAgent.match(/ipad|iphone/i)) {
+        const range = document.createRange();
+        range.selectNodeContents(textArea);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        textArea.setSelectionRange(0, 999999);
+    } else {
+        textArea.select();
+    }
+    
+    try {
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        if (successful) {
+            showCopiedMessage(copiedMessage);
+        } else {
+            // Silent fail - just log to console
+            console.warn('Copy failed silently');
+        }
+    } catch (err) {
+        document.body.removeChild(textArea);
+        console.warn('Copy error (silent):', err);
+    }
+}
+
+// Show copied message helper
+function showCopiedMessage(copiedMessage) {
+    copiedMessage.style.display = 'inline';
+    setTimeout(() => {
+        copiedMessage.style.display = 'none';
+    }, 1500);
+}
+
+// Setup ZIP dropdown event listeners
+function setupZipDropdown() {
+    const zipSelect = document.getElementById('zipSelect');
+    const copyZipBtn = document.getElementById('copyZipBtn');
+    
+    // Detect Safari browser
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    
+    // Auto-copy when user selects from dropdown (disabled on Safari due to security)
+    if (!isSafari) {
+        zipSelect.addEventListener('change', function() {
+            copyZipToClipboard();
+        });
+    }
+    
+    // Manual copy button (works on all browsers including Safari)
+    copyZipBtn.addEventListener('click', function() {
+        copyZipToClipboard();
+    });
+}
 
     // Form submit handler opens the URL in a new tab
     function handleFormSubmit(e) {
@@ -2046,11 +2377,31 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
             rhParams.push(document.getElementById('reviewsFilter').value);
         }
 
+        /* BCKP ONE - WORKING
         const minPrice = document.getElementById('minPrice').value;
         const maxPrice = document.getElementById('maxPrice').value;
         if (minPrice && maxPrice) {
             rhParams.push(`p_36%3A${minPrice}00-${maxPrice}00`);
-        }
+        }*/
+
+// Price Range Filter with auto-fill logic
+let minPrice = document.getElementById('minPrice').value.trim();
+let maxPrice = document.getElementById('maxPrice').value.trim();
+
+// Auto-fill logic: if one is set, default the other
+if (minPrice && !maxPrice) {
+    maxPrice = '1000'; // Auto-fill max when only min is specified
+}
+if (maxPrice && !minPrice) {
+    minPrice = '0'; // Auto-fill min when only max is specified
+}
+
+// Only add price filter if at least one value was provided by user
+if (minPrice && maxPrice) {
+    let minCents = Math.round(parseFloat(minPrice) * 100);
+    let maxCents = Math.round(parseFloat(maxPrice) * 100);
+    rhParams.push(`p_36%3A${minCents}-${maxCents}`);
+}
 
         const department = departmentSelect.value;
         if (department) {
@@ -2108,6 +2459,16 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
             hiddenKeywordsArray.push(config.excludeBrands);
         }
 
+const filterExcludePoliticsChecked = document.getElementById('filterExcludePolitics').checked;
+if (filterExcludePoliticsChecked) {
+    hiddenKeywordsArray.push('-trump -biden -obama -clinton -reagan -putin -harris -kamala -vote -voting -election -republican -democrat -conservative -liberal -socialist -communist -political -government -congress -senate -maga -blm -lgbt -lgbtq -pride -feminist -antifa -gadsden -army -navy -marines -airforce -military -veteran -israel -palestine -war -terrorist -gun -rifle -amendment -nra -fbi -cia');
+}
+
+const filterExcludeHaramChecked = document.getElementById('filterExcludeHaram').checked;
+if (filterExcludeHaramChecked) {
+    hiddenKeywordsArray.push('-Alcohol -Wine -Beer -Liquor -Pork -Bacon -Ham -Lard -Gelatin -Gambling -Lottery -Casino -Betting -Riba -Pornography -Adultery -Fornication -Prostitution -Homosexuality -Lesbianism -Sodomy -LGBT -LGBTQ -Queer -Gay -Lesbian -Bisexual -Transgender -Transsexual -Drag -Crossdressing -Drugs -Cannabis -Marijuana -Cocaine -Heroin -Idolatry -Idol -Crucifix -Trinity -Witchcraft -Sorcery -Magic -Tarot -Horoscope -Zodiac -Astrology -Shirk -Polytheism -Satanism -Lucifer -Occult -buddhist -slotmachine -tattoo -krishna -church -demon -santaclaus -tattoos -chakra -brandy -vishnu -deity -stvalentine -smoking -reincarnation -paydayloan -trans -jewish -bikini -easter -fetish -shiva -piercing -vape -wizard -erotic -valentine -cocktail -swimsuit -tequila -porn -satan -shisha -elf -statueworship -bdsm -boyfriend -dating -poker -usury -xxx -girlfriend -goddess -jesus -devil -hindu -vodka -nsfw -bodyart -weed -cigar -cigarette -naked -christmas -rum -gin -buddha -witch -christian -saint -jewishness -profanity -champagne -santa -ouija -stripper -stpatrick -blackjack -bible -valentine -seduce -cosplay -booty -judaism -strip -bodycon -lingerie -hanukkah -kiss -camgirl -horus -pagan -babe -thanksgiving -onlyfans -patricksday -diwali -halloween -whiskey -hookah -christianity -nude -cleavage -boudoir -makeout -vaping -topless -playboy -ganesh -yomkippur -bodymodification -sexy -pride -spells -escort');
+}
+
         if (hiddenKeywordsArray.length > 0) {
             paramParts.push(`hidden-keywords=${hiddenKeywordsArray.join('+')}`);
         }
@@ -2116,6 +2477,12 @@ productTypeOverrides: (Object) - New - Contains nested objects where keys are pr
         if (sortOrder && sortOrder !== 'custom') { // Ensure sortOrder has a value and is not 'custom'
             paramParts.push(`s=${sortOrder}`);
         }
+
+// Page Number Parameter
+const pageNumber = pageNumberInput.value.trim();
+if (pageNumber && parseInt(pageNumber) >= 2) {
+    paramParts.push(`page=${pageNumber}`);
+}
 
         if (rhParams.length > 0) {
             paramParts.push(`rh=${rhParams.join('%2C')}`);
@@ -2632,3 +2999,31 @@ $(document).ready(function() {
     updateActionButtonsState();
 
 });
+
+// ===== DARK MODE FUNCTIONALITY =====
+
+// Check for saved theme preference or default to light mode
+const currentTheme = localStorage.getItem('theme') || 'light';
+
+// Apply theme on page load
+if (currentTheme === 'dark') {
+    document.body.classList.add('dark-mode');
+}
+
+// Toggle dark mode
+const darkModeToggle = document.getElementById('darkModeToggle');
+if (darkModeToggle) {
+    darkModeToggle.addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        
+        // Save preference
+        const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+        localStorage.setItem('theme', theme);
+        
+        // Optional: Add animation feedback
+        this.style.transform = 'rotate(360deg)';
+        setTimeout(() => {
+            this.style.transform = '';
+        }, 300);
+    });
+}

@@ -2750,6 +2750,30 @@ if (pageNumber && parseInt(pageNumber) >= 2) {
     kwrExports(() => kwrPlatData, document.getElementById('kwr-plat-copy-btn'), document.getElementById('kwr-plat-txt-btn'), document.getElementById('kwr-plat-csv-btn'));
 
 })(); // end KWR scope
+
+
+// Header link → scroll to & auto-open KWR panel
+document.getElementById('kwrHeaderLink')?.addEventListener('click', function(e) {
+    e.preventDefault();
+
+    const panel   = document.getElementById('kwResearchPanel');
+    const content = document.getElementById('kwResearchContent');
+    const chevron = document.getElementById('kwResearchChevron');
+
+    // Open panel if not already open
+    if (content.style.display === 'none' || content.style.display === '') {
+        content.style.display = 'block';
+        chevron.classList.add('open');
+        kwrSyncMarketplace();
+    }
+
+    // Smooth scroll with a small offset so the title isn't hidden under sticky elements
+    setTimeout(() => {
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50); // slight delay ensures the panel has expanded before scrolling
+});
+
+
 });
 
 // Suggestions Expander (jQuery section)

@@ -1127,10 +1127,11 @@ body.dark-mode .kwr-primary-btn { color: #1a1a1a; }
     cursor: pointer;
     font-size: 0.9rem;       /* matches .form-check-label */
     margin-bottom: 0;        /* desktop: no bottom margin */
+	justify-content: center;
 }
 
 .kwr-platforms-grid input[type="checkbox"] {
-    margin-top: 0.4rem;      /* matches .form-check-input */
+    /*margin-top: 0.4rem;*/      /* matches .form-check-input */
     accent-color: black;     /* matches .form-check-input */
     flex-shrink: 0;
 }
@@ -1142,6 +1143,7 @@ body.dark-mode .kwr-primary-btn { color: #1a1a1a; }
     }
     .kwr-platforms-grid label {
         margin-bottom: 2px;
+		justify-content: left;
     }
 }
 
@@ -1152,6 +1154,7 @@ body.dark-mode .kwr-primary-btn { color: #1a1a1a; }
     }
     .kwr-platforms-grid label {
         margin-bottom: 4px;
+		justify-content: left;
     }
 }
 

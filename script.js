@@ -2749,10 +2749,7 @@ if (pageNumber && parseInt(pageNumber) >= 2) {
     });
     kwrExports(() => kwrPlatData, document.getElementById('kwr-plat-copy-btn'), document.getElementById('kwr-plat-txt-btn'), document.getElementById('kwr-plat-csv-btn'));
 
-})(); // end KWR scope
-
-
-// Header link → scroll to & auto-open KWR panel
+    // Header link → scroll to & auto-open KWR panel
 document.getElementById('kwrHeaderLink')?.addEventListener('click', function(e) {
     e.preventDefault();
 
@@ -2772,8 +2769,8 @@ document.getElementById('kwrHeaderLink')?.addEventListener('click', function(e) 
         panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 50); // slight delay ensures the panel has expanded before scrolling
 });
-
-
+    
+    })(); // end KWR scope
 });
 
 // Suggestions Expander (jQuery section)

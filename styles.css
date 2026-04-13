@@ -966,7 +966,7 @@ body.dark-mode .clear-search-btn:hover {
     padding-bottom: 0 !important;
     user-select: none;
 }
-.kwr-toggle:hover { color: var(--secondary-color); }
+/*.kwr-toggle:hover { color: var(--secondary-color); }*/
 
 .kwr-chevron {
     font-size: 0.8rem;
@@ -1108,23 +1108,65 @@ body.dark-mode .kwr-primary-btn { color: #1a1a1a; }
     pointer-events: none;
 }
 
-/* Platforms grid */
+/* Replace the existing .kwr-platforms-grid rule */
 .kwr-platforms-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
     margin-bottom: 12px;
     padding: 10px;
     background: var(--light-color);
     border: 1px solid var(--border-color);
     border-radius: 6px;
-    font-size: 0.875rem;
 }
+
 .kwr-platforms-grid label {
     display: flex;
     align-items: center;
     gap: 5px;
     cursor: pointer;
+    font-size: 0.9rem;       /* matches .form-check-label */
+    margin-bottom: 0;        /* desktop: no bottom margin */
+}
+
+.kwr-platforms-grid input[type="checkbox"] {
+    margin-top: 0.4rem;      /* matches .form-check-input */
+    accent-color: black;     /* matches .form-check-input */
+    flex-shrink: 0;
+}
+
+/* Tablet: 3 columns */
+@media (max-width: 992px) {
+    .kwr-platforms-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .kwr-platforms-grid label {
+        margin-bottom: 2px;
+    }
+}
+
+/* Mobile: 2 columns */
+@media (max-width: 576px) {
+    .kwr-platforms-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .kwr-platforms-grid label {
+        margin-bottom: 4px;
+    }
+}
+
+/* Dark mode */
+body.dark-mode .kwr-platforms-grid {
+    background-color: #2d2d2d;
+    border-color: #444;
+}
+
+body.dark-mode .kwr-platforms-grid label {
+    color: #e0e0e0;          /* matches body.dark-mode .form-check-label */
+}
+
+body.dark-mode .kwr-platforms-grid input[type="checkbox"]:checked {
+    accent-color: var(--secondary-color); /* matches dark mode form-check-input */
 }
 
 div#kwResearchPanel:hover {

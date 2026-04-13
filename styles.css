@@ -352,7 +352,19 @@ select.form-control {
 	color: #495057;
 	line-height: 1.5;
 	word-break: break-all;
+	color: #495057 !important;
 	/* For long URLs */
+}
+
+/* ADD THIS — covers the <a> tag inside */
+.url-box a {
+    color: #495057 !important;
+    text-decoration: none;
+}
+
+/* ADD THIS — dark mode fix */
+body.dark-mode .url-box a {
+    color: #b0b0b0 !important;
 }
 
 .action-buttons {
@@ -1114,8 +1126,18 @@ body.dark-mode .clear-search-btn:hover {
     cursor: pointer;
 }
 
+div#kwResearchPanel:hover {
+    transform: translateY(0px);
+}
+
+@keyframes spin {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 /* ===== DARK MODE OVERRIDES FOR KWR ===== */
 body.dark-mode .kwr-toggle:hover { color: var(--secondary-color); }
+body.dark-mode .kwr-tab:hover:not(.active) { color: #5e5e5e; }
 body.dark-mode .kwr-count { color: #aaa; }
 body.dark-mode .kwr-advanced-bg { background-color: #3d2e1a !important; color: #e0e0e0; }
 body.dark-mode .kwr-negative-bg { background-color: #3d1f1f !important; color: #e0e0e0; }

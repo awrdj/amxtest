@@ -2494,6 +2494,262 @@ if (pageNumber && parseInt(pageNumber) >= 2) {
         }
         return url;
     }
+
+// =========================================================================
+// DEEP KEYWORD RESEARCH PANEL
+// =========================================================================
+(function() {
+
+    const KWR_WORKER_URL = "https://cors-proxy-keyword-tool.awrdjmusic.workers.dev/?url=";
+
+    // Marketplace mapping: MerchScope → KWR
+    const kwrMarketMap = { 'com': 'US', 'co.uk': 'UK', 'de': 'DE', 'fr': 'FR', 'it': 'IT', 'es': 'ES' };
+    const kwrMarkets = {
+        US: { mid: "ATVPDKIKX0DER",  domain: "completion.amazon.com" },
+        UK: { mid: "A1F83G8C2ARO7P", domain: "completion.amazon.co.uk" },
+        DE: { mid: "A1PA6795UKMFR9", domain: "completion.amazon.de" },
+        FR: { mid: "A13V1IB3VIYZZH", domain: "completion.amazon.fr" },
+        ES: { mid: "A1RKKUPIHCS9HS", domain: "completion.amazon.es" },
+        IT: { mid: "APJ6JRA9NG5V4",  domain: "completion.amazon.it" }
+    };
+
+    const kwrPlatformConfig = {
+        Google:     { buildUrl: q => "https://suggestqueries.google.com/complete/search?client=firefox&q=" + encodeURIComponent(q), parseResponse: async r => JSON.parse(await r.text())[1] || [] },
+        Bing:       { buildUrl: q => "https://api.bing.com/osjson.aspx?query=" + encodeURIComponent(q),                            parseResponse: async r => JSON.parse(await r.text())[1] || [] },
+        DuckDuckGo: { buildUrl: q => "https://duckduckgo.com/ac/?q=" + encodeURIComponent(q),                                      parseResponse: async r => (JSON.parse(await r.text()) || []).map(x => x.phrase) },
+        YouTube:    { buildUrl: q => "https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=" + encodeURIComponent(q), parseResponse: async r => { const t = await r.text(); const o = JSON.parse(t.substring(t.indexOf("(")+1, t.lastIndexOf(")"))); return o[1]?.map(x => x[0]) || []; } },
+        Wikipedia:  { buildUrl: q => "https://en.wikipedia.org/w/api.php?action=opensearch&search=" + encodeURIComponent(q),       parseResponse: async r => JSON.parse(await r.text())[1] || [] },
+        Reddit:     { buildUrl: q => "https://www.reddit.com/api/search_reddit_names.json?query=" + encodeURIComponent(q),         parseResponse: async r => JSON.parse(await r.text()).names || [] }
+    };
+
+    const KWR_MODIFIERS = {
+        PRODUCT_ATTRIBUTES: ["for men","for women","for kids","for toddlers","for boys","for girls","large","small","medium","xl","2xl","black","white","red","blue","green","2 pack","3 pack","gift","eco friendly","waterproof","long sleeve","short sleeve"],
+        USER_INTENT:        ["review","vs","alternative","unboxing","tutorial","test","how to use","best","cheap","top rated","deals","discount","for sale","ideas","outfit"],
+        QUESTIONS:          ["what is","how does","why is","are","where to buy","can i wear","is"]
+    };
+    const KWR_ALPHABET = "abcdefghijklmnopqrstuvwxyz".split("");
+
+    function kwrSubPhrases(text) {
+        if (!text) return [];
+        const words = text.toLowerCase().split(/\s+/).filter(Boolean);
+        const s = new Set(words);
+        for (let i = 0; i < words.length; i++)
+            for (let j = i+1; j < words.length; j++)
+                s.add(words.slice(i, j+1).join(" "));
+        if (words.length > 1) s.add(words.join(" "));
+        return [...s];
+    }
+
+    function kwrBuildPrefixes(title, brand, advancedWords) {
+        const results = new Set();
+        const t = title?.trim().toLowerCase() || "";
+        const b = brand?.trim().toLowerCase() || "";
+        const advanced = advancedWords ? advancedWords.split(",").map(e => e.trim()).filter(Boolean) : [];
+        let bases = new Set();
+        if (t && b) { bases.add(`${t} ${b}`); bases.add(`${b} ${t}`); }
+        else if (t) { bases.add(t); }
+        else if (b) { kwrSubPhrases(b).forEach(e => bases.add(e)); }
+        const baseArray = [...bases];
+        if (advanced.length > 0) {
+            baseArray.forEach(base => { results.add(base); advanced.forEach(adv => results.add(`${base} ${adv}`)); });
+        } else {
+            baseArray.forEach(base => {
+                results.add(base);
+                KWR_MODIFIERS.PRODUCT_ATTRIBUTES.forEach(m => results.add(`${base} ${m}`));
+                KWR_MODIFIERS.USER_INTENT.forEach(m => { results.add(`${base} ${m}`); results.add(`${m} ${base}`); });
+                KWR_MODIFIERS.QUESTIONS.forEach(m => { results.add(`${m} ${base}`); if (m !== "are" && m !== "is") results.add(`${base} ${m} good`); });
+                KWR_ALPHABET.forEach(l => results.add(`${base} ${l}`));
+            });
+        }
+        return [...results];
+    }
+
+    async function kwrFetch(tasks, limit) {
+        const results = [], queue = [...tasks];
+        async function worker() {
+            if (!queue.length) return;
+            const task = queue.shift();
+            try {
+                const res = await fetch(KWR_WORKER_URL + encodeURIComponent(task.url));
+                if (res.ok) results.push(...await task.parser(res));
+            } catch(e) { console.error("KWR fetch error:", e); }
+            await worker();
+        }
+        await Promise.all(Array(limit).fill(null).map(() => worker()));
+        return results;
+    }
+
+    async function kwrExecute({ action, title, brand, advancedWords, negativeKeywords, market, platforms }) {
+        const prefixes = kwrBuildPrefixes(title, brand, advancedWords);
+        let tasks = [];
+
+        if (action === "amazon") {
+            const m = kwrMarkets[market] || kwrMarkets.US;
+            const baseUrl = `https://${m.domain}/api/2017/suggestions?page-type=Gateway&alias=aps&mid=${m.mid}`;
+            prefixes.forEach(p => tasks.push({ url: `${baseUrl}&prefix=${encodeURIComponent(p)}`, parser: async r => { const j = await r.json(); return j.suggestions?.map(s => s.value) || []; } }));
+        } else if (action === "platforms") {
+            platforms.forEach(plat => {
+                const pc = kwrPlatformConfig[plat];
+                if (pc) prefixes.forEach(p => tasks.push({ url: pc.buildUrl(p), parser: pc.parseResponse }));
+            });
+        }
+
+        const rawResults = await kwrFetch(tasks, 15);
+        let unique = [...new Set(rawResults)];
+
+        if (negativeKeywords) {
+            const negs = negativeKeywords.split(",").map(e => e.trim().toLowerCase()).filter(e => e);
+            if (negs.length) unique = unique.filter(r => !negs.some(n => r.toLowerCase().includes(n)));
+        }
+        if (title) {
+            const tl = title.trim().toLowerCase();
+            if (tl) unique = unique.filter(r => r.toLowerCase().includes(tl));
+        }
+        return unique.sort();
+    }
+
+    // ---- UI ----
+
+    // Toggle panel open/close
+    const kwrToggle   = document.getElementById('kwResearchToggle');
+    const kwrContent  = document.getElementById('kwResearchContent');
+    const kwrChevron  = document.getElementById('kwResearchChevron');
+
+    kwrToggle.addEventListener('click', () => {
+        const isOpen = kwrContent.style.display !== 'none';
+        kwrContent.style.display = isOpen ? 'none' : 'block';
+        kwrChevron.classList.toggle('open', !isOpen);
+        // Sync marketplace label whenever panel opens
+        if (!isOpen) kwrSyncMarketplace();
+    });
+
+    // Sync marketplace from MerchScope selector
+    function kwrSyncMarketplace() {
+        const ms = document.getElementById('marketplaceSelect')?.value || 'com';
+        const kwrCode = kwrMarketMap[ms] || 'US';
+        document.getElementById('kwrMarketplaceLabel').textContent = kwrCode;
+    }
+    document.getElementById('marketplaceSelect')?.addEventListener('change', kwrSyncMarketplace);
+
+    // Tab switching
+    document.querySelectorAll('.kwr-tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.kwr-tab').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.kwr-view').forEach(v => v.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.kwrView).classList.add('active');
+        });
+    });
+
+    // Platform checkboxes
+    const kwrCheckboxContainer = document.getElementById('kwr-platform-checkboxes');
+    Object.keys(kwrPlatformConfig).sort().forEach(key => {
+        const label = document.createElement('label');
+        label.innerHTML = `<input type="checkbox" class="kwr-platform-cb" value="${key}"> ${key}`;
+        kwrCheckboxContainer.appendChild(label);
+    });
+
+    // Render results helper
+    function kwrRender(data, listEl, headerEl, countEl) {
+        listEl.innerHTML = '';
+        if (data && data.error) {
+            headerEl.style.display = 'none';
+            listEl.innerHTML = `<li class="kwr-error">Error: ${data.error}</li>`;
+            return;
+        }
+        if (data && data.length > 0) {
+            headerEl.style.display = 'flex';
+            countEl.textContent = `Found ${data.length} keywords`;
+            data.forEach(kw => {
+                const li = document.createElement('li');
+                li.textContent = kw;
+                li.addEventListener('click', () => {
+                    navigator.clipboard.writeText(kw).then(() => {
+                        const orig = li.textContent;
+                        li.textContent = '✓ Copied!';
+                        setTimeout(() => li.textContent = orig, 1000);
+                    });
+                });
+                listEl.appendChild(li);
+            });
+        } else {
+            headerEl.style.display = 'none';
+            listEl.innerHTML = "<li style='padding:14px; text-align:center; color:#888;'>No unique suggestions found.</li>";
+        }
+    }
+
+    // Export buttons helper
+    function kwrExports(getDataFn, copyBtn, txtBtn, csvBtn) {
+        copyBtn.addEventListener('click', () => {
+            const d = getDataFn(); if (!d?.length) return;
+            navigator.clipboard.writeText(d.join('\n')).then(() => {
+                const orig = copyBtn.textContent; copyBtn.textContent = 'Copied!';
+                setTimeout(() => copyBtn.textContent = orig, 2000);
+            });
+        });
+        txtBtn.addEventListener('click', () => {
+            const d = getDataFn(); if (!d?.length) return;
+            const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([d.join('\n')], {type:'text/plain'})), download: 'keywords.txt' });
+            a.click();
+        });
+        csvBtn.addEventListener('click', () => {
+            const d = getDataFn(); if (!d?.length) return;
+            const csv = 'Keywords\n' + d.map(e => e.includes(',') ? `"${e}"` : e).join('\n');
+            const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8;'})), download: 'keywords.csv' });
+            a.click();
+        });
+    }
+
+    // Amazon Engine
+    let kwrAmzData = [];
+    document.getElementById('kwr-amz-btn').addEventListener('click', async () => {
+        const title = document.getElementById('kwr-amz-title').value.trim();
+        const brand = document.getElementById('kwr-amz-brand').value.trim();
+        if (!title && !brand) return;
+        const btn = document.getElementById('kwr-amz-btn');
+        const loader = document.getElementById('kwr-amz-loader');
+        const listEl = document.getElementById('kwr-amz-results');
+        listEl.innerHTML = "<li style='padding:14px; text-align:center;'>Analyzing… this may take a moment.</li>";
+        document.getElementById('kwr-amz-results-header').style.display = 'none';
+        btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing…'; loader.style.display = 'block';
+        const ms = document.getElementById('marketplaceSelect')?.value || 'com';
+        try {
+            kwrAmzData = await kwrExecute({ action: 'amazon', title, brand, advancedWords: document.getElementById('kwr-amz-advanced').value.trim(), negativeKeywords: document.getElementById('kwr-amz-negative').value.trim(), market: kwrMarketMap[ms] || 'US' });
+            kwrRender(kwrAmzData, listEl, document.getElementById('kwr-amz-results-header'), document.getElementById('kwr-amz-count'));
+        } catch(e) {
+            kwrRender({error: e.message}, listEl, document.getElementById('kwr-amz-results-header'), document.getElementById('kwr-amz-count'));
+        } finally {
+            btn.disabled = false; btn.innerHTML = '<i class="fas fa-search"></i> Analyze Keywords'; loader.style.display = 'none';
+        }
+    });
+    kwrExports(() => kwrAmzData, document.getElementById('kwr-amz-copy-btn'), document.getElementById('kwr-amz-txt-btn'), document.getElementById('kwr-amz-csv-btn'));
+
+    // Multi-Platform Engine
+    let kwrPlatData = [];
+    document.getElementById('kwr-plat-btn').addEventListener('click', async () => {
+        const title = document.getElementById('kwr-plat-title').value.trim();
+        const brand = document.getElementById('kwr-plat-brand').value.trim();
+        const platforms = [...document.querySelectorAll('.kwr-platform-cb:checked')].map(cb => cb.value);
+        const listEl = document.getElementById('kwr-plat-results');
+        if (!title && !brand) return;
+        if (!platforms.length) { listEl.innerHTML = "<li style='padding:14px; text-align:center; color:#dc3545;'>Please select at least one platform.</li>"; return; }
+        const btn = document.getElementById('kwr-plat-btn');
+        const loader = document.getElementById('kwr-plat-loader');
+        listEl.innerHTML = "<li style='padding:14px; text-align:center;'>Analyzing… this may take a moment.</li>";
+        document.getElementById('kwr-plat-results-header').style.display = 'none';
+        btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing…'; loader.style.display = 'block';
+        try {
+            kwrPlatData = await kwrExecute({ action: 'platforms', title, brand, advancedWords: document.getElementById('kwr-plat-advanced').value.trim(), negativeKeywords: document.getElementById('kwr-plat-negative').value.trim(), platforms });
+            kwrRender(kwrPlatData, listEl, document.getElementById('kwr-plat-results-header'), document.getElementById('kwr-plat-count'));
+        } catch(e) {
+            kwrRender({error: e.message}, listEl, document.getElementById('kwr-plat-results-header'), document.getElementById('kwr-plat-count'));
+        } finally {
+            btn.disabled = false; btn.innerHTML = '<i class="fas fa-globe"></i> Analyze Platforms'; loader.style.display = 'none';
+        }
+    });
+    kwrExports(() => kwrPlatData, document.getElementById('kwr-plat-copy-btn'), document.getElementById('kwr-plat-txt-btn'), document.getElementById('kwr-plat-csv-btn'));
+
+})(); // end KWR scope
 });
 
 // Suggestions Expander (jQuery section)

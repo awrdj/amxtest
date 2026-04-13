@@ -971,8 +971,9 @@ body.dark-mode .clear-search-btn:hover {
 .kwr-chevron {
     font-size: 0.8rem;
     transition: transform 0.3s ease;
-    color: var(--secondary-color);
+    color: var(--primary-color);
 }
+body.dark-mode .kwr-chevron { color: var(--secondary-color); }
 .kwr-chevron.open { transform: rotate(180deg); }
 
 .kwr-sync-hint {

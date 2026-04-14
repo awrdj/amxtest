@@ -2525,7 +2525,8 @@ if (pageNumber && parseInt(pageNumber) >= 2) {
     // Platform display order and Simple Icons slugs
     const KWR_ALL_PLATFORMS = ['Bing', 'DuckDuckGo', 'Google', 'Reddit', 'Wikipedia', 'Youtube'];
     const KWR_PLATFORM_ICONS = {
-        'Bing':        'bing',
+        'Bing':        'bigbluebutton',
+        // 'Bing':        'searxng',
         'DuckDuckGo':  'duckduckgo',
         'Google':      'google',
         'Reddit':      'reddit',
@@ -2768,6 +2769,7 @@ if (showBadges) {
         (item.sources.length >= 3 ? ' kwr-badge-high' : item.sources.length >= 2 ? ' kwr-badge-mid' : '');
     badge.textContent = `×${item.sources.length}`;
     li.appendChild(span);
+    li.appendChild(sendBtn);
     li.appendChild(logosSpan);
     li.appendChild(badge);
 } else {
@@ -2804,8 +2806,7 @@ if (showBadges) {
                     }, 1500);
                 }
             });
-
-            li.appendChild(sendBtn);
+            
             listEl.appendChild(li);
         });
     } else {

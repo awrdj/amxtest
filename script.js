@@ -2519,7 +2519,9 @@ if (pageNumber && parseInt(pageNumber) >= 2) {
         DuckDuckGo: { buildUrl: q => "https://duckduckgo.com/ac/?q=" + encodeURIComponent(q),                                      parseResponse: async r => (JSON.parse(await r.text()) || []).map(x => x.phrase) },
         YouTube:    { buildUrl: q => "https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=" + encodeURIComponent(q), parseResponse: async r => { const t = await r.text(); const o = JSON.parse(t.substring(t.indexOf("(")+1, t.lastIndexOf(")"))); return o[1]?.map(x => x[0]) || []; } },
         Wikipedia:  { buildUrl: q => "https://en.wikipedia.org/w/api.php?action=opensearch&search=" + encodeURIComponent(q),       parseResponse: async r => JSON.parse(await r.text())[1] || [] },
-        Reddit:     { buildUrl: q => "https://www.reddit.com/api/search_reddit_names.json?query=" + encodeURIComponent(q),         parseResponse: async r => JSON.parse(await r.text()).names || [] }
+        Reddit:     { buildUrl: q => "https://www.reddit.com/api/search_reddit_names.json?query=" + encodeURIComponent(q),         parseResponse: async r => JSON.parse(await r.text()).names || [] },
+        Etsy:       { buildUrl: q => "https://www.etsy.com/api/v3/ajax/bespoke/public/neu/specs/search-suggestions?q=" + encodeURIComponent(q), parseResponse: async r => { const j = await r.json(); return (j.results || []).map(x => x.query); } },
+        Pinterest:  { buildUrl: q => "https://suggestqueries.google.com/complete/search?client=firefox&ds=pinterest&q=" + encodeURIComponent(q), parseResponse: async r => JSON.parse(await r.text())[1] || [] }
     };
 
     const KWR_MODIFIERS = {

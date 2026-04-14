@@ -2670,6 +2670,16 @@ document.getElementById('kwr-plat-use-search')
         kwrCheckboxContainer.appendChild(label);
     });
 
+    document.getElementById('kwrSelectAllPlatforms')?.addEventListener('click', function(e) {
+    e.preventDefault();
+    document.querySelectorAll('.kwr-platform-cb').forEach(cb => cb.checked = true);
+});
+
+document.getElementById('kwrDeselectAllPlatforms')?.addEventListener('click', function(e) {
+    e.preventDefault();
+    document.querySelectorAll('.kwr-platform-cb').forEach(cb => cb.checked = false);
+});
+
     // Render results helper
 function kwrRender(data, listEl, headerEl, countEl) {
     listEl.innerHTML = '';

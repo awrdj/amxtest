@@ -277,19 +277,20 @@
                 </button>
                 <div id="kwr-amz-loader" class="kwr-loader"></div>
             </div>
-            <div id="kwr-amz-results-header" class="kwr-results-header">
-                <span id="kwr-amz-count" class="kwr-count"></span>
-                <div class="kwr-export-btns">
-                    <button id="kwr-amz-copy-btn" class="btn btn-outline-secondary btn-sm">Copy All</button>
-                    <button id="kwr-amz-txt-btn" class="btn btn-outline-secondary btn-sm">.TXT</button>
-                    <button id="kwr-amz-csv-btn" class="btn btn-outline-secondary btn-sm">.CSV</button>
-                </div>
-            </div>
-<div id="kwr-amz-wc-filter" class="kwr-wc-filter">
-    <span class="kwr-wc-label">Min words:</span>
-    <button class="kwr-wc-btn active" data-min="1">Any</button>
-    <button class="kwr-wc-btn" data-min="2">2+</button>
-    <button class="kwr-wc-btn" data-min="3">3+</button>
+<div id="kwr-amz-results-header" class="kwr-results-header">
+    <span id="kwr-amz-count" class="kwr-count"></span>
+    <div class="kwr-results-header-right">
+        <div class="kwr-wc-inline">
+            <label for="kwr-amz-min-words" class="kwr-wc-label">Min words:</label>
+            <input type="number" id="kwr-amz-min-words" class="kwr-wc-input" value="1" min="1" max="20">
+        </div>
+        <div class="kwr-wc-divider"></div>
+        <div class="kwr-export-btns">
+            <button id="kwr-amz-copy-btn" class="btn btn-sm btn-outline-secondary">Copy All</button>
+            <button id="kwr-amz-txt-btn"  class="btn btn-sm btn-outline-secondary">.TXT</button>
+            <button id="kwr-amz-csv-btn"  class="btn btn-sm btn-outline-secondary">.CSV</button>
+        </div>
+    </div>
 </div>
             <ul id="kwr-amz-results" class="kwr-results-list"></ul>
         </div>
@@ -314,19 +315,20 @@
                 </button>
                 <div id="kwr-plat-loader" class="kwr-loader"></div>
             </div>
-            <div id="kwr-plat-results-header" class="kwr-results-header">
-                <span id="kwr-plat-count" class="kwr-count"></span>
-                <div class="kwr-export-btns">
-                    <button id="kwr-plat-copy-btn" class="btn btn-outline-secondary btn-sm">Copy All</button>
-                    <button id="kwr-plat-txt-btn" class="btn btn-outline-secondary btn-sm">.TXT</button>
-                    <button id="kwr-plat-csv-btn" class="btn btn-outline-secondary btn-sm">.CSV</button>
-                </div>
-            </div>
-<div id="kwr-plat-wc-filter" class="kwr-wc-filter">
-    <span class="kwr-wc-label">Min words:</span>
-    <button class="kwr-wc-btn active" data-min="1">Any</button>
-    <button class="kwr-wc-btn" data-min="2">2+</button>
-    <button class="kwr-wc-btn" data-min="3">3+</button>
+<div id="kwr-plat-results-header" class="kwr-results-header">
+    <span id="kwr-plat-count" class="kwr-count"></span>
+    <div class="kwr-results-header-right">
+        <div class="kwr-wc-inline">
+            <label for="kwr-plat-min-words" class="kwr-wc-label">Min words:</label>
+            <input type="number" id="kwr-plat-min-words" class="kwr-wc-input" value="1" min="1" max="20">
+        </div>
+        <div class="kwr-wc-divider"></div>
+        <div class="kwr-export-btns">
+            <button id="kwr-plat-copy-btn" class="btn btn-sm btn-outline-secondary">Copy All</button>
+            <button id="kwr-plat-txt-btn"  class="btn btn-sm btn-outline-secondary">.TXT</button>
+            <button id="kwr-plat-csv-btn"  class="btn btn-sm btn-outline-secondary">.CSV</button>
+        </div>
+    </div>
 </div>
             <ul id="kwr-plat-results" class="kwr-results-list"></ul>
         </div>

@@ -1197,25 +1197,45 @@ body.dark-mode .kwr-tab { color: #888; }
 body.dark-mode .kwr-sync-hint { color: #666; }
 body.dark-mode .kwr-loader { border-color: #444; border-top-color: var(--secondary-color); }
 
-/* Use MerchScope search button */
+/* Wrapper for input + inline button */
+.kwr-input-with-btn {
+    position: relative;
+}
+
+/* Button sits inside the input on the right */
 .kwr-use-search-btn {
-    align-self: flex-start;
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
     background: none;
-    border: 1px dashed var(--border-color);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     color: var(--secondary-color);
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     font-weight: 600;
-    padding: 4px 10px;
+    padding: 3px 8px;
     cursor: pointer;
-    transition: all 0.2s ease;
-    margin-top: -4px;
+    opacity: 0;
+    transition: opacity 0.15s ease, background 0.15s ease;
+    white-space: nowrap;
+    z-index: 2;
+}
+.kwr-input-with-btn:hover .kwr-use-search-btn {
+    opacity: 1;
 }
 .kwr-use-search-btn:hover {
     background-color: var(--secondary-color);
     color: var(--dark-color);
     border-color: var(--secondary-color);
 }
+
+/* Pad the input so text doesn't slide under the button */
+.kwr-input-with-btn .form-control {
+    padding-right: 110px;
+}
+
+/* Dark mode */
 body.dark-mode .kwr-use-search-btn {
     border-color: #444;
     color: var(--secondary-color);

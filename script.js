@@ -2522,6 +2522,17 @@ if (pageNumber && parseInt(pageNumber) >= 2) {
         Reddit:     { buildUrl: q => "https://www.reddit.com/api/search_reddit_names.json?query=" + encodeURIComponent(q),         parseResponse: async r => JSON.parse(await r.text()).names || [] }
     };
 
+    // Platform display order and Simple Icons slugs
+    const KWR_ALL_PLATFORMS = ['Bing', 'DuckDuckGo', 'Google', 'Reddit', 'Wikipedia', 'Youtube'];
+    const KWR_PLATFORM_ICONS = {
+        'Bing':        'microsoftbing',
+        'DuckDuckGo':  'duckduckgo',
+        'Google':      'google',
+        'Reddit':      'reddit',
+        'Wikipedia':   'wikipedia',
+        'Youtube':     'youtube'
+    };
+    
     const KWR_MODIFIERS = {
         PRODUCT_ATTRIBUTES: ["for men","for women","for kids","for toddlers","for boys","for girls","large","small","medium","xl","2xl","black","white","red","blue","green","2 pack","3 pack","gift","eco friendly","waterproof","long sleeve","short sleeve"],
         USER_INTENT:        ["review","vs","alternative","unboxing","tutorial","test","how to use","best","cheap","top rated","deals","discount","for sale","ideas","outfit"],
@@ -2587,25 +2598,55 @@ if (pageNumber && parseInt(pageNumber) >= 2) {
             const m = kwrMarkets[market] || kwrMarkets.US;
             const baseUrl = `https://${m.domain}/api/2017/suggestions?page-type=Gateway&alias=aps&mid=${m.mid}`;
             prefixes.forEach(p => tasks.push({ url: `${baseUrl}&prefix=${encodeURIComponent(p)}`, parser: async r => { const j = await r.json(); return j.suggestions?.map(s => s.value) || []; } }));
-        } else if (action === "platforms") {
-            platforms.forEach(plat => {
-                const pc = kwrPlatformConfig[plat];
-                if (pc) prefixes.forEach(p => tasks.push({ url: pc.buildUrl(p), parser: pc.parseResponse }));
-            });
-        }
+} else if (action === "platforms") {
+    platforms.forEach(plat => {
+        const pc = kwrPlatformConfig[plat];
+        if (pc) prefixes.forEach(p => tasks.push({
+            url: pc.buildUrl(p),
+            parser: async r => {
+                const keywords = await pc.parseResponse(r);
+                return keywords.map(kw => ({ keyword: kw, source: plat }));
+            }
+        }));
+    });
+}
 
-        const rawResults = await kwrFetch(tasks, 15);
-        let unique = [...new Set(rawResults)];
+const rawResults = await kwrFetch(tasks, 15);
 
-        if (negativeKeywords) {
-            const negs = negativeKeywords.split(",").map(e => e.trim().toLowerCase()).filter(e => e);
-            if (negs.length) unique = unique.filter(r => !negs.some(n => r.toLowerCase().includes(n)));
-        }
-        if (title) {
-            const tl = title.trim().toLowerCase();
-            if (tl) unique = unique.filter(r => r.toLowerCase().includes(tl));
-        }
-        return unique.sort();
+// Amazon: flat string dedup (unchanged)
+if (action === "amazon") {
+    let unique = [...new Set(rawResults)];
+    if (negativeKeywords) {
+        const negs = negativeKeywords.split(",").map(e => e.trim().toLowerCase()).filter(e => e);
+        if (negs.length) unique = unique.filter(r => !negs.some(n => r.toLowerCase().includes(n)));
+    }
+    if (title) {
+        const tl = title.trim().toLowerCase();
+        if (tl) unique = unique.filter(r => r.toLowerCase().includes(tl));
+    }
+    return unique.sort();
+}
+
+// Platforms: merge sources per keyword
+const sourceMap = new Map();
+rawResults.forEach(({ keyword, source }) => {
+    const kl = keyword.toLowerCase().trim();
+    if (!sourceMap.has(kl)) {
+        sourceMap.set(kl, { keyword: keyword.trim(), sources: new Set() });
+    }
+    sourceMap.get(kl).sources.add(source);
+});
+let unique = [...sourceMap.values()].map(({ keyword, sources }) => ({ keyword, sources: [...sources] }));
+
+if (negativeKeywords) {
+    const negs = negativeKeywords.split(",").map(e => e.trim().toLowerCase()).filter(e => e);
+    if (negs.length) unique = unique.filter(item => !negs.some(n => item.keyword.toLowerCase().includes(n)));
+}
+if (title) {
+    const tl = title.trim().toLowerCase();
+    if (tl) unique = unique.filter(item => item.keyword.toLowerCase().includes(tl));
+}
+return unique.sort((a, b) => a.keyword.localeCompare(b.keyword));
     }
 
     // ---- UI ----
@@ -2680,8 +2721,8 @@ document.getElementById('kwrDeselectAllPlatforms')?.addEventListener('click', fu
     document.querySelectorAll('.kwr-platform-cb').forEach(cb => cb.checked = false);
 });
 
-    // Render results helper
-function kwrRender(data, listEl, headerEl, countEl) {
+// Render results helper
+function kwrRender(data, listEl, headerEl, countEl, showBadges = false) {
     listEl.innerHTML = '';
     if (data && data.error) {
         headerEl.style.display = 'none';
@@ -2691,21 +2732,47 @@ function kwrRender(data, listEl, headerEl, countEl) {
     if (data && data.length > 0) {
         headerEl.style.display = 'flex';
         countEl.textContent = `Found ${data.length} keywords`;
-        data.forEach(kw => {
+        data.forEach(item => {
+            const kw = showBadges ? item.keyword : item;
             const li = document.createElement('li');
 
-            // Keyword text — click to copy
-            const span = document.createElement('span');
-            span.className = 'kwr-kw-text';
-            span.textContent = kw;
-            span.title = 'Click to copy';
-            span.addEventListener('click', () => {
-                navigator.clipboard.writeText(kw).then(() => {
-                    const orig = span.textContent;
-                    span.textContent = '✓ Copied!';
-                    setTimeout(() => span.textContent = orig, 1000);
-                });
-            });
+// Keyword text — click to copy
+const span = document.createElement('span');
+span.className = 'kwr-kw-text';
+span.textContent = kw;
+span.title = 'Click to copy';
+span.addEventListener('click', () => {
+    navigator.clipboard.writeText(kw).then(() => {
+        const orig = span.textContent;
+        span.textContent = '✓ Copied!';
+        setTimeout(() => span.textContent = orig, 1000);
+    });
+});
+
+// Platform logos + count badge (Multi-Platform tab only)
+if (showBadges) {
+    const logosSpan = document.createElement('span');
+    logosSpan.className = 'kwr-source-logos';
+    KWR_ALL_PLATFORMS.forEach(plat => {
+        const img = document.createElement('img');
+        img.src = `https://cdn.simpleicons.org/${KWR_PLATFORM_ICONS[plat]}`;
+        img.alt = plat;
+        img.title = plat;
+        img.width = 14;
+        img.height = 14;
+        img.className = 'kwr-plat-icon' + (item.sources.includes(plat) ? '' : ' kwr-plat-icon-grey');
+        logosSpan.appendChild(img);
+    });
+    const badge = document.createElement('span');
+    badge.className = 'kwr-source-badge' +
+        (item.sources.length >= 3 ? ' kwr-badge-high' : item.sources.length >= 2 ? ' kwr-badge-mid' : '');
+    badge.textContent = `×${item.sources.length}`;
+    li.appendChild(span);
+    li.appendChild(logosSpan);
+    li.appendChild(badge);
+} else {
+    li.appendChild(span);
+}
 
             // Send to MerchScope button
             const sendBtn = document.createElement('button');
@@ -2738,7 +2805,6 @@ function kwrRender(data, listEl, headerEl, countEl) {
                 }
             });
 
-            li.appendChild(span);
             li.appendChild(sendBtn);
             listEl.appendChild(li);
         });
@@ -2748,9 +2814,12 @@ function kwrRender(data, listEl, headerEl, countEl) {
     }
 }
 
-    // Word count filter helper
+// Word count filter helper
 function kwrWordFilter(data, minWords) {
-    return data.filter(kw => kw.trim().split(/\s+/).length >= minWords);
+    return data.filter(item => {
+        const kw = typeof item === 'string' ? item : item.keyword;
+        return kw.trim().split(/\s+/).length >= minWords;
+    });
 }
 
     // Word count filter — number inputs
@@ -2780,9 +2849,10 @@ document.getElementById('kwr-plat-min-words')?.addEventListener('input', functio
         const filtered = kwrWordFilter(kwrPlatData, kwrPlatMinWords);
         if (filtered.length) {
             kwrRender(filtered,
-                document.getElementById('kwr-plat-results'),
-                document.getElementById('kwr-plat-results-header'),
-                document.getElementById('kwr-plat-count'));
+            document.getElementById('kwr-plat-results'),
+            document.getElementById('kwr-plat-results-header'),
+            document.getElementById('kwr-plat-count'),
+            true);
         } else {
             document.getElementById('kwr-plat-results-header').style.display = 'flex';
             document.getElementById('kwr-plat-count').textContent = 'No keywords match this filter';
@@ -2791,27 +2861,37 @@ document.getElementById('kwr-plat-min-words')?.addEventListener('input', functio
     }
 });
 
-    // Export buttons helper
-    function kwrExports(getDataFn, copyBtn, txtBtn, csvBtn) {
-        copyBtn.addEventListener('click', () => {
-            const d = getDataFn(); if (!d?.length) return;
-            navigator.clipboard.writeText(d.join('\n')).then(() => {
-                const orig = copyBtn.textContent; copyBtn.textContent = 'Copied!';
-                setTimeout(() => copyBtn.textContent = orig, 2000);
-            });
+// Export buttons helper
+function kwrExports(getDataFn, copyBtn, txtBtn, csvBtn, hasSources = false) {
+    copyBtn.addEventListener('click', () => {
+        const d = getDataFn(); if (!d?.length) return;
+        const text = hasSources ? d.map(item => item.keyword).join('\n') : d.join('\n');
+        navigator.clipboard.writeText(text).then(() => {
+            const orig = copyBtn.textContent; copyBtn.textContent = 'Copied!';
+            setTimeout(() => copyBtn.textContent = orig, 2000);
         });
-        txtBtn.addEventListener('click', () => {
-            const d = getDataFn(); if (!d?.length) return;
-            const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([d.join('\n')], {type:'text/plain'})), download: 'keywords.txt' });
-            a.click();
-        });
-        csvBtn.addEventListener('click', () => {
-            const d = getDataFn(); if (!d?.length) return;
-            const csv = 'Keywords\n' + d.map(e => e.includes(',') ? `"${e}"` : e).join('\n');
-            const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8;'})), download: 'keywords.csv' });
-            a.click();
-        });
-    }
+    });
+    txtBtn.addEventListener('click', () => {
+        const d = getDataFn(); if (!d?.length) return;
+        const text = hasSources ? d.map(item => item.keyword).join('\n') : d.join('\n');
+        const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([text], {type:'text/plain'})), download: 'keywords.txt' });
+        a.click();
+    });
+    csvBtn.addEventListener('click', () => {
+        const d = getDataFn(); if (!d?.length) return;
+        let csv;
+        if (hasSources) {
+            csv = 'Keyword,Sources\n' + d.map(item => {
+                const kw = item.keyword.includes(',') ? `"${item.keyword}"` : item.keyword;
+                return `${kw},${item.sources.join(' · ')}`;
+            }).join('\n');
+        } else {
+            csv = 'Keywords\n' + d.map(e => e.includes(',') ? `"${e}"` : e).join('\n');
+        }
+        const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8;'})), download: 'keywords.csv' });
+        a.click();
+    });
+}
 
     // Amazon Engine
     let kwrAmzData = [];
@@ -2856,7 +2936,7 @@ if (amzWcInput) amzWcInput.value = 1;
         btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing…'; loader.style.display = 'block';
         try {
             kwrPlatData = await kwrExecute({ action: 'platforms', title, brand, advancedWords: document.getElementById('kwr-plat-advanced').value.trim(), negativeKeywords: document.getElementById('kwr-plat-negative').value.trim(), platforms });
-            kwrRender(kwrPlatData, listEl, document.getElementById('kwr-plat-results-header'), document.getElementById('kwr-plat-count'));
+        kwrRender(kwrPlatData, listEl, document.getElementById('kwr-plat-results-header'), document.getElementById('kwr-plat-count'), true);
 kwrPlatMinWords = 1;
 const platWcInput = document.getElementById('kwr-plat-min-words');
 if (platWcInput) platWcInput.value = 1;
@@ -2866,7 +2946,7 @@ if (platWcInput) platWcInput.value = 1;
             btn.disabled = false; btn.innerHTML = '<i class="fas fa-globe"></i> Analyze Platforms'; loader.style.display = 'none';
         }
     });
-    kwrExports(() => kwrWordFilter(kwrPlatData, kwrPlatMinWords), document.getElementById('kwr-plat-copy-btn'), document.getElementById('kwr-plat-txt-btn'), document.getElementById('kwr-plat-csv-btn'));
+    kwrExports(() => kwrWordFilter(kwrPlatData, kwrPlatMinWords), document.getElementById('kwr-plat-copy-btn'), document.getElementById('kwr-plat-txt-btn'), document.getElementById('kwr-plat-csv-btn'), true);
 
     // Header link → scroll to & auto-open KWR panel
 document.getElementById('kwrHeaderLink')?.addEventListener('click', function(e) {

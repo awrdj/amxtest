@@ -2733,8 +2733,9 @@ function kwrRender(data, listEl, headerEl, countEl) {
             listEl.appendChild(li);
         });
     } else {
-        headerEl.style.display = 'none';
-        listEl.innerHTML = "<li style='padding:14px; text-align:center; color:#888;'>No unique suggestions found.</li>";
+    headerEl.style.display = 'flex';
+    countEl.textContent = 'No keywords match this filter';
+    listEl.innerHTML = "<li style='padding:14px; text-align:center; color:#888;'>Try lowering the minimum word count.</li>";
     }
 }
 

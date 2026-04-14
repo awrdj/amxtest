@@ -2738,6 +2738,43 @@ function kwrRender(data, listEl, headerEl, countEl) {
     }
 }
 
+    // Word count filter helper
+function kwrWordFilter(data, minWords) {
+    return data.filter(kw => kw.trim().split(/\s+/).length >= minWords);
+}
+
+// Amazon word count filter buttons
+let kwrAmzMinWords = 1;
+document.querySelectorAll('#kwr-amz-wc-filter .kwr-wc-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('#kwr-amz-wc-filter .kwr-wc-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        kwrAmzMinWords = parseInt(btn.dataset.min);
+        if (kwrAmzData.length) {
+            kwrRender(kwrWordFilter(kwrAmzData, kwrAmzMinWords),
+                document.getElementById('kwr-amz-results'),
+                document.getElementById('kwr-amz-results-header'),
+                document.getElementById('kwr-amz-count'));
+        }
+    });
+});
+
+// Platform word count filter buttons
+let kwrPlatMinWords = 1;
+document.querySelectorAll('#kwr-plat-wc-filter .kwr-wc-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('#kwr-plat-wc-filter .kwr-wc-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        kwrPlatMinWords = parseInt(btn.dataset.min);
+        if (kwrPlatData.length) {
+            kwrRender(kwrWordFilter(kwrPlatData, kwrPlatMinWords),
+                document.getElementById('kwr-plat-results'),
+                document.getElementById('kwr-plat-results-header'),
+                document.getElementById('kwr-plat-count'));
+        }
+    });
+});
+
     // Export buttons helper
     function kwrExports(getDataFn, copyBtn, txtBtn, csvBtn) {
         copyBtn.addEventListener('click', () => {
@@ -2776,6 +2813,9 @@ function kwrRender(data, listEl, headerEl, countEl) {
         try {
             kwrAmzData = await kwrExecute({ action: 'amazon', title, brand, advancedWords: document.getElementById('kwr-amz-advanced').value.trim(), negativeKeywords: document.getElementById('kwr-amz-negative').value.trim(), market: kwrMarketMap[ms] || 'US' });
             kwrRender(kwrAmzData, listEl, document.getElementById('kwr-amz-results-header'), document.getElementById('kwr-amz-count'));
+kwrAmzMinWords = 1;
+document.querySelectorAll('#kwr-amz-wc-filter .kwr-wc-btn').forEach(b => b.classList.remove('active'));
+document.querySelector('#kwr-amz-wc-filter .kwr-wc-btn[data-min="1"]')?.classList.add('active');
         } catch(e) {
             kwrRender({error: e.message}, listEl, document.getElementById('kwr-amz-results-header'), document.getElementById('kwr-amz-count'));
         } finally {
@@ -2801,6 +2841,9 @@ function kwrRender(data, listEl, headerEl, countEl) {
         try {
             kwrPlatData = await kwrExecute({ action: 'platforms', title, brand, advancedWords: document.getElementById('kwr-plat-advanced').value.trim(), negativeKeywords: document.getElementById('kwr-plat-negative').value.trim(), platforms });
             kwrRender(kwrPlatData, listEl, document.getElementById('kwr-plat-results-header'), document.getElementById('kwr-plat-count'));
+kwrPlatMinWords = 1;
+document.querySelectorAll('#kwr-plat-wc-filter .kwr-wc-btn').forEach(b => b.classList.remove('active'));
+document.querySelector('#kwr-plat-wc-filter .kwr-wc-btn[data-min="1"]')?.classList.add('active');
         } catch(e) {
             kwrRender({error: e.message}, listEl, document.getElementById('kwr-plat-results-header'), document.getElementById('kwr-plat-count'));
         } finally {

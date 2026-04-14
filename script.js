@@ -2519,9 +2519,7 @@ if (pageNumber && parseInt(pageNumber) >= 2) {
         DuckDuckGo: { buildUrl: q => "https://duckduckgo.com/ac/?q=" + encodeURIComponent(q),                                      parseResponse: async r => (JSON.parse(await r.text()) || []).map(x => x.phrase) },
         YouTube:    { buildUrl: q => "https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=" + encodeURIComponent(q), parseResponse: async r => { const t = await r.text(); const o = JSON.parse(t.substring(t.indexOf("(")+1, t.lastIndexOf(")"))); return o[1]?.map(x => x[0]) || []; } },
         Wikipedia:  { buildUrl: q => "https://en.wikipedia.org/w/api.php?action=opensearch&search=" + encodeURIComponent(q),       parseResponse: async r => JSON.parse(await r.text())[1] || [] },
-        Reddit:     { buildUrl: q => "https://www.reddit.com/api/search_reddit_names.json?query=" + encodeURIComponent(q),         parseResponse: async r => JSON.parse(await r.text()).names || [] },
-        eBay: { buildUrl: q => "https://autosug.ebay.com/autosug?sId=0&q=" + encodeURIComponent(q), parseResponse: async r => { const j = await r.json(); return j?.res?.sug || []; } },
-        TikTok: { buildUrl: q => "https://suggestqueries.google.com/complete/search?client=firefox&ds=ytfe&q=" + encodeURIComponent(q), parseResponse: async r => JSON.parse(await r.text())[1] || [] }
+        Reddit:     { buildUrl: q => "https://www.reddit.com/api/search_reddit_names.json?query=" + encodeURIComponent(q),         parseResponse: async r => JSON.parse(await r.text()).names || [] }
     };
 
     const KWR_MODIFIERS = {

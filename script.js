@@ -2525,7 +2525,7 @@ if (pageNumber && parseInt(pageNumber) >= 2) {
     // Platform display order and Simple Icons slugs
     const KWR_ALL_PLATFORMS = ['Bing', 'DuckDuckGo', 'Google', 'Reddit', 'Wikipedia', 'Youtube'];
     const KWR_PLATFORM_ICONS = {
-        'Bing':        'microsoftbing',
+        'Bing':        'bing',
         'DuckDuckGo':  'duckduckgo',
         'Google':      'google',
         'Reddit':      'reddit',

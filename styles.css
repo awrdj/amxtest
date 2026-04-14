@@ -1196,3 +1196,74 @@ body.dark-mode .kwr-tabs { border-bottom-color: #444; }
 body.dark-mode .kwr-tab { color: #888; }
 body.dark-mode .kwr-sync-hint { color: #666; }
 body.dark-mode .kwr-loader { border-color: #444; border-top-color: var(--secondary-color); }
+
+/* Use MerchScope search button */
+.kwr-use-search-btn {
+    align-self: flex-start;
+    background: none;
+    border: 1px dashed var(--border-color);
+    border-radius: 4px;
+    color: var(--secondary-color);
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: -4px;
+}
+.kwr-use-search-btn:hover {
+    background-color: var(--secondary-color);
+    color: var(--dark-color);
+    border-color: var(--secondary-color);
+}
+body.dark-mode .kwr-use-search-btn {
+    border-color: #444;
+    color: var(--secondary-color);
+}
+body.dark-mode .kwr-use-search-btn:hover {
+    background-color: var(--secondary-color);
+    color: #1a1a1a;
+    border-color: var(--secondary-color);
+}
+
+/* Send to MerchScope button on result items */
+.kwr-results-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+.kwr-results-list li .kwr-kw-text {
+    flex: 1;
+    cursor: pointer;
+}
+.kwr-send-btn {
+    flex-shrink: 0;
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--secondary-color);
+    padding: 2px 7px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s ease, background 0.15s ease;
+    white-space: nowrap;
+}
+.kwr-results-list li:hover .kwr-send-btn {
+    opacity: 1;
+}
+.kwr-send-btn:hover {
+    background-color: var(--secondary-color);
+    color: var(--dark-color);
+    border-color: var(--secondary-color);
+}
+body.dark-mode .kwr-send-btn {
+    border-color: #444;
+    color: var(--secondary-color);
+}
+body.dark-mode .kwr-send-btn:hover {
+    background-color: var(--secondary-color);
+    color: #1a1a1a;
+}

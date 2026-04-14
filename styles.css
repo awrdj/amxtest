@@ -1113,7 +1113,7 @@ body.dark-mode .kwr-primary-btn { color: #1a1a1a; }
 /* Replace the existing .kwr-platforms-grid rule */
 .kwr-platforms-grid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 6px;
     margin-bottom: 12px;
     padding: 10px;

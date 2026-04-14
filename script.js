@@ -2750,33 +2750,7 @@ span.addEventListener('click', () => {
     });
 });
 
-// Platform logos + count badge (Multi-Platform tab only)
-if (showBadges) {
-    const logosSpan = document.createElement('span');
-    logosSpan.className = 'kwr-source-logos';
-    KWR_ALL_PLATFORMS.forEach(plat => {
-        const img = document.createElement('img');
-        img.src = `https://cdn.simpleicons.org/${KWR_PLATFORM_ICONS[plat]}`;
-        img.alt = plat;
-        img.title = plat;
-        img.width = 14;
-        img.height = 14;
-        img.className = 'kwr-plat-icon' + (item.sources.includes(plat) ? '' : ' kwr-plat-icon-grey');
-        logosSpan.appendChild(img);
-    });
-    const badge = document.createElement('span');
-    badge.className = 'kwr-source-badge' +
-        (item.sources.length >= 3 ? ' kwr-badge-high' : item.sources.length >= 2 ? ' kwr-badge-mid' : '');
-    badge.textContent = `×${item.sources.length}`;
-    li.appendChild(span);
-    li.appendChild(sendBtn);
-    li.appendChild(logosSpan);
-    li.appendChild(badge);
-} else {
-    li.appendChild(span);
-}
-
-            // Send to MerchScope button
+// Send to MerchScope button
             const sendBtn = document.createElement('button');
             sendBtn.className = 'kwr-send-btn';
             sendBtn.type = 'button';
@@ -2806,6 +2780,33 @@ if (showBadges) {
                     }, 1500);
                 }
             });
+
+// Platform logos + count badge (Multi-Platform tab only)
+if (showBadges) {
+    const logosSpan = document.createElement('span');
+    logosSpan.className = 'kwr-source-logos';
+    KWR_ALL_PLATFORMS.forEach(plat => {
+        const img = document.createElement('img');
+        img.src = `https://cdn.simpleicons.org/${KWR_PLATFORM_ICONS[plat]}`;
+        img.alt = plat;
+        img.title = plat;
+        img.width = 14;
+        img.height = 14;
+        img.className = 'kwr-plat-icon' + (item.sources.includes(plat) ? '' : ' kwr-plat-icon-grey');
+        logosSpan.appendChild(img);
+    });
+    const badge = document.createElement('span');
+    badge.className = 'kwr-source-badge' +
+        (item.sources.length >= 3 ? ' kwr-badge-high' : item.sources.length >= 2 ? ' kwr-badge-mid' : '');
+    badge.textContent = `×${item.sources.length}`;
+    li.appendChild(span);
+    li.appendChild(sendBtn);
+    li.appendChild(logosSpan);
+    li.appendChild(badge);
+} else {
+    li.appendChild(span);
+    li.appendChild(sendBtn);
+}
             
             listEl.appendChild(li);
         });

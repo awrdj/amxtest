@@ -2631,6 +2631,27 @@ if (pageNumber && parseInt(pageNumber) >= 2) {
     }
     document.getElementById('marketplaceSelect')?.addEventListener('change', kwrSyncMarketplace);
 
+// "Use MerchScope search" shortcut buttons
+function kwrFillFromSearch(targetInputId) {
+    const searchVal = document.getElementById('searchInput')?.value.trim();
+    if (!searchVal) return;
+    const targetInput = document.getElementById(targetInputId);
+    if (targetInput) {
+        targetInput.value = searchVal;
+        targetInput.focus();
+        // Flash the input so user sees it was filled
+        targetInput.style.transition = 'background 0.3s ease';
+        targetInput.style.background = '#fffde7';
+        setTimeout(() => targetInput.style.background = '', 800);
+    }
+}
+
+document.getElementById('kwr-amz-use-search')
+    ?.addEventListener('click', () => kwrFillFromSearch('kwr-amz-title'));
+
+document.getElementById('kwr-plat-use-search')
+    ?.addEventListener('click', () => kwrFillFromSearch('kwr-plat-title'));
+
     // Tab switching
     document.querySelectorAll('.kwr-tab').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -2650,33 +2671,72 @@ if (pageNumber && parseInt(pageNumber) >= 2) {
     });
 
     // Render results helper
-    function kwrRender(data, listEl, headerEl, countEl) {
-        listEl.innerHTML = '';
-        if (data && data.error) {
-            headerEl.style.display = 'none';
-            listEl.innerHTML = `<li class="kwr-error">Error: ${data.error}</li>`;
-            return;
-        }
-        if (data && data.length > 0) {
-            headerEl.style.display = 'flex';
-            countEl.textContent = `Found ${data.length} keywords`;
-            data.forEach(kw => {
-                const li = document.createElement('li');
-                li.textContent = kw;
-                li.addEventListener('click', () => {
-                    navigator.clipboard.writeText(kw).then(() => {
-                        const orig = li.textContent;
-                        li.textContent = '✓ Copied!';
-                        setTimeout(() => li.textContent = orig, 1000);
-                    });
-                });
-                listEl.appendChild(li);
-            });
-        } else {
-            headerEl.style.display = 'none';
-            listEl.innerHTML = "<li style='padding:14px; text-align:center; color:#888;'>No unique suggestions found.</li>";
-        }
+function kwrRender(data, listEl, headerEl, countEl) {
+    listEl.innerHTML = '';
+    if (data && data.error) {
+        headerEl.style.display = 'none';
+        listEl.innerHTML = `<li class="kwr-error">Error: ${data.error}</li>`;
+        return;
     }
+    if (data && data.length > 0) {
+        headerEl.style.display = 'flex';
+        countEl.textContent = `Found ${data.length} keywords`;
+        data.forEach(kw => {
+            const li = document.createElement('li');
+
+            // Keyword text — click to copy
+            const span = document.createElement('span');
+            span.className = 'kwr-kw-text';
+            span.textContent = kw;
+            span.title = 'Click to copy';
+            span.addEventListener('click', () => {
+                navigator.clipboard.writeText(kw).then(() => {
+                    const orig = span.textContent;
+                    span.textContent = '✓ Copied!';
+                    setTimeout(() => span.textContent = orig, 1000);
+                });
+            });
+
+            // Send to MerchScope button
+            const sendBtn = document.createElement('button');
+            sendBtn.className = 'kwr-send-btn';
+            sendBtn.type = 'button';
+            sendBtn.innerHTML = '<i class="fas fa-search"></i> Search';
+            sendBtn.title = 'Send to MerchScope search';
+            sendBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput) {
+                    searchInput.value = kw;
+                    searchInput.dispatchEvent(new Event('input'));
+                    // Trigger URL update
+                    if (typeof updateGeneratedUrl === 'function') updateGeneratedUrl();
+                    // Show clear button if present
+                    const clearBtn = document.getElementById('clearSearchBtn');
+                    if (clearBtn) clearBtn.style.display = 'block';
+                    // Scroll to top smoothly so user sees the result
+                    document.querySelector('.main-container, .app-container, body')
+                        .scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    // Visual feedback
+                    const orig = sendBtn.innerHTML;
+                    sendBtn.innerHTML = '<i class="fas fa-check"></i> Sent!';
+                    sendBtn.style.opacity = '1';
+                    setTimeout(() => {
+                        sendBtn.innerHTML = orig;
+                        sendBtn.style.opacity = '';
+                    }, 1500);
+                }
+            });
+
+            li.appendChild(span);
+            li.appendChild(sendBtn);
+            listEl.appendChild(li);
+        });
+    } else {
+        headerEl.style.display = 'none';
+        listEl.innerHTML = "<li style='padding:14px; text-align:center; color:#888;'>No unique suggestions found.</li>";
+    }
+}
 
     // Export buttons helper
     function kwrExports(getDataFn, copyBtn, txtBtn, csvBtn) {

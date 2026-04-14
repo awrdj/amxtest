@@ -1287,3 +1287,45 @@ body.dark-mode .kwr-send-btn:hover {
     background-color: var(--secondary-color);
     color: #1a1a1a;
 }
+
+/* Word count filter */
+.kwr-wc-filter {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+.kwr-wc-label {
+    font-size: 0.8rem;
+    color: #888;
+    margin-right: 2px;
+}
+.kwr-wc-btn {
+    padding: 3px 10px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: none;
+    cursor: pointer;
+    color: #555;
+    transition: all 0.15s ease;
+}
+.kwr-wc-btn.active {
+    background-color: var(--secondary-color);
+    color: var(--dark-color);
+    border-color: var(--secondary-color);
+}
+.kwr-wc-btn:hover:not(.active) {
+    background-color: #f0f0f0;
+}
+body.dark-mode .kwr-wc-btn {
+    color: #aaa;
+    border-color: #444;
+}
+body.dark-mode .kwr-wc-btn.active {
+    color: #1a1a1a;
+}
+body.dark-mode .kwr-wc-btn:hover:not(.active) {
+    background-color: #2d2d2d;
+}

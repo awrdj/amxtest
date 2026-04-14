@@ -2826,7 +2826,8 @@ document.getElementById('kwrHeaderLink')?.addEventListener('click', function(e) 
 
     // Smooth scroll with a small offset so the title isn't hidden under sticky elements
     setTimeout(() => {
-        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const panelTop = panel.getBoundingClientRect().top + window.scrollY - 16; window.scrollTo({ top: panelTop, behavior: 'smooth' });
     }, 50); // slight delay ensures the panel has expanded before scrolling
 });
     

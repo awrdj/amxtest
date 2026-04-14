@@ -2733,9 +2733,8 @@ function kwrRender(data, listEl, headerEl, countEl) {
             listEl.appendChild(li);
         });
     } else {
-    headerEl.style.display = 'flex';
-    countEl.textContent = 'No keywords match this filter';
-    listEl.innerHTML = "<li style='padding:14px; text-align:center; color:#888;'>Try lowering the minimum word count.</li>";
+    headerEl.style.display = 'none';
+    listEl.innerHTML = "<li style='padding:14px; text-align:center; color:#888;'>No unique suggestions found.</li>";
     }
 }
 
@@ -2751,20 +2750,34 @@ let kwrPlatMinWords = 1;
 document.getElementById('kwr-amz-min-words')?.addEventListener('input', function() {
     kwrAmzMinWords = Math.max(1, parseInt(this.value) || 1);
     if (kwrAmzData.length) {
-        kwrRender(kwrWordFilter(kwrAmzData, kwrAmzMinWords),
-            document.getElementById('kwr-amz-results'),
-            document.getElementById('kwr-amz-results-header'),
-            document.getElementById('kwr-amz-count'));
+        const filtered = kwrWordFilter(kwrAmzData, kwrAmzMinWords);
+        if (filtered.length) {
+            kwrRender(filtered,
+                document.getElementById('kwr-amz-results'),
+                document.getElementById('kwr-amz-results-header'),
+                document.getElementById('kwr-amz-count'));
+        } else {
+            document.getElementById('kwr-amz-results-header').style.display = 'flex';
+            document.getElementById('kwr-amz-count').textContent = 'No keywords match this filter';
+            document.getElementById('kwr-amz-results').innerHTML = "<li style='padding:14px; text-align:center; color:#888;'>Try lowering the minimum word count.</li>";
+        }
     }
 });
 
 document.getElementById('kwr-plat-min-words')?.addEventListener('input', function() {
     kwrPlatMinWords = Math.max(1, parseInt(this.value) || 1);
     if (kwrPlatData.length) {
-        kwrRender(kwrWordFilter(kwrPlatData, kwrPlatMinWords),
-            document.getElementById('kwr-plat-results'),
-            document.getElementById('kwr-plat-results-header'),
-            document.getElementById('kwr-plat-count'));
+        const filtered = kwrWordFilter(kwrPlatData, kwrPlatMinWords);
+        if (filtered.length) {
+            kwrRender(filtered,
+                document.getElementById('kwr-plat-results'),
+                document.getElementById('kwr-plat-results-header'),
+                document.getElementById('kwr-plat-count'));
+        } else {
+            document.getElementById('kwr-plat-results-header').style.display = 'flex';
+            document.getElementById('kwr-plat-count').textContent = 'No keywords match this filter';
+            document.getElementById('kwr-plat-results').innerHTML = "<li style='padding:14px; text-align:center; color:#888;'>Try lowering the minimum word count.</li>";
+        }
     }
 });
 

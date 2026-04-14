@@ -2814,7 +2814,7 @@ if (amzWcInput) amzWcInput.value = 1;
             btn.disabled = false; btn.innerHTML = '<i class="fas fa-search"></i> Analyze Keywords'; loader.style.display = 'none';
         }
     });
-    kwrExports(() => kwrAmzData, document.getElementById('kwr-amz-copy-btn'), document.getElementById('kwr-amz-txt-btn'), document.getElementById('kwr-amz-csv-btn'));
+    kwrExports(() => kwrWordFilter(kwrAmzData, kwrAmzMinWords), document.getElementById('kwr-amz-copy-btn'), document.getElementById('kwr-amz-txt-btn'), document.getElementById('kwr-amz-csv-btn'));
 
     // Multi-Platform Engine
     let kwrPlatData = [];
@@ -2842,7 +2842,7 @@ if (platWcInput) platWcInput.value = 1;
             btn.disabled = false; btn.innerHTML = '<i class="fas fa-globe"></i> Analyze Platforms'; loader.style.display = 'none';
         }
     });
-    kwrExports(() => kwrPlatData, document.getElementById('kwr-plat-copy-btn'), document.getElementById('kwr-plat-txt-btn'), document.getElementById('kwr-plat-csv-btn'));
+    kwrExports(() => kwrWordFilter(kwrPlatData, kwrPlatMinWords), document.getElementById('kwr-plat-copy-btn'), document.getElementById('kwr-plat-txt-btn'), document.getElementById('kwr-plat-csv-btn'));
 
     // Header link → scroll to & auto-open KWR panel
 document.getElementById('kwrHeaderLink')?.addEventListener('click', function(e) {

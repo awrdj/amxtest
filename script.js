@@ -2601,14 +2601,18 @@ if (pageNumber && parseInt(pageNumber) >= 2) {
             prefixes.forEach(p => tasks.push({ url: `${baseUrl}&prefix=${encodeURIComponent(p)}`, parser: async r => { const j = await r.json(); return j.suggestions?.map(s => s.value) || []; } }));
 } else if (action === "platforms") {
     platforms.forEach(plat => {
-        const pc = kwrPlatformConfig[plat];
-        if (pc) prefixes.forEach(p => tasks.push({
+    const pc = kwrPlatformConfig[plat];
+    if (pc) prefixes.forEach(p => {
+        // Skip single-letter suffix queries for Reddit
+        if (plat === 'reddit' && /\s[a-z]$/.test(p)) return;
+        tasks.push({
             url: pc.buildUrl(p),
             parser: async r => {
                 const keywords = await pc.parseResponse(r);
                 return keywords.map(kw => ({ keyword: kw, source: plat }));
             }
-        }));
+        });
+    });
     });
 }
 
@@ -2792,7 +2796,8 @@ if (showBadges) {
         img.title = plat;
         img.width = 14;
         img.height = 14;
-        img.className = 'kwr-plat-icon' + (item.sources.includes(plat) ? '' : ' kwr-plat-icon-grey');
+    const sourcesLower = item.sources.map(s => s.toLowerCase());
+    img.className = 'kwr-plat-icon' + (sourcesLower.includes(plat.toLowerCase()) ? '' : ' kwr-plat-icon-grey');
         logosSpan.appendChild(img);
     });
     const badge = document.createElement('span');

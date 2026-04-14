@@ -1346,6 +1346,7 @@ body.dark-mode .kwr-wc-divider {
 .kwr-plat-select-controls {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     gap: 6px;
     margin-bottom: 6px;
 }
@@ -1356,6 +1357,7 @@ body.dark-mode .kwr-wc-divider {
     font-weight: 600;
 }
 .kwr-plat-select-link:hover {
+    color: var(--hover-color);
     text-decoration: underline;
 }
 .kwr-plat-select-dot {

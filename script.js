@@ -2529,7 +2529,7 @@ if (pageNumber && parseInt(pageNumber) >= 2) {
         return (j.results || []).map(x => x.query); 
     }
 },
-        Pinterest:  { buildUrl: q => "https://suggestqueries.google.com/complete/search?client=firefox&ds=pinterest&q=" + encodeURIComponent(q), parseResponse: async r => JSON.parse(await r.text())[1] || [] }
+        TikTok: { buildUrl: q => "https://suggestqueries.google.com/complete/search?client=firefox&ds=tiktok&q=" + encodeURIComponent(q), parseResponse: async r => JSON.parse(await r.text())[1] || [] }
     };
 
     const KWR_MODIFIERS = {

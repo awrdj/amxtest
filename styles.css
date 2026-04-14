@@ -1312,6 +1312,7 @@ body.dark-mode .kwr-send-btn:hover {
     font-size: 0.78rem;
     color: #888;
     white-space: nowrap;
+	margin-bottom: 0;
 }
 .kwr-wc-input {
     width: 48px;

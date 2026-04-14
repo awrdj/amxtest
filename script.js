@@ -2890,7 +2890,7 @@ function kwrExports(getDataFn, copyBtn, txtBtn, csvBtn, hasSources = false) {
         if (hasSources) {
             csv = 'Keyword,Sources\n' + d.map(item => {
                 const kw = item.keyword.includes(',') ? `"${item.keyword}"` : item.keyword;
-                return `${kw},${item.sources.join(' · ')}`;
+                return `${kw},${item.sources.join(', ')}`;
             }).join('\n');
         } else {
             csv = 'Keywords\n' + d.map(e => e.includes(',') ? `"${e}"` : e).join('\n');

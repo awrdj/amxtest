@@ -1341,3 +1341,27 @@ body.dark-mode .kwr-wc-input {
 body.dark-mode .kwr-wc-divider {
     background-color: #444;
 }
+
+/* Select all / Deselect all */
+.kwr-plat-select-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+.kwr-plat-select-link {
+    font-size: 0.78rem;
+    color: var(--secondary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+.kwr-plat-select-link:hover {
+    text-decoration: underline;
+}
+.kwr-plat-select-dot {
+    font-size: 0.78rem;
+    color: #aaa;
+}
+body.dark-mode .kwr-plat-select-dot {
+    color: #555;
+}

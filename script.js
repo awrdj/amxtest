@@ -2518,12 +2518,12 @@ if (pageNumber && parseInt(pageNumber) >= 2) {
         Bing:       { buildUrl: q => "https://api.bing.com/osjson.aspx?query=" + encodeURIComponent(q),                            parseResponse: async r => JSON.parse(await r.text())[1] || [] },
         DuckDuckGo: { buildUrl: q => "https://duckduckgo.com/ac/?q=" + encodeURIComponent(q),                                      parseResponse: async r => (JSON.parse(await r.text()) || []).map(x => x.phrase) },
         YouTube:    { buildUrl: q => "https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=" + encodeURIComponent(q), parseResponse: async r => { const t = await r.text(); const o = JSON.parse(t.substring(t.indexOf("(")+1, t.lastIndexOf(")"))); return o[1]?.map(x => x[0]) || []; } },
-        Wikipedia:  { buildUrl: q => "https://en.wikipedia.org/w/api.php?action=opensearch&search=" + encodeURIComponent(q),       parseResponse: async r => JSON.parse(await r.text())[1] || [] },
-        Reddit:     { buildUrl: q => "https://www.reddit.com/api/search_reddit_names.json?query=" + encodeURIComponent(q),         parseResponse: async r => JSON.parse(await r.text()).names || [] }
+        Wikipedia:  { buildUrl: q => "https://en.wikipedia.org/w/api.php?action=opensearch&search=" + encodeURIComponent(q),       parseResponse: async r => JSON.parse(await r.text())[1] || [] }
+        // Reddit:     { buildUrl: q => "https://www.reddit.com/api/search_reddit_names.json?query=" + encodeURIComponent(q),         parseResponse: async r => JSON.parse(await r.text()).names || [] }
     };
 
     // Platform display order and Simple Icons slugs
-    const KWR_ALL_PLATFORMS = ['Bing', 'DuckDuckGo', 'Google', 'Reddit', 'Wikipedia', 'Youtube'];
+    const KWR_ALL_PLATFORMS = ['Bing', 'DuckDuckGo', 'Google', /*'Reddit',*/'Wikipedia', 'Youtube'];
     const KWR_PLATFORM_ICONS = {
         'Bing':        'bigbluebutton',
         // 'Bing':        'searxng',

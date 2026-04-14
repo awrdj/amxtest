@@ -1367,3 +1367,50 @@ body.dark-mode .kwr-wc-divider {
 body.dark-mode .kwr-plat-select-dot {
     color: #555;
 }
+
+/* Platform source logos + frequency badge */
+.kwr-source-logos {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    flex-shrink: 0;
+}
+.kwr-plat-icon {
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
+    display: block;
+}
+.kwr-plat-icon-grey {
+    filter: grayscale(100%) opacity(0.25);
+}
+.kwr-source-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: #eee;
+    color: #666;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+.kwr-badge-mid {
+    background: #fff3cd;
+    color: #856404;
+}
+.kwr-badge-high {
+    background: var(--secondary-color);
+    color: var(--dark-color);
+}
+body.dark-mode .kwr-source-badge {
+    background: #333;
+    color: #aaa;
+}
+body.dark-mode .kwr-badge-mid {
+    background: #4d3e0a;
+    color: #ffc107;
+}
+body.dark-mode .kwr-badge-high {
+    background: var(--secondary-color);
+    color: #1a1a1a;
+}

@@ -716,7 +716,7 @@ footer {
     position: fixed;
     top: 22px;
     right: 1.5rem;
-    background-color: rgb(255 255 255 / 0%);
+    background-color: rgb(255 255 255 / 100%);
     border: 2px solid rgb(255 154 1);
     border-radius: 50%;
     width: 30px;

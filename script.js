@@ -2726,6 +2726,41 @@ document.getElementById('kwrDeselectAllPlatforms')?.addEventListener('click', fu
     document.querySelectorAll('.kwr-platform-cb').forEach(cb => cb.checked = false);
 });
 
+// ===== KWR SORT ENGINE =====
+function kwrSortData(data, sortVal, isPlat) {
+    const arr = [...data];
+    if (sortVal === 'a-z') {
+        return arr.sort((a, b) => {
+            const ka = isPlat ? a.keyword : a;
+            const kb = isPlat ? b.keyword : b;
+            return ka.localeCompare(kb);
+        });
+    } else if (sortVal === 'z-a') {
+        return arr.sort((a, b) => {
+            const ka = isPlat ? a.keyword : a;
+            const kb = isPlat ? b.keyword : b;
+            return kb.localeCompare(ka);
+        });
+    } else if (sortVal === 'wc-asc') {
+        return arr.sort((a, b) => {
+            const ka = isPlat ? a.keyword : a;
+            const kb = isPlat ? b.keyword : b;
+            return ka.trim().split(/\s+/).length - kb.trim().split(/\s+/).length;
+        });
+    } else if (sortVal === 'wc-desc') {
+        return arr.sort((a, b) => {
+            const ka = isPlat ? a.keyword : a;
+            const kb = isPlat ? b.keyword : b;
+            return kb.trim().split(/\s+/).length - ka.trim().split(/\s+/).length;
+        });
+    } else if (sortVal === 'sources-desc') {
+        return arr.sort((a, b) => b.sources.size - a.sources.size);
+    } else if (sortVal === 'sources-asc') {
+        return arr.sort((a, b) => a.sources.size - b.sources.size);
+    }
+    return arr;
+}
+
 // Render results helper
 function kwrRender(data, listEl, headerEl, countEl, showBadges = false) {
     listEl.innerHTML = '';
@@ -2837,11 +2872,10 @@ document.getElementById('kwr-amz-min-words')?.addEventListener('input', function
     kwrAmzMinWords = Math.max(1, parseInt(this.value) || 1);
     if (kwrAmzData.length) {
         const filtered = kwrWordFilter(kwrAmzData, kwrAmzMinWords);
-        if (filtered.length) {
-            kwrRender(filtered,
-                document.getElementById('kwr-amz-results'),
-                document.getElementById('kwr-amz-results-header'),
-                document.getElementById('kwr-amz-count'));
+        const amzSortVal = document.getElementById('kwr-amz-sort')?.value || 'a-z';
+        const sorted = kwrSortData(filtered, amzSortVal, false);
+        if (sorted.length) {
+            kwrRender(sorted, document.getElementById('kwr-amz-results'), document.getElementById('kwr-amz-results-header'), document.getElementById('kwr-amz-count'));
         } else {
             document.getElementById('kwr-amz-results-header').style.display = 'flex';
             document.getElementById('kwr-amz-count').textContent = 'No keywords match this filter';
@@ -2854,17 +2888,42 @@ document.getElementById('kwr-plat-min-words')?.addEventListener('input', functio
     kwrPlatMinWords = Math.max(1, parseInt(this.value) || 1);
     if (kwrPlatData.length) {
         const filtered = kwrWordFilter(kwrPlatData, kwrPlatMinWords);
-        if (filtered.length) {
-            kwrRender(filtered,
-            document.getElementById('kwr-plat-results'),
-            document.getElementById('kwr-plat-results-header'),
-            document.getElementById('kwr-plat-count'),
-            true);
+        const platSortVal = document.getElementById('kwr-plat-sort')?.value || 'sources-desc';
+        const sorted = kwrSortData(filtered, platSortVal, true);
+        if (sorted.length) {
+            kwrRender(sorted, document.getElementById('kwr-plat-results'), document.getElementById('kwr-plat-results-header'), document.getElementById('kwr-plat-count'), true);
         } else {
             document.getElementById('kwr-plat-results-header').style.display = 'flex';
             document.getElementById('kwr-plat-count').textContent = 'No keywords match this filter';
             document.getElementById('kwr-plat-results').innerHTML = "<li style='padding:14px; text-align:center; color:#888;'>Try lowering the minimum word count.</li>";
         }
+    }
+});
+
+// Sort selects — re-render with new sort order
+document.getElementById('kwr-amz-sort')?.addEventListener('change', function() {
+    if (!kwrAmzData || !kwrAmzData.length) return;
+    const filtered = kwrWordFilter(kwrAmzData, kwrAmzMinWords);
+    const sorted = kwrSortData(filtered, this.value, false);
+    if (sorted.length) {
+        kwrRender(sorted, document.getElementById('kwr-amz-results'), document.getElementById('kwr-amz-results-header'), document.getElementById('kwr-amz-count'));
+    } else {
+        document.getElementById('kwr-amz-results-header').style.display = 'flex';
+        document.getElementById('kwr-amz-count').textContent = 'No keywords match this filter';
+        document.getElementById('kwr-amz-results').innerHTML = '<li style="padding:14px; text-align:center; color:#888">Try lowering the minimum word count.</li>';
+    }
+});
+
+document.getElementById('kwr-plat-sort')?.addEventListener('change', function() {
+    if (!kwrPlatData || !kwrPlatData.length) return;
+    const filtered = kwrWordFilter(kwrPlatData, kwrPlatMinWords);
+    const sorted = kwrSortData(filtered, this.value, true);
+    if (sorted.length) {
+        kwrRender(sorted, document.getElementById('kwr-plat-results'), document.getElementById('kwr-plat-results-header'), document.getElementById('kwr-plat-count'), true);
+    } else {
+        document.getElementById('kwr-plat-results-header').style.display = 'flex';
+        document.getElementById('kwr-plat-count').textContent = 'No keywords match this filter';
+        document.getElementById('kwr-plat-results').innerHTML = '<li style="padding:14px; text-align:center; color:#888">Try lowering the minimum word count.</li>';
     }
 });
 
@@ -2915,7 +2974,8 @@ function kwrExports(getDataFn, copyBtn, txtBtn, csvBtn, hasSources = false) {
         const ms = document.getElementById('marketplaceSelect')?.value || 'com';
         try {
             kwrAmzData = await kwrExecute({ action: 'amazon', title, brand, advancedWords: document.getElementById('kwr-amz-advanced').value.trim(), negativeKeywords: document.getElementById('kwr-amz-negative').value.trim(), market: kwrMarketMap[ms] || 'US' });
-            kwrRender(kwrAmzData, listEl, document.getElementById('kwr-amz-results-header'), document.getElementById('kwr-amz-count'));
+                        const amzInitSort = document.getElementById('kwr-amz-sort')?.value || 'a-z';
+            kwrRender(kwrSortData(kwrAmzData, amzInitSort, false), listEl, document.getElementById('kwr-amz-results-header'), document.getElementById('kwr-amz-count'));
 kwrAmzMinWords = 1;
 const amzWcInput = document.getElementById('kwr-amz-min-words');
 if (amzWcInput) amzWcInput.value = 1;
@@ -2943,7 +3003,8 @@ if (amzWcInput) amzWcInput.value = 1;
         btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing…'; loader.style.display = 'block';
         try {
             kwrPlatData = await kwrExecute({ action: 'platforms', title, brand, advancedWords: document.getElementById('kwr-plat-advanced').value.trim(), negativeKeywords: document.getElementById('kwr-plat-negative').value.trim(), platforms });
-        kwrRender(kwrPlatData, listEl, document.getElementById('kwr-plat-results-header'), document.getElementById('kwr-plat-count'), true);
+                    const platInitSort = document.getElementById('kwr-plat-sort')?.value || 'sources-desc';
+            kwrRender(kwrSortData(kwrPlatData, platInitSort, true), listEl, document.getElementById('kwr-plat-results-header'), document.getElementById('kwr-plat-count'), true);
 kwrPlatMinWords = 1;
 const platWcInput = document.getElementById('kwr-plat-min-words');
 if (platWcInput) platWcInput.value = 1;

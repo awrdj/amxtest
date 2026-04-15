@@ -2927,6 +2927,58 @@ document.getElementById('kwr-plat-sort')?.addEventListener('change', function() 
     }
 });
 
+function kwrBuildFilename(isPlat, ext) {
+    const clean = (s, max = 25) =>
+        (s || '').trim().replace(/[^a-zA-Z0-9 ]/g, '').replace(/\s+/g, '-').slice(0, max);
+
+    const sortLabels = {
+        'a-z': 'AZ', 'z-a': 'ZA',
+        'wc-asc': 'WordsAsc', 'wc-desc': 'WordsDesc',
+        'sources-desc': 'MostSources', 'sources-asc': 'FewestSources'
+    };
+
+    const titleId = isPlat ? 'kwr-plat-title'    : 'kwr-amz-title';
+    const brandId = isPlat ? 'kwr-plat-brand'     : 'kwr-amz-brand';
+    const advId   = isPlat ? 'kwr-plat-advanced'  : 'kwr-amz-advanced';
+    const negId   = isPlat ? 'kwr-plat-negative'  : 'kwr-amz-negative';
+    const sortId  = isPlat ? 'kwr-plat-sort'      : 'kwr-amz-sort';
+    const minWId  = isPlat ? 'kwr-plat-min-words' : 'kwr-amz-min-words';
+
+    const title     = clean(document.getElementById(titleId)?.value);
+    const brand     = clean(document.getElementById(brandId)?.value, 20);
+    const adv       = clean(document.getElementById(advId)?.value, 20);
+    const neg       = clean(document.getElementById(negId)?.value, 20);
+    const sortVal   = document.getElementById(sortId)?.value || (isPlat ? 'sources-desc' : 'a-z');
+    const sortLabel = sortLabels[sortVal] || sortVal;
+    const minW      = document.getElementById(minWId)?.value || '1';
+
+    let context;
+    if (isPlat) {
+        const checked = [...document.querySelectorAll('.kwr-platform-cb:checked')].map(cb => cb.value);
+        context = checked.length > 3
+            ? checked.slice(0, 3).join('+') + `+${checked.length - 3}more`
+            : (checked.join('+') || 'AllPlatforms');
+    } else {
+        const ms = document.getElementById('marketplaceSelect')?.value || 'com';
+        context = kwrMarketMap[ms] || 'US';
+    }
+
+    const now = new Date();
+    const ts  = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}-${String(now.getMinutes()).padStart(2,'0')}`;
+
+    const parts = ['MerchScopeKWR'];
+    if (title) parts.push(title);
+    if (brand) parts.push(`B-${brand}`);
+    if (adv)   parts.push(`A-${adv}`);
+    if (neg)   parts.push(`NEG-${neg}`);
+    parts.push(context);
+    parts.push(`minW${minW}`);
+    parts.push(sortLabel);
+    parts.push(ts);
+
+    return parts.join('_') + '.' + ext;
+}
+
 // Export buttons helper
 function kwrExports(getDataFn, copyBtn, txtBtn, csvBtn, hasSources = false) {
     copyBtn.addEventListener('click', () => {
@@ -2940,7 +2992,7 @@ function kwrExports(getDataFn, copyBtn, txtBtn, csvBtn, hasSources = false) {
     txtBtn.addEventListener('click', () => {
         const d = getDataFn(); if (!d?.length) return;
         const text = hasSources ? d.map(item => item.keyword).join('\n') : d.join('\n');
-        const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([text], {type:'text/plain'})), download: 'keywords.txt' });
+        const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([text], {type:'text/plain'})), download: kwrBuildFilename(hasSources, 'txt') });
         a.click();
     });
     csvBtn.addEventListener('click', () => {
@@ -2954,7 +3006,7 @@ function kwrExports(getDataFn, copyBtn, txtBtn, csvBtn, hasSources = false) {
         } else {
             csv = 'Keywords\n' + d.map(e => e.includes(',') ? `"${e}"` : e).join('\n');
         }
-        const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8;'})), download: 'keywords.csv' });
+        const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8;'})), download: kwrBuildFilename(hasSources, 'csv') });
         a.click();
     });
 }

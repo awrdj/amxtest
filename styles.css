@@ -1421,3 +1421,27 @@ body.dark-mode .kwr-plat-icon {
 body.dark-mode .kwr-plat-icon-grey {
     filter: brightness(0) invert(1) opacity(0.3);
 }
+
+/* ===== KWR SORT SELECT ===== */
+.kwr-sort-select {
+    padding: 2px 22px 2px 6px;
+    font-size: 0.78rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    height: 22px;
+    background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 8.825l-4.762-4.762L2.175 3.15 6 6.975l3.825-3.825 1.062.913L6 8.825z'/%3E%3C/svg%3E") no-repeat right 6px center;
+    color: #333;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+}
+.kwr-sort-select:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+}
+body.dark-mode .kwr-sort-select {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+    border-color: #444;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%23e0e0e0' d='M6 8.825l-4.762-4.762L2.175 3.15 6 6.975l3.825-3.825 1.062.913L6 8.825z'/%3E%3C/svg%3E");
+}

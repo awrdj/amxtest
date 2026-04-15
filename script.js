@@ -2754,9 +2754,9 @@ function kwrSortData(data, sortVal, isPlat) {
             return kb.trim().split(/\s+/).length - ka.trim().split(/\s+/).length;
         });
     } else if (sortVal === 'sources-desc') {
-        return arr.sort((a, b) => b.sources.size - a.sources.size);
+        return arr.sort((a, b) => b.sources.length - a.sources.length);
     } else if (sortVal === 'sources-asc') {
-        return arr.sort((a, b) => a.sources.size - b.sources.size);
+        return arr.sort((a, b) => a.sources.length - b.sources.length);
     }
     return arr;
 }
@@ -2985,7 +2985,7 @@ if (amzWcInput) amzWcInput.value = 1;
             btn.disabled = false; btn.innerHTML = '<i class="fas fa-search"></i> Analyze Keywords'; loader.style.display = 'none';
         }
     });
-    kwrExports(() => kwrWordFilter(kwrAmzData, kwrAmzMinWords), document.getElementById('kwr-amz-copy-btn'), document.getElementById('kwr-amz-txt-btn'), document.getElementById('kwr-amz-csv-btn'));
+    kwrExports(() => kwrSortData(kwrWordFilter(kwrAmzData, kwrAmzMinWords), document.getElementById('kwr-amz-sort')?.value || 'a-z', false), document.getElementById('kwr-amz-copy-btn'), document.getElementById('kwr-amz-txt-btn'), document.getElementById('kwr-amz-csv-btn'));
 
     // Multi-Platform Engine
     let kwrPlatData = [];
@@ -3014,7 +3014,7 @@ if (platWcInput) platWcInput.value = 1;
             btn.disabled = false; btn.innerHTML = '<i class="fas fa-globe"></i> Analyze Platforms'; loader.style.display = 'none';
         }
     });
-    kwrExports(() => kwrWordFilter(kwrPlatData, kwrPlatMinWords), document.getElementById('kwr-plat-copy-btn'), document.getElementById('kwr-plat-txt-btn'), document.getElementById('kwr-plat-csv-btn'), true);
+    kwrExports(() => kwrSortData(kwrWordFilter(kwrPlatData, kwrPlatMinWords), document.getElementById('kwr-plat-sort')?.value || 'sources-desc', true), document.getElementById('kwr-plat-copy-btn'), document.getElementById('kwr-plat-txt-btn'), document.getElementById('kwr-plat-csv-btn'), true);
 
     // Header link → scroll to & auto-open KWR panel
 document.getElementById('kwrHeaderLink')?.addEventListener('click', function(e) {

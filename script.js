@@ -3545,7 +3545,14 @@ $(document).ready(function() {
         const link = document.createElement("a");
         const url = URL.createObjectURL(blob);
         link.setAttribute("href", url);
-        link.setAttribute("download", "merchscope_Suggestions.csv");
+const _sc = s => (s || '').trim().replace(/[^a-zA-Z0-9 ]/g, '').replace(/\s+/g, '-').slice(0, 30);
+const _term = _sc(searchInput.val());
+const _dept = _sc(suggestionDepartmentSelect.find('option:selected').text());
+const _mkt = ({'com':'US','co.uk':'UK','de':'DE','fr':'FR','it':'IT','es':'ES'})[marketplaceSelect.val()] || 'US';
+const _now = new Date();
+const _ts = `${_now.getFullYear()}-${String(_now.getMonth()+1).padStart(2,'0')}-${String(_now.getDate()).padStart(2,'0')}_${String(_now.getHours()).padStart(2,'0')}-${String(_now.getMinutes()).padStart(2,'0')}`;
+const _fname = ['MerchScopeAMZSuggestions', _term, _dept, _mkt, _ts].filter(Boolean).join('_') + '.csv';
+link.setAttribute("download", _fname);
         link.style.visibility = 'hidden';
         document.body.appendChild(link);
         link.click();

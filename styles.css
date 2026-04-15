@@ -732,7 +732,7 @@ footer {
 }
 
 .dark-mode-toggle:hover {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 1);
     transform: rotate(15deg) scale(1.1);
 }
 

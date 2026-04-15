@@ -56,9 +56,9 @@ a:hover {
         vertical-align: middle;
 }
 
-/*.plz_hinweis:hover {
+.plz_hinweis:hover {
         background-color: #fff!important;
-}*/
+}
 
 .logo-highlight {
 	color: var(--secondary-color);
@@ -142,10 +142,6 @@ a:hover {
 	font-weight: bold;
 	margin-left: 10px;
 	animation: fadeIn 0.3s ease;
-}
-
-.plz_hinweis:hover {
-	background-color: #e9ecef;
 }
 
 .search-button:hover {

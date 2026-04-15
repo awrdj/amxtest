@@ -283,7 +283,7 @@ pageNumber: (String or Number) Sets the page number input value.
             { value: 'most-purchased-com-men-novelty', text: '⭐️ Most Purchased Fashion Mens Novelty T-Shirts', 
               settings: { sortOrder: 'most-purchased-rank', department: 'fashion', category: '9056985011', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'most-purchased-com-men-novelty', text: '⭐️ Most Purchased Fashion Novelty & More', 
-              settings: { sortOrder: 'most-purchased-rank', department: 'fashion-novelty', category: '9056985011', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
+              settings: { sortOrder: 'most-purchased-rank', department: 'fashion-novelty', /*category: '9056985011',*/ productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             /*{ value: 'the-trends-com', text: 'Trends Fashion Novelty', 
               settings: { sortOrder: 'date-desc-rank', department: 'fashion-novelty', productType: 'custom', suppressDefaultProductTypeKeywords: false} },*/
             { value: 'archive-view-com', text: '📈 Trends/Archive Fashion Novelty', 

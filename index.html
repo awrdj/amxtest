@@ -285,6 +285,16 @@
             <input type="number" id="kwr-amz-min-words" class="kwr-wc-input" value="1" min="1" max="20">
         </div>
         <div class="kwr-wc-divider"></div>
+        <div class="kwr-wc-inline">
+            <label for="kwr-amz-sort" class="kwr-wc-label">Sort:</label>
+            <select id="kwr-amz-sort" class="kwr-sort-select">
+                <option value="a-z">A → Z</option>
+                <option value="z-a">Z → A</option>
+                <option value="wc-asc">Words ↑</option>
+                <option value="wc-desc">Words ↓</option>
+            </select>
+        </div>
+        <div class="kwr-wc-divider"></div>
         <div class="kwr-export-btns">
             <button id="kwr-amz-copy-btn" class="btn btn-sm btn-outline-secondary">Copy All</button>
             <button id="kwr-amz-txt-btn"  class="btn btn-sm btn-outline-secondary">.TXT</button>
@@ -326,6 +336,18 @@
         <div class="kwr-wc-inline">
             <label for="kwr-plat-min-words" class="kwr-wc-label">Min words:</label>
             <input type="number" id="kwr-plat-min-words" class="kwr-wc-input" value="1" min="1" max="20">
+        </div>
+        <div class="kwr-wc-divider"></div>
+        <div class="kwr-wc-inline">
+            <label for="kwr-plat-sort" class="kwr-wc-label">Sort:</label>
+            <select id="kwr-plat-sort" class="kwr-sort-select">
+                <option value="sources-desc">Most Sources</option>
+                <option value="sources-asc">Fewest Sources</option>
+                <option value="a-z">A → Z</option>
+                <option value="z-a">Z → A</option>
+                <option value="wc-asc">Words ↑</option>
+                <option value="wc-desc">Words ↓</option>
+            </select>
         </div>
         <div class="kwr-wc-divider"></div>
         <div class="kwr-export-btns">

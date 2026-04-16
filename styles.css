@@ -1446,3 +1446,13 @@ body.dark-mode .kwr-sort-select {
     border-color: #444;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%23e0e0e0' d='M6 8.825l-4.762-4.762L2.175 3.15 6 6.975l3.825-3.825 1.062.913L6 8.825z'/%3E%3C/svg%3E");
 }
+
+/* Amazon checkbox — subtle separator from other platforms */
+.kwr-platforms-grid .kwr-amazon-label {
+    border-right: 2px solid var(--border-color);
+    padding-right: 8px;
+    margin-right: 4px;
+}
+body.dark-mode .kwr-platforms-grid .kwr-amazon-label {
+    border-right-color: #444;
+}

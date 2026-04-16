@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Merch Amazon Research Tool - MerchScope</title>
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-YRZVE3RZCW"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+        
+          gtag('config', 'G-YRZVE3RZCW');
+        </script>
+<body>
+    <div class="header-section">
+        <div class="container">
+            <h1 class="text-center header-title">
+        <a href="./" style="color:white;">
+            <div class="logo-container">
+            <img src="icon.png" alt="MerchScope Logo" class="logo-image">
+            <span class="logo-text">Merch<span class="logo-highlight">Scope</span></span>
+            </div>
+        </a>
+    </h1>
+            <p class="text-center header-subtitle mb-0"><a href="#kwResearchPanel" id="kwrHeaderLink" style="color: #ffffff !important; text-decoration: none !important; background-color: transparent !important;">Discover your niche.</a> <a href="./inspo" target="_blank" style="color: #ffffff !important; text-decoration: none !important; background-color: transparent !important;">Design with insight.</a> - <a href="./e" target="_blank" style="color: #ffffff !important; text-decoration: none !important; background-color: transparent !important;">E</a></p>
+<!-- Dark Mode Toggle -->
+<button id="darkModeToggle" class="dark-mode-toggle" aria-label="Toggle dark mode">
+    <i class="fas fa-moon"></i>
+    <i class="fas fa-sun"></i>
+</button>
+        </div>
+    </div>
+
+    <div class="container-fluid px-4" id="niche" style=" padding-top: 24px; margin-top: -24px; ">
+        <div class="search-section">
+            <form id="searchForm">
+                <div class="row">
+                    <div class="col-md-6 mb-2">
+                        <label for="marketplaceSelect" class="small mb-1">Marketplace</label>
+                        <select id="marketplaceSelect" class="form-control">
+                            <option value="com">.COM - United States</option>
+                            <option value="co.uk">.CO.UK - United Kingdom</option>
+                            <option value="de">.DE - Germany</option>
+                            <option value="fr">.FR - France</option>
+                            <option value="it">.IT - Italy</option>
+                            <option value="es">.ES - Spain</option>
+                            <!--<option value="co.jp">.CO.JP - Japan</option!-->
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label for="productTypeSelect" class="small mb-1">Product Type</label>
+                        <select id="productTypeSelect" class="form-control" style="text-transform:uppercase;">
+                            <!-- Options will be populated dynamically based on marketplace -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-12 mb-2">
+                        <div class="search-input-group"> <input id="searchInput" type="text" class="form-control" placeholder="Enter keyword or leave blank to see all">
+                            <span id="clearSearchBtn" class="clear-search-btn" style="display: none;">
+                                <i class="fas fa-times" aria-hidden="true"></i>
+                            </span>
+                            <button type="submit" class="search-button">
+                                <i class="fas fa-search" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div id="suggestionsContainer"></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div id="suggestionsContainer" class="suggestions-container"></div>
+                </div>
+
+                <div class="row mt-2" style="margin-top:0px!important;">
+                    <div class="col-12">
+                        <div class="suggestion-controls">
+                            <div class="form-check" style="margin-bottom: 0;"> <input class="form-check-input" type="checkbox" id="kwsuggestions" value="kwsuggestionsYes" checked>
+                                <label class="form-check-label" for="kwsuggestions">KW Suggestions</label>
+                            </div>
+                            <select id="suggestionDepartmentSelect" class="form-control form-control-sm" style="width: auto; display: inline-block; font-size: 12px; padding: 0 30px 0 12px; height: 25px;">
+                                <option value="aps" selected>All</option>
+                                <option value="fashion">Clothing</option>
+                                <option value="mobile">Mobile</option>
+                                <option value="garden">Home & Kitchen</option>
+                                <option value="stripbooks">Books</option>
+                                <!--<option value="electronics">Electronics</option>-->
+                                <!--<option value="fashion-novelty">Fashion Novelty</option>-->
+                                <!--<option value="fashion-mens">Men's Fashion</option> you can try fashion-boys or fashion-baby--> 
+                            </select>
+                            <div id="suggestionActions" style="display: none; gap: 5px;">
+                                <button type="button" id="downloadCsvBtn" class="btn btn-outline-secondary btn-sm" title="Download Suggestions as CSV" disabled>CSV</button>
+                                <button type="button" id="copySuggestionsBtn" class="btn btn-outline-secondary btn-sm" title="Copy Suggestions to Clipboard" disabled>COPY</button>
+                            </div>
+                        </div>
+                
+<div class="plz_hinweis text-right" style="margin-top: 0; padding: 0; border: 0;">
+    <div id="copy_to_clipboard">
+        <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
+            <span class="copied-message" style="display: none;">Copied!&nbsp;</span>
+            <label for="zipSelect" style="margin: 0; font-size: 0.85rem; white-space: nowrap;">Valid ZIP for <span id="zipMarketplaceLabel">.COM</span>:</label>
+            <select id="zipSelect" class="form-control form-control-sm" style="width: 250px; font-size: 0.85rem; padding: 4px 30px 4px 8px; height: auto;">
+                <!-- Options populated by JavaScript -->
+            </select>
+            <button type="button" id="copyZipBtn" class="btn btn-outline-secondary btn-sm" title="Copy ZIP to Clipboard" style="padding: 4px 10px; font-size: 0.85rem;">
+                <i class="fas fa-clipboard" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+                        <div style="clear: both;"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- All filters in a horizontal layout -->
+        <div class="filters-container">
+            <div class="filter-box" id="departmentCategoryBox">
+                <div class="filter-title">Department & Category</div>
+                <select id="department" class="form-control mb-2">
+                    <!-- Additional departments will be populated dynamically -->
+                </select>
+                <select id="category" class="form-control" disabled>
+                    <option value="">No Category Filter</option>
+                    <!-- Categories will be populated by JavaScript based on department selection -->
+                </select>
+            </div>
+
+            <!-- BCKP- WORKING
+            <div class="filter-box">
+                <div class="filter-title">Sort Order</div>
+                <select id="sortOrder" class="form-control">
+                    <!- - Options will be dynamically populated based on marketplace - ->
+                </select>
+            </div> -->
+
+<div class="filter-box">
+    <div class="filter-title">Sort Order</div>
+    <select id="sortOrder" class="form-control mb-2">
+        <!-- Options will be dynamically populated based on marketplace -->
+    </select>
+    <div for="pageNumber" class="filter-title" style="margin-top: 12px;">Page Number</div>
+    <input type="number" class="form-control" id="pageNumber" placeholder="Enter page number" min="2" step="1" maxlength="3">
+</div>
+
+            <div class="filter-box">
+                <div class="filter-title">Price Range </div>
+                <div class="row">
+                    <div class="col-6 pr-1">
+                        <input type="text" class="form-control" id="minPrice" placeholder="Min $" inputmode="decimal">
+                    </div>
+                    <div class="col-6 pl-1">
+                        <input type="text" class="form-control" id="maxPrice" placeholder="Max $" inputmode="decimal">
+                    </div>
+                </div>
+                <small class="form-text text-muted" style="font-size: 0.75rem;">Specify min, max, or both. If empty, min defaults to 0 and max to 1000. <br>Note: You can use decimals (for example, 13.38).</small>
+            </div>
+
+            <div class="filter-box">
+                <div class="filter-title">Seller & Review Filters</div>
+                <div class="checkbox-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="sellerAmazon" value="p_6%3AATVPDKIKX0DER" checked>
+                        <label class="form-check-label" for="sellerAmazon">Seller is Amazon</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="reviewsFilter" value="p_72%3A2661618011">
+                        <label class="form-check-label" for="reviewsFilter">Reviews 4+</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filter-box">
+                <div class="filter-title">Time Filters</div>
+                <div class="checkbox-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="timeFilter" id="timeFilterNone" value="" checked>
+                        <label class="form-check-label" for="timeFilterNone">None</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="timeFilter" id="timeFilter30Days" value="p_n_date_first_available_absolute%3A15196852011">
+                        <label class="form-check-label" for="timeFilter30Days">Last 30 days</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="timeFilter" id="timeFilter90Days" value="p_n_date_first_available_absolute%3A15196853011">
+                        <label class="form-check-label" for="timeFilter90Days">Last 90 days</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filter-box">
+                <div class="filter-title">Presets</div>
+                <select id="presetsSelect" class="form-control">
+                    <!-- Options will be dynamically populated based on marketplace -->
+                </select>
+            </div>
+            
+        </div>
+
+        <div class="filter-box">
+            <div class="filter-title">Exclude Brands, Politics & Haram | Custom Hidden Keywords</div>
+            <div class="checkbox-group" id="hiddenKeywordsContainer">
+<div class="exclude-checkboxes-row">
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="filterExcludeBrands" value="">
+        <label class="form-check-label" for="filterExcludeBrands">Exclude Major Brands</label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="filterExcludePolitics" value="">
+        <label class="form-check-label" for="filterExcludePolitics">Exclude Politics</label>
+    </div>
+    <div class="form-check" style="margin-left: auto;">
+        <input class="form-check-input" type="checkbox" id="filterExcludeHaram" value="" checked>
+        <label class="form-check-label" for="filterExcludeHaram">Exclude Haram</label>
+    </div>
+</div>    
+                <div class="mt-1">
+                    <input type="text" class="form-control custom-hidden-keywords" id="customHiddenKeywords" placeholder="Custom hidden keywords">
+                    <small class="form-text text-muted" style="font-size: 0.75rem;">Type normally to include keywords (e.g., funny cat). Precede a word with a minus sign to exclude it (e.g., -Marvel). Note: Excluding multi-word phrases (e.g., -Star Wars) is not working reliably.</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="result-url" id="resultUrlContainer">
+            <h5 class="mb-2">Generated Amazon URL Preview</h5>
+            <div class="url-copy-container">
+                <div class="url-box" id="generatedUrl"></div>
+                <button id="copyUrlBtn" class="btn-url-copy"><i class="fas fa-clipboard"></i></button>
+            </div>
+        </div>
+
+<!-- Deep Keyword Research Panel -->
+<div class="filter-box kwr-panel" id="kwResearchPanel">
+    <div class="filter-title kwr-toggle" id="kwResearchToggle">
+        <span><i class="fas fa-flask" style="margin-right:6px;"></i>Deep Keyword Research</span>
+        <i class="fas fa-chevron-down kwr-chevron" id="kwResearchChevron"></i>
+    </div>
+
+    <div id="kwResearchContent" style="display:none; margin-top:14px;">
+
+<!-- Tabs -->
+<div class="kwr-tabs">
+<button class="kwr-tab active" data-kwr-view="kwr-amazon">Amazon Engine</button>
+<button class="kwr-tab" data-kwr-view="kwr-platforms">Multi-Platform</button>
+</div>
+
+<!-- Amazon Engine -->
+<div id="kwr-amazon" class="kwr-view active">
+<!-- Marketplace sync hint -->
+<p class="kwr-sync-hint">
+<i class="fas fa-link"></i> Using marketplace: <strong id="kwrMarketplaceLabel">US</strong>
+</p>
+<div class="kwr-input-group">
+<div class="kwr-input-with-btn">
+<input id="kwr-amz-title" type="text" class="form-control" placeholder="Product Title (e.g., funny cat shirt)">
+<button type="button" class="kwr-use-search-btn" id="kwr-amz-use-search">
+<i class="fas fa-arrow-down"></i> Use search
+</button>
+</div>
+<input id="kwr-amz-brand" type="text" class="form-control" placeholder="Brand Name (optional)">
+<input id="kwr-amz-advanced" type="text" class="form-control kwr-advanced-bg" placeholder="Advanced words (e.g., for kids, funny, best)">
+<input id="kwr-amz-negative" type="text" class="form-control kwr-negative-bg" placeholder="Negative keywords (e.g., free, cheap)">
+</div>
+<div class="kwr-buttons-group">
+<button id="kwr-amz-btn" class="kwr-primary-btn">
+<i class="fas fa-search"></i> Analyze Keywords
+</button>
+<div id="kwr-amz-loader" class="kwr-loader"></div>
+</div>
+<div id="kwr-amz-results-header" class="kwr-results-header">
+<span id="kwr-amz-count" class="kwr-count"></span>
+<div class="kwr-results-header-right">
+<div class="kwr-wc-inline">
+<label for="kwr-amz-min-words" class="kwr-wc-label">Min words:</label>
+<input type="number" id="kwr-amz-min-words" class="kwr-wc-input" value="1" min="1" max="20">
+</div>
+<div class="kwr-wc-divider"></div>
+<div class="kwr-wc-inline">
+<label for="kwr-amz-sort" class="kwr-wc-label">Sort:</label>
+<select id="kwr-amz-sort" class="kwr-sort-select">
+<option value="a-z">A → Z</option>
+<option value="z-a">Z → A</option>
+<option value="wc-asc">Words ↑</option>
+<option value="wc-desc">Words ↓</option>
+</select>
+</div>
+<div class="kwr-wc-divider"></div>
+<div class="kwr-export-btns">
+<button id="kwr-amz-copy-btn" class="btn btn-sm btn-outline-secondary">Copy All</button>
+<button id="kwr-amz-txt-btn" class="btn btn-sm btn-outline-secondary">.TXT</button>
+<button id="kwr-amz-csv-btn" class="btn btn-sm btn-outline-secondary">.CSV</button>
+</div>
+</div>
+</div>
+<ul id="kwr-amz-results" class="kwr-results-list"></ul>
+</div>
+
+<!-- Multi-Platform -->
+<div id="kwr-platforms" class="kwr-view">
+<div class="kwr-input-group">
+<div class="kwr-input-with-btn">
+<input id="kwr-plat-title" type="text" class="form-control" placeholder="Product Title (e.g., funny cat shirt)">
+<button type="button" class="kwr-use-search-btn" id="kwr-plat-use-search">
+<i class="fas fa-arrow-down"></i> Use search
+</button>
+</div>
+<input id="kwr-plat-brand" type="text" class="form-control" placeholder="Brand Name (optional)">
+<input id="kwr-plat-advanced" type="text" class="form-control kwr-advanced-bg" placeholder="Advanced words (e.g., for kids, funny, best)">
+<input id="kwr-plat-negative" type="text" class="form-control kwr-negative-bg" placeholder="Negative keywords (e.g., free, cheap)">
+</div>
+<div class="kwr-plat-select-controls">
+<a href="#" id="kwrSelectAllPlatforms" class="kwr-plat-select-link">Select all</a>
+<span class="kwr-plat-select-dot">·</span>
+<a href="#" id="kwrDeselectAllPlatforms" class="kwr-plat-select-link">Deselect all</a>
+</div>
+<div id="kwr-platform-checkboxes" class="kwr-platforms-grid"></div>
+<div class="kwr-buttons-group">
+<button id="kwr-plat-btn" class="kwr-primary-btn">
+<i class="fas fa-globe"></i> Analyze Platforms
+</button>
+<div id="kwr-plat-loader" class="kwr-loader"></div>
+</div>
+<div id="kwr-plat-results-header" class="kwr-results-header">
+<span id="kwr-plat-count" class="kwr-count"></span>
+<div class="kwr-results-header-right">
+<div class="kwr-wc-inline">
+<label for="kwr-plat-min-words" class="kwr-wc-label">Min words:</label>
+<input type="number" id="kwr-plat-min-words" class="kwr-wc-input" value="1" min="1" max="20">
+</div>
+<div class="kwr-wc-divider"></div>
+<div class="kwr-wc-inline">
+<label for="kwr-plat-sort" class="kwr-wc-label">Sort:</label>
+<select id="kwr-plat-sort" class="kwr-sort-select">
+<option value="sources-desc">Most Sources</option>
+<option value="sources-asc">Fewest Sources</option>
+<option value="a-z">A → Z</option>
+<option value="z-a">Z → A</option>
+<option value="wc-asc">Words ↑</option>
+<option value="wc-desc">Words ↓</option>
+</select>
+</div>
+<div class="kwr-wc-divider"></div>
+<div class="kwr-export-btns">
+<button id="kwr-plat-copy-btn" class="btn btn-sm btn-outline-secondary">Copy All</button>
+<button id="kwr-plat-txt-btn" class="btn btn-sm btn-outline-secondary">.TXT</button>
+<button id="kwr-plat-csv-btn" class="btn btn-sm btn-outline-secondary">.CSV</button>
+</div>
+</div>
+</div>
+<ul id="kwr-plat-results" class="kwr-results-list"></ul>
+
+    </div>
+</div>
+        
+    </div>
+
+    <footer>
+        <div class="container">
+            <p style="margin-bottom:0;">© 2025 MerchScope Research Tool. Created for personal research purposes.</p>
+        </div>
+    </footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

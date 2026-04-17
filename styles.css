@@ -1416,12 +1416,12 @@ body.dark-mode .kwr-badge-high {
     background: var(--secondary-color);
     color: #1a1a1a;
 }
-body.dark-mode .kwr-plat-icon {
+/*body.dark-mode .kwr-plat-icon {
     filter: brightness(0) invert(1);
 }
 body.dark-mode .kwr-plat-icon-grey {
     filter: brightness(0) invert(1) opacity(0.3);
-}
+}*/
 
 /* ===== KWR SORT SELECT ===== */
 .kwr-sort-select {

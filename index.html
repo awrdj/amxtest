@@ -246,121 +246,68 @@
         <i class="fas fa-chevron-down kwr-chevron" id="kwResearchChevron"></i>
     </div>
 
-    <div id="kwResearchContent" style="display:none; margin-top:14px;">
+<div id="kwResearchContent" style="display:none; margin-top:14px;">
 
-        <!-- Tabs -->
-        <div class="kwr-tabs">
-            <button class="kwr-tab active" data-kwr-view="kwr-amazon">Amazon Engine</button>
-            <button class="kwr-tab" data-kwr-view="kwr-platforms">Multi-Platform</button>
-        </div>
-
-        <!-- Amazon Engine -->
-        <div id="kwr-amazon" class="kwr-view active">
-        <!-- Marketplace sync hint -->
-        <p class="kwr-sync-hint">
-            <i class="fas fa-link"></i> Using marketplace: <strong id="kwrMarketplaceLabel">US</strong>
-        </p>
+        <div id="kwr-platforms" class="kwr-view active">
+            <p class="kwr-sync-hint">
+                <i class="fas fa-link"></i> Amazon Marketplace: <strong id="kwrMarketplaceLabel">US</strong> 
+                <span style="opacity: 0.7; font-weight: normal; margin-left: 5px;">(Applies to Amazon results)</span>
+            </p>
+            
             <div class="kwr-input-group">
-<div class="kwr-input-with-btn">
-    <input id="kwr-amz-title" type="text" class="form-control" placeholder="Product Title (e.g., funny cat shirt)">
-    <button type="button" class="kwr-use-search-btn" id="kwr-amz-use-search">
-        <i class="fas fa-arrow-down"></i> Use search
-    </button>
-</div>
-                <input id="kwr-amz-brand" type="text" class="form-control" placeholder="Brand Name (optional)">
-                <input id="kwr-amz-advanced" type="text" class="form-control kwr-advanced-bg" placeholder="Advanced words (e.g., for kids, funny, best)">
-                <input id="kwr-amz-negative" type="text" class="form-control kwr-negative-bg" placeholder="Negative keywords (e.g., free, cheap)">
-            </div>
-            <div class="kwr-buttons-group">
-                <button id="kwr-amz-btn" class="kwr-primary-btn">
-                    <i class="fas fa-search"></i> Analyze Keywords
-                </button>
-                <div id="kwr-amz-loader" class="kwr-loader"></div>
-            </div>
-<div id="kwr-amz-results-header" class="kwr-results-header">
-    <span id="kwr-amz-count" class="kwr-count"></span>
-    <div class="kwr-results-header-right">
-        <div class="kwr-wc-inline">
-            <label for="kwr-amz-min-words" class="kwr-wc-label">Min words:</label>
-            <input type="number" id="kwr-amz-min-words" class="kwr-wc-input" value="1" min="1" max="20">
-        </div>
-        <div class="kwr-wc-divider"></div>
-        <div class="kwr-wc-inline">
-            <label for="kwr-amz-sort" class="kwr-wc-label">Sort:</label>
-            <select id="kwr-amz-sort" class="kwr-sort-select">
-                <option value="a-z">A → Z</option>
-                <option value="z-a">Z → A</option>
-                <option value="wc-asc">Words ↑</option>
-                <option value="wc-desc">Words ↓</option>
-            </select>
-        </div>
-        <div class="kwr-wc-divider"></div>
-        <div class="kwr-export-btns">
-            <button id="kwr-amz-copy-btn" class="btn btn-sm btn-outline-secondary">Copy All</button>
-            <button id="kwr-amz-txt-btn"  class="btn btn-sm btn-outline-secondary">.TXT</button>
-            <button id="kwr-amz-csv-btn"  class="btn btn-sm btn-outline-secondary">.CSV</button>
-        </div>
-    </div>
-</div>
-            <ul id="kwr-amz-results" class="kwr-results-list"></ul>
-        </div>
-
-        <!-- Multi-Platform -->
-        <div id="kwr-platforms" class="kwr-view">
-            <div class="kwr-input-group">
-<div class="kwr-input-with-btn">
-    <input id="kwr-plat-title" type="text" class="form-control" placeholder="Product Title (e.g., funny cat shirt)">
-    <button type="button" class="kwr-use-search-btn" id="kwr-plat-use-search">
-        <i class="fas fa-arrow-down"></i> Use search
-    </button>
-</div>
+                <div class="kwr-input-with-btn">
+                    <input id="kwr-plat-title" type="text" class="form-control" placeholder="Product Title (e.g., funny cat shirt)">
+                    <button type="button" class="kwr-use-search-btn" id="kwr-plat-use-search">
+                        <i class="fas fa-arrow-down"></i> Use search
+                    </button>
+                </div>
                 <input id="kwr-plat-brand" type="text" class="form-control" placeholder="Brand Name (optional)">
                 <input id="kwr-plat-advanced" type="text" class="form-control kwr-advanced-bg" placeholder="Advanced words (e.g., for kids, funny, best)">
                 <input id="kwr-plat-negative" type="text" class="form-control kwr-negative-bg" placeholder="Negative keywords (e.g., free, cheap)">
             </div>
-<div class="kwr-plat-select-controls">
-    <a href="#" id="kwrSelectAllPlatforms" class="kwr-plat-select-link">Select all</a>
-    <span class="kwr-plat-select-dot">·</span>
-    <a href="#" id="kwrDeselectAllPlatforms" class="kwr-plat-select-link">Deselect all</a>
-</div>
+            <div class="kwr-plat-select-controls">
+                <a href="#" id="kwrSelectAllPlatforms" class="kwr-plat-select-link">Select all</a>
+                <span class="kwr-plat-select-dot">·</span>
+                <a href="#" id="kwrDeselectAllPlatforms" class="kwr-plat-select-link">Deselect all</a>
+            </div>
             <div id="kwr-platform-checkboxes" class="kwr-platforms-grid"></div>
             <div class="kwr-buttons-group">
                 <button id="kwr-plat-btn" class="kwr-primary-btn">
-                    <i class="fas fa-globe"></i> Analyze Platforms
+                    <i class="fas fa-globe"></i> Analyze Keywords
                 </button>
                 <div id="kwr-plat-loader" class="kwr-loader"></div>
             </div>
-<div id="kwr-plat-results-header" class="kwr-results-header">
-    <span id="kwr-plat-count" class="kwr-count"></span>
-    <div class="kwr-results-header-right">
-        <div class="kwr-wc-inline">
-            <label for="kwr-plat-min-words" class="kwr-wc-label">Min words:</label>
-            <input type="number" id="kwr-plat-min-words" class="kwr-wc-input" value="1" min="1" max="20">
-        </div>
-        <div class="kwr-wc-divider"></div>
-        <div class="kwr-wc-inline">
-            <label for="kwr-plat-sort" class="kwr-wc-label">Sort:</label>
-            <select id="kwr-plat-sort" class="kwr-sort-select">
-                <option value="sources-desc">Most Sources</option>
-                <option value="sources-asc">Fewest Sources</option>
-                <option value="a-z">A → Z</option>
-                <option value="z-a">Z → A</option>
-                <option value="wc-asc">Words ↑</option>
-                <option value="wc-desc">Words ↓</option>
-            </select>
-        </div>
-        <div class="kwr-wc-divider"></div>
-        <div class="kwr-export-btns">
-            <button id="kwr-plat-copy-btn" class="btn btn-sm btn-outline-secondary">Copy All</button>
-            <button id="kwr-plat-txt-btn"  class="btn btn-sm btn-outline-secondary">.TXT</button>
-            <button id="kwr-plat-csv-btn"  class="btn btn-sm btn-outline-secondary">.CSV</button>
-        </div>
-    </div>
-</div>
+            <div id="kwr-plat-results-header" class="kwr-results-header">
+                <span id="kwr-plat-count" class="kwr-count"></span>
+                <div class="kwr-results-header-right">
+                    <div class="kwr-wc-inline">
+                        <label for="kwr-plat-min-words" class="kwr-wc-label">Min words:</label>
+                        <input type="number" id="kwr-plat-min-words" class="kwr-wc-input" value="1" min="1" max="20">
+                    </div>
+                    <div class="kwr-wc-divider"></div>
+                    <div class="kwr-wc-inline">
+                        <label for="kwr-plat-sort" class="kwr-wc-label">Sort:</label>
+                        <select id="kwr-plat-sort" class="kwr-sort-select">
+                            <option value="sources-desc">Most Sources</option>
+                            <option value="sources-asc">Fewest Sources</option>
+                            <option value="a-z">A → Z</option>
+                            <option value="z-a">Z → A</option>
+                            <option value="wc-asc">Words ↑</option>
+                            <option value="wc-desc">Words ↓</option>
+                        </select>
+                    </div>
+                    <div class="kwr-wc-divider"></div>
+                    <div class="kwr-export-btns">
+                        <button id="kwr-plat-copy-btn" class="btn btn-sm btn-outline-secondary">Copy All</button>
+                        <button id="kwr-plat-txt-btn"  class="btn btn-sm btn-outline-secondary">.TXT</button>
+                        <button id="kwr-plat-csv-btn"  class="btn btn-sm btn-outline-secondary">.CSV</button>
+                    </div>
+                </div>
+            </div>
             <ul id="kwr-plat-results" class="kwr-results-list"></ul>
         </div>
-
     </div>
+    
 </div>
         
     </div>

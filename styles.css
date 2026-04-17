@@ -1384,7 +1384,7 @@ body.dark-mode .kwr-plat-select-dot {
     display: block;
 }
 .kwr-plat-icon-grey {
-    filter: grayscale(100%) opacity(0.25);
+    filter: /*grayscale(100%)*/ opacity(0.25);
 }
 .kwr-source-badge {
     font-size: 0.7rem;

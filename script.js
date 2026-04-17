@@ -2521,17 +2521,17 @@ if (pageNumber && parseInt(pageNumber) >= 2) {
         Wikipedia:  { buildUrl: q => "https://en.wikipedia.org/w/api.php?action=opensearch&search=" + encodeURIComponent(q),        parseResponse: async r => JSON.parse(await r.text())[1] || [] }
     };
 
-    // Platform display order and Simple Icons slugs
+// Platform display order and Domains for Favicons (Replaces SimpleIcons)
     const KWR_ALL_PLATFORMS = ['Amazon', 'Bing', 'DuckDuckGo', 'Google', 'Wikipedia', 'YouTube'];
-    const KWR_PLATFORM_ICONS = {
-        'Amazon':      'amazon',
-        'Bing':        'bigbluebutton',
-        'DuckDuckGo':  'duckduckgo',
-        'Google':      'google',
-        'Wikipedia':   'wikipedia',
-        'YouTube':     'youtube'
+    const KWR_PLATFORM_DOMAINS = {
+        'Amazon':      'amazon.com',
+        'Bing':        'bing.com',
+        'DuckDuckGo':  'duckduckgo.com',
+        'Google':      'google.com',
+        'Wikipedia':   'wikipedia.org',
+        'YouTube':     'youtube.com'
     };
-    
+
     const KWR_MODIFIERS = {
         PRODUCT_ATTRIBUTES: ["for men","for women","for kids","for toddlers","for boys","for girls","large","small","medium","xl","2xl","black","white","red","blue","green","2 pack","3 pack","gift","eco friendly","waterproof","long sleeve","short sleeve"],
         USER_INTENT:        ["review","vs","alternative","unboxing","tutorial","test","how to use","best","cheap","top rated","deals","discount","for sale","ideas","outfit"],
@@ -2648,7 +2648,6 @@ if (pageNumber && parseInt(pageNumber) >= 2) {
 
     // ---- UI ----
 
-    // Toggle panel open/close
     const kwrToggle   = document.getElementById('kwResearchToggle');
     const kwrContent  = document.getElementById('kwResearchContent');
     const kwrChevron  = document.getElementById('kwResearchChevron');
@@ -2660,11 +2659,14 @@ if (pageNumber && parseInt(pageNumber) >= 2) {
         if (!isOpen) kwrSyncMarketplace();
     });
 
-    // Sync marketplace from MerchScope selector
+    // Sync marketplace dynamically into the Amazon checkbox label
     function kwrSyncMarketplace() {
         const ms = document.getElementById('marketplaceSelect')?.value || 'com';
         const kwrCode = kwrMarketMap[ms] || 'US';
-        document.getElementById('kwrMarketplaceLabel').textContent = kwrCode;
+        const amzLabelSpan = document.getElementById('kwr-amz-cb-label');
+        if (amzLabelSpan) {
+            amzLabelSpan.textContent = `(${kwrCode})`;
+        }
     }
     document.getElementById('marketplaceSelect')?.addEventListener('change', kwrSyncMarketplace);
 
@@ -2684,14 +2686,23 @@ if (pageNumber && parseInt(pageNumber) >= 2) {
     document.getElementById('kwr-plat-use-search')
         ?.addEventListener('click', () => kwrFillFromSearch('kwr-plat-title'));
 
-    // Platform checkboxes
+    // Platform checkboxes (Only Amazon checked by default)
     const kwrCheckboxContainer = document.getElementById('kwr-platform-checkboxes');
     kwrCheckboxContainer.innerHTML = '';
     KWR_ALL_PLATFORMS.forEach(key => {
         const label = document.createElement('label');
-        label.innerHTML = `<input type="checkbox" class="kwr-platform-cb" value="${key}" checked> ${key}`;
+        const isAmazon = key === 'Amazon';
+        const isChecked = isAmazon ? 'checked' : '';
+        
+        // Append the dynamic (US), (UK), etc. span if it's Amazon
+        const labelText = isAmazon ? `Amazon <span id="kwr-amz-cb-label" style="font-size: 0.85em; opacity: 0.7;">(US)</span>` : key;
+        
+        label.innerHTML = `<input type="checkbox" class="kwr-platform-cb" value="${key}" ${isChecked}> ${labelText}`;
         kwrCheckboxContainer.appendChild(label);
     });
+
+    // Run once on load to ensure the correct marketplace is in the label
+    kwrSyncMarketplace();
 
     document.getElementById('kwrSelectAllPlatforms')?.addEventListener('click', function(e) {
         e.preventDefault();
@@ -2778,7 +2789,11 @@ if (pageNumber && parseInt(pageNumber) >= 2) {
                 logosSpan.className = 'kwr-source-logos';
                 KWR_ALL_PLATFORMS.forEach(plat => {
                     const img = document.createElement('img');
-                    img.src = `https://cdn.simpleicons.org/${KWR_PLATFORM_ICONS[plat]}`;
+                    
+                    // Fetch reliable favicons directly from Google instead of SimpleIcons
+                    const domain = KWR_PLATFORM_DOMAINS[plat] || 'google.com';
+                    img.src = `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
+                    
                     img.alt = plat;
                     img.title = plat;
                     img.width = 14;

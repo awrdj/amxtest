@@ -258,9 +258,9 @@
     /* Icons & Badges */
     .source-logos { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
     .plat-icon { width: 14px; height: 14px; object-fit: contain; }
-    .plat-icon-grey { filter: grayscale(100%) opacity(0.3); }
-    [data-theme="dark"] .plat-icon { filter: brightness(0) invert(1); }
-    [data-theme="dark"] .plat-icon-grey { filter: brightness(0) invert(1) opacity(0.3); }
+    .plat-icon-grey { filter: /*grayscale(100%)*/ opacity(0.25); }
+    /*[data-theme="dark"] .plat-icon { filter: brightness(0) invert(1); }
+    [data-theme="dark"] .plat-icon-grey { filter: brightness(0) invert(1) opacity(0.3); }*/
 
     .count-badge {
       display: inline-flex; align-items: center; justify-content: center; background: var(--color-primary);
@@ -269,7 +269,7 @@
     .badge-mid { background: var(--color-warning); }
     .badge-high { background: var(--color-success); }
 
-    .copy-icon { color: var(--color-text-faint); opacity: 0; transition: opacity var(--transition); flex-shrink: 0; margin-left: 4px;}
+    .copy-icon { color: var(--color-text-faint); opacity: 0; transition: opacity var(--transition); flex-shrink: 0; margin-right: 12px; margin-left: auto; cursor: pointer; }
     .result-item:hover .copy-icon { opacity: 1; }
     .result-item.copied-flash { background: var(--color-primary-highlight); color: var(--color-primary); }
     .result-item.result-error { color: var(--color-error); background: var(--color-error-highlight); cursor: default; pointer-events: none; }
@@ -332,7 +332,7 @@
 
       <div class="field-group">
         <div class="field">
-          <label class="field-label" for="market-select">Amazon Region</label>
+          <label class="field-label" for="market-select">Amazon Region <small style="font-size: xx-small;">(This applies only to Amazon)</small></label>
           <div class="select-wrapper">
             <select id="market-select" class="input">
               <option value="US">🇺🇸 Amazon.com — United States</option>
@@ -351,7 +351,7 @@
             <input id="kw-title" class="input" type="text" placeholder="e.g. running shoes" autocomplete="off" />
           </div>
           <div class="field">
-            <label class="field-label" for="kw-brand">Brand Name</label>
+            <label class="field-label" for="kw-brand">Brand Name <small style="font-size: xx-small;">(Optional)</small></label>
             <input id="kw-brand" class="input" type="text" placeholder="e.g. Nike" autocomplete="off" />
           </div>
         </div>
@@ -359,7 +359,7 @@
         <div class="input-row">
             <div class="field">
               <label class="field-label" for="kw-advanced">Advanced Modifiers</label>
-              <input id="kw-advanced" class="input input-advanced" type="text" placeholder="e.g. for kids, funny" autocomplete="off"/>
+              <input id="kw-advanced" class="input input-advanced" type="text" placeholder="e.g. for kids, funny, best" autocomplete="off"/>
             </div>
             <div class="field">
               <label class="field-label" for="kw-negative">Negative Keywords</label>
@@ -692,7 +692,7 @@ function updateUI() {
         const badgeClass = item.sources.length >= 3 ? 'badge-high' : item.sources.length >= 2 ? 'badge-mid' : '';
         const badge = `<span class="count-badge ${badgeClass}">×${item.sources.length}</span>`;
 
-        li.innerHTML = textSpan.outerHTML + logosSpan.outerHTML + badge + copySvg;
+       li.innerHTML = textSpan.outerHTML + copySvg + logosSpan.outerHTML + badge;
         
         li.addEventListener('click', () => {
             navigator.clipboard.writeText(item.keyword).then(() => {
@@ -750,8 +750,34 @@ document.getElementById('btn-analyze').addEventListener('click', async () => {
 // Exports
 function getExportData() { return sortData(filterData(currentData), document.getElementById('filter-sort').value); }
 function getFilename(ext) {
-    const clean = s => (s||'').replace(/[^a-zA-Z0-9 ]/g,'').replace(/\s+/g,'-').slice(0,20);
-    return `DeepKeywords_${clean(document.getElementById('kw-title').value)||'Export'}.${ext}`;
+    const clean = (s, max = 25) => (s || '').trim().replace(/[^a-zA-Z0-9 ]/g, '').replace(/\s+/g, '-').slice(0, max);
+    const sortLabels = { 'a-z': 'AZ', 'z-a': 'ZA', 'wc-asc': 'WordsAsc', 'wc-desc': 'WordsDesc', 'sources-desc': 'MostSources', 'sources-asc': 'FewestSources' };
+
+    const title     = clean(document.getElementById('kw-title')?.value);
+    const brand     = clean(document.getElementById('kw-brand')?.value, 20);
+    const adv       = clean(document.getElementById('kw-advanced')?.value, 20);
+    const neg       = clean(document.getElementById('kw-negative')?.value, 20);
+    const sortVal   = document.getElementById('filter-sort')?.value || 'sources-desc';
+    const sortLabel = sortLabels[sortVal] || sortVal;
+    const minW      = document.getElementById('filter-min-words')?.value || '1';
+
+    const checked = [...document.querySelectorAll('.plat-cb:checked')].map(cb => cb.value);
+    const context = checked.length > 3 ? checked.slice(0, 3).join('+') + `+${checked.length - 3}more` : (checked.join('+') || 'AllPlatforms');
+
+    const now = new Date();
+    const ts  = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}-${String(now.getMinutes()).padStart(2,'0')}`;
+
+    const parts = ['KWMiner'];
+    if (title) parts.push(title);
+    if (brand) parts.push(`B-${brand}`);
+    if (adv)   parts.push(`A-${adv}`);
+    if (neg)   parts.push(`NEG-${neg}`);
+    parts.push(context);
+    parts.push(`minW${minW}`);
+    parts.push(sortLabel);
+    parts.push(ts);
+
+    return parts.join('_') + '.' + ext;
 }
 
 document.getElementById('btn-copy').addEventListener('click', function() {

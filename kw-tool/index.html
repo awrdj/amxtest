@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Keyword Research Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #232f3e;
+            --secondary-color: #ff9900;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --border-color: #ddd;
+            --hover-color: #e68a00;
+            --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            padding: 2rem 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .header-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* ===== DARK MODE ===== */
+        .dark-mode-toggle {
+            background-color: rgb(255 255 255 / 100%);
+            border: 2px solid rgb(255 154 1);
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: rgb(255 154 1);
+            font-size: 1rem;
+        }
+        .dark-mode-toggle:hover {
+            transform: rotate(15deg) scale(1.1);
+        }
+        body.dark-mode .dark-mode-toggle {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+        body.dark-mode .dark-mode-toggle i.fa-moon { display: none; }
+        body.dark-mode .dark-mode-toggle i.fa-sun { display: inline; }
+        body:not(.dark-mode) .dark-mode-toggle i.fa-sun { display: none; }
+        body:not(.dark-mode) .dark-mode-toggle i.fa-moon { display: inline; }
+
+        body.dark-mode {
+            --primary-color: #1a1a1a;
+            --secondary-color: #ff9900;
+            --light-color: #2d2d2d;
+            --dark-color: #e0e0e0;
+            --border-color: #444;
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        body.dark-mode .header-title { color: #fff; }
+        body.dark-mode .form-control { background-color: #2d2d2d; border-color: #444; color: #e0e0e0; }
+        body.dark-mode .form-control:focus { background-color: #2d2d2d; border-color: var(--secondary-color); color: #e0e0e0; }
+
+        /* ===== KWR PANEL STYLES ===== */
+        .filter-box {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+        body.dark-mode .filter-box { background-color: #1e1e1e; border-color: #333; }
+
+        .kwr-input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
+        .kwr-advanced-bg { background-color: #fff3e0 !important; }
+        .kwr-negative-bg { background-color: #ffebee !important; }
+        body.dark-mode .kwr-advanced-bg { background-color: #3d2e1a !important; color: #e0e0e0; }
+        body.dark-mode .kwr-negative-bg { background-color: #3d1f1f !important; color: #e0e0e0; }
+
+        .kwr-buttons-group { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
+        .kwr-primary-btn {
+            flex-grow: 1; padding: 12px 16px; background-color: var(--secondary-color); color: var(--dark-color);
+            font-weight: 700; font-size: 1rem; border: none; border-radius: 6px; cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        body.dark-mode .kwr-primary-btn { color: #1a1a1a; }
+        .kwr-primary-btn:hover { background-color: var(--hover-color); transform: translateY(-1px); }
+        .kwr-primary-btn:disabled { background-color: #aaa; cursor: not-allowed; transform: none; }
+
+        .kwr-loader {
+            display: none; border: 3px solid #f3f3f3; border-top: 3px solid var(--secondary-color);
+            border-radius: 50%; width: 24px; height: 24px; animation: spin 0.8s linear infinite;
+        }
+        body.dark-mode .kwr-loader { border-color: #444; border-top-color: var(--secondary-color); }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Platforms Grid */
+        .kwr-platforms-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px;
+            padding: 12px; background: var(--light-color); border: 1px solid var(--border-color); border-radius: 6px;
+        }
+        .kwr-platforms-grid label { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.95rem; margin: 0; }
+        .kwr-platforms-grid input[type="checkbox"] { accent-color: black; width: 16px; height: 16px; }
+        
+        body.dark-mode .kwr-platforms-grid { background-color: #2d2d2d; border-color: #444; }
+        body.dark-mode .kwr-platforms-grid label { color: #e0e0e0; }
+        body.dark-mode .kwr-platforms-grid input[type="checkbox"]:checked { accent-color: var(--secondary-color); }
+        
+        @media (max-width: 768px) { .kwr-platforms-grid { grid-template-columns: repeat(2, 1fr); } }
+
+        .kwr-plat-select-controls { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 8px; }
+        .kwr-plat-select-link { font-size: 0.85rem; color: var(--secondary-color); text-decoration: none; font-weight: 600; }
+        .kwr-plat-select-link:hover { color: var(--hover-color); text-decoration: underline; }
+
+        /* Results */
+        .kwr-results-header { display: none; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px; }
+        .kwr-count { font-size: 0.9rem; font-weight: 700; color: #555; }
+        body.dark-mode .kwr-count { color: #aaa; }
+        
+        .kwr-results-header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .kwr-wc-inline { display: flex; align-items: center; gap: 6px; }
+        .kwr-wc-label { font-size: 0.85rem; color: #888; margin: 0; }
+        .kwr-wc-input { width: 55px; padding: 4px; font-size: 0.85rem; border: 1px solid var(--border-color); border-radius: 4px; text-align: center; }
+        
+        .kwr-sort-select {
+            padding: 4px 24px 4px 8px; font-size: 0.85rem; border: 1px solid var(--border-color); border-radius: 4px;
+            background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 8.825l-4.762-4.762L2.175 3.15 6 6.975l3.825-3.825 1.062.913L6 8.825z'/%3E%3C/svg%3E") no-repeat right 6px center;
+            appearance: none; cursor: pointer;
+        }
+        body.dark-mode .kwr-wc-input, body.dark-mode .kwr-sort-select { background-color: #2d2d2d; color: #e0e0e0; border-color: #444; }
+        
+        .kwr-results-list {
+            list-style: none; padding: 0; margin: 0; max-height: 500px; overflow-y: auto;
+            border: 1px solid var(--border-color); border-radius: 6px; background: var(--light-color);
+        }
+        .kwr-results-list li {
+            padding: 12px 15px; border-bottom: 1px solid #eee; font-size: 0.95rem; 
+            display: flex; justify-content: space-between; align-items: center; gap: 10px;
+        }
+        .kwr-results-list li:last-child { border-bottom: none; }
+        .kwr-results-list li:hover { background-color: #e9ecef; }
+        
+        body.dark-mode .kwr-results-list { background-color: #1e1e1e; border-color: #444; }
+        body.dark-mode .kwr-results-list li { border-bottom-color: #333; }
+        body.dark-mode .kwr-results-list li:hover { background-color: #2d2d2d; }
+
+        .kwr-kw-text { flex: 1; cursor: pointer; }
+        
+        /* Badges & Icons */
+        .kwr-source-logos { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+        .kwr-plat-icon { width: 16px; height: 16px; object-fit: contain; }
+        .kwr-plat-icon-grey { filter: grayscale(100%) opacity(0.25); }
+        body.dark-mode .kwr-plat-icon { filter: brightness(0) invert(1); }
+        body.dark-mode .kwr-plat-icon-grey { filter: brightness(0) invert(1) opacity(0.3); }
+
+        .kwr-source-badge { font-size: 0.75rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: #eee; color: #666; flex-shrink: 0; }
+        .kwr-badge-mid { background: #fff3cd; color: #856404; }
+        .kwr-badge-high { background: var(--secondary-color); color: var(--dark-color); }
+        body.dark-mode .kwr-source-badge { background: #333; color: #aaa; }
+        body.dark-mode .kwr-badge-mid { background: #4d3e0a; color: #ffc107; }
+        body.dark-mode .kwr-badge-high { background: var(--secondary-color); color: #1a1a1a; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-title">
+        <h2><i class="fas fa-flask mr-2"></i> Deep Keyword Research</h2>
+        <button id="darkModeToggle" class="dark-mode-toggle" aria-label="Toggle dark mode">
+            <i class="fas fa-moon"></i>
+            <i class="fas fa-sun"></i>
+        </button>
+    </div>
+
+    <div class="filter-box">
+        
+        <div class="mb-3 pb-3" style="border-bottom: 1px solid var(--border-color);">
+            <label for="kwrMarketplaceSelect" style="font-weight: 600; font-size: 0.95rem; margin-right: 10px;">Amazon Region:</label>
+            <select id="kwrMarketplaceSelect" class="form-control" style="width: auto; display: inline-block; padding: 4px 30px 4px 10px; height: auto;">
+                <option value="com">.COM (United States)</option>
+                <option value="co.uk">.CO.UK (United Kingdom)</option>
+                <option value="de">.DE (Germany)</option>
+                <option value="fr">.FR (France)</option>
+                <option value="it">.IT (Italy)</option>
+                <option value="es">.ES (Spain)</option>
+            </select>
+        </div>
+
+        <div class="kwr-input-group">
+            <input id="kwr-plat-title" type="text" class="form-control" placeholder="Core Keyword / Product Title (e.g., funny cat shirt)">
+            <input id="kwr-plat-brand" type="text" class="form-control" placeholder="Brand Name (optional)">
+            <input id="kwr-plat-advanced" type="text" class="form-control kwr-advanced-bg" placeholder="Advanced words (e.g., for kids, funny, best)">
+            <input id="kwr-plat-negative" type="text" class="form-control kwr-negative-bg" placeholder="Negative keywords (e.g., free, cheap)">
+        </div>
+        
+        <div class="kwr-plat-select-controls">
+            <a href="#" id="kwrSelectAllPlatforms" class="kwr-plat-select-link">Select all</a>
+            <span class="kwr-plat-select-dot">·</span>
+            <a href="#" id="kwrDeselectAllPlatforms" class="kwr-plat-select-link">Deselect all</a>
+        </div>
+        
+        <div id="kwr-platform-checkboxes" class="kwr-platforms-grid"></div>
+        
+        <div class="kwr-buttons-group">
+            <button id="kwr-plat-btn" class="kwr-primary-btn">
+                <i class="fas fa-globe"></i> Analyze Multi-Platform Keywords
+            </button>
+            <div id="kwr-plat-loader" class="kwr-loader"></div>
+        </div>
+        
+        <div id="kwr-plat-results-header" class="kwr-results-header">
+            <span id="kwr-plat-count" class="kwr-count"></span>
+            <div class="kwr-results-header-right">
+                <div class="kwr-wc-inline">
+                    <label for="kwr-plat-min-words" class="kwr-wc-label">Min words:</label>
+                    <input type="number" id="kwr-plat-min-words" class="kwr-wc-input" value="1" min="1" max="20">
+                </div>
+                <div class="kwr-wc-divider" style="width:1px; height:20px; background:var(--border-color);"></div>
+                <div class="kwr-wc-inline">
+                    <label for="kwr-plat-sort" class="kwr-wc-label">Sort:</label>
+                    <select id="kwr-plat-sort" class="kwr-sort-select">
+                        <option value="sources-desc">Most Sources</option>
+                        <option value="sources-asc">Fewest Sources</option>
+                        <option value="a-z">A → Z</option>
+                        <option value="z-a">Z → A</option>
+                        <option value="wc-asc">Words ↑</option>
+                        <option value="wc-desc">Words ↓</option>
+                    </select>
+                </div>
+                <div class="kwr-wc-divider" style="width:1px; height:20px; background:var(--border-color);"></div>
+                <div class="kwr-export-btns" style="display:flex; gap:5px;">
+                    <button id="kwr-plat-copy-btn" class="btn btn-sm btn-outline-secondary">Copy All</button>
+                    <button id="kwr-plat-txt-btn"  class="btn btn-sm btn-outline-secondary">.TXT</button>
+                    <button id="kwr-plat-csv-btn"  class="btn btn-sm btn-outline-secondary">.CSV</button>
+                </div>
+            </div>
+        </div>
+        <ul id="kwr-plat-results" class="kwr-results-list"></ul>
+    </div>
+</div>
+
+<script>
+// ===== DARK MODE LOGIC =====
+const currentTheme = localStorage.getItem('kwr-theme') || 'light';
+if (currentTheme === 'dark') document.body.classList.add('dark-mode');
+
+document.getElementById('darkModeToggle').addEventListener('click', function() {
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('kwr-theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+});
+
+// ===== DEEP KEYWORD RESEARCH ENGINE =====
+(function() {
+    const KWR_WORKER_URL = "https://cors-proxy-keyword-tool.awrdjmusic.workers.dev/?url=";
+
+    const kwrMarketMap = { 'com': 'US', 'co.uk': 'UK', 'de': 'DE', 'fr': 'FR', 'it': 'IT', 'es': 'ES' };
+    const kwrMarkets = {
+        US: { mid: "ATVPDKIKX0DER",  domain: "completion.amazon.com" },
+        UK: { mid: "A1F83G8C2ARO7P", domain: "completion.amazon.co.uk" },
+        DE: { mid: "A1PA6795UKMFR9", domain: "completion.amazon.de" },
+        FR: { mid: "A13V1IB3VIYZZH", domain: "completion.amazon.fr" },
+        ES: { mid: "A1RKKUPIHCS9HS", domain: "completion.amazon.es" },
+        IT: { mid: "APJ6JRA9NG5V4",  domain: "completion.amazon.it" }
+    };
+
+    const KWR_ALL_PLATFORMS = ['Amazon', 'Bing', 'DuckDuckGo', 'Google', 'Wikipedia', 'YouTube'];
+    const KWR_PLATFORM_DOMAINS = {
+        'Amazon':      'amazon.com',
+        'Bing':        'bing.com',
+        'DuckDuckGo':  'duckduckgo.com',
+        'Google':      'google.com',
+        'Wikipedia':   'wikipedia.org',
+        'YouTube':     'youtube.com'
+    };
+
+    const kwrPlatformConfig = {
+        Google:     { buildUrl: q => "https://suggestqueries.google.com/complete/search?client=firefox&q=" + encodeURIComponent(q), parseResponse: async r => JSON.parse(await r.text())[1] || [] },
+        Bing:       { buildUrl: q => "https://api.bing.com/osjson.aspx?query=" + encodeURIComponent(q),                             parseResponse: async r => JSON.parse(await r.text())[1] || [] },
+        DuckDuckGo: { buildUrl: q => "https://duckduckgo.com/ac/?q=" + encodeURIComponent(q),                                       parseResponse: async r => (JSON.parse(await r.text()) || []).map(x => x.phrase) },
+        YouTube:    { buildUrl: q => "https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=" + encodeURIComponent(q), parseResponse: async r => { const t = await r.text(); const o = JSON.parse(t.substring(t.indexOf("(")+1, t.lastIndexOf(")"))); return o[1]?.map(x => x[0]) || []; } },
+        Wikipedia:  { buildUrl: q => "https://en.wikipedia.org/w/api.php?action=opensearch&search=" + encodeURIComponent(q),        parseResponse: async r => JSON.parse(await r.text())[1] || [] }
+    };
+
+    const KWR_MODIFIERS = {
+        PRODUCT_ATTRIBUTES: ["for men","for women","for kids","for toddlers","for boys","for girls","large","small","medium","xl","2xl","black","white","red","blue","green","2 pack","3 pack","gift","eco friendly","waterproof","long sleeve","short sleeve"],
+        USER_INTENT:        ["review","vs","alternative","unboxing","tutorial","test","how to use","best","cheap","top rated","deals","discount","for sale","ideas","outfit"],
+        QUESTIONS:          ["what is","how does","why is","are","where to buy","can i wear","is"]
+    };
+    const KWR_ALPHABET = "abcdefghijklmnopqrstuvwxyz".split("");
+
+    function kwrSubPhrases(text) {
+        if (!text) return [];
+        const words = text.toLowerCase().split(/\s+/).filter(Boolean);
+        const s = new Set(words);
+        for (let i = 0; i < words.length; i++)
+            for (let j = i+1; j < words.length; j++)
+                s.add(words.slice(i, j+1).join(" "));
+        if (words.length > 1) s.add(words.join(" "));
+        return [...s];
+    }
+
+    function kwrBuildPrefixes(title, brand, advancedWords) {
+        const results = new Set();
+        const t = title?.trim().toLowerCase() || "";
+        const b = brand?.trim().toLowerCase() || "";
+        const advanced = advancedWords ? advancedWords.split(",").map(e => e.trim()).filter(Boolean) : [];
+        let bases = new Set();
+        if (t && b) { bases.add(`${t} ${b}`); bases.add(`${b} ${t}`); }
+        else if (t) { bases.add(t); }
+        else if (b) { kwrSubPhrases(b).forEach(e => bases.add(e)); }
+        
+        const baseArray = [...bases];
+        if (advanced.length > 0) {
+            baseArray.forEach(base => { results.add(base); advanced.forEach(adv => results.add(`${base} ${adv}`)); });
+        } else {
+            baseArray.forEach(base => {
+                results.add(base);
+                KWR_MODIFIERS.PRODUCT_ATTRIBUTES.forEach(m => results.add(`${base} ${m}`));
+                KWR_MODIFIERS.USER_INTENT.forEach(m => { results.add(`${base} ${m}`); results.add(`${m} ${base}`); });
+                KWR_MODIFIERS.QUESTIONS.forEach(m => { results.add(`${m} ${base}`); if (m !== "are" && m !== "is") results.add(`${base} ${m} good`); });
+                KWR_ALPHABET.forEach(l => results.add(`${base} ${l}`));
+            });
+        }
+        return [...results];
+    }
+
+    async function kwrFetch(tasks, limit) {
+        const results = [], queue = [...tasks];
+        async function worker() {
+            if (!queue.length) return;
+            const task = queue.shift();
+            try {
+                const res = await fetch(KWR_WORKER_URL + encodeURIComponent(task.url));
+                if (res.ok) results.push(...await task.parser(res));
+            } catch(e) { console.error("KWR fetch error:", e); }
+            await worker();
+        }
+        await Promise.all(Array(limit).fill(null).map(() => worker()));
+        return results;
+    }
+
+    async function kwrExecute({ title, brand, advancedWords, negativeKeywords, platforms }) {
+        const prefixes = kwrBuildPrefixes(title, brand, advancedWords);
+        let tasks = [];
+
+        platforms.forEach(plat => {
+            if (plat === 'Amazon') {
+                const ms = document.getElementById('kwrMarketplaceSelect')?.value || 'com';
+                const marketCode = kwrMarketMap[ms] || 'US';
+                const m = kwrMarkets[marketCode] || kwrMarkets.US;
+                const baseUrl = `https://${m.domain}/api/2017/suggestions?page-type=Gateway&alias=aps&mid=${m.mid}`;
+                
+                prefixes.forEach(p => tasks.push({ 
+                    url: `${baseUrl}&prefix=${encodeURIComponent(p)}`, 
+                    parser: async r => { 
+                        const j = await r.json(); 
+                        return (j.suggestions?.map(s => s.value) || []).map(kw => ({ keyword: kw, source: 'Amazon' }));
+                    } 
+                }));
+            } else {
+                const pc = kwrPlatformConfig[plat];
+                if (pc) prefixes.forEach(p => {
+                    tasks.push({
+                        url: pc.buildUrl(p),
+                        parser: async r => {
+                            const keywords = await pc.parseResponse(r);
+                            return keywords.map(kw => ({ keyword: kw, source: plat }));
+                        }
+                    });
+                });
+            }
+        });
+
+        const rawResults = await kwrFetch(tasks, 15);
+
+        const sourceMap = new Map();
+        rawResults.forEach(({ keyword, source }) => {
+            const kl = keyword.toLowerCase().trim();
+            if (!sourceMap.has(kl)) {
+                sourceMap.set(kl, { keyword: keyword.trim(), sources: new Set() });
+            }
+            sourceMap.get(kl).sources.add(source);
+        });
+        let unique = [...sourceMap.values()].map(({ keyword, sources }) => ({ keyword, sources: [...sources] }));
+
+        if (negativeKeywords) {
+            const negs = negativeKeywords.split(",").map(e => e.trim().toLowerCase()).filter(e => e);
+            if (negs.length) unique = unique.filter(item => !negs.some(n => item.keyword.toLowerCase().includes(n)));
+        }
+        if (title) {
+            const tl = title.trim().toLowerCase();
+            if (tl) unique = unique.filter(item => item.keyword.toLowerCase().includes(tl));
+        }
+        return unique.sort((a, b) => a.keyword.localeCompare(b.keyword));
+    }
+
+    // UI Logic
+    function kwrSyncMarketplace() {
+        const ms = document.getElementById('kwrMarketplaceSelect')?.value || 'com';
+        const kwrCode = kwrMarketMap[ms] || 'US';
+        const amzLabelSpan = document.getElementById('kwr-amz-cb-label');
+        if (amzLabelSpan) {
+            amzLabelSpan.textContent = `(${kwrCode})`;
+        }
+    }
+    document.getElementById('kwrMarketplaceSelect')?.addEventListener('change', kwrSyncMarketplace);
+
+    const kwrCheckboxContainer = document.getElementById('kwr-platform-checkboxes');
+    kwrCheckboxContainer.innerHTML = '';
+    KWR_ALL_PLATFORMS.forEach(key => {
+        const label = document.createElement('label');
+        const isAmazon = key === 'Amazon';
+        const labelText = isAmazon ? `Amazon <span id="kwr-amz-cb-label" style="font-size: 0.85em; opacity: 0.7;">(US)</span>` : key;
+        label.innerHTML = `<input type="checkbox" class="kwr-platform-cb" value="${key}" ${isAmazon ? 'checked' : ''}> ${labelText}`;
+        kwrCheckboxContainer.appendChild(label);
+    });
+    kwrSyncMarketplace();
+
+    document.getElementById('kwrSelectAllPlatforms')?.addEventListener('click', e => {
+        e.preventDefault(); document.querySelectorAll('.kwr-platform-cb').forEach(cb => cb.checked = true);
+    });
+    document.getElementById('kwrDeselectAllPlatforms')?.addEventListener('click', e => {
+        e.preventDefault(); document.querySelectorAll('.kwr-platform-cb').forEach(cb => cb.checked = false);
+    });
+
+    function kwrSortData(data, sortVal) {
+        const arr = [...data];
+        if (sortVal === 'a-z') return arr.sort((a, b) => a.keyword.localeCompare(b.keyword));
+        if (sortVal === 'z-a') return arr.sort((a, b) => b.keyword.localeCompare(a.keyword));
+        if (sortVal === 'wc-asc') return arr.sort((a, b) => a.keyword.trim().split(/\s+/).length - b.keyword.trim().split(/\s+/).length);
+        if (sortVal === 'wc-desc') return arr.sort((a, b) => b.keyword.trim().split(/\s+/).length - a.keyword.trim().split(/\s+/).length);
+        if (sortVal === 'sources-desc') return arr.sort((a, b) => b.sources.length - a.sources.length);
+        if (sortVal === 'sources-asc') return arr.sort((a, b) => a.sources.length - b.sources.length);
+        return arr;
+    }
+
+    function kwrRender(data, listEl, headerEl, countEl) {
+        listEl.innerHTML = '';
+        if (data && data.error) {
+            headerEl.style.display = 'none';
+            listEl.innerHTML = `<li class="text-danger" style="padding:14px; text-align:center;">Error: ${data.error}</li>`;
+            return;
+        }
+        if (data && data.length > 0) {
+            headerEl.style.display = 'flex';
+            countEl.textContent = `Found ${data.length} keywords`;
+            data.forEach(item => {
+                const li = document.createElement('li');
+
+                const span = document.createElement('span');
+                span.className = 'kwr-kw-text';
+                span.textContent = item.keyword;
+                span.title = 'Click to copy';
+                span.addEventListener('click', () => {
+                    navigator.clipboard.writeText(item.keyword).then(() => {
+                        const orig = span.textContent;
+                        span.textContent = '✓ Copied!';
+                        setTimeout(() => span.textContent = orig, 1000);
+                    });
+                });
+
+                const logosSpan = document.createElement('span');
+                logosSpan.className = 'kwr-source-logos';
+                KWR_ALL_PLATFORMS.forEach(plat => {
+                    const img = document.createElement('img');
+                    const domain = KWR_PLATFORM_DOMAINS[plat] || 'google.com';
+                    img.src = `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
+                    img.alt = plat;
+                    img.title = plat;
+                    img.width = 16;
+                    img.height = 16;
+                    const sourcesLower = item.sources.map(s => s.toLowerCase());
+                    img.className = 'kwr-plat-icon' + (sourcesLower.includes(plat.toLowerCase()) ? '' : ' kwr-plat-icon-grey');
+                    logosSpan.appendChild(img);
+                });
+
+                const badge = document.createElement('span');
+                badge.className = 'kwr-source-badge' + (item.sources.length >= 3 ? ' kwr-badge-high' : item.sources.length >= 2 ? ' kwr-badge-mid' : '');
+                badge.textContent = `×${item.sources.length}`;
+
+                li.appendChild(span);
+                li.appendChild(logosSpan);
+                li.appendChild(badge);
+                listEl.appendChild(li);
+            });
+        } else {
+            headerEl.style.display = 'none';
+            listEl.innerHTML = "<li style='padding:14px; text-align:center; color:#888;'>No unique suggestions found.</li>";
+        }
+    }
+
+    function kwrWordFilter(data, minWords) {
+        return data.filter(item => item.keyword.trim().split(/\s+/).length >= minWords);
+    }
+
+    let kwrPlatMinWords = 1;
+    let kwrPlatData = [];
+
+    document.getElementById('kwr-plat-min-words')?.addEventListener('input', function() {
+        kwrPlatMinWords = Math.max(1, parseInt(this.value) || 1);
+        if (kwrPlatData.length) {
+            const filtered = kwrWordFilter(kwrPlatData, kwrPlatMinWords);
+            const sorted = kwrSortData(filtered, document.getElementById('kwr-plat-sort')?.value || 'sources-desc');
+            kwrRender(sorted, document.getElementById('kwr-plat-results'), document.getElementById('kwr-plat-results-header'), document.getElementById('kwr-plat-count'));
+        }
+    });
+
+    document.getElementById('kwr-plat-sort')?.addEventListener('change', function() {
+        if (!kwrPlatData.length) return;
+        const filtered = kwrWordFilter(kwrPlatData, kwrPlatMinWords);
+        const sorted = kwrSortData(filtered, this.value);
+        kwrRender(sorted, document.getElementById('kwr-plat-results'), document.getElementById('kwr-plat-results-header'), document.getElementById('kwr-plat-count'));
+    });
+
+    function kwrBuildFilename(ext) {
+        const clean = (s) => (s || '').trim().replace(/[^a-zA-Z0-9 ]/g, '').replace(/\s+/g, '-').slice(0, 25);
+        const title = clean(document.getElementById('kwr-plat-title')?.value) || 'Research';
+        return `KeywordResearch_${title}.${ext}`;
+    }
+
+    document.getElementById('kwr-plat-copy-btn').addEventListener('click', function() {
+        const d = kwrSortData(kwrWordFilter(kwrPlatData, kwrPlatMinWords), document.getElementById('kwr-plat-sort')?.value || 'sources-desc');
+        if (!d.length) return;
+        navigator.clipboard.writeText(d.map(i => i.keyword).join('\n')).then(() => {
+            const o = this.textContent; this.textContent = 'Copied!'; setTimeout(() => this.textContent = o, 2000);
+        });
+    });
+
+    document.getElementById('kwr-plat-txt-btn').addEventListener('click', () => {
+        const d = kwrSortData(kwrWordFilter(kwrPlatData, kwrPlatMinWords), document.getElementById('kwr-plat-sort')?.value || 'sources-desc');
+        if (!d.length) return;
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([d.map(i => i.keyword).join('\n')], {type:'text/plain'}));
+        a.download = kwrBuildFilename('txt');
+        a.click();
+    });
+
+    document.getElementById('kwr-plat-csv-btn').addEventListener('click', () => {
+        const d = kwrSortData(kwrWordFilter(kwrPlatData, kwrPlatMinWords), document.getElementById('kwr-plat-sort')?.value || 'sources-desc');
+        if (!d.length) return;
+        const csv = 'Keyword,Sources\n' + d.map(i => `${i.keyword.includes(',') ? `"${i.keyword}"` : i.keyword},${i.sources.join(' | ')}`).join('\n');
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8;'}));
+        a.download = kwrBuildFilename('csv');
+        a.click();
+    });
+
+    document.getElementById('kwr-plat-btn').addEventListener('click', async () => {
+        const title = document.getElementById('kwr-plat-title').value.trim();
+        const brand = document.getElementById('kwr-plat-brand').value.trim();
+        const platforms = [...document.querySelectorAll('.kwr-platform-cb:checked')].map(cb => cb.value);
+        const listEl = document.getElementById('kwr-plat-results');
+        
+        if (!title && !brand) return;
+        if (!platforms.length) { listEl.innerHTML = "<li style='padding:14px; text-align:center; color:#dc3545;'>Please select at least one platform.</li>"; return; }
+        
+        const btn = document.getElementById('kwr-plat-btn');
+        const loader = document.getElementById('kwr-plat-loader');
+        
+        listEl.innerHTML = "<li style='padding:14px; text-align:center;'>Analyzing… this may take a moment.</li>";
+        document.getElementById('kwr-plat-results-header').style.display = 'none';
+        btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing…'; loader.style.display = 'block';
+        
+        try {
+            kwrPlatData = await kwrExecute({ 
+                title, 
+                brand, 
+                advancedWords: document.getElementById('kwr-plat-advanced').value.trim(), 
+                negativeKeywords: document.getElementById('kwr-plat-negative').value.trim(), 
+                platforms 
+            });
+            const platInitSort = document.getElementById('kwr-plat-sort')?.value || 'sources-desc';
+            kwrRender(kwrSortData(kwrPlatData, platInitSort), listEl, document.getElementById('kwr-plat-results-header'), document.getElementById('kwr-plat-count'));
+        } catch(e) {
+            kwrRender({error: e.message}, listEl, document.getElementById('kwr-plat-results-header'), document.getElementById('kwr-plat-count'));
+        } finally {
+            btn.disabled = false; btn.innerHTML = '<i class="fas fa-globe"></i> Analyze Multi-Platform Keywords'; loader.style.display = 'none';
+        }
+    });
+})();
+</script>
+</body>
+</html>

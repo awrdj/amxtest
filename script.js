@@ -342,7 +342,7 @@ pageNumber: (String or Number) Sets the page number input value.
               settings: { sortOrder: 'most-purchased-rank', department: 'fashion', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
             { value: 'the-trends-de', text: 'Trends Fashion - DE', 
               settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt', suppressDefaultProductTypeKeywords: false} },
-            { value: 'archive-view-de', text: 'Archive Fashio - DEn', 
+            { value: 'archive-view-de', text: 'Archive Fashio - DE', 
               settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt', suppressDefaultProductTypeKeywords: false} },
             { value: 'competition-view-de', text: 'T-Shirt Competition Checker - DE', 
               settings: { sortOrder: 'custom', department: 'fashion', productType: 'custom', suppressDefaultProductTypeKeywords: false} }
@@ -364,17 +364,17 @@ pageNumber: (String or Number) Sets the page number input value.
         ],
         // Presets config IT
         'it': [
-            { value: 'last30-fashion-fr', text: 'Last 30 Days Fashion Specific Clothing - IT', 
+            { value: 'last30-fashion-it', text: 'Last 30 Days Fashion Specific Clothing - IT', 
               settings: { timeFilter: 'timeFilter30Days', sortOrder: 'custom', department: 'fashion', category: '2892860031', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
-            { value: 'last90-fashion-fr', text: 'Last 90 Days Fashion Specific Clothing - IT', 
+            { value: 'last90-fashion-it', text: 'Last 90 Days Fashion Specific Clothing - IT', 
               settings: { timeFilter: 'timeFilter90Days', sortOrder: 'custom', department: 'fashion', category: '2892860031', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
-            { value: 'most-purchased-fr', text: 'Most Purchased Fashion - IT', 
+            { value: 'most-purchased-it', text: 'Most Purchased Fashion - IT', 
               settings: { sortOrder: 'most-purchased-rank', department: 'fashion', productType: 'custom', suppressDefaultProductTypeKeywords: false} },
-            { value: 'the-trends-fr', text: 'Trends Fashion - IT', 
+            { value: 'the-trends-it', text: 'Trends Fashion - IT', 
               settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt', suppressDefaultProductTypeKeywords: false} },
-            { value: 'archive-view-fr', text: 'Archive Fashion - IT', 
+            { value: 'archive-view-it', text: 'Archive Fashion - IT', 
               settings: { sortOrder: 'date-desc-rank', department: 'fashion', productType: 'tshirt', suppressDefaultProductTypeKeywords: false} },
-            { value: 'competition-view-fr', text: 'T-Shirt Competition Checker - IT', 
+            { value: 'competition-view-it', text: 'T-Shirt Competition Checker - IT', 
               settings: { sortOrder: 'custom', department: 'fashion', category: '2892860031', productType: 'tshirt', suppressDefaultProductTypeKeywords: false} }
         ],
         // Presets config ES
@@ -418,19 +418,17 @@ pageNumber: (String or Number) Sets the page number input value.
 
     // Initialize the filterExcludeBrands value when the marketplace changes
     function updateExcludeBrandsFilter() {
-      const marketplace = marketplaceSelect.value;
-      const config = marketplaceConfig[marketplace] || marketplaceConfig.com;
-      
-      // Update hidden fields based on marketplace
-      if (config.excludeBrands) {
-        // We don't set the value here, just use it from the config in generateAmazonUrl
-        document.getElementById('filterExcludeBrands').checked = false;
-
-document.getElementById('filterExcludePolitics').checked = false;
-document.getElementById('filterExcludeHaram').checked = false;
-          
-      }
-    }
+  const marketplace = marketplaceSelect.value;
+  const config = marketplaceConfig[marketplace] || marketplaceConfig.com;
+  
+  // Update hidden fields based on marketplace
+  if (config.excludeBrands) {
+    // Reset only filters that should not persist across marketplace changes
+    document.getElementById('filterExcludeBrands').checked = false;
+    document.getElementById('filterExcludePolitics').checked = false;
+    // Leave Haram untouched so its default/user choice persists
+  }
+}
 
     // Marketplace-specific parameters
     const marketplaceConfig = {

@@ -339,9 +339,12 @@
 
     <footer class="footer">
         <div class="container">
-            <p>© 2025 eScope DataViewer. Created for personal research purposes.</p>
+            <p>© 2025-<span id="currentYear"></span> eScope DataViewer. Created for personal research purposes.</p>
         </div>
     </footer>
+    <script>
+        document.getElementById("currentYear").textContent = new Date().getFullYear();
+    </script>
 
     <script src="script.js"></script>
 </body>

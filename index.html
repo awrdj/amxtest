@@ -310,9 +310,12 @@
 
     <footer>
         <div class="container">
-            <p style="margin-bottom:0;">© 2025 MerchScope Research Tool. Created for personal research purposes.</p>
+            <p style="margin-bottom:0;">© 2025-<span id="currentYear"></span> MerchScope Research Tool. Created for personal research purposes.</p>
         </div>
     </footer>
+    <script>
+        document.getElementById("currentYear").textContent = new Date().getFullYear();
+    </script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
